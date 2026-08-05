@@ -1545,8 +1545,6 @@
         <button class="scan-tip-close" id="scanTipClose">知道了</button>
     </div>
 </div>
-<!-- 预加载本地音乐 -->
-<audio id="bgMusicPreloadEn" preload="auto" src="music/生日快乐(英文版)_库库小队_.mp3"></audio>
 <!-- 音乐播放器 -->
 <div class="music-player collapsed" id="musicPlayer">
     <!-- 展开态：圆角"长方体"卡片 — 上半大圆盘唱片，下半控制区 -->
@@ -3589,53 +3587,28 @@
     function playEnglishSong() {
         mp.player.style.display = '';
         mp.expandPlayer();
+        // 统一使用主播放器的 audio 元素，避免多个音频叠加导致关不掉
+        mp._fxAudio = null;
         mp.audio.pause();
         mp.isPlaying = false;
         mp.updatePlayIcon();
-
-        const enAudio = document.getElementById('bgMusicPreloadEn');
-        if (!enAudio) return;
-
-        enAudio.pause();
-        enAudio.currentTime = 0;
-        enAudio.volume = 0.9;
-        enAudio.playbackRate = 1;
-        enAudio.muted = mp.isMuted;
-
-        enAudio.play().then(() => {
-            mp.isPlaying = true;
-            mp.currentIndex = 1;
-            mp.nameEl.textContent = 'Happy Birthday (英文版)';
-            mp.title.textContent = '🎵 Happy Birthday (英文版)';
-            mp.cover.textContent = '🎵';
-            mp.updatePlayIcon();
-            mp.totalEl.textContent = mp.formatTime(enAudio.duration);
-
-            // 用 enAudio 同步播放器进度
-            const onTimeUpdate = () => {
-                mp.currentEl.textContent = mp.formatTime(enAudio.currentTime);
-                if (enAudio.duration) {
-                    mp.fill.style.width = ((enAudio.currentTime / enAudio.duration) * 100) + '%';
-                }
-            };
-            enAudio.addEventListener('timeupdate', onTimeUpdate);
-            enAudio.addEventListener('ended', () => {
-                mp.isPlaying = false;
-                mp.updatePlayIcon();
-                enAudio.removeEventListener('timeupdate', onTimeUpdate);
-            }, { once: true });
-
-            // 允许播放器控件控制 enAudio（暂停/静音等）
-            mp._fxAudio = enAudio;
-        }).catch(async (err) => {
-            console.warn('英文版播放失败，尝试播放器播放:', err);
-            await mp.loadTrack(1);
+        (async () => {
             try {
+                await mp.loadTrack(0);
+                mp.audio.currentTime = 0;
+                mp.audio.volume = 0.9;
                 await mp.audio.play();
                 mp.isPlaying = true;
+                mp.currentIndex = 0;
+                mp.nameEl.textContent = 'Happy Birthday (英文版)';
                 mp.updatePlayIcon();
-            } catch (e2) { console.warn('降级播放也失败:', e2); }
-        });
+                mp.renderList();
+            } catch (err) {
+                console.warn('英文版播放失败:', err);
+                mp.isPlaying = false;
+                mp.updatePlayIcon();
+            }
+        })();
     }
 
     // 退出按钮自动隐藏管理器
