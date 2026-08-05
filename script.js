@@ -1151,9 +1151,13 @@
           lastScrollDir = delta > 0 ? 1 : -1;
         }
 
-        // 跳转锁定期间：跳过方向隐藏逻辑，保持导航栏可见
-        if (!navJumpLock) {
-          if (delta > 5 && st > SCROLL_THRESHOLD) {
+        // 页面在顶部（scrollY ≤ SCROLL_THRESHOLD）：导航栏始终可见，优先于方向隐藏逻辑
+        if (st <= SCROLL_THRESHOLD) {
+          nav.classList.remove('nav-hidden');
+          themeToggle?.classList.remove('btn-hidden');
+        } else if (!navJumpLock) {
+          // 跳转锁定期间：跳过方向隐藏逻辑，保持导航栏可见
+          if (delta > 5) {
             nav.classList.add('nav-hidden');
             themeToggle?.classList.add('btn-hidden');
           } else if (delta < -5) {
@@ -1229,6 +1233,7 @@
     // 兜底最长锁定/等待时间（应对极长距离滚动或用户持续手动滚动）
     const MAX_WAIT_MS = 4000;
     const SCROLL_IDLE_MS = 150; // 150ms 无新 scroll 事件 → 判定滚动已停稳
+    const NAV_TOP_THRESHOLD = 60; // 与 bindNavbar 的 SCROLL_THRESHOLD 一致：此距离内视为页面顶部，导航栏保持可见
 
     function clearNavAutoHide() {
       if (navAutoHideTimer) {
@@ -1293,8 +1298,12 @@
 
         navAutoHideTimer = setTimeout(() => {
           if (!navInteracted) {
-            nav.classList.add('nav-hidden');
-            themeToggle?.classList.add('btn-hidden');
+            // 页面在顶部时不自动隐藏（顶部导航栏应始终可见）
+            const st = window.scrollY || document.documentElement.scrollTop;
+            if (st > NAV_TOP_THRESHOLD) {
+              nav.classList.add('nav-hidden');
+              themeToggle?.classList.add('btn-hidden');
+            }
           }
         }, 5000);
 
@@ -1307,6 +1316,12 @@
     function onNavInteract() {
       navInteracted = true;
       clearNavAutoHide();
+      // 若当前在顶部，恢复导航栏显示（避免自动隐藏后回顶仍不可见）
+      const st = window.scrollY || document.documentElement.scrollTop;
+      if (st <= NAV_TOP_THRESHOLD) {
+        nav.classList.remove('nav-hidden');
+        themeToggle?.classList.remove('btn-hidden');
+      }
     }
 
     // 监听导航栏本身的触碰
