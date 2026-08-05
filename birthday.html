@@ -2546,13 +2546,31 @@
     (function restoreSavedPos() {
         let saved = null;
         try { saved = JSON.parse(localStorage.getItem(BDAY_POS_KEY) || 'null'); } catch (_) {}
-        if (!saved || typeof saved.x !== 'number' || typeof saved.y !== 'number') return;
-        const [x, y] = clampPos(saved.x, saved.y);
-        applyCollapsedPos(x, y);
-        if (x !== saved.x || y !== saved.y) {
-            try { localStorage.setItem(BDAY_POS_KEY, JSON.stringify({ x, y })); } catch (_) {}
+        if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
+            const [x, y] = clampPos(saved.x, saved.y);
+            applyCollapsedPos(x, y);
+            if (x !== saved.x || y !== saved.y) {
+                try { localStorage.setItem(BDAY_POS_KEY, JSON.stringify({ x, y })); } catch (_) {}
+            }
+        } else {
+            // 无保存位置时，清除可能残留的 inline 定位（如 expand 设置的），回到 CSS 默认左下角
+            mp.collapsedBtn.style.removeProperty('top');
+            mp.collapsedBtn.style.removeProperty('left');
+            mp.collapsedBtn.style.removeProperty('bottom');
+            mp.collapsedBtn.style.removeProperty('transform');
         }
     })();
+
+    // 窗口大小变化时，钳制收起圆盘位置，防止跑到视口外
+    window.addEventListener('resize', () => {
+        if (!mp.collapsedBtn) return;
+        const rect = mp.collapsedBtn.getBoundingClientRect();
+        const [x, y] = clampPos(rect.left, rect.top);
+        if (Math.abs(x - rect.left) > 1 || Math.abs(y - rect.top) > 1) {
+            applyCollapsedPos(x, y);
+            try { localStorage.setItem(BDAY_POS_KEY, JSON.stringify({ x: Math.round(x), y: Math.round(y) })); } catch (_) {}
+        }
+    });
 
     // 位置就绪：解除收起按钮的 FOUC 隐藏（放在 restoreSavedPos 之后，确保无跳变）
     mp.player.classList.add('pos-ready');
