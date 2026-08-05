@@ -2460,6 +2460,7 @@
 
     // 播放列表始终初始化（确保提前送祝福功能可用）
     mp.playlist = [
+        { name: '生日快乐（中文版）', artist: '生日祝福', url: 'music/生日快乐.mp3' },
         { name: 'Happy Birthday (英文版)', artist: '库库小队', url: 'music/生日快乐(英文版)_库库小队_.mp3' }
     ];
     mp.renderList();
@@ -3622,7 +3623,10 @@
         mp.updatePlayIcon();
         (async () => {
             try {
-                await mp.loadTrack(0);
+                // 播放列表第 0 项现为中文版，这里明确定位英文版曲目
+                const enIdx = mp.playlist.findIndex(t => t.name.indexOf('英文') !== -1);
+                const target = enIdx >= 0 ? enIdx : 0;
+                await mp.loadTrack(target);
                 mp.audio.currentTime = 0;
                 mp.audio.volume = 0.9;
                 // 用户主动点击祝福按钮，取消自动播放降级时的静音
@@ -3634,8 +3638,7 @@
                 }
                 await mp.audio.play();
                 mp.isPlaying = true;
-                mp.currentIndex = 0;
-                mp.nameEl.textContent = 'Happy Birthday (英文版)';
+                mp.currentIndex = target;
                 mp.updatePlayIcon();
                 mp.renderList();
             } catch (err) {
