@@ -1671,7 +1671,14 @@ img { max-width: 100%; display: block; }
     vertical-align: -0.125em;
     fill: currentColor;
 }
-.social-bg-icon .icon-brand { display: block; }
+.social-bg-icon .icon-brand {
+    display: block;
+    /* SVG 图形会填满整个 1em 框，而背景图标贴角定位（top:-24px / right:-18px）
+       会被卡片 overflow:hidden 裁切，导致快手/抖音图标显示不全。
+       这里缩小并下移，使图形完整收入卡片可视区（视觉上对齐 QQ/微信字形的留白效果）。 */
+    transform: scale(0.75) translateY(0.35em);
+    transform-origin: top left;
+}
 
 .social-bg-icon {
     position: absolute;
