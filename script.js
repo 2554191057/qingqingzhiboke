@@ -2139,6 +2139,7 @@
     let pendingPlay = false; // 音频源未就绪时标记待播放，loadSong 完成后自动开始
     let collapseTimer = null;
     let hasInteracted = false;
+    let hasShownMusicStartedToast = false; // 首次播放成功时显示一次「音乐已开启」灵动岛提示
     // 循环模式：'sequence' = 顺序播放，'single' = 单曲循环；从 localStorage 读取偏好
     let loopMode = (() => {
       try {
@@ -2382,6 +2383,10 @@
           coverEl.classList.add('playing');
           renderPlaylistActive();
           syncCollapsedUi();
+          if (!hasShownMusicStartedToast) {
+            hasShownMusicStartedToast = true;
+            showToast('🎵 音乐已开启');
+          }
         }).catch(() => {
           // 浏览器阻止自动播放，等待用户交互
           isPlaying = false;
