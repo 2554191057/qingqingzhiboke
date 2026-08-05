@@ -520,6 +520,10 @@
         .bday-actions .btn-bless { padding: 10px 8px; font-size: 0.8rem; }
     }
     /* 播放器样式已迁移到 style.css */
+    /* 生日页：播放器必须在全屏祝福层(z-index:99999)之上，否则祝福层会挡住暂停按钮导致音乐关不掉 */
+    .music-player { z-index: 100002 !important; }
+    .music-player-expanded { z-index: 100003 !important; }
+    .music-player-collapsed { z-index: 100002 !important; }
     .bday-theme-toggle {
         margin: 0;
         position: fixed !important;
@@ -2149,6 +2153,12 @@
 
       expanded.style.transformOrigin = originX + 'px ' + originY + 'px';
       expanded.style.removeProperty('transform');
+
+      // 重置 expand() 设置的 inline 定位，让收起态回到 CSS 默认的左下角位置
+      mp.player.style.removeProperty('top');
+      mp.player.style.removeProperty('left');
+      mp.player.style.removeProperty('bottom');
+      mp.player.style.removeProperty('transform');
 
       try { localStorage.removeItem('birthdayMusicExpandedPos'); } catch (_) {}
 
