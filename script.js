@@ -685,8 +685,9 @@
     if (icon) {
       icon.className = 'toast-icon fa-solid ' + (isError ? 'fa-circle-xmark' : 'fa-circle-check');
     }
-    // 仅「点击任意位置开始播放音乐」引导提示不显示左侧图标，避免挤压文字显示不全；其余 Toast 保留图标
-    toast.classList.toggle('no-icon', text.indexOf('点击任意位置开始播放音乐') !== -1);
+    // 仅「点击任意位置开始播放音乐」引导提示不显示左侧图标，避免挤压文字显示不全；
+    // 切换日夜间模式时文字自带 🌙/☀️ emoji，也隐藏默认对勾图标；其余 Toast 保留图标
+    toast.classList.toggle('no-icon', text.indexOf('点击任意位置开始播放音乐') !== -1 || text.indexOf('🌙') !== -1 || text.indexOf('☀️') !== -1);
 
     // 测量：解除所有尺寸约束，按单行测文字自然宽度
     toast.style.maxWidth = 'none';
@@ -3259,7 +3260,7 @@
       if (!hasInteracted) {
         hasInteracted = true;
         if (!isPlaying) play();
-        showToast('音乐已开启', false);
+        // 不弹 toast：音乐播放本身有声音反馈，避免覆盖按钮自身的提示（如日夜间切换）
       }
       document.removeEventListener('click', firstInteraction);
       document.removeEventListener('touchstart', firstInteraction);
@@ -3322,7 +3323,7 @@
       }
       
       updateThemeIcon(newIsDark);
-      showToast(newIsDark ? '已切换到夜间模式' : '已切换到日间模式');
+      showToast(newIsDark ? '🌙 已切换到夜间模式' : '☀️ 已切换到日间模式');
     }
     
     // 绑定点击事件
