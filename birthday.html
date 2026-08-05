@@ -1852,6 +1852,8 @@
       const newIsDark = !isDark;
       applyDarkMode(newIsDark);
       localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
+      // 仅在切换日夜间时显示灵动岛提示
+      showToast(newIsDark ? '🌙 已切换夜间模式' : '☀️ 已切换日间模式');
     });
     
     // 进入页面自动隐藏主题切换按钮，鼠标移动/触摸时短暂显示
