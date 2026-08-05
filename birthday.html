@@ -3597,6 +3597,13 @@
                 await mp.loadTrack(0);
                 mp.audio.currentTime = 0;
                 mp.audio.volume = 0.9;
+                // 用户主动点击祝福按钮，取消自动播放降级时的静音
+                mp.audio.muted = false;
+                mp.isMuted = false;
+                if (mp.muteBtn) {
+                    mp.muteBtn.querySelector('i').className = 'fa-solid fa-volume-high';
+                    mp.muteBtn.classList.remove('muted');
+                }
                 await mp.audio.play();
                 mp.isPlaying = true;
                 mp.currentIndex = 0;
@@ -4217,7 +4224,6 @@
 <!-- ========== Toast 通知（iOS 灵动岛风格） ========== -->
 <div class="toast" id="toast" role="status" aria-live="polite" tabindex="0">
     <span class="toast-glow"></span>
-    <i class="fa-solid fa-circle-check toast-icon"></i>
     <span class="toast-text" id="toastText">操作成功</span>
     <span class="toast-progress" id="toastProgress"></span>
     <span class="toast-ripple"></span>
