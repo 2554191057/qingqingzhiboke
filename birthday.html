@@ -1776,6 +1776,8 @@
     } else {
         initToastInteractions();
     }
+    // 暴露到全局，供页面其他脚本调用（与 index.html 一致）
+    window.showToast = showToast;
 
     const isToday = SB.isBirthdayToday();
     const target = SB.nextBirthday();
