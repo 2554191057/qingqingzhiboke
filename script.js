@@ -616,6 +616,14 @@
     const wasVisible = toast.classList.contains('show');
     const maxAllowed = window.innerWidth - 40;
 
+    // 更新图标
+    const icon = toast.querySelector('.toast-icon');
+    if (icon) {
+      icon.className = 'toast-icon fa-solid ' + (isError ? 'fa-circle-xmark' : 'fa-circle-check');
+    }
+    // 仅「点击任意位置开始播放音乐」引导提示不显示左侧图标，避免挤压文字显示不全；其余 Toast 保留图标
+    toast.classList.toggle('no-icon', text.indexOf('点击任意位置开始播放音乐') !== -1);
+
     // 测量：解除所有尺寸约束，按单行测文字自然宽度
     toast.style.maxWidth = 'none';
     toast.style.width = 'auto';

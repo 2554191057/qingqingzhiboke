@@ -3480,6 +3480,9 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
 
 .toast.error .toast-icon { color: #FF453A; }
 
+/* 隐藏图标的 Toast（如音乐引导提示，避免图标挤压文字显示不全） */
+.toast.no-icon .toast-icon { display: none; }
+
 /* 进度条（5 秒倒计时） */
 .toast-progress {
     display: none;
