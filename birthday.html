@@ -1,0 +1,3885 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="生日倒计时 · 庆庆纸博客">
+<title>生日倒计时 · 庆庆纸博客</title>
+<link rel="stylesheet" href="style.css?v=19">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+<script src="site-config.js"></script>
+<script>
+// 早期深色模式初始化：防止 FOUC
+// 优先级：用户手动选择 > 时间判断（夜间19-7点/日间） > 系统偏好
+(function() {
+    const saved = localStorage.getItem('theme');
+    const h = new Date().getHours();
+    const isNight = h >= 19 || h < 7;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && (isNight || prefersDark))) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+})();
+// 早期播放器位置初始化：防止收起按钮在默认位置闪烁
+(function() {
+    try {
+        const raw = localStorage.getItem('musicCollapsedPos');
+        if (raw) {
+            const pos = JSON.parse(raw);
+            if (typeof pos.x === 'number' && typeof pos.y === 'number') {
+                document.documentElement.style.setProperty('--mc-init-x', pos.x + 'px');
+                document.documentElement.style.setProperty('--mc-init-y', pos.y + 'px');
+            }
+        }
+    } catch(_) {}
+})();
+</script>
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        min-height: 100dvh;
+        padding: 24px;
+        background: transparent;
+    }
+    .bday-wrap {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        max-width: 640px;
+        width: 100%;
+        background: var(--glass-bg-strong);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--glass-shadow);
+        padding: 40px 28px;
+    }
+    .bday-cake {
+        font-size: 4rem;
+        margin-bottom: 8px;
+        line-height: 1;
+        animation: bday-bounce 2.4s ease-in-out infinite;
+    }
+    .bday-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--color-text);
+    }
+    .bday-sub {
+        color: var(--color-text-soft);
+        margin-bottom: 28px;
+        font-size: 0.95rem;
+    }
+    .bday-target { color: var(--color-accent); font-weight: 700; }
+    .countdown {
+        display: grid;
+        /* 改为 auto-fit 自适应，最小列宽 120px，确保高缩放下也能正常显示 */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+        margin-bottom: 26px;
+    }
+    .cd-unit {
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 18px 6px;
+        box-shadow: var(--glass-shadow);
+    }
+    .cd-num {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--color-accent);
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+    }
+    .cd-label {
+        font-size: 0.78rem;
+        color: var(--color-text-soft);
+        margin-top: 6px;
+    }
+    .bday-note {
+        color: var(--color-text-soft);
+        font-size: 0.88rem;
+        margin-bottom: 22px;
+        line-height: 1.7;
+    }
+    .bday-note a { color: var(--color-accent); text-decoration: none; }
+    .bday-note a:hover { text-decoration: underline; }
+    .bday-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .bday-actions .btn-bless {
+        flex: 1 1 0;
+        min-width: 0;
+        flex-direction: column;
+        gap: 6px;
+        white-space: normal;
+        text-wrap: balance;
+        line-height: 1.25;
+        padding: 12px 10px;
+        background: linear-gradient(145deg,
+                    #FFE8D4 0%,
+                    #FFD4B8 55%,
+                    #F5C8A0 100%);
+        color: var(--color-accent);
+        border: 1.5px solid rgba(230, 126, 82, 0.3);
+        box-shadow:
+                    0 4px 16px rgba(230, 126, 82, 0.18),
+                    0 0 10px rgba(255, 180, 140, 0.35),
+                    0 0 20px rgba(255, 200, 170, 0.22),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+    }
+    .bday-actions .btn-bless:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(145deg,
+                    #FFE0C8 0%,
+                    #FFCBA8 55%,
+                    #F0BC90 100%);
+        border-color: rgba(230, 126, 82, 0.45);
+        box-shadow:
+                    0 8px 24px rgba(230, 126, 82, 0.25),
+                    0 0 14px rgba(255, 180, 140, 0.55),
+                    0 0 28px rgba(255, 200, 170, 0.35),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    }
+    .bday-actions .btn-bless:active {
+        transform: scale(0.96);
+        background: linear-gradient(145deg,
+                    #FFD4B8 0%,
+                    #F5C8A0 55%,
+                    #E8B88C 100%);
+        box-shadow:
+                    0 1px 4px rgba(230, 126, 82, 0.15),
+                    0 0 6px rgba(255, 180, 140, 0.3),
+                    inset 0 2px 4px rgba(0, 0, 0, 0.08),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        transition-duration: 0.12s;
+    }
+    /* ========== 全屏特效 ========== */
+    .fx-fullscreen {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+        overflow: hidden;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    .fx-fullscreen.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .fx-fullscreen canvas#fwCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+    .fx-balloons, .fx-hearts, .fx-confetti {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    .fx-balloons .balloon {
+        position: absolute;
+        bottom: -120px;
+        width: clamp(30px, 5vw, 60px);
+        height: clamp(39px, 6.5vw, 78px);
+        border-radius: 50%;
+        animation: balloonRise linear forwards;
+        will-change: transform, opacity;
+    }
+    .fx-balloons .balloon::after {
+        content: '';
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        width: 2px;
+        height: 40px;
+        background: rgba(255,255,255,0.4);
+        transform: translateX(-50%);
+    }
+    .fx-balloons .balloon::before {
+        content: '';
+        position: absolute;
+        top: 15%;
+        left: 20%;
+        width: 24%;
+        height: 24%;
+        background: rgba(255,255,255,0.45);
+        border-radius: 50%;
+    }
+    @keyframes balloonRise {
+        0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+        10%  { opacity: 1; }
+        50%  { transform: translateY(-50vh) rotate(8deg); }
+        100% { transform: translateY(-120vh) rotate(-8deg); opacity: 0; }
+    }
+    .fx-hearts .heart {
+        position: absolute;
+        bottom: -40px;
+        font-size: clamp(1rem, 2vw, 2rem);
+        animation: heartRise ease-out forwards;
+        will-change: transform, opacity;
+    }
+    @keyframes heartRise {
+        0%   { transform: translateY(0) scale(0.3); opacity: 0; }
+        15%  { opacity: 1; }
+        50%  { transform: translateY(-55vh) scale(1.2); }
+        100% { transform: translateY(-110vh) scale(0.6); opacity: 0; }
+    }
+    .fx-confetti .confetti {
+        position: absolute;
+        top: -30px;
+        width: clamp(6px, 1vw, 12px);
+        height: clamp(8px, 1.4vw, 16px);
+        animation: confettiFall linear forwards;
+        will-change: transform, opacity;
+    }
+    @keyframes confettiFall {
+        0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+    .fx-wish-card {
+        position: relative;
+        z-index: 10;
+        width: min(90vw, 560px);
+        padding: clamp(24px, 4vw, 44px) clamp(20px, 4vw, 40px) clamp(22px, 3.5vw, 36px);
+        background: linear-gradient(145deg, #ffffff, #fdf2f8);
+        border-radius: clamp(16px, 2vw, 28px);
+        text-align: center;
+        box-shadow: 0 25px 60px rgba(245, 87, 108, 0.35), 0 0 80px rgba(240, 147, 251, 0.25);
+        border: 2px solid transparent;
+        background-clip: padding-box;
+        opacity: 0;
+        transform: scale(0.7) translateY(30px);
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .fx-fullscreen.active .fx-wish-card {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    .fx-wish-card::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: inherit;
+        background: linear-gradient(135deg, #f093fb, #f5576c, #ffa640, #f093fb);
+        background-size: 300% 300%;
+        z-index: -1;
+        animation: wishBorder 4s ease-in-out infinite;
+    }
+    @keyframes wishBorder {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    .fx-wish-label {
+        display: inline-block;
+        padding: 4px 16px;
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        color: #fff;
+        border-radius: 24px;
+        font-size: clamp(0.7rem, 1.8vw, 0.95rem);
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: clamp(10px, 1.8vw, 18px);
+        animation: wishPulse 2s ease-in-out infinite;
+    }
+    @keyframes wishPulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(240,147,251,0.5); }
+        50% { transform: scale(1.06); box-shadow: 0 0 20px 6px rgba(240,147,251,0.25); }
+    }
+    .fx-wish-text {
+        font-size: clamp(1rem, 2.2vw, 1.5rem);
+        font-weight: 600;
+        color: #3A3A3A;
+        line-height: 1.8;
+        margin-bottom: clamp(8px, 1.5vw, 14px);
+        word-break: break-word;
+    }
+    .fx-wish-sub {
+        font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+        color: #999;
+    }
+    .fx-wish-actions {
+        position: absolute;
+        right: clamp(16px, 2.5vw, 28px);
+        bottom: clamp(14px, 2vw, 22px);
+        display: flex;
+        gap: 8px;
+        z-index: 11;
+    }
+    .fx-wish-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.65);
+        color: #888;
+        cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow:
+            0 2px 8px rgba(58, 58, 58, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, color 0.18s ease;
+    }
+    .fx-wish-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.85);
+        color: var(--color-accent);
+        box-shadow:
+            0 4px 14px rgba(230, 126, 82, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+    .fx-wish-btn:active {
+        transform: scale(0.9);
+        box-shadow:
+            0 1px 4px rgba(58, 58, 58, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        transition-duration: 0.06s;
+    }
+    .fx-wish-btn i {
+        font-size: 0.85rem;
+        pointer-events: none;
+    }
+    .fx-wish-btn.copied {
+        color: #52c41a;
+        background: rgba(240, 253, 244, 0.85);
+    }
+    .fx-wish-btn.spinning i {
+        animation: wishSpin 0.5s linear infinite;
+    }
+    @keyframes wishSpin {
+        to { transform: rotate(360deg); }
+    }
+    .fx-close.btn-hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-120%);
+            pointer-events: none;
+        }
+        .fx-close {
+            position: absolute;
+            top: max(16px, env(safe-area-inset-top) + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: clamp(32px, 4vw, 40px);
+            height: clamp(32px, 4vw, 40px);
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%,
+                        rgba(255, 200, 155, 0.65) 0%,
+                        rgba(255, 238, 220, 0.95) 55%,
+                        rgba(255, 255, 255, 0.98) 100%);
+            border: 1.5px solid rgba(255, 210, 175, 0.7);
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            color: #666;
+            cursor: pointer;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.25s ease,
+                        opacity 0.25s ease,
+                        background 0.25s ease,
+                        box-shadow 0.25s ease,
+                        border-color 0.25s ease;
+            box-shadow: 0 2px 10px rgba(58, 58, 58, 0.12),
+                        0 0 10px rgba(255, 180, 140, 0.45),
+                        0 0 20px rgba(170, 210, 160, 0.3),
+                        inset 0 1px 1px rgba(255, 255, 255, 1);
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .fx-close:hover {
+            background: radial-gradient(circle at 35% 30%,
+                        rgba(255, 180, 140, 0.75) 0%,
+                        rgba(255, 230, 210, 0.95) 55%,
+                        rgba(255, 255, 255, 0.98) 100%);
+            border-color: rgba(255, 180, 140, 0.9);
+            color: #f5576c;
+            box-shadow: 0 4px 16px rgba(58, 58, 58, 0.18),
+                        0 0 14px rgba(255, 180, 140, 0.65),
+                        0 0 28px rgba(170, 210, 160, 0.45),
+                        inset 0 1px 1px rgba(255, 255, 255, 1);
+            transform: translateX(-50%) scale(1.12);
+        }
+        .fx-close:active {
+            transform: translateX(-50%) scale(0.88);
+            background: radial-gradient(circle at 35% 30%,
+                        rgba(255, 160, 120, 0.85) 0%,
+                        rgba(255, 215, 195, 0.95) 55%,
+                        rgba(255, 255, 255, 0.98) 100%);
+            box-shadow: 0 1px 4px rgba(58, 58, 58, 0.15),
+                        0 0 6px rgba(255, 180, 140, 0.4),
+                        0 0 12px rgba(170, 210, 160, 0.25),
+                        inset 0 2px 4px rgba(0, 0, 0, 0.12),
+                        inset 0 1px 1px rgba(255, 255, 255, 1);
+            transition-duration: 0.12s;
+        }
+        .fx-close::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                        rgba(255, 180, 140, 0.4) 0%,
+                        rgba(170, 210, 160, 0.25) 40%,
+                        transparent 70%);
+            opacity: 0;
+            z-index: -1;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .fx-close:hover::after {
+            opacity: 1;
+        }
+    /* 平板适配 */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .fx-wish-card {
+            width: min(80vw, 520px);
+        }
+    }
+    /* 手机适配 */
+    @media (max-width: 767px) {
+        .fx-wish-card {
+            width: 92vw;
+            max-height: 82vh;
+            overflow-y: auto;
+        }
+        .fx-close {
+            top: max(8px, env(safe-area-inset-top) + 4px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 36px;
+            height: 36px;
+        }
+    }
+    /* 小手机适配 */
+    @media (max-width: 380px) {
+        .fx-wish-card {
+            padding: 18px 14px 16px;
+            border-radius: 14px;
+        }
+        .fx-wish-text {
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+        .fx-wish-label {
+            font-size: 0.65rem;
+            padding: 2px 10px;
+            margin-bottom: 10px;
+        }
+        .fx-wish-sub {
+            font-size: 0.75rem;
+        }
+    }
+    @keyframes bday-bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    @media (max-width: 480px) {
+        body { padding: 12px; }
+        .bday-wrap { padding: 24px 16px; border-radius: 20px; }
+        .bday-cake { font-size: 3rem; }
+        .bday-title { font-size: 1.2rem; }
+        .bday-sub { font-size: 0.82rem; margin-bottom: 20px; }
+        .countdown { gap: 6px; margin-bottom: 18px; }
+        .cd-unit { padding: 10px 4px; border-radius: 12px; }
+        .cd-num { font-size: 1.5rem; }
+        .cd-label { font-size: 0.65rem; margin-top: 4px; }
+        .bday-note { font-size: 0.78rem; margin-bottom: 16px; line-height: 1.6; }
+        .bday-actions { gap: 8px; }
+        .bday-actions .btn-bless { padding: 10px 8px; font-size: 0.8rem; }
+    }
+    /* 播放器样式已迁移到 style.css */
+    .bday-theme-toggle {
+        margin: 0;
+        position: fixed !important;
+        top: 16px !important;
+        right: 16px !important;
+        transform: none !important;
+        z-index: 100000 !important;
+        cursor: pointer;
+        transition: transform 0.25s ease,
+                    opacity 0.25s ease,
+                    background 0.25s ease,
+                    box-shadow 0.25s ease;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+    .bday-theme-toggle svg {
+        pointer-events: none;
+    }
+    .bday-theme-toggle:hover {
+        transform: none !important;
+    }
+    .bday-theme-toggle:active {
+        transform: none !important;
+    }
+    .bday-theme-toggle.btn-hidden {
+        transform: translateY(-120%) !important;
+        opacity: 0;
+        pointer-events: none !important;
+    }
+    /* 祝福卡片内红包按钮 */
+    .wish-card-redpacket {
+        position: static;
+        margin: 0 auto 16px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 1px solid rgba(229, 62, 62, 0.3);
+        background: rgba(229, 62, 62, 0.1);
+        color: #e53e3e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 2;
+        transition: all 0.3s ease;
+        padding: 0;
+    }
+    .wish-card-redpacket:hover {
+        background: rgba(229, 62, 62, 0.2);
+        color: #c53030;
+        transform: scale(1.15) rotate(15deg);
+        box-shadow: 0 4px 16px rgba(229, 62, 62, 0.4);
+    }
+    .wish-card-redpacket:active {
+        transform: scale(0.92);
+        transition-duration: 0.08s;
+    }
+    .wish-card-redpacket i {
+        font-size: 1.1rem;
+    }
+    /* 红包祝福弹窗 */
+    .redpacket-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        z-index: 100000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        animation: rpFadeIn 0.3s ease;
+    }
+    .redpacket-modal.active {
+        display: flex;
+    }
+    @keyframes rpFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .redpacket-card {
+        position: relative;
+        background: #fff;
+        border-radius: 24px;
+        padding: 36px 32px 28px;
+        max-width: 480px;
+        width: 100%;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+        animation: rpSlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes rpSlideUp {
+        from { transform: translateY(30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    .redpacket-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        text-align: center;
+        color: #e53e3e;
+        margin-bottom: 6px;
+    }
+    .redpacket-desc {
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 24px;
+    }
+    .redpacket-qrcodes {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+    }
+    .qr-item {
+        text-align: center;
+        flex: 1;
+        max-width: 140px;
+    }
+    .qr-img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: contain;
+        border-radius: 16px;
+        background: #f7f7f7;
+        border: 2px solid #eee;
+        padding: 8px;
+        transition: transform 0.3s ease;
+    }
+    .qr-item:hover .qr-img {
+        transform: scale(1.04);
+    }
+    .qr-label {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .qr-label .fa-weixin { color: #07c160; }
+    .qr-label .fa-alipay { color: #1677ff; }
+    .qr-item {
+        cursor: pointer;
+    }
+    .qr-item:active .qr-img {
+        transform: scale(0.95);
+    }
+    /* 单张收款码下载按钮 —— 玻璃暖橙质感 */
+    .qr-download-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        margin: 10px auto 0;
+        padding: 6px 14px;
+        border: 1px solid rgba(230, 126, 82, 0.35);
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(230, 126, 82, 0.14), rgba(209, 106, 64, 0.06));
+        color: var(--color-accent);
+        font-size: 0.72rem;
+        font-weight: 600;
+        line-height: 1.2;
+        cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow:
+            0 2px 8px rgba(230, 126, 82, 0.14),
+            inset 0 1px 0 rgba(255, 255, 255, 0.45);
+        transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease, opacity 0.18s ease;
+    }
+    .qr-download-btn:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+        color: #fff;
+        border-color: transparent;
+        box-shadow:
+            0 6px 16px rgba(230, 126, 82, 0.36),
+            inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    }
+    .qr-download-btn:active {
+        transform: scale(0.94);
+        box-shadow: 0 2px 6px rgba(230, 126, 82, 0.22);
+        transition-duration: 0.06s;
+    }
+    .qr-download-btn.downloading {
+        opacity: 0.65;
+        pointer-events: none;
+    }
+    [data-theme="dark"] .qr-download-btn {
+        border-color: rgba(230, 126, 82, 0.4);
+        background: linear-gradient(135deg, rgba(230, 126, 82, 0.18), rgba(243, 156, 112, 0.08));
+        box-shadow:
+            0 2px 10px rgba(230, 126, 82, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+    [data-theme="dark"] .qr-download-btn:hover {
+        background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+        box-shadow:
+            0 6px 18px rgba(230, 126, 82, 0.45),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+    /* 扫码指引提示 */
+    .scan-tip {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 100001;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        animation: rpFadeIn 0.25s ease;
+    }
+    .scan-tip.active {
+        display: flex;
+    }
+    .scan-tip-content {
+        background: #fff;
+        border-radius: 20px;
+        padding: 32px 28px 24px;
+        max-width: 360px;
+        width: 100%;
+        text-align: center;
+        animation: rpSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .scan-tip-icon {
+        font-size: 2.5rem;
+        margin-bottom: 8px;
+    }
+    .scan-tip-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #e53e3e;
+        margin-bottom: 8px;
+    }
+    .scan-tip-desc {
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 16px;
+        line-height: 1.5;
+    }
+    .scan-tip-steps {
+        background: #f9f9f9;
+        border-radius: 12px;
+        padding: 14px 16px;
+        text-align: left;
+        margin-bottom: 20px;
+    }
+    .scan-tip-steps p {
+        margin: 0;
+        font-size: 0.82rem;
+        color: #555;
+        line-height: 1.8;
+    }
+    .scan-tip-steps #scanTipApp {
+        font-weight: 600;
+        color: #e53e3e;
+    }
+    .scan-tip-close {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .scan-tip-close:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(245, 87, 108, 0.4);
+    }
+    .scan-tip-close:active {
+        transform: scale(0.98);
+    }
+    .redpacket-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(0,0,0,0.08);
+        color: #666;
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    .redpacket-close:hover {
+        background: #e53e3e;
+        color: #fff;
+        transform: rotate(90deg);
+    }
+    /* 移动端适配 */
+    @media (max-width: 480px) {
+        .redpacket-card {
+            padding: 24px 18px 20px;
+            border-radius: 18px;
+            width: calc(100% - 32px);
+        }
+        .redpacket-title {
+            font-size: 1.1rem;
+        }
+        .redpacket-qrcodes {
+            gap: 8px;
+        }
+        .qr-item {
+            max-width: 90px;
+        }
+        .qr-item img {
+            width: 72px;
+            height: 72px;
+        }
+        .qr-label {
+            font-size: 0.65rem;
+            margin-top: 4px;
+        }
+        .qr-download-btn {
+            padding: 5px 11px;
+            font-size: 0.66rem;
+            margin-top: 7px;
+        }
+        .bday-theme-toggle {
+            position: fixed !important;
+            top: 12px !important;
+            right: 12px !important;
+            transform: none !important;
+            width: 32px;
+            height: 32px;
+            margin: 0;
+            background: radial-gradient(circle at 35% 30%,
+                        rgba(255, 200, 155, 0.65) 0%,
+                        rgba(255, 238, 220, 0.95) 55%,
+                        rgba(255, 255, 255, 0.98) 100%);
+            border: 1.5px solid rgba(255, 210, 175, 0.7);
+            box-shadow: 0 2px 10px rgba(58, 58, 58, 0.12),
+                        0 0 10px rgba(255, 180, 140, 0.45),
+                        0 0 20px rgba(170, 210, 160, 0.3),
+                        inset 0 1px 1px rgba(255, 255, 255, 1);
+            transition: transform 0.25s ease,
+                        opacity 0.25s ease,
+                        background 0.25s ease,
+                        box-shadow 0.25s ease;
+            -webkit-user-select: none;
+            user-select: none;
+            z-index: 100000 !important;
+        }
+        .bday-theme-toggle svg {
+            pointer-events: none;
+        }
+        .bday-theme-toggle:hover {
+            transform: none !important;
+            background: radial-gradient(circle at 35% 30%,
+                        rgba(255, 180, 140, 0.75) 0%,
+                        rgba(255, 230, 210, 0.95) 55%,
+                        rgba(255, 255, 255, 0.98) 100%);
+            border-color: rgba(255, 180, 140, 0.9);
+            box-shadow: 0 4px 14px rgba(58, 58, 58, 0.15),
+                        0 0 16px rgba(255, 160, 120, 0.55),
+                        0 0 30px rgba(170, 210, 160, 0.4),
+                        inset 0 1px 1px rgba(255, 255, 255, 1);
+        }
+        .bday-theme-toggle:active {
+            transform: none !important;
+        }
+        .bday-theme-toggle svg {
+            width: 15px;
+            height: 15px;
+        }
+        [data-theme="dark"] .bday-theme-toggle {
+            background: radial-gradient(circle at 35% 30%,
+                        rgba(130, 105, 170, 0.5) 0%,
+                        rgba(50, 45, 75, 0.95) 55%,
+                        rgba(28, 28, 48, 0.98) 100%);
+            border: 1.5px solid rgba(140, 120, 175, 0.35);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55),
+                        0 0 12px rgba(120, 100, 160, 0.4),
+                        0 0 24px rgba(70, 110, 120, 0.3),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.06);
+        }
+        [data-theme="dark"] .bday-theme-toggle:hover {
+            background: radial-gradient(circle at 35% 30%,
+                        rgba(150, 120, 190, 0.6) 0%,
+                        rgba(60, 55, 85, 0.95) 55%,
+                        rgba(32, 32, 55, 0.98) 100%);
+            border-color: rgba(160, 130, 195, 0.6);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55),
+                        0 0 16px rgba(130, 110, 175, 0.5),
+                        0 0 28px rgba(75, 120, 130, 0.35),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.08);
+        }
+        .bday-theme-toggle.btn-hidden {
+            transform: translateY(-120%) !important;
+            opacity: 0;
+            pointer-events: none !important;
+        }
+        .wish-card-redpacket {
+            width: 42px;
+            height: 42px;
+        }
+        .wish-card-redpacket i {
+            font-size: 0.95rem;
+        }
+    }
+    /* ========== 星座 · 四象查询 ========== */
+    .zodiac-wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 640px;
+        width: 100%;
+        background: var(--glass-bg-strong);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--glass-shadow);
+        padding: 28px 28px 30px;
+        text-align: center;
+    }
+    .zodiac-head {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 6px;
+    }
+    .zodiac-head-icon { font-size: 1.35rem; line-height: 1; }
+    .zodiac-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-text);
+        margin: 0;
+    }
+    .zodiac-desc {
+        color: var(--color-text-soft);
+        font-size: 0.88rem;
+        margin-bottom: 18px;
+    }
+    .zodiac-picker {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 22px;
+    }
+    .zodiac-field {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .zodiac-field-label {
+        color: var(--color-text-soft);
+        font-size: 0.9rem;
+    }
+    .zodiac-field select {
+        appearance: none;
+        -webkit-appearance: none;
+        padding: 8px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        background: var(--glass-bg);
+        color: var(--color-text);
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .zodiac-field select:focus {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px rgba(230, 126, 82, 0.18);
+    }
+    .zodiac-sep {
+        color: var(--color-text-faint);
+        font-weight: 700;
+    }
+    .zodiac-go {
+        padding: 8px 18px;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(145deg, #FFE8D4, #F5C8A0);
+        color: var(--color-accent);
+        font-size: 0.9rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(230, 126, 82, 0.25);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .zodiac-go:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(230, 126, 82, 0.35);
+    }
+    .zodiac-go:active { transform: scale(0.96); }
+    .zodiac-clear {
+        background: transparent;
+        color: var(--color-text-soft);
+        border: 1.5px solid var(--glass-border);
+        box-shadow: none;
+    }
+    .zodiac-clear:hover {
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+        background: rgba(230, 126, 82, 0.08);
+        box-shadow: none;
+        transform: translateY(-1px);
+    }
+    .zodiac-clear:active { transform: scale(0.96); }
+    .zodiac-result {
+        padding: 20px 16px;
+        border-radius: 16px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        margin-bottom: 20px;
+        animation: zrPop 0.35s ease;
+    }
+    @keyframes zrPop {
+        from { opacity: 0; transform: translateY(8px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .zr-icon {
+        font-size: 3rem;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+    .zr-name {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--color-text);
+        margin-bottom: 8px;
+    }
+    .zr-element { margin-bottom: 8px; }
+    .zr-ele-badge {
+        display: inline-block;
+        padding: 4px 16px;
+        border-radius: 999px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    }
+    .zr-ele-badge.fire  { background: linear-gradient(135deg, #ff7e5f, #feb47b); }
+    .zr-ele-badge.earth { background: linear-gradient(135deg, #9cc27e, #6d9a5c); }
+    .zr-ele-badge.air   { background: linear-gradient(135deg, #6fb1fc, #9fd8ff); }
+    .zr-ele-badge.water { background: linear-gradient(135deg, #4aa3e2, #7fd0f5); }
+    .zr-desc {
+        color: var(--color-text-soft);
+        font-size: 0.9rem;
+        line-height: 1.7;
+    }
+    .zodiac-legend {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .zl-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 10px 8px;
+        border-radius: 14px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+    }
+    .zl-ico { font-size: 1.2rem; line-height: 1; }
+    .zl-name { font-size: 0.95rem; font-weight: 700; color: var(--color-text); }
+    .zl-signs { font-size: 0.72rem; color: var(--color-text-soft); }
+    @media (max-width: 480px) {
+        .zodiac-wrap { padding: 20px 16px 22px; border-radius: 20px; }
+        .zodiac-title { font-size: 1.05rem; }
+        .zodiac-desc { font-size: 0.8rem; margin-bottom: 14px; }
+        .zodiac-picker { gap: 8px; margin-bottom: 16px; }
+        .zodiac-field select { padding: 7px 10px; font-size: 0.88rem; }
+        .zr-icon { font-size: 2.4rem; }
+        .zr-name { font-size: 1.2rem; }
+        .zodiac-result { padding: 16px 12px; }
+        .zodiac-legend { gap: 8px; }
+        .zl-signs { font-size: 0.65rem; }
+        .zl-item { padding: 8px 6px; }
+    }
+</style>
+</head>
+<body>
+<!-- 全局彩色渐变背景层 -->
+<div class="bg-gradient-layer">
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+    <div class="sparkle"></div>
+</div>
+
+<!-- 顶部居中操作按钮 -->
+<button class="theme-toggle bday-theme-toggle" id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+<main class="bday-wrap">
+    <div class="bday-cake">🎂</div>
+    <h1 class="bday-title" id="bdayTitle">距离庆庆纸的生日还有</h1>
+    <div class="countdown" id="countdown">
+        <div class="cd-unit"><div class="cd-num" id="cdDays">--</div><div class="cd-label">天</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cdHours">--</div><div class="cd-label">时</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cdMins">--</div><div class="cd-label">分</div></div>
+        <div class="cd-unit"><div class="cd-num" id="cdSecs">--</div><div class="cd-label">
+        </div></div>
+    </div>
+    <p class="bday-sub" id="bdaySub">目标日期：<span class="bday-target" id="targetDate">--</span></p>
+    <p class="bday-note" id="bdayNote">--</p>
+    <div class="bday-actions">
+        <a href="index.html#birthdayCard" class="btn btn-bless"><i class="fa-solid fa-user"></i>关于我</a>
+        <button class="btn btn-bless" id="birthdayBlessBtn">
+            <i class="fa-solid fa-gift"></i>提前送祝福
+        </button>
+        <a href="index.html#social" class="btn btn-bless"><i class="fa-solid fa-comment-dots"></i>联系我</a>
+    </div>
+</main>
+<!-- 星座 · 四象查询 -->
+<section class="zodiac-wrap" id="zodiacSection">
+    <div class="zodiac-head">
+        <span class="zodiac-head-icon">⭐</span>
+        <h2 class="zodiac-title">星座 · 四象查询</h2>
+    </div>
+    <p class="zodiac-desc">选一个日期，看看你属于哪个星座、哪个「象」～</p>
+    <div class="zodiac-picker">
+        <label class="zodiac-field">
+            <span class="zodiac-field-label">月</span>
+            <select id="zMonth" aria-label="选择月份"></select>
+        </label>
+        <span class="zodiac-sep">/</span>
+        <label class="zodiac-field">
+            <span class="zodiac-field-label">日</span>
+            <select id="zDay" aria-label="选择日期"></select>
+        </label>
+        <button type="button" class="zodiac-go" id="zodiacGo"><i class="fa-solid fa-magnifying-glass"></i>&nbsp; 查看</button>
+        <button type="button" class="zodiac-go zodiac-clear" id="zodiacClear"><i class="fa-solid fa-broom"></i>&nbsp; 清理缓存</button>
+    </div>
+    <div class="zodiac-result" id="zodiacResult">
+        <div class="zr-icon" id="zrIcon">♌</div>
+        <div class="zr-name" id="zrName">狮子座</div>
+        <div class="zr-element"><span class="zr-ele-badge fire" id="zrBadge">🔥 火象</span></div>
+        <p class="zr-desc" id="zrDesc"></p>
+    </div>
+    <div class="zodiac-legend">
+        <div class="zl-item"><span class="zl-ico">🔥</span><span class="zl-name">火象</span><span class="zl-signs">白羊 · 狮子 · 射手</span></div>
+        <div class="zl-item"><span class="zl-ico">🌍</span><span class="zl-name">土象</span><span class="zl-signs">金牛 · 处女 · 摩羯</span></div>
+        <div class="zl-item"><span class="zl-ico">🌬️</span><span class="zl-name">风象</span><span class="zl-signs">双子 · 天秤 · 水瓶</span></div>
+        <div class="zl-item"><span class="zl-ico">💧</span><span class="zl-name">水象</span><span class="zl-signs">巨蟹 · 天蝎 · 双鱼</span></div>
+    </div>
+</section>
+<script>
+(function () {
+    'use strict';
+    var BIRTH = window.SITE_BIRTH && window.SITE_BIRTH.BIRTHDAY;
+    var $ = function (id) { return document.getElementById(id); };
+    var zMonth = $('zMonth'), zDay = $('zDay'), goBtn = $('zodiacGo'), clearBtn = $('zodiacClear');
+    var zrResult = $('zodiacResult');
+    var LAST_KEY = 'zodiacLastQuery';
+    if (!zMonth || !zDay) return;
+
+    var ZODIAC = [
+        { name: '摩羯座', icon: '♑', from: [12, 22], to: [1, 19] },
+        { name: '水瓶座', icon: '♒', from: [1, 20], to: [2, 18] },
+        { name: '双鱼座', icon: '♓', from: [2, 19], to: [3, 20] },
+        { name: '白羊座', icon: '♈', from: [3, 21], to: [4, 19] },
+        { name: '金牛座', icon: '♉', from: [4, 20], to: [5, 20] },
+        { name: '双子座', icon: '♊', from: [5, 21], to: [6, 21] },
+        { name: '巨蟹座', icon: '♋', from: [6, 22], to: [7, 22] },
+        { name: '狮子座', icon: '♌', from: [7, 23], to: [8, 22] },
+        { name: '处女座', icon: '♍', from: [8, 23], to: [9, 22] },
+        { name: '天秤座', icon: '♎', from: [9, 23], to: [10, 23] },
+        { name: '天蝎座', icon: '♏', from: [10, 24], to: [11, 22] },
+        { name: '射手座', icon: '♐', from: [11, 23], to: [12, 21] }
+    ];
+    var ELEMENTS = {
+        fire:  { name: '火象', ico: '🔥', cls: 'fire',  signs: ['白羊座', '狮子座', '射手座'], desc: '热情、自信、行动力强，天生自带光芒，敢想敢做！' },
+        earth: { name: '土象', ico: '🌍', cls: 'earth', signs: ['金牛座', '处女座', '摩羯座'], desc: '务实、稳重、有耐心，脚踏实地，是最值得信赖的人！' },
+        air:   { name: '风象', ico: '🌬️', cls: 'air',   signs: ['双子座', '天秤座', '水瓶座'], desc: '聪慧、善沟通、爱思考，思维灵动，天生的社交达人！' },
+        water: { name: '水象', ico: '💧', cls: 'water', signs: ['巨蟹座', '天蝎座', '双鱼座'], desc: '感性、细腻、直觉敏锐，温柔体贴，极富同理心！' }
+    };
+    var SIGN_ELE = {};
+    Object.keys(ELEMENTS).forEach(function (k) {
+        ELEMENTS[k].signs.forEach(function (s) { SIGN_ELE[s] = k; });
+    });
+
+    // 2024 为闰年，使 2 月可选到 29 日
+    function daysInMonth(m) { return new Date(2024, m, 0).getDate(); }
+
+    function getZodiac(month, day) {
+        for (var i = 0; i < ZODIAC.length; i++) {
+            var z = ZODIAC[i], fm = z.from[0], fd = z.from[1], tm = z.to[0], td = z.to[1];
+            if (fm === tm) { if (month === fm && day >= fd && day <= td) return z; }
+            else { if ((month === fm && day >= fd) || (month === tm && day <= td)) return z; }
+        }
+        return ZODIAC[0];
+    }
+
+    // 填充月份选项
+    for (var m = 1; m <= 12; m++) {
+        var opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m + ' 月';
+        zMonth.appendChild(opt);
+    }
+
+    function renderDays(selectedDay) {
+        zDay.innerHTML = '';
+        var m = parseInt(zMonth.value, 10);
+        var days = daysInMonth(m);
+        if (selectedDay > days) selectedDay = days;
+        for (var d = 1; d <= days; d++) {
+            var o = document.createElement('option');
+            o.value = d;
+            o.textContent = d + ' 日';
+            if (d === selectedDay) o.selected = true;
+            zDay.appendChild(o);
+        }
+    }
+
+    function updateResult() {
+        var m = parseInt(zMonth.value, 10), d = parseInt(zDay.value, 10);
+        var z = getZodiac(m, d);
+        var eleKey = SIGN_ELE[z.name];
+        var ele = ELEMENTS[eleKey];
+        $('zrIcon').textContent = z.icon;
+        $('zrName').textContent = z.name;
+        var badge = $('zrBadge');
+        badge.className = 'zr-ele-badge ' + ele.cls;
+        badge.textContent = ele.ico + ' ' + ele.name;
+        $('zrDesc').textContent = ele.desc + '（' + z.name + ' 属于 ' + ele.name + '）';
+        // 重新触发弹入动画，让每次查询都有反馈
+        zrResult.style.animation = 'none';
+        void zrResult.offsetWidth;
+        zrResult.style.animation = '';
+    }
+
+    // 选择日期后不直接出结果，需点击「查看」才会更新
+    zMonth.addEventListener('change', function () {
+        var keep = parseInt(zDay.value, 10) || 1;
+        renderDays(keep);
+    });
+    zDay.addEventListener('change', function () {});
+    // 有缓存时显示「清理缓存」按钮，无缓存时隐藏
+    function updateClearBtnVisibility() {
+        if (!clearBtn) return;
+        var hasCache = false;
+        try { hasCache = !!localStorage.getItem(LAST_KEY); } catch (_) {}
+        clearBtn.style.display = hasCache ? '' : 'none';
+    }
+
+    if (goBtn) goBtn.addEventListener('click', function () {
+        updateResult();
+        // 记住本次查询的日期，下次进入恢复显示
+        try {
+            localStorage.setItem(LAST_KEY, JSON.stringify({
+                m: parseInt(zMonth.value, 10),
+                d: parseInt(zDay.value, 10)
+            }));
+        } catch (_) {}
+        updateClearBtnVisibility();
+    });
+
+    // 清理缓存：清除记录，恢复默认的生日日期
+    if (clearBtn) clearBtn.addEventListener('click', function () {
+        try { localStorage.removeItem(LAST_KEY); } catch (_) {}
+        var defM = BIRTH ? BIRTH.month : 8;
+        var defD = BIRTH ? BIRTH.day : 6;
+        zMonth.value = String(defM);
+        renderDays(defD);
+        updateResult();
+        updateClearBtnVisibility();
+        // 短暂反馈
+        clearBtn.innerHTML = '<i class="fa-solid fa-check"></i>&nbsp; 已清理';
+        clearTimeout(clearBtn._t);
+        clearBtn._t = setTimeout(function () {
+            clearBtn.innerHTML = '<i class="fa-solid fa-broom"></i>&nbsp; 清理缓存';
+        }, 1500);
+    });
+
+    // 初始化：首次进入默认展示我的生日；再次进入恢复上次查询的日期
+    var defM = BIRTH ? BIRTH.month : 8;
+    var defD = BIRTH ? BIRTH.day : 6;
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(LAST_KEY) || 'null'); } catch (_) {}
+    if (saved && saved.m >= 1 && saved.m <= 12 && saved.d >= 1 && saved.d <= 31) {
+        defM = saved.m;
+        defD = saved.d;
+    }
+    zMonth.value = String(defM);
+    renderDays(defD);
+    updateResult();
+    updateClearBtnVisibility();
+})();
+</script>
+<!-- 全屏特效层（放在 body 顶层，脱离 .bday-wrap 容器限制） -->
+<div class="fx-fullscreen" id="fxFullscreen">
+    <canvas id="fwCanvas"></canvas>
+    <div class="fx-balloons" id="fxBalloons"></div>
+    <div class="fx-hearts" id="fxHearts"></div>
+    <div class="fx-confetti" id="fxConfetti"></div>
+    <div class="fx-wish-card" id="fxWishCard">
+        <button class="wish-card-redpacket" id="redpacketBtn" aria-label="红包祝福" title="红包祝福">
+            <i class="fa-solid fa-envelope-open-text"></i>
+        </button>
+        <div class="fx-wish-label" id="fxWishLabel">🎂 庆庆纸生日快乐 🎂</div>
+        <div class="fx-wish-text" id="fxWishText"></div>
+        <div class="fx-wish-sub" id="fxWishSub"></div>
+        <div class="fx-wish-actions">
+            <button class="fx-wish-btn" id="wishCopyBtn" aria-label="复制祝福" title="复制祝福">
+                <i class="fa-regular fa-copy"></i>
+            </button>
+            <button class="fx-wish-btn" id="wishRefreshBtn" aria-label="换一条祝福" title="换一条祝福">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+    </div>
+    <button class="fx-close" id="fxClose" title="关闭">✕</button>
+</div>
+<!-- 红包祝福弹窗 -->
+<div class="redpacket-modal" id="redpacketModal">
+    <div class="redpacket-card">
+        <h2 class="redpacket-title">🧧 红包祝福 🧧</h2>
+        <p class="redpacket-desc">感谢你的祝福，扫描下方二维码即可送出红包～</p>
+        <div class="redpacket-qrcodes">
+            <div class="qr-item" data-app="微信">
+                <img src="images/redpacket/wechat-pay.png" alt="微信收款码" class="qr-img" data-tip="长按保存图片 → 打开微信「扫一扫」→ 从相册选择图片付款">
+                <p class="qr-label"><i class="fa-brands fa-weixin"></i> 微信收款</p>
+                <button class="qr-download-btn" type="button"><i class="fa-solid fa-download"></i> 下载图片</button>
+            </div>
+            <div class="qr-item" data-app="微信">
+                <img src="images/redpacket/wechat-reward.png" alt="微信赞赏码" class="qr-img" data-tip="长按保存图片 → 打开微信「扫一扫」→ 从相册选择图片赞赏">
+                <p class="qr-label"><i class="fa-solid fa-gift"></i> 微信赞赏</p>
+                <button class="qr-download-btn" type="button"><i class="fa-solid fa-download"></i> 下载图片</button>
+            </div>
+            <div class="qr-item" data-app="支付宝">
+                <img src="images/redpacket/alipay-pay.jpg" alt="支付宝收款码" class="qr-img" data-tip="长按保存图片 → 打开支付宝「扫一扫」→ 从相册选择图片付款">
+                <p class="qr-label"><i class="fa-brands fa-alipay"></i> 支付宝收款</p>
+                <button class="qr-download-btn" type="button"><i class="fa-solid fa-download"></i> 下载图片</button>
+            </div>
+        </div>
+        <button class="redpacket-close" id="redpacketClose" title="关闭">✕</button>
+    </div>
+</div>
+<!-- 扫码指引提示 -->
+<div class="scan-tip" id="scanTip">
+    <div class="scan-tip-content">
+        <div class="scan-tip-icon">📱</div>
+        <div class="scan-tip-title" id="scanTipTitle">操作指引</div>
+        <div class="scan-tip-desc" id="scanTipDesc"></div>
+        <div class="scan-tip-steps">
+            <p>1. 长按上方二维码保存到相册</p>
+            <p>2. 打开 <span id="scanTipApp">微信</span> App</p>
+            <p>3. 点击「扫一扫」→ 选择「从相册选取二维码」</p>
+        </div>
+        <button class="scan-tip-close" id="scanTipClose">知道了</button>
+    </div>
+</div>
+<!-- 预加载本地音乐 -->
+<audio id="bgMusicPreload" preload="auto" src="music/生日快乐.mp3"></audio>
+<audio id="bgMusicPreloadEn" preload="auto" src="music/生日快乐(英文版)_库库小队_.mp3"></audio>
+<!-- 音乐播放器 -->
+<div class="music-player collapsed" id="musicPlayer">
+    <!-- 展开态：圆角"长方体"卡片 — 上半大圆盘唱片，下半控制区 -->
+    <div class="music-player-expanded">
+        <!-- 收起按钮（顶部居中） -->
+        <button class="music-collapse-btn" id="musicCollapseBtn" aria-label="收起播放器">
+            <i class="fa-solid fa-chevron-down"></i>
+        </button>
+
+        <!-- 上部：居中大圆盘封面（圆形播放器视觉主体） — 毛玻璃+光斑+内嵌封面 -->
+        <div class="music-disc-wrap">
+            <div class="music-disc" id="musicCover">
+                <img class="disc-icon" src="images/icon/QQ%20Music.png" alt="QQ Music" />
+            </div>
+            <!-- 唱片下方歌名/歌手（居中显示，在圆盘与控制区之间） -->
+            <div class="music-disc-info">
+                <div class="music-title" id="musicTitle">加载中...</div>
+                <div class="music-artist" id="musicArtist">-</div>
+            </div>
+        </div>
+
+        <!-- 下部：控制功能区（进度条+时间在下方 + 按钮组 + 目录入口） -->
+        <div class="music-control-panel">
+            <div class="music-progress-wrapper">
+                <div class="music-progress" id="musicProgress">
+                    <div class="music-progress-bar" id="musicProgressBar"></div>
+                </div>
+                <div class="music-time-row">
+                    <span class="music-time music-cur-time" id="musicCurTime">0:00</span>
+                    <span class="music-time music-rem-time" id="musicRemTime">0:00</span>
+                </div>
+            </div>
+            <div class="music-controls">
+                <button class="music-btn music-loop-btn" id="musicLoop" aria-label="播放模式：顺序播放" title="播放模式：顺序播放">
+                    <i class="fa-solid fa-repeat"></i>
+                </button>
+                <button class="music-btn" id="musicPrev" aria-label="上一首">
+                    <i class="fa-solid fa-backward-step"></i>
+                </button>
+                <button class="music-btn music-play-btn" id="musicPlay" aria-label="播放/暂停">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+                <button class="music-btn" id="musicNext" aria-label="下一首">
+                    <i class="fa-solid fa-forward-step"></i>
+                </button>
+                <button class="music-btn" id="musicList" aria-label="音乐目录">
+                    <i class="fa-solid fa-list-ul"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 音乐目录抽屉 -->
+        <div class="music-playlist" id="musicPlaylist">
+            <div class="music-playlist-header">
+                <span>音乐目录</span>
+            </div>
+            <div class="music-playlist-list" id="musicPlaylistList"></div>
+            <div class="music-playlist-empty" id="musicPlaylistEmpty" style="display:none;">
+                暂无歌曲
+            </div>
+        </div>
+    </div>
+
+    <!-- 收起态：一个小圆形按钮（贴边悬浮） — 毛玻璃+光斑 -->
+    <button class="music-player-collapsed" id="musicCollapsed" aria-label="展开播放器">
+        <div class="mc-disc" id="musicCollapsedCover">
+            <img class="disc-icon" src="images/icon/QQ%20Music.png" alt="QQ Music" />
+        </div>
+    </button>
+</div>
+<audio id="bgAudio" preload="auto"></audio>
+<script>
+(function () {
+    'use strict';
+    const SB = window.SITE_BIRTH;
+    const $ = (id) => document.getElementById(id);
+    if (!SB) {
+        const n = $('bdayNote');
+        if (n) n.textContent = '配置加载失败，请刷新重试。';
+        return;
+    }
+
+    const isToday = SB.isBirthdayToday();
+    const target = SB.nextBirthday();
+    const z = SB.getZodiacInfo();
+
+    if (isToday) {
+        const age = SB.getAge();
+        $('bdayTitle').textContent = '今天是我的生日 🎉';
+        $('bdaySub').innerHTML = SB.formatBirthDate() + '出生 · 今天已经' + age + '岁啦～';
+        $('countdown').style.display = 'none';
+    } else {
+        $('targetDate').textContent = target.getFullYear() + ' 年 ' + SB.BIRTHDAY.month + ' 月 ' + SB.BIRTHDAY.day + ' 日 00:00';
+    }
+
+    $('bdayNote').innerHTML = '我的出生日期是 <strong>' + SB.formatBirthDate() + '</strong>（' + z.icon + ' ' + z.name + '）。每年8月6日这天，<a href="index.html#about">庆庆纸</a> 又长大一岁啦～';
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+        if (isToday) {
+            ['cdDays', 'cdHours', 'cdMins', 'cdSecs'].forEach(id => $(id).textContent = '00');
+            return;
+        }
+        const now = new Date();
+        let diff = Math.max(0, target.getTime() - now.getTime());
+        const d = Math.floor(diff / 86400000); diff -= d * 86400000;
+        const h = Math.floor(diff / 3600000); diff -= h * 3600000;
+        const m = Math.floor(diff / 60000); diff -= m * 60000;
+        const s = Math.floor(diff / 1000);
+        $('cdDays').textContent = d;
+        $('cdHours').textContent = pad(h);
+        $('cdMins').textContent = pad(m);
+        $('cdSecs').textContent = pad(s);
+    }
+    tick();
+    setInterval(tick, 1000);
+    
+    // 深色模式切换逻辑
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    
+    function updateThemeIcon(isDark) {
+      if (isDark) {
+        themeToggle?.setAttribute('aria-label', '切换日间模式');
+        themeToggle?.setAttribute('title', '切换日间模式');
+      } else {
+        themeToggle?.setAttribute('aria-label', '切换夜间模式');
+        themeToggle?.setAttribute('title', '切换夜间模式');
+      }
+    }
+    
+    function applyDarkMode(isDark) {
+      if (isDark) {
+        html.setAttribute('data-theme', 'dark');
+        themeToggle?.classList.add('dark');
+      } else {
+        html.removeAttribute('data-theme');
+        themeToggle?.classList.remove('dark');
+      }
+      updateThemeIcon(isDark);
+    }
+    
+    // 初始化
+    // 优先级：用户手动选择 > 时间判断（夜间19-7点/日间） > 系统偏好
+    const saved = localStorage.getItem('theme');
+    const h = new Date().getHours();
+    const isNight = h >= 19 || h < 7;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyDarkMode(saved === 'dark' || (!saved && (isNight || prefersDark)));
+    
+    // 切换事件
+    themeToggle?.addEventListener('click', () => {
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const newIsDark = !isDark;
+      applyDarkMode(newIsDark);
+      localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
+    });
+    
+    // 进入页面自动隐藏主题切换按钮，鼠标移动/触摸时短暂显示
+    themeToggle?.classList.add('btn-hidden');
+    let hideTimer = null;
+    function showThemeToggle() {
+      themeToggle?.classList.remove('btn-hidden');
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        themeToggle?.classList.add('btn-hidden');
+      }, 1000);
+    }
+    document.addEventListener('mousemove', showThemeToggle, { passive: true });
+    document.addEventListener('touchstart', showThemeToggle, { passive: true });
+    
+    // 向下滚动自动隐藏按钮，向上滚动显示
+    let lastScrollY = 0;
+    window.addEventListener('scroll', () => {
+      const st = window.scrollY || document.documentElement.scrollTop;
+      const delta = st - lastScrollY;
+      if (delta > 5 && st > 60) {
+        themeToggle?.classList.add('btn-hidden');
+      } else if (delta < -5) {
+        showThemeToggle();
+      }
+      lastScrollY = st;
+    }, { passive: true });
+
+    // ========== 全屏特效：提前送祝福 ==========
+    const blessBtn = document.getElementById('birthdayBlessBtn');
+    const fxScreen = document.getElementById('fxFullscreen');
+    const fwCanvas = document.getElementById('fwCanvas');
+    const fxBalloons = document.getElementById('fxBalloons');
+    const fxHearts = document.getElementById('fxHearts');
+    const fxConfetti = document.getElementById('fxConfetti');
+    const fxWishText = document.getElementById('fxWishText');
+    const fxWishSub = document.getElementById('fxWishSub');
+    const fxClose = document.getElementById('fxClose');
+
+    // 预加载语音合成声音（Chrome 需要异步加载）
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+            window.speechSynthesis.getVoices();
+        };
+    }
+
+    const wishes = [
+        { text: '🎂 愿所有的快乐，都藏在你今年的每一天里！', sub: '生日快乐，庆庆纸～' },
+        { text: '🎈 愿你的2026，星光璀璨，万事顺意！', sub: '梦想照进现实' },
+        { text: '🎁 愿你被世界温柔以待，愿每一天都充满惊喜！', sub: '愿好运常伴左右' },
+        { text: '🌟 愿你眼里有光，心中有梦，步履不停！', sub: '向着光亮那方前行' },
+        { text: '🍰 愿时光善待你，愿岁月不负你！生日快乐！', sub: '又是一年好时光' },
+        { text: '💐 愿所有美好如期而至，愿你的生活如诗如画！', sub: '岁月静好' },
+        { text: '🎉 愿你所期皆所愿，所遇皆良人，所求皆如愿！', sub: '平安喜乐' },
+        { text: '🎂 愿你永远被爱，永远幸福，永远年轻！', sub: '时光不老，我们不散' },
+        { text: '🌈 愿你的生活像彩虹一样绚丽多姿！', sub: '每一天都值得纪念' },
+        { text: '✨ 愿你闪闪发光，做最独一无二的自己！', sub: '你就是最棒的' },
+        { text: '🎊 愿所有的好运，都恰逢其时！', sub: '幸福敲门' },
+        { text: '💖 愿你被这个世界温柔地爱着！', sub: '永远有人爱你' },
+        { text: '🌸 愿你如春日繁花，绚烂而不张扬！', sub: '温柔且坚定' },
+        { text: '🚀 愿你乘风破浪，驶向星辰大海！', sub: '未来可期' },
+        { text: '☕ 愿你的生活有咖啡、有书香、有挚友！', sub: '知足常乐' }
+    ];
+
+    // ========== 音乐播放器 ==========
+    let bgMusicPlaying = false;
+    let bgMusicAudio = null;
+    let scheduledOscillators = [];
+    // 当前整首音频的 Blob URL（切歌时释放）。
+    // 背景：HSK 静态托管不支持 Range 请求，<audio> 拖动 seek 到未缓冲区域时浏览器会
+    // 重新从头下载（表现为"从零播放"）。对策：把整首 mp3 拉取为 Blob 再播放，
+    // seek 完全走本地数据，不再依赖服务器 Range 支持。
+    let bdayAudioUrl = null;
+    const mp = {
+        player: document.getElementById('musicPlayer'),
+        expanded: document.querySelector('.music-player-expanded'),
+        audio: document.getElementById('bgAudio'),
+        playBtn: document.getElementById('musicPlay'),
+        prevBtn: document.getElementById('musicPrev'),
+        nextBtn: document.getElementById('musicNext'),
+        loopBtn: document.getElementById('musicLoop'),
+        listBtn: document.getElementById('musicList'),
+        collapseBtn: document.getElementById('musicCollapseBtn'),
+        collapsedBtn: document.getElementById('musicCollapsed'),
+        titleEl: document.getElementById('musicTitle'),
+        artistEl: document.getElementById('musicArtist'),
+        curTimeEl: document.getElementById('musicCurTime'),
+        remTimeEl: document.getElementById('musicRemTime'),
+        countdownEl: document.getElementById('musicCollapseCountdown'),
+        progress: document.getElementById('musicProgress'),
+        progressBar: document.getElementById('musicProgressBar'),
+        playlistList: document.getElementById('musicPlaylistList'),
+        playlistEmpty: document.getElementById('musicPlaylistEmpty'),
+        playlist: document.getElementById('musicPlaylist'),
+        cover: document.getElementById('musicCover'),
+        isPlaying: false,
+        isMuted: false,
+        isLoop: false,
+        playlist: [],
+        currentIndex: -1,
+        isCollapsed: true
+    };
+
+    mp.renderList = function() {
+        mp.playlistList.innerHTML = '';
+        if (mp.playlist.length === 0) {
+            mp.playlistEmpty.style.display = 'block';
+            return;
+        }
+        mp.playlistEmpty.style.display = 'none';
+        mp.playlist.forEach((track, i) => {
+            const item = document.createElement('div');
+            item.className = 'music-playlist-item' + (i === mp.currentIndex ? ' active' : '');
+            item.innerHTML = `
+                <span class="item-index">${i + 1}</span>
+                <span class="item-title">${track.name}</span>
+                ${i === mp.currentIndex && mp.isPlaying ? '<span class="item-playing-icon"><i class="fa-solid fa-compact-disc"></i></span>' : ''}
+            `;
+            item.onclick = async () => { await mp.loadTrack(i); mp.play(); };
+            mp.playlistList.appendChild(item);
+        });
+    };
+
+    mp.loadTrack = async function(index) {
+        if (index < 0 || index >= mp.playlist.length) return;
+        mp.currentIndex = index;
+        const track = mp.playlist[index];
+        mp.titleEl.textContent = track.name;
+        mp.artistEl.textContent = track.artist || '生日祝福';
+        // 释放上一首的 Blob URL
+        if (bdayAudioUrl) { URL.revokeObjectURL(bdayAudioUrl); bdayAudioUrl = null; }
+        // 整首缓冲为 Blob 再播放，规避不支持 Range 的静态托管（HSK）导致拖动 seek 归零；
+        // 拉取失败时回退到直接 URL（本地仍可正常拖动）。
+        let nextSrc = track.url;
+        try {
+            const resp = await fetch(track.url, { cache: 'force-cache' });
+            if (resp.ok) {
+                const blob = await resp.blob();
+                bdayAudioUrl = URL.createObjectURL(blob);
+                nextSrc = bdayAudioUrl;
+            }
+        } catch (err) { /* 回退直接 src */ }
+        mp.audio.src = nextSrc;
+        mp.renderList();
+    };
+
+    mp.play = async function() {
+        if (mp.currentIndex < 0) await mp.loadTrack(0);
+        try {
+            await mp.audio.play();
+            mp.isPlaying = true;
+            mp.updatePlayIcon();
+        } catch (err) { console.warn('Play failed:', err); }
+    };
+
+    mp.pause = function() {
+        if (mp._fxAudio) {
+            mp._fxAudio.pause();
+        } else {
+            mp.audio.pause();
+        }
+        mp.isPlaying = false;
+        mp.updatePlayIcon();
+    };
+
+    mp.toggle = function() {
+        if (mp.isPlaying) mp.pause();
+        else mp.play();
+    };
+
+    mp.prev = async function() {
+        mp._fxAudio = null;
+        let idx = mp.currentIndex - 1;
+        if (idx < 0) idx = mp.playlist.length - 1;
+        await mp.loadTrack(idx);
+        mp.play();
+    };
+
+    mp.next = async function() {
+        mp._fxAudio = null;
+        let idx = mp.currentIndex + 1;
+        if (idx >= mp.playlist.length) idx = 0;
+        await mp.loadTrack(idx);
+        mp.play();
+    };
+
+    mp.updatePlayIcon = function() {
+        const icon = mp.playBtn.querySelector('i');
+        icon.className = mp.isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+    };
+
+    mp.formatTime = function(sec) {
+        if (isNaN(sec)) return '0:00';
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
+    let collapseTimer = null;
+    const COLLAPSE_DELAY = 5000;
+    let countdownWarnTimer = null;
+    let countdownEndTimer = null;
+
+    function startCountdownAnimation() {
+      if (!mp.countdownEl || mp.player.classList.contains('collapsed')) return;
+      mp.countdownEl.classList.remove('is-warning');
+      mp.countdownEl.classList.remove('is-counting');
+      void mp.countdownEl.offsetWidth;
+      mp.countdownEl.classList.add('is-counting');
+      clearTimeout(countdownWarnTimer);
+      countdownWarnTimer = setTimeout(() => {
+        if (!mp.player.classList.contains('collapsed') && mp.countdownEl) {
+          mp.countdownEl.classList.add('is-warning');
+        }
+      }, 3000);
+    }
+
+    function stopCountdownAnimation() {
+      if (!mp.countdownEl) return;
+      mp.countdownEl.classList.remove('is-counting', 'is-warning');
+      clearTimeout(countdownWarnTimer);
+    }
+
+    function collapse() {
+      // 停止倒计时动画
+      stopCountdownAnimation();
+
+      const expanded = mp.player.querySelector('.music-player-expanded');
+      if (!expanded) { mp.player.classList.add('collapsed'); return; }
+
+      const expandedRect = expanded.getBoundingClientRect();
+      const collapsedRect = mp.collapsedBtn.getBoundingClientRect();
+      const originX = collapsedRect.left + collapsedRect.width / 2 - expandedRect.left;
+      const originY = collapsedRect.top + collapsedRect.height / 2 - expandedRect.top;
+
+      expanded.style.transformOrigin = originX + 'px ' + originY + 'px';
+      expanded.style.removeProperty('transform');
+
+      try { localStorage.removeItem('birthdayMusicExpandedPos'); } catch (_) {}
+
+      mp.player.classList.add('collapsed');
+      mp.player.classList.remove('show-playlist');
+      mp.listBtn.classList.remove('active-toggle');
+      mp.isCollapsed = true;
+    }
+
+    function expand() {
+        const expanded = mp.player.querySelector('.music-player-expanded');
+        if (!expanded) return;
+
+        const rect = mp.collapsedBtn.getBoundingClientRect();
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
+        mp.player.style.setProperty('transform', 'none', 'important');
+        mp.player.style.setProperty('bottom', 'auto', 'important');
+        mp.player.style.setProperty('left', rect.left + 'px', 'important');
+        mp.player.style.setProperty('top', rect.top + 'px', 'important');
+
+        expanded.style.removeProperty('transform');
+        expanded.style.removeProperty('transform-origin');
+        expanded.style.transition = 'none';
+        expanded.style.removeProperty('--origin-x');
+        expanded.style.removeProperty('--origin-y');
+        expanded.style.setProperty('--player-max-h', 'none');
+
+        const cardW = expanded.offsetWidth || 246;
+        const cardH = expanded.offsetHeight || 400;
+
+        const btnCenterX = rect.left + rect.width / 2;
+        const btnCenterY = rect.top + rect.height / 2;
+        const edgeMargin = 8;
+        let targetLeft, targetTop;
+
+        let savedPos = null;
+        try {
+            const raw = localStorage.getItem('birthdayMusicExpandedPos');
+            if (raw) savedPos = JSON.parse(raw);
+        } catch (_) {}
+
+        if (savedPos && typeof savedPos.x === 'number' && typeof savedPos.y === 'number') {
+            targetLeft = savedPos.x;
+            targetTop = savedPos.y;
+        } else {
+            targetLeft = btnCenterX - cardW / 2;
+            targetTop = btnCenterY - cardH / 2;
+        }
+
+        const maxLeft = Math.max(edgeMargin, vw - cardW - edgeMargin);
+        if (targetLeft < edgeMargin) targetLeft = edgeMargin;
+        if (targetLeft > maxLeft) targetLeft = maxLeft;
+
+        const maxTop = Math.max(0, vh - cardH - edgeMargin);
+        if (targetTop < 0) targetTop = 0;
+        if (targetTop > maxTop) targetTop = maxTop;
+
+        let maxH = cardH;
+        if (targetTop + cardH > vh - edgeMargin) {
+            maxH = Math.min(cardH, vh - targetTop - edgeMargin);
+        }
+
+        expanded.style.left = targetLeft + 'px';
+        expanded.style.top = targetTop + 'px';
+        expanded.style.setProperty('--player-max-h', maxH + 'px');
+
+        const originX = btnCenterX - targetLeft;
+        const originY = btnCenterY - targetTop;
+        expanded.style.transformOrigin = originX + 'px ' + originY + 'px';
+
+        requestAnimationFrame(() => {
+            expanded.style.transition = '';
+            mp.player.classList.remove('collapsed');
+            mp.isCollapsed = false;
+            resetCollapseTimer();
+        });
+    }
+
+    function resetCollapseTimer() {
+        clearTimeout(collapseTimer);
+        clearTimeout(countdownEndTimer);
+        startCountdownAnimation();
+        countdownEndTimer = setTimeout(() => collapse(true), COLLAPSE_DELAY);
+        collapseTimer = countdownEndTimer;
+    }
+
+    mp.toggleCollapse = function() {
+        if (mp.isCollapsed) {
+            expand();
+        } else {
+            collapse();
+        }
+    };
+
+    mp.expandPlayer = function() {
+        expand();
+    };
+
+    mp.togglePlaylist = function() {
+        mp.player.classList.toggle('show-playlist');
+        mp.listBtn.classList.toggle('active-toggle');
+    };
+
+    mp.toggleLoop = function() {
+        mp.isLoop = !mp.isLoop;
+        mp.loopBtn.classList.toggle('active', mp.isLoop);
+        mp.loopBtn.title = mp.isLoop ? '循环播放：开启' : '循环播放：关闭';
+    };
+
+    mp.startAutoCollapseTimer = function() {
+        if (!mp.isCollapsed) {
+            resetCollapseTimer();
+        }
+    };
+    mp.clearAutoCollapseTimer = function() {
+        clearTimeout(collapseTimer);
+        clearTimeout(countdownEndTimer);
+        clearTimeout(countdownWarnTimer);
+        if (mp.countdownEl) mp.countdownEl.classList.add('is-paused');
+    };
+    mp.resetAutoCollapseTimer = function() {
+        if (!mp.isCollapsed) {
+            resetCollapseTimer();
+        }
+    };
+
+    // 覆写 collapse：仅自动收起时若目录打开则延迟，手动收起一律生效
+    const _origCollapse = collapse;
+    collapse = function(autoOnly) {
+        if (autoOnly && mp.player.classList.contains('show-playlist')) {
+            // 停止倒计时动画，等待目录关闭后重新计时
+            stopCountdownAnimation();
+            collapseTimer = setTimeout(() => collapse(true), COLLAPSE_DELAY);
+            return;
+        }
+        mp.player.classList.remove('show-playlist');
+        mp.listBtn.classList.remove('active-toggle');
+        _origCollapse();
+    };
+
+    mp.setProgress = function(e) {
+        const rect = mp.progress.getBoundingClientRect();
+        const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        if (mp.audio.duration) mp.audio.currentTime = pct * mp.audio.duration;
+    };
+
+    // 进度条拖拽支持
+    const DRAG_THRESHOLD = 4;
+    let progressUsingTouch = false; // 移动端：touch 事件优先，pointer 事件跳过
+    let progressDragMoved = false;
+    let progressDragDownX = 0;
+    let progressDragDownY = 0;
+    let progressDragPercent = 0;
+    let progressIsDragging = false;
+    let progressSeekIgnoreUntil = 0;
+
+    function getProgressPercent(clientX) {
+        const rect = mp.progress.getBoundingClientRect();
+        return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    }
+
+    function renderDragPreview(percent) {
+        const dur = mp.audio.duration;
+        mp.progressBar.style.transition = 'none';
+        mp.progressBar.style.width = (percent * 100) + '%';
+        if (dur && isFinite(dur) && mp.curTimeEl) {
+            mp.curTimeEl.textContent = mp.formatTime(percent * dur);
+        }
+        requestAnimationFrame(() => {
+            if (!progressIsDragging) mp.progressBar.style.transition = '';
+        });
+    }
+
+    // -------- 进度条拖动（统一 Pointer Events，兼容桌面/移动端/静态部署） --------
+    // CSS .music-progress 已设 touch-action:none；setPointerCapture 保证移出元素仍收事件。
+    // 不再用 touch 事件兜底——现代移动端均支持 Pointer Events，两套并存反而冲突。
+    mp.progress.addEventListener('pointerdown', (e) => {
+        if (!mp.audio.duration || !isFinite(mp.audio.duration)) return;
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
+        progressIsDragging = true;
+        progressDragMoved = false;
+        progressDragDownX = e.clientX;
+        progressDragDownY = e.clientY;
+        progressDragPercent = getProgressPercent(e.clientX);
+        mp.progress.classList.add('is-dragging');
+        try { mp.progress.setPointerCapture(e.pointerId); } catch (_) { /* 旧浏览器忽略 */ }
+        renderDragPreview(progressDragPercent);
+    });
+
+    mp.progress.addEventListener('pointermove', (e) => {
+        if (!progressIsDragging) return;
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
+        const dx = e.clientX - progressDragDownX;
+        const dy = e.clientY - progressDragDownY;
+        if (!progressDragMoved && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
+            progressDragMoved = true;
+        }
+        progressDragPercent = getProgressPercent(e.clientX);
+        renderDragPreview(progressDragPercent);
+    });
+
+    function endProgressDrag(e, isCancel) {
+        if (!progressIsDragging) return;
+        const wasPlaying = !mp.audio.paused;
+        try { mp.progress.releasePointerCapture(e.pointerId); } catch (_) {}
+        mp.progress.classList.remove('is-dragging');
+        progressIsDragging = false;
+        // pointercancel（移动端手势干扰常见）：恢复实际进度
+        if (isCancel) {
+            const dur = mp.audio.duration;
+            const cur = mp.audio.currentTime;
+            const pct = isFinite(dur) && dur > 0 ? (cur / dur) * 100 : 0;
+            mp.progressBar.style.width = pct + '%';
+            mp.curTimeEl.textContent = mp.formatTime(cur);
+            return;
+        }
+        if (mp.audio.duration && isFinite(mp.audio.duration)) {
+            const percent = progressDragMoved ? progressDragPercent : getProgressPercent(e.clientX);
+            const targetTime = Math.min(mp.audio.duration, Math.max(0, percent * mp.audio.duration));
+            // seek 后短暂忽略 timeupdate，防止旧进度回弹
+            progressSeekIgnoreUntil = Date.now() + 200;
+            mp.audio.currentTime = targetTime;
+            // 立即刷新 UI
+            mp.progressBar.style.transition = 'none';
+            mp.progressBar.style.width = (targetTime / mp.audio.duration * 100) + '%';
+            mp.curTimeEl.textContent = mp.formatTime(targetTime);
+            requestAnimationFrame(() => { mp.progressBar.style.transition = ''; });
+            // 移动端：seek 后若原本在播放，显式 play() 确保不因 seek 暂停
+            if (wasPlaying) {
+                const p = mp.audio.play();
+                if (p && p.catch) p.catch(() => { /* 忽略自动播放限制 */ });
+            }
+        }
+        mp.resetAutoCollapseTimer();
+    }
+    mp.progress.addEventListener('pointerup',    (e) => endProgressDrag(e, false));
+    mp.progress.addEventListener('pointercancel',(e) => endProgressDrag(e, true));
+    mp.audio.addEventListener('timeupdate', () => {
+        if (progressIsDragging) return;
+        if (progressSeekIgnoreUntil && Date.now() < progressSeekIgnoreUntil) return;
+        const dur = mp.audio.duration;
+        const cur = mp.audio.currentTime;
+        const pct = (cur / dur) * 100;
+        mp.progressBar.style.width = (isNaN(pct) ? 0 : pct) + '%';
+        mp.curTimeEl.textContent = mp.formatTime(cur);
+        if (isFinite(dur) && dur > 0) {
+            mp.remTimeEl.textContent = mp.formatTime(dur);
+        }
+    });
+
+    mp.stop = function() {
+        if (mp._fxAudio) {
+            mp._fxAudio.pause();
+            mp._fxAudio.currentTime = 0;
+            mp._fxAudio = null;
+        } else {
+            mp.audio.pause();
+            mp.audio.currentTime = 0;
+        }
+        mp.isPlaying = false;
+        mp.updatePlayIcon();
+    };
+
+    // 初始化 - 播放器仅在每年8月5日23:58至8月6日结束期间显示
+    // 计算日期窗口（移到 try 外部，供后续自动播放逻辑使用）
+    const _now = new Date();
+    const _year = _now.getFullYear();
+    const _playerStart = new Date(_year, 7, 5, 23, 0, 0); // 8月5日23:58
+    const _playerEnd = new Date(_year, 7, 7, 0, 0, 0);    // 8月7日0点（即8月6日结束）
+    const isPlayerPeriod = (_now >= _playerStart && _now <= _playerEnd);
+
+    try {
+    const currentDate = _now;
+    const year = _year;
+    const playerStart = _playerStart;
+    const playerEnd = _playerEnd;
+
+    // 提前送祝福按钮：每年8月5日23:50 ~ 8月7日0点 显示（8月6日全天显示生日祝福按钮）
+    const blessStart = new Date(year, 7, 1, 0, 0, 0);  // 8月1日0点
+    const blessEnd = new Date(year, 7, 7, 0, 0, 0);    // 8月7日0点（含8月6日全天）
+    const isBlessPeriod = (currentDate >= blessStart && currentDate <= blessEnd);
+    // 8月6日当天按钮文字改为「祝庆庆纸生日快乐」
+    const isBirthdayToday = (currentDate.getMonth() === 7 && currentDate.getDate() === 6);
+
+    const blessBtn = document.getElementById('birthdayBlessBtn');
+    if (blessBtn) {
+        if (!isBlessPeriod) {
+            // 非显示时间隐藏按钮
+            blessBtn.style.display = 'none';
+        } else if (isBirthdayToday) {
+            // 8月6日当天改为生日祝福按钮
+            blessBtn.innerHTML = '<i class="fa-solid fa-cake-candles"></i>&nbsp; 祝庆庆纸生日快乐';
+        }
+    }
+
+    // 播放列表始终初始化（确保提前送祝福功能可用）
+    mp.playlist = [
+        { name: '生日快乐（中文版）', artist: '生日祝福', url: 'music/生日快乐.mp3' },
+        { name: 'Happy Birthday (英文版)', artist: '库库小队', url: 'music/生日快乐(英文版)_库库小队_.mp3' }
+    ];
+    mp.renderList();
+    mp.loadTrack(0);
+
+    if (!isPlayerPeriod) {
+        // 非生日期间只隐藏播放器UI
+        mp.player.style.display = 'none';
+    } else {
+        // 播放器初始为收起态，不启动自动收起定时器
+    }
+    } catch(e) { console.error('Init error:', e); }
+
+    // 事件绑定（timeupdate 已在拖拽支持代码中绑定）
+    mp.audio.addEventListener('loadedmetadata', () => {
+        const total = mp.audio.duration;
+        if (isFinite(total) && total > 0) {
+            mp.remTimeEl.textContent = mp.formatTime(total);
+        } else {
+            mp.remTimeEl.textContent = '0:00';
+        }
+    });
+    mp.audio.addEventListener('ended', () => {
+        if (mp.isLoop) {
+            mp.audio.currentTime = 0;
+            mp.audio.play();
+        } else {
+            mp.next();
+        }
+    });
+
+    // ================================================================
+    // 播放器初始化：容器位置与小圆球同步
+    // ================================================================
+    (function initContainerPos() {
+        const rect = mp.collapsedBtn.getBoundingClientRect();
+        mp.player.style.setProperty('transform', 'none', 'important');
+        mp.player.style.setProperty('bottom', 'auto', 'important');
+        mp.player.style.setProperty('left', rect.left + 'px', 'important');
+        mp.player.style.setProperty('top', rect.top + 'px', 'important');
+        mp.collapsedBtn.style.setProperty('transform', 'none', 'important');
+        mp.collapsedBtn.style.setProperty('bottom', 'auto', 'important');
+        mp.collapsedBtn.style.setProperty('left', rect.left + 'px', 'important');
+        mp.collapsedBtn.style.setProperty('top', rect.top + 'px', 'important');
+
+        const exp = mp.player.querySelector('.music-player-expanded');
+        if (exp) {
+            exp.style.left = rect.left + 'px';
+            exp.style.top = rect.top + 'px';
+            exp.style.setProperty('--player-max-h', 'none');
+            const btnCx = rect.left + rect.width / 2;
+            const btnCy = rect.top + rect.height / 2;
+            exp.style.setProperty('--origin-x', (btnCx - rect.left) + 'px');
+            exp.style.setProperty('--origin-y', (btnCy - rect.top) + 'px');
+        }
+    })();
+
+    // ================================================================
+    // 收起小圆球拖拽：自由移动 + localStorage 持久化
+    // ================================================================
+    const BDAY_POS_KEY = 'birthdayMusicCollapsedPos';
+    const DRAG_MIN_PX = 8;
+    let dragState = null;
+    let wasDraggedNow = false;
+    let pendingClickBlock = false;
+
+    function applyCollapsedPos(x, y) {
+        const prio = 'important';
+        mp.player.style.setProperty('bottom', 'auto', prio);
+        mp.player.style.setProperty('left', x + 'px', prio);
+        mp.player.style.setProperty('top', y + 'px', prio);
+        mp.player.style.setProperty('transform', 'none', prio);
+        mp.collapsedBtn.style.setProperty('bottom', 'auto', prio);
+        mp.collapsedBtn.style.setProperty('left', x + 'px', prio);
+        mp.collapsedBtn.style.setProperty('top', y + 'px', prio);
+        mp.collapsedBtn.style.setProperty('transform', 'none', prio);
+    }
+    function clampPos(x, y) {
+        const size = mp.collapsedBtn.getBoundingClientRect().width || 56;
+        const maxX = Math.max(0, window.innerWidth - size);
+        const maxY = Math.max(0, window.innerHeight - size);
+        return [Math.max(0, Math.min(x, maxX)), Math.max(0, Math.min(y, maxY))];
+    }
+    (function restoreSavedPos() {
+        let saved = null;
+        try { saved = JSON.parse(localStorage.getItem(BDAY_POS_KEY) || 'null'); } catch (_) {}
+        if (!saved || typeof saved.x !== 'number' || typeof saved.y !== 'number') return;
+        const [x, y] = clampPos(saved.x, saved.y);
+        applyCollapsedPos(x, y);
+        if (x !== saved.x || y !== saved.y) {
+            try { localStorage.setItem(BDAY_POS_KEY, JSON.stringify({ x, y })); } catch (_) {}
+        }
+    })();
+
+    // 位置就绪：解除收起按钮的 FOUC 隐藏（放在 restoreSavedPos 之后，确保无跳变）
+    mp.player.classList.add('pos-ready');
+
+    mp.collapsedBtn.addEventListener('pointerdown', (e) => {
+        if (e.button !== undefined && e.button !== 0) return;
+        const rect = mp.collapsedBtn.getBoundingClientRect();
+        dragState = {
+            pointerId: e.pointerId,
+            offsetX: e.clientX - rect.left,
+            offsetY: e.clientY - rect.top,
+            startClientX: e.clientX,
+            startClientY: e.clientY,
+            moved: false
+        };
+        wasDraggedNow = false;
+        pendingClickBlock = false;
+        try { mp.collapsedBtn.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+
+    mp.collapsedBtn.addEventListener('pointermove', (e) => {
+        if (!dragState || e.pointerId !== dragState.pointerId) return;
+        const dx = e.clientX - dragState.startClientX;
+        const dy = e.clientY - dragState.startClientY;
+        if (!dragState.moved && (Math.abs(dx) >= DRAG_MIN_PX || Math.abs(dy) >= DRAG_MIN_PX)) {
+            dragState.moved = true;
+            wasDraggedNow = true;
+            pendingClickBlock = true;
+        }
+        if (!dragState.moved) return;
+        let nx = e.clientX - dragState.offsetX;
+        let ny = e.clientY - dragState.offsetY;
+        [nx, ny] = clampPos(nx, ny);
+        applyCollapsedPos(nx, ny);
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    function endDragHandler(e) {
+        if (!dragState || e.pointerId !== dragState.pointerId) return;
+        try { mp.collapsedBtn.releasePointerCapture(e.pointerId); } catch (_) {}
+        if (dragState.moved) {
+            wasDraggedNow = true;
+            pendingClickBlock = true;
+            const rect = mp.collapsedBtn.getBoundingClientRect();
+            const pos = { x: Math.round(rect.left), y: Math.round(rect.top) };
+            try { localStorage.setItem(BDAY_POS_KEY, JSON.stringify(pos)); } catch (_) {}
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        dragState = null;
+    }
+    mp.collapsedBtn.addEventListener('pointerup', endDragHandler);
+    mp.collapsedBtn.addEventListener('pointercancel', endDragHandler);
+
+    document.addEventListener('pointerup', (e) => {
+        if (!dragState) return;
+        endDragHandler(e);
+    });
+    document.addEventListener('pointercancel', (e) => {
+        if (!dragState) return;
+        endDragHandler(e);
+    });
+
+    mp.collapsedBtn.addEventListener('click', (e) => {
+        if (wasDraggedNow || pendingClickBlock) {
+            wasDraggedNow = false;
+            pendingClickBlock = false;
+            e.stopPropagation();
+            e.preventDefault();
+            return;
+        }
+        expand();
+    });
+
+    // ================================================================
+    // 展开态播放器拖拽
+    // ================================================================
+    const expEl = mp.player.querySelector('.music-player-expanded');
+    const EXP_POS_KEY = 'birthdayMusicExpandedPos';
+    const EXP_DRAG_MIN = 5;
+    let expDragState = null;
+    let expWasDragged = false;
+
+    const expInteractiveSel = [
+        '.music-btn',
+        '.music-progress',
+        '.music-progress-bar',
+        '.music-playlist-item',
+        '.music-collapse-btn',
+        '.music-time-row',
+        '.music-playlist',
+        '.music-control-panel',
+        'button',
+        'input',
+        'select',
+        'textarea',
+        '[role="button"]'
+    ].join(', ');
+
+    if (expEl) {
+        expEl.addEventListener('pointerdown', (e) => {
+            if (e.button !== undefined && e.button !== 0) return;
+            if (e.target.closest(expInteractiveSel)) return;
+
+            const rect = expEl.getBoundingClientRect();
+            expDragState = {
+                pointerId: e.pointerId,
+                offsetX: e.clientX - rect.left,
+                offsetY: e.clientY - rect.top,
+                startClientX: e.clientX,
+                startClientY: e.clientY,
+                moved: false
+            };
+            expWasDragged = false;
+            try { expEl.setPointerCapture(e.pointerId); } catch (_) {}
+            e.stopPropagation();
+        });
+
+        expEl.addEventListener('pointermove', (e) => {
+            if (!expDragState || e.pointerId !== expDragState.pointerId) return;
+            const dx = e.clientX - expDragState.startClientX;
+            const dy = e.clientY - expDragState.startClientY;
+            if (!expDragState.moved && (Math.abs(dx) >= EXP_DRAG_MIN || Math.abs(dy) >= EXP_DRAG_MIN)) {
+                expDragState.moved = true;
+                expWasDragged = true;
+            }
+            if (!expDragState.moved) return;
+
+            let nx = e.clientX - expDragState.offsetX;
+            let ny = e.clientY - expDragState.offsetY;
+
+            const cw = expEl.offsetWidth || 246;
+            const ch = expEl.offsetHeight || 400;
+            const maxX = Math.max(0, window.innerWidth - cw);
+            const maxY = Math.max(0, window.innerHeight - ch);
+            nx = Math.max(0, Math.min(nx, maxX));
+            ny = Math.max(0, Math.min(ny, maxY));
+
+            expEl.style.left = nx + 'px';
+            expEl.style.top = ny + 'px';
+            expEl.style.setProperty('--player-max-h', 'none');
+
+            try { localStorage.setItem(EXP_POS_KEY, JSON.stringify({ x: nx, y: ny })); } catch (_) {}
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        function endExpDrag(e) {
+            if (!expDragState || e.pointerId !== expDragState.pointerId) return;
+            try { expEl.releasePointerCapture(e.pointerId); } catch (_) {}
+            if (expDragState.moved) {
+                const rect = expEl.getBoundingClientRect();
+                try { localStorage.setItem(EXP_POS_KEY, JSON.stringify({ x: rect.left, y: rect.top })); } catch (_) {}
+            }
+            expDragState = null;
+        }
+        expEl.addEventListener('pointerup', endExpDrag);
+        expEl.addEventListener('pointercancel', endExpDrag);
+
+        // 鼠标悬停时暂停自动收起，离开时恢复计时
+        expEl.addEventListener('mouseenter', () => {
+            clearTimeout(collapseTimer);
+            clearTimeout(countdownEndTimer);
+            clearTimeout(countdownWarnTimer);
+            if (mp.countdownEl) mp.countdownEl.classList.add('is-paused');
+        });
+        expEl.addEventListener('mouseleave', () => {
+            if (!mp.player.classList.contains('collapsed')) {
+                if (mp.countdownEl) mp.countdownEl.classList.remove('is-paused');
+                resetCollapseTimer();
+            }
+        });
+    }
+
+    // ================================================================
+    // Resize 处理：保持拖拽位置
+    // ================================================================
+    window.addEventListener('resize', () => {
+        let saved = null;
+        try { saved = JSON.parse(localStorage.getItem(BDAY_POS_KEY) || 'null'); } catch (_) {}
+        if (!saved) return;
+        const [x, y] = clampPos(saved.x, saved.y);
+        applyCollapsedPos(x, y);
+        if (x !== saved.x || y !== saved.y) {
+            try { localStorage.setItem(BDAY_POS_KEY, JSON.stringify({ x, y })); } catch (_) {}
+        }
+    });
+
+    // 展开态 resize 处理
+    window.addEventListener('resize', () => {
+        const exp = mp.player.querySelector('.music-player-expanded');
+        if (!exp || mp.player.classList.contains('collapsed')) return;
+
+        const cw = window.innerWidth;
+        const ch = window.innerHeight;
+        const edgeMargin = 8;
+
+        exp.style.setProperty('--player-max-h', 'none');
+        const cardW = exp.offsetWidth || 246;
+        const cardH = exp.offsetHeight || 400;
+
+        let savedPos = null;
+        try {
+            const raw = localStorage.getItem(EXP_POS_KEY);
+            if (raw) savedPos = JSON.parse(raw);
+        } catch (_) {}
+
+        if (savedPos && typeof savedPos.x === 'number' && typeof savedPos.y === 'number') {
+            const maxX = Math.max(edgeMargin, cw - cardW - edgeMargin);
+            const maxY = Math.max(0, ch - cardH - edgeMargin);
+            const newLeft = Math.max(edgeMargin, Math.min(savedPos.x, maxX));
+            const newTop = Math.max(0, Math.min(savedPos.y, maxY));
+            exp.style.left = newLeft + 'px';
+            exp.style.top = newTop + 'px';
+
+            const btnR = mp.collapsedBtn.getBoundingClientRect();
+            const btnCX = btnR.left + btnR.width / 2;
+            const btnCY = btnR.top + btnR.height / 2;
+            exp.style.setProperty('--origin-x', (btnCX - newLeft) + 'px');
+            exp.style.setProperty('--origin-y', (btnCY - newTop) + 'px');
+        }
+    });
+
+    // 控件事件
+    mp.playBtn.addEventListener('click', () => { mp.toggle(); mp.resetAutoCollapseTimer(); });
+    mp.prevBtn.addEventListener('click', () => { mp.prev(); mp.resetAutoCollapseTimer(); });
+    mp.nextBtn.addEventListener('click', () => { mp.next(); mp.resetAutoCollapseTimer(); });
+    mp.loopBtn.addEventListener('click', () => { mp.toggleLoop(); mp.resetAutoCollapseTimer(); });
+    mp.listBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const willShow = !mp.player.classList.contains('show-playlist');
+        mp.togglePlaylist();
+        mp.resetAutoCollapseTimer();
+
+        if (!mp.player.classList.contains('collapsed')) {
+            const exp = mp.player.querySelector('.music-player-expanded');
+            if (exp) {
+                // 先移除高度限制，让播放列表可以完整展开
+                exp.style.removeProperty('--player-max-h');
+
+                // 等 CSS 过渡完成（max-height 0.4s）后再重新测量
+                setTimeout(() => {
+                    const cH = exp.scrollHeight;
+                    const cW = exp.offsetWidth || 246;
+                    const vh = window.innerHeight;
+                    const edgeMargin = 8;
+
+                    const currentTop = parseFloat(exp.style.top) || 0;
+                    const maxTop = Math.max(0, vh - cH - edgeMargin);
+                    const maxLeft = Math.max(edgeMargin, window.innerWidth - cW - edgeMargin);
+
+                    let targetLeft = parseFloat(exp.style.left) || edgeMargin;
+                    let targetTop = Math.max(0, Math.min(currentTop, maxTop));
+
+                    targetLeft = Math.max(edgeMargin, Math.min(targetLeft, maxLeft));
+
+                    let maxH = cH;
+                    if (targetTop + cH > vh - edgeMargin) {
+                        maxH = Math.min(cH, vh - targetTop - edgeMargin);
+                    }
+
+                    exp.style.left = targetLeft + 'px';
+                    exp.style.top = targetTop + 'px';
+                    exp.style.setProperty('--player-max-h', maxH + 'px');
+                }, 420);
+            }
+        }
+    });
+    mp.collapseBtn.addEventListener('click', mp.toggleCollapse);
+    mp.player.addEventListener('touchstart', () => mp.resetAutoCollapseTimer(), { passive: true });
+    mp.player.addEventListener('click', (e) => {
+        if (e.target.closest('.music-playlist-item')) mp.resetAutoCollapseTimer();
+    });
+
+    let fwAnimId = null;
+    let fwLaunchTimer = null;
+    let fwParticles = [];
+    let bgSparkles = [];
+    let bgSparkleTimer = null;
+    let fwAudioCtx = null;
+
+    function initFwAudio() {
+        if (!fwAudioCtx) {
+            try {
+                fwAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) { console.warn('Web Audio not supported'); }
+        }
+        if (fwAudioCtx && fwAudioCtx.state === 'suspended') fwAudioCtx.resume();
+        return fwAudioCtx;
+    }
+
+    function playLaunchSound() {
+        const ctx = initFwAudio();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(120, now);
+        osc.frequency.exponentialRampToValueAtTime(900, now + 0.8);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.85);
+    }
+
+    function playExplodeSound() {
+        const ctx = initFwAudio();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const bufferSize = ctx.sampleRate * 0.5;
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        const noiseFilter = ctx.createBiquadFilter();
+        noiseFilter.type = 'lowpass';
+        noiseFilter.frequency.setValueAtTime(2000, now);
+        noiseFilter.frequency.exponentialRampToValueAtTime(200, now + 0.4);
+        const noiseGain = ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.25, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        noise.connect(noiseFilter).connect(noiseGain).connect(ctx.destination);
+        noise.start(now);
+        noise.stop(now + 0.5);
+        const osc = ctx.createOscillator();
+        const oscGain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(120, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + 0.3);
+        oscGain.gain.setValueAtTime(0.15, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(oscGain).connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
+    }
+
+    // 本地生日快乐音乐（用户提供）+ 降级方案
+    const LOCAL_MUSIC = 'music/生日快乐.mp3';
+    const FALLBACK_URLS = [
+        'https://cdn.pixabay.com/download/audio/2022/10/18/audio_31c2582b13.mp3?filename=birthday-song-122993.mp3',
+        'https://cdn.pixabay.com/download/audio/2022/03/15/audio_1e1e09d11b.mp3?filename=birthday-party-114832.mp3'
+    ];
+
+    // 语音合成歌词（用浏览器 TTS 真人发声唱生日歌）
+    const birthdayLyrics = [
+        { text: '祝你生日快乐', pause: 600 },
+        { text: '祝你生日快乐', pause: 600 },
+        { text: '祝你幸福 祝你健康', pause: 800 },
+        { text: '祝你生日快乐', pause: 1200 },
+        { text: 'Happy Birthday To You', pause: 700 },
+        { text: 'Happy Birthday To You', pause: 700 },
+        { text: 'Happy Birthday', pause: 500 },
+        { text: '庆庆纸 生日快乐', pause: 1500 }
+    ];
+
+    let ttsPlaying = false;
+    let ttsTimer = null;
+
+    // 降级：音乐盒风格合成
+    const noteFreq = {
+        'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
+        'G4': 392.00, 'A4': 440.00, 'Bb4': 466.16, 'C5': 523.25,
+        'D5': 587.33, 'E5': 659.26, 'F5': 698.46, 'G5': 783.99,
+        'A5': 880.00
+    };
+
+    const birthdayMelody = [
+        { note: 'C4', dur: 0.375, gap: 0.125 },
+        { note: 'C4', dur: 0.125, gap: 0.125 },
+        { note: 'D4', dur: 0.5, gap: 0.125 },
+        { note: 'C4', dur: 0.5, gap: 0.125 },
+        { note: 'F4', dur: 0.5, gap: 0.125 },
+        { note: 'E4', dur: 0.75, gap: 0.25 },
+        { note: 'C4', dur: 0.375, gap: 0.125 },
+        { note: 'C4', dur: 0.125, gap: 0.125 },
+        { note: 'D4', dur: 0.5, gap: 0.125 },
+        { note: 'C4', dur: 0.5, gap: 0.125 },
+        { note: 'G4', dur: 0.5, gap: 0.125 },
+        { note: 'F4', dur: 0.75, gap: 0.25 },
+        { note: 'C4', dur: 0.375, gap: 0.125 },
+        { note: 'C4', dur: 0.125, gap: 0.125 },
+        { note: 'C5', dur: 0.5, gap: 0.125 },
+        { note: 'A4', dur: 0.5, gap: 0.125 },
+        { note: 'F4', dur: 0.5, gap: 0.125 },
+        { note: 'E4', dur: 0.5, gap: 0.125 },
+        { note: 'D4', dur: 0.75, gap: 0.25 },
+        { note: 'Bb4', dur: 0.375, gap: 0.125 },
+        { note: 'Bb4', dur: 0.125, gap: 0.125 },
+        { note: 'A4', dur: 0.5, gap: 0.125 },
+        { note: 'F4', dur: 0.5, gap: 0.125 },
+        { note: 'G4', dur: 0.5, gap: 0.125 },
+        { note: 'F4', dur: 0.75, gap: 0.25 }
+    ];
+
+    function cleanupOscillators() {
+        scheduledOscillators.forEach(item => {
+            try { item.osc.stop(); item.osc.disconnect(); item.gain.disconnect(); } catch(e) {}
+        });
+        scheduledOscillators = [];
+    }
+
+    function stopRealAudio() {
+        if (bgMusicAudio) {
+            try {
+                bgMusicAudio.pause();
+                bgMusicAudio.currentTime = 0;
+            } catch(e) {}
+            bgMusicAudio = null;
+        }
+        const preload = document.getElementById('bgMusicPreload');
+        if (preload) {
+            try { preload.pause(); preload.currentTime = 0; } catch(e) {}
+        }
+        if ('speechSynthesis' in window) {
+            try { window.speechSynthesis.cancel(); } catch(e) {}
+        }
+        if (ttsTimer) { clearTimeout(ttsTimer); ttsTimer = null; }
+        ttsPlaying = false;
+    }
+
+    function playTTSBirthday() {
+        if (!('speechSynthesis' in window)) return;
+        ttsPlaying = true;
+        const synth = window.speechSynthesis;
+        let idx = 0;
+
+        const pickVoice = () => {
+            const voices = synth.getVoices();
+            const zh = voices.find(v => /zh|chinese/i.test(v.lang + ' ' + v.name));
+            if (zh) return zh;
+            const any = voices.find(v => /zh|cmn|Chinese/i.test(v.lang + ' ' + v.name));
+            if (any) return any;
+            return voices[0] || null;
+        };
+
+        const voices = synth.getVoices();
+        const voice = pickVoice();
+
+        const speakNext = () => {
+            if (!ttsPlaying || idx >= birthdayLyrics.length) {
+                ttsPlaying = false;
+                bgMusicPlaying = false;
+                return;
+            }
+            const line = birthdayLyrics[idx];
+            const u = new SpeechSynthesisUtterance(line.text);
+            u.rate = 0.88;
+            u.pitch = 1.2;
+            u.volume = 0.9;
+            u.lang = 'zh-CN';
+            if (voice) u.voice = voice;
+            u.onend = () => {
+                idx++;
+                ttsTimer = setTimeout(speakNext, line.pause);
+            };
+            u.onerror = () => {
+                ttsPlaying = false;
+                bgMusicPlaying = false;
+            };
+            synth.speak(u);
+        };
+        speakNext();
+    }
+
+    let audioCtx = null;
+
+    function playRealAudio(url, isLocal) {
+        return new Promise((resolve, reject) => {
+            const audio = new Audio();
+            if (!isLocal) audio.crossOrigin = 'anonymous';
+            audio.volume = 0.9;
+            let resolved = false;
+            const finish = () => {
+                if (!resolved) { resolved = true; resolve(); }
+            };
+            const fail = () => {
+                if (!resolved) { resolved = true; reject(); }
+            };
+            audio.addEventListener('ended', finish);
+            audio.addEventListener('error', fail);
+            audio.addEventListener('stalled', fail);
+            audio.addEventListener('playing', () => {
+                setTimeout(() => { if (!resolved) { resolved = true; resolve(); } }, 150);
+            }, { once: true });
+            audio.src = url;
+            bgMusicAudio = audio;
+            const playPromise = audio.play();
+            if (playPromise && typeof playPromise.then === 'function') {
+                playPromise.catch(fail);
+            }
+            setTimeout(() => { if (!resolved) { resolved = true; reject(); } }, 5000);
+        });
+    }
+
+    async function playBirthdaySong() {
+        if (bgMusicPlaying) return;
+        bgMusicPlaying = true;
+        stopRealAudio();
+        cleanupOscillators();
+
+        // 1. 优先使用预加载的本地音乐（更可靠）
+        const preload = document.getElementById('bgMusicPreload');
+        if (preload && preload.src) {
+            try {
+                preload.currentTime = 0;
+                preload.volume = 0.9;
+                preload.playbackRate = 1;
+                await preload.play();
+                bgMusicAudio = preload;
+                return;
+            } catch(e) {
+                preload.pause();
+                preload.currentTime = 0;
+            }
+        }
+
+        // 2. JS 方式加载本地音乐
+        try {
+            await playRealAudio(LOCAL_MUSIC, true);
+            return;
+        } catch(e) {}
+
+        // 3. 降级：在线 MP3
+        for (const url of FALLBACK_URLS) {
+            try {
+                await playRealAudio(url, false);
+                return;
+            } catch(e) {}
+        }
+
+        // 4. 降级：语音合成
+        if ('speechSynthesis' in window) {
+            try {
+                window.speechSynthesis.getVoices();
+                setTimeout(() => {
+                    if (!ttsPlaying) playTTSBirthday();
+                }, 100);
+                return;
+            } catch(e) {}
+        }
+
+        // 5. 最终降级：音乐盒合成
+        playMusicboxFallback();
+    }
+
+    function playMusicboxFallback() {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) { bgMusicPlaying = false; return; }
+        if (!audioCtx) audioCtx = new AC();
+        const start = () => {
+            try {
+                cleanupOscillators();
+                const ctx = audioCtx;
+                const masterGain = ctx.createGain();
+                masterGain.gain.value = 0.8;
+                masterGain.connect(ctx.destination);
+
+                const convolver = ctx.createConvolver();
+                const reverbLen = ctx.sampleRate * 1.2;
+                const reverbBuf = ctx.createBuffer(2, reverbLen, ctx.sampleRate);
+                for (let ch = 0; ch < 2; ch++) {
+                    const d = reverbBuf.getChannelData(ch);
+                    for (let i = 0; i < reverbLen; i++) {
+                        d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / reverbLen, 3);
+                    }
+                }
+                convolver.buffer = reverbBuf;
+                const reverbGain = ctx.createGain();
+                reverbGain.gain.value = 0.25;
+                convolver.connect(reverbGain);
+                reverbGain.connect(masterGain);
+
+                let time = ctx.currentTime + 0.02;
+                birthdayMelody.forEach(n => {
+                    const osc1 = ctx.createOscillator();
+                    osc1.type = 'sine';
+                    osc1.frequency.setValueAtTime(noteFreq[n.note], time);
+                    const g1 = ctx.createGain();
+                    g1.gain.setValueAtTime(0, time);
+                    g1.gain.linearRampToValueAtTime(0.22, time + 0.008);
+                    g1.gain.exponentialRampToValueAtTime(0.14, time + n.dur * 0.15);
+                    g1.gain.exponentialRampToValueAtTime(0.001, time + n.dur);
+                    osc1.connect(g1);
+                    g1.connect(masterGain);
+                    g1.connect(convolver);
+                    osc1.start(time);
+                    osc1.stop(time + n.dur + 0.05);
+                    scheduledOscillators.push({ osc: osc1, gain: g1 });
+
+                    const osc2 = ctx.createOscillator();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(noteFreq[n.note] * 2, time);
+                    const g2 = ctx.createGain();
+                    g2.gain.setValueAtTime(0, time);
+                    g2.gain.linearRampToValueAtTime(0.06, time + 0.008);
+                    g2.gain.exponentialRampToValueAtTime(0.03, time + n.dur * 0.2);
+                    g2.gain.exponentialRampToValueAtTime(0.001, time + n.dur * 0.8);
+                    osc2.connect(g2);
+                    g2.connect(masterGain);
+                    g2.connect(convolver);
+                    osc2.start(time);
+                    osc2.stop(time + n.dur + 0.1);
+                    scheduledOscillators.push({ osc: osc2, gain: g2 });
+
+                    time += n.dur + n.gap;
+                });
+
+                const totalMs = (time - ctx.currentTime) * 1000;
+                setTimeout(() => {
+                    cleanupOscillators();
+                    bgMusicPlaying = false;
+                }, totalMs + 400);
+            } catch(e) { bgMusicPlaying = false; }
+        };
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume().then(start).catch(() => { bgMusicPlaying = false; });
+        } else {
+            start();
+        }
+    }
+
+    function initFireworkCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        fwCanvas.width = window.innerWidth * dpr;
+        fwCanvas.height = window.innerHeight * dpr;
+        fwCanvas.style.width = window.innerWidth + 'px';
+        fwCanvas.style.height = window.innerHeight + 'px';
+        const ctx = fwCanvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+        return ctx;
+    }
+
+    let fwRockets = [];
+
+    function launchFireworkAt(ctx, targetX, targetY) {
+        const startX = targetX + (Math.random() - 0.5) * 60;
+        const startY = window.innerHeight + 10;
+        const hue = Math.floor(Math.random() * 360);
+        const dx = targetX - startX;
+        const dy = targetY - startY;
+        const dist = Math.hypot(dx, dy);
+        fwRockets.push({
+            x: startX,
+            y: startY,
+            targetX,
+            targetY,
+            dx,
+            dy,
+            dist,
+            hue,
+            trail: [],
+            exploded: false,
+            totalFrames: 200,
+            frame: 0,
+            startX,
+            startY,
+            wobble: Math.random() * Math.PI * 2
+        });
+    }
+
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    function updateRockets(ctx) {
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = fwRockets.length - 1; i >= 0; i--) {
+            const r = fwRockets[i];
+            if (!r.exploded) {
+                r.frame++;
+                const t = r.frame / r.totalFrames;
+                const eased = easeOutCubic(t);
+                r.x = r.startX + r.dx * eased;
+                r.y = r.startY + r.dy * eased;
+                const wobbleX = Math.sin(t * Math.PI * 3 + r.wobble) * (1 - t) * 6;
+                r.x += wobbleX;
+                r.trail.push({ x: r.x, y: r.y, alpha: 1 });
+                if (r.trail.length > 18) r.trail.shift();
+                if (r.frame >= r.totalFrames) {
+                    explodeFirework(ctx, r.targetX, r.targetY, r.hue);
+                    fwRockets.splice(i, 1);
+                    continue;
+                }
+                // 绘制尾迹 - 批量绘制提高性能
+                const len = r.trail.length;
+                for (let j = 0; j < len; j++) {
+                    const tp = r.trail[j];
+                    const a = (j + 1) / len;
+                    ctx.beginPath();
+                    ctx.arc(tp.x, tp.y, 1.2 * a + 0.3, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${r.hue}, 100%, 70%, ${a * 0.7})`;
+                    ctx.fill();
+                }
+                // 绘制火箭头部 - 双层发光
+                const headPulse = 1 + Math.sin(r.frame * 0.4) * 0.2;
+                // 外层光晕
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, 5 * headPulse, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${r.hue}, 100%, 60%, 0.3)`;
+                ctx.fill();
+                // 核心
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, 2.5 * headPulse, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${r.hue}, 100%, 85%, 1)`;
+                ctx.fill();
+            }
+        }
+        ctx.globalCompositeOperation = 'source-over';
+    }
+
+    function explodeFirework(ctx, x, y, hue) {
+        const type = Math.random();
+        // 中心白光闪光
+        fwParticles.push({
+            x, y,
+            vx: 0, vy: 0,
+            alpha: 1,
+            decay: 0.1,
+            size: 35,
+            isFlash: true
+        });
+        const baseCount = window.innerWidth < 480 ? 120 : (window.innerWidth < 768 ? 160 : 200);
+        if (type < 0.3) {
+            // 环形爆炸
+            const count = baseCount;
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count;
+                const speed = 2.0 + Math.random() * 0.8;
+                fwParticles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    decay: 0.022 + Math.random() * 0.01,
+                    hue: hue + Math.random() * 20 - 10,
+                    size: 2.5 + Math.random() * 2.5
+                });
+            }
+        } else if (type < 0.6) {
+            // 分层爆炸
+            const innerCount = Math.floor(baseCount * 0.4);
+            for (let i = 0; i < innerCount; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 0.8 + Math.random() * 0.9;
+                fwParticles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    decay: 0.03 + Math.random() * 0.015,
+                    hue: hue + 180 + Math.random() * 20,
+                    size: 3 + Math.random() * 3
+                });
+            }
+            const outerCount = baseCount - innerCount;
+            for (let i = 0; i < outerCount; i++) {
+                const angle = (Math.PI * 2 * i) / outerCount;
+                const speed = 1.8 + Math.random() * 1.0;
+                fwParticles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    decay: 0.022 + Math.random() * 0.01,
+                    hue: hue + Math.random() * 30 - 15,
+                    size: 2.5 + Math.random() * 2.5
+                });
+            }
+        } else {
+            // 经典随机爆炸
+            const count = baseCount + Math.floor(Math.random() * 40);
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1.0 + Math.random() * 2.2;
+                fwParticles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    decay: 0.025 + Math.random() * 0.012,
+                    hue: hue + Math.random() * 50 - 25,
+                    size: 2 + Math.random() * 3
+                });
+            }
+        }
+        // 小火花点缀
+        const sparkCount = Math.floor(baseCount * 0.4);
+        for (let i = 0; i < sparkCount; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 0.3 + Math.random() * 0.7;
+            fwParticles.push({
+                x, y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                alpha: 1,
+                decay: 0.06 + Math.random() * 0.03,
+                hue: hue + 40 + Math.random() * 40,
+                size: 1.2 + Math.random() * 1.2
+            });
+        }
+    }
+
+    function launchFirework(ctx) {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight * 0.35 + 100;
+        const hue = Math.floor(Math.random() * 360);
+        const baseCount = window.innerWidth < 480 ? 100 : (window.innerWidth < 768 ? 130 : 160);
+        const count = baseCount + Math.floor(Math.random() * 35);
+        // 中心闪光
+        fwParticles.push({
+            x, y,
+            vx: 0, vy: 0,
+            alpha: 1,
+            decay: 0.1,
+            size: 30,
+            isFlash: true
+        });
+        for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 * i) / count;
+            const speed = 1.0 + Math.random() * 2.0;
+            fwParticles.push({
+                x, y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                alpha: 1,
+                decay: 0.025 + Math.random() * 0.012,
+                hue: hue + Math.random() * 40 - 20,
+                size: 2 + Math.random() * 3
+            });
+        }
+        // 第二层 - 散落小火花
+        const sparkCount = Math.floor(count * 0.4);
+        for (let i = 0; i < sparkCount; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 0.3 + Math.random() * 0.7;
+            fwParticles.push({
+                x: x + Math.cos(angle) * 2,
+                y: y + Math.sin(angle) * 2,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                alpha: 0.7 + Math.random() * 0.3,
+                decay: 0.06 + Math.random() * 0.03,
+                hue: hue + Math.random() * 60 - 30,
+                size: 1.2 + Math.random() * 1.2
+            });
+        }
+    }
+
+    function drawFireworks(ctx) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+        ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+        updateRockets(ctx);
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = fwParticles.length - 1; i >= 0; i--) {
+            const p = fwParticles[i];
+            if (p.isFlash) {
+                p.alpha -= p.decay;
+                if (p.alpha <= 0) { fwParticles.splice(i, 1); continue; }
+                const r = p.size * 2 * p.alpha;
+                const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+                grad.addColorStop(0, `rgba(255,255,255,${p.alpha})`);
+                grad.addColorStop(0.4, `hsla(50,100%,80%,${p.alpha * 0.5})`);
+                grad.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+                ctx.fill();
+                continue;
+            }
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vx *= 0.96;
+            p.vy *= 0.96;
+            p.alpha -= p.decay;
+            if (p.alpha <= 0 || p.x < -50 || p.x > window.innerWidth + 50 || p.y < -50 || p.y > window.innerHeight + 50) { fwParticles.splice(i, 1); continue; }
+            const size = p.size * (0.8 + p.alpha * 0.4);
+            const alpha = p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${p.hue},100%,65%,${alpha})`;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, size * 0.4, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${p.hue},100%,90%,${alpha})`;
+            ctx.fill();
+        }
+        ctx.globalCompositeOperation = 'source-over';
+    }
+
+    function addBgSparkle() {
+        const w = window.innerWidth;
+        bgSparkles.push({
+            x: Math.random() * w,
+            y: window.innerHeight + 10,
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: -0.75 - Math.random() * 0.75,
+            alpha: 0,
+            targetAlpha: 0.3 + Math.random() * 0.4,
+            decay: 0.004 + Math.random() * 0.006,
+            hue: Math.floor(Math.random() * 360),
+            size: 0.8 + Math.random() * 1.2,
+            twinkle: Math.random() * Math.PI * 2,
+            life: 0
+        });
+    }
+
+    function drawBgSparkles(ctx) {
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = bgSparkles.length - 1; i >= 0; i--) {
+            const s = bgSparkles[i];
+            s.x += s.vx;
+            s.y += s.vy;
+            s.life++;
+            s.twinkle += 0.08;
+            if (s.alpha < s.targetAlpha) s.alpha += 0.03;
+            s.alpha -= s.decay;
+            const twinkleAlpha = s.alpha * (0.5 + 0.5 * Math.sin(s.twinkle));
+            if (s.alpha <= 0 || s.y < -10 || s.life > 120) { bgSparkles.splice(i, 1); continue; }
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size * 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${s.hue}, 100%, 60%, ${twinkleAlpha * 0.4})`;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${s.hue}, 100%, 80%, ${twinkleAlpha})`;
+            ctx.fill();
+        }
+        ctx.globalCompositeOperation = 'source-over';
+    }
+
+    function startFireworks() {
+        const ctx = initFireworkCanvas();
+        if (fwAnimId) cancelAnimationFrame(fwAnimId);
+        // 初始爆发
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                const targetX = Math.random() * window.innerWidth;
+                const targetY = Math.random() * (window.innerHeight * 0.2 + 20);
+                launchFireworkAt(ctx, targetX, targetY);
+            }, i * 50);
+        }
+        const getMaxParticles = () => window.innerWidth < 480 ? 600 : (window.innerWidth < 768 ? 900 : 1200);
+        let autoLaunchTimer = setInterval(() => {
+            if (fwParticles.length > getMaxParticles()) return;
+            const w = window.innerWidth;
+            const count = w < 480 ? 2 : (w < 768 ? 3 : (Math.random() < 0.4 ? 4 : 3));
+            for (let i = 0; i < count; i++) {
+                const targetX = Math.random() * window.innerWidth;
+                const targetY = window.innerHeight * 0.25 + 60 + Math.random() * (window.innerHeight * 0.2);
+                launchFireworkAt(ctx, targetX, targetY);
+            }
+        }, 300);
+        // 背景闪烁星光
+        let sparkleTimer = setInterval(() => {
+            if (bgSparkles.length > 50) return;
+            const count = window.innerWidth < 480 ? 2 : 3;
+            for (let i = 0; i < count; i++) addBgSparkle();
+        }, 120);
+        const animate = () => {
+            drawFireworks(ctx);
+            drawBgSparkles(ctx);
+            fwAnimId = requestAnimationFrame(animate);
+        };
+        animate();
+        fwLaunchTimer = autoLaunchTimer;
+        bgSparkleTimer = sparkleTimer;
+    }
+
+    function stopFireworks() {
+        if (fwAnimId) { cancelAnimationFrame(fwAnimId); fwAnimId = null; }
+        if (fwLaunchTimer) { clearInterval(fwLaunchTimer); fwLaunchTimer = null; }
+        if (bgSparkleTimer) { clearInterval(bgSparkleTimer); bgSparkleTimer = null; }
+        fwParticles = [];
+        fwRockets = [];
+        bgSparkles = [];
+        const ctx = fwCanvas.getContext('2d');
+        ctx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+    }
+
+    function getScaleFactor() {
+        const w = window.innerWidth;
+        if (w < 480) return 0.6;
+        if (w < 768) return 0.8;
+        if (w < 1024) return 0.9;
+        return 1;
+    }
+
+    function spawnBalloons() {
+        const colors = ['#f5576c', '#f093fb', '#ffa640', '#6bcB77', '#4d96ff', '#c56cf0', '#ffd93d'];
+        const baseCount = window.innerWidth < 480 ? 8 : (window.innerWidth < 768 ? 10 : 12);
+        const count = baseCount + Math.floor(Math.random() * 6);
+        for (let i = 0; i < count; i++) {
+            const b = document.createElement('div');
+            b.className = 'balloon';
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            b.style.background = `radial-gradient(circle at 30% 25%, ${color}dd, ${color}aa)`;
+            b.style.left = Math.random() * 95 + '%';
+            b.style.animationDuration = (4 + Math.random() * 3) + 's';
+            b.style.animationDelay = (Math.random() * 1.5) + 's';
+            fxBalloons.appendChild(b);
+            setTimeout(() => b.remove(), 9000);
+        }
+    }
+
+    function spawnHearts() {
+        const hearts = ['❤️', '💖', '💕', '💗', '💝', '❤️‍🔥', '🩷'];
+        const baseCount = window.innerWidth < 480 ? 10 : (window.innerWidth < 768 ? 14 : 18);
+        const count = baseCount + Math.floor(Math.random() * 8);
+        for (let i = 0; i < count; i++) {
+            const h = document.createElement('div');
+            h.className = 'heart';
+            h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            h.style.left = Math.random() * 100 + '%';
+            h.style.animationDuration = (3.5 + Math.random() * 2.5) + 's';
+            h.style.animationDelay = (Math.random() * 1) + 's';
+            fxHearts.appendChild(h);
+            setTimeout(() => h.remove(), 8000);
+        }
+    }
+
+    function spawnConfetti() {
+        const colors = ['#f093fb', '#f5576c', '#ffa640', '#ffd93d', '#6bcB77', '#4d96ff', '#c56cf0'];
+        const baseCount = window.innerWidth < 480 ? 50 : (window.innerWidth < 768 ? 65 : 80);
+        const count = baseCount + Math.floor(Math.random() * 40);
+        for (let i = 0; i < count; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + '%';
+            c.style.background = colors[Math.floor(Math.random() * colors.length)];
+            c.style.animationDuration = (3 + Math.random() * 3) + 's';
+            c.style.animationDelay = (Math.random() * 1.5) + 's';
+            c.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+            fxConfetti.appendChild(c);
+            setTimeout(() => c.remove(), 7000);
+        }
+    }
+
+    function playEnglishSong() {
+        mp.player.style.display = '';
+        mp.expandPlayer();
+        mp.audio.pause();
+        mp.isPlaying = false;
+        mp.updatePlayIcon();
+
+        const enAudio = document.getElementById('bgMusicPreloadEn');
+        if (!enAudio) return;
+
+        enAudio.pause();
+        enAudio.currentTime = 0;
+        enAudio.volume = 0.9;
+        enAudio.playbackRate = 1;
+        enAudio.muted = mp.isMuted;
+
+        enAudio.play().then(() => {
+            mp.isPlaying = true;
+            mp.currentIndex = 1;
+            mp.nameEl.textContent = 'Happy Birthday (英文版)';
+            mp.title.textContent = '🎵 Happy Birthday (英文版)';
+            mp.cover.textContent = '🎵';
+            mp.updatePlayIcon();
+            mp.totalEl.textContent = mp.formatTime(enAudio.duration);
+
+            // 用 enAudio 同步播放器进度
+            const onTimeUpdate = () => {
+                mp.currentEl.textContent = mp.formatTime(enAudio.currentTime);
+                if (enAudio.duration) {
+                    mp.fill.style.width = ((enAudio.currentTime / enAudio.duration) * 100) + '%';
+                }
+            };
+            enAudio.addEventListener('timeupdate', onTimeUpdate);
+            enAudio.addEventListener('ended', () => {
+                mp.isPlaying = false;
+                mp.updatePlayIcon();
+                enAudio.removeEventListener('timeupdate', onTimeUpdate);
+            }, { once: true });
+
+            // 允许播放器控件控制 enAudio（暂停/静音等）
+            mp._fxAudio = enAudio;
+        }).catch(async (err) => {
+            console.warn('英文版播放失败，尝试播放器播放:', err);
+            await mp.loadTrack(1);
+            try {
+                await mp.audio.play();
+                mp.isPlaying = true;
+                mp.updatePlayIcon();
+            } catch (e2) { console.warn('降级播放也失败:', e2); }
+        });
+    }
+
+    // 退出按钮自动隐藏管理器
+    const fxCloseManager = {
+        timer: null,
+        handler: null,
+        init() {
+            if (!fxClose || this.handler) return;
+            this.handler = () => {
+                if (!fxScreen.classList.contains('active')) return;
+                fxClose.classList.remove('btn-hidden');
+                if (this.timer) clearTimeout(this.timer);
+                this.timer = setTimeout(() => {
+                    if (fxScreen.classList.contains('active')) {
+                        fxClose.classList.add('btn-hidden');
+                    }
+                }, 1000);
+            };
+            document.addEventListener('mousemove', this.handler, { passive: true });
+            document.addEventListener('touchstart', this.handler, { passive: true });
+        },
+        show() {
+            this.init();
+            fxClose.classList.add('btn-hidden');
+        },
+        destroy() {
+            if (this.handler) {
+                document.removeEventListener('mousemove', this.handler);
+                document.removeEventListener('touchstart', this.handler);
+                this.handler = null;
+            }
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
+        }
+    };
+
+    function showFullScreenWish() {
+        switchWish();
+        fxScreen.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        startFireworks();
+        spawnBalloons();
+        spawnHearts();
+        spawnConfetti();
+        // 仅在播放时段内显示播放器并播放音乐
+        if (isPlayerPeriod) {
+            mp.player.style.display = '';
+            mp.expandPlayer();
+            // 点击提前送祝福时优先播放英文版
+            playEnglishSong();
+        }
+        // 退出按钮自动隐藏
+        fxCloseManager.show();
+    }
+
+    function hideFullScreenWish() {
+        fxScreen.classList.remove('active');
+        document.body.style.overflow = '';
+        stopFireworks();
+        // 不停止音乐 - 保持播放器继续播放
+        fxBalloons.innerHTML = '';
+        fxHearts.innerHTML = '';
+        fxConfetti.innerHTML = '';
+        fxClose.classList.add('btn-hidden');
+        if (fxCloseManager.timer) {
+            clearTimeout(fxCloseManager.timer);
+            fxCloseManager.timer = null;
+        }
+    }
+
+    blessBtn?.addEventListener('click', () => {
+        showFullScreenWish();
+    });
+    fxClose?.addEventListener('click', hideFullScreenWish);
+
+    // 祝福卡片：复制 & 切换
+    const wishCopyBtn = document.getElementById('wishCopyBtn');
+    const wishRefreshBtn = document.getElementById('wishRefreshBtn');
+    let lastWishIdx = -1;
+
+    function switchWish() {
+        let idx;
+        if (wishes.length > 1) {
+            do { idx = Math.floor(Math.random() * wishes.length); } while (idx === lastWishIdx);
+        } else {
+            idx = 0;
+        }
+        lastWishIdx = idx;
+        const wish = wishes[idx];
+        fxWishText.textContent = wish.text;
+        fxWishSub.textContent = wish.sub;
+    }
+
+    async function copyWish() {
+        const text = fxWishText.textContent + '\n' + fxWishSub.textContent;
+        let ok = false;
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+                ok = true;
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                ok = document.execCommand('copy');
+                ta.remove();
+            }
+        } catch (e) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            ok = document.execCommand('copy');
+            ta.remove();
+        }
+        if (ok) {
+            wishCopyBtn.classList.add('copied');
+            rpToast('✅ 祝福已复制');
+            setTimeout(() => wishCopyBtn.classList.remove('copied'), 1500);
+        } else {
+            rpToast('❌ 复制失败');
+        }
+    }
+
+    wishCopyBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        copyWish();
+    });
+    wishRefreshBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        wishRefreshBtn.classList.add('spinning');
+        switchWish();
+        setTimeout(() => wishRefreshBtn.classList.remove('spinning'), 500);
+    });
+    fxScreen?.addEventListener('click', (e) => {
+        if (e.target === fxScreen || e.target === fwCanvas) {
+            const ctx = fwCanvas.getContext('2d');
+            const rect = fwCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            const minY = window.innerHeight * 0.25 + 60;
+            const maxY = window.innerHeight * 0.45 + 80;
+            const y = Math.max(minY, Math.min(maxY, clickY));
+            const burstCount = window.innerWidth < 480 ? 4 : 5;
+            for (let i = 0; i < burstCount; i++) {
+                setTimeout(() => {
+                    const ox = x + (Math.random() - 0.5) * 120;
+                    const oy = y + (Math.random() - 0.5) * 60;
+                    launchFireworkAt(ctx, ox, oy);
+                }, i * 25);
+            }
+        }
+    });
+
+    // 返回主页时停止音乐
+    const homeBtn = document.querySelector('a[href="index.html#birthdayCard"]');
+    if (homeBtn) {
+        homeBtn.addEventListener('click', () => {
+            mp.stop();
+        });
+    }
+
+    // 从主页生日倒计时进入时自动播放中文版
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('auto') === '1') {
+        if (isPlayerPeriod) {
+            // 仅在播放时段内显示播放器并自动播放
+            mp.player.style.display = '';
+            mp.expandPlayer();
+            setTimeout(async () => {
+                await mp.loadTrack(0);
+                // 尝试正常自动播放
+                const playPromise = mp.audio.play();
+                if (playPromise && typeof playPromise.then === 'function') {
+                    playPromise.then(() => {
+                        mp.isPlaying = true;
+                        mp.updatePlayIcon();
+                    }).catch(() => {
+                        // 被浏览器自动播放策略阻止，尝试静音播放
+                        mp.audio.muted = true;
+                        mp.isMuted = true;
+                        mp.muteBtn.querySelector('i').className = 'fa-solid fa-volume-xmark';
+                        mp.muteBtn.classList.add('muted');
+                        mp.audio.play().then(() => {
+                            mp.isPlaying = true;
+                            mp.updatePlayIcon();
+                            // 提示用户点击取消静音
+                            const toast = document.createElement('div');
+                            toast.textContent = '🔇 自动播放已静音，点击播放器喇叭按钮开启声音';
+                            toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#fff;padding:10px 20px;border-radius:24px;z-index:9999;font-size:14px;';
+                            document.body.appendChild(toast);
+                            setTimeout(() => toast.remove(), 4000);
+                        }).catch(() => {
+                            mp.isPlaying = false;
+                            mp.updatePlayIcon();
+                        });
+                    });
+                }
+            }, 300);
+        } else {
+            // 非播放时段：强制隐藏播放器、停止任何音乐
+            mp.player.style.display = 'none';
+            mp.stop();
+        }
+    }
+
+    // 页面卸载时停止音乐
+    window.addEventListener('beforeunload', () => {
+        mp.stop();
+    });
+
+    // 红包祝福弹窗逻辑
+    const redpacketBtn = document.getElementById('redpacketBtn');
+    const redpacketModal = document.getElementById('redpacketModal');
+    const redpacketClose = document.getElementById('redpacketClose');
+
+    if (redpacketBtn && redpacketModal) {
+        redpacketBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            redpacketModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        if (redpacketClose) {
+            redpacketClose.addEventListener('click', () => {
+                redpacketModal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+
+        // 点击背景关闭
+        redpacketModal.addEventListener('click', (e) => {
+            if (e.target === redpacketModal) {
+                redpacketModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ESC键关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && redpacketModal.classList.contains('active')) {
+                redpacketModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // 二维码点击指引逻辑
+    const scanTip = document.getElementById('scanTip');
+    const scanTipClose = document.getElementById('scanTipClose');
+    const scanTipDesc = document.getElementById('scanTipDesc');
+    const scanTipApp = document.getElementById('scanTipApp');
+    const qrItems = document.querySelectorAll('.qr-item');
+
+    qrItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const img = item.querySelector('.qr-img');
+            const app = item.dataset.app || '微信';
+            const tip = img?.dataset.tip || '';
+            scanTipDesc.textContent = tip;
+            scanTipApp.textContent = app;
+            scanTip.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    const closeScanTip = () => {
+        scanTip.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    scanTipClose?.addEventListener('click', closeScanTip);
+    scanTip?.addEventListener('click', (e) => {
+        if (e.target === scanTip) closeScanTip();
+    });
+
+    // 单张收款码下载图片（fetch→blob，CORS 失败回退新标签页打开）
+    const rpToast = (msg) => {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:#fff;padding:10px 20px;border-radius:24px;z-index:100002;font-size:14px;max-width:80vw;text-align:center;';
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    };
+    const rpDlBtns = document.querySelectorAll('.qr-download-btn');
+    // 收款码本地托管（同源）：http(s) 用 fetch→blob，file:// 协议 fetch 被拦时回退 <a download>
+    rpDlBtns.forEach(btn => {
+        btn.addEventListener('click', async (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const item = btn.closest('.qr-item');
+            const img = item && item.querySelector('.qr-img');
+            if (!img || !img.src) return;
+            const src = img.src;
+            const alt = img.alt || '收款码';
+            const ext = (src.match(/\.(png|jpe?g|webp|gif)$/i) || [, 'png'])[1].toLowerCase();
+            const filename = `${alt}_${Date.now()}.${ext}`;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 下载中';
+            btn.classList.add('downloading');
+            const triggerAnchor = (href, download) => {
+                const a = document.createElement('a');
+                a.href = href;
+                if (download) a.download = download;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            };
+            try {
+                // 优先 fetch→blob：http(s) 下生成 blob URL，下载最稳定且不会打开图片
+                const resp = await fetch(src);
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const blob = await resp.blob();
+                if (!blob || blob.size === 0) throw new Error('空响应');
+                const url = URL.createObjectURL(blob);
+                triggerAnchor(url, filename);
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                rpToast('✅ 图片下载成功');
+            } catch (err) {
+                // file:// 协议下 fetch 被浏览器拦截，改用同源 <a download> 直接触发下载
+                triggerAnchor(src, filename);
+                rpToast('✅ 已开始下载');
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('downloading');
+            }
+        });
+    });
+})();
+</script>
+<style>
+/* 深色模式背景覆盖 */
+[data-theme="dark"] body {
+    background: transparent;
+}
+[data-theme="dark"] .bday-note a:hover {
+    color: var(--color-accent-hover);
+}
+[data-theme="dark"] .bday-actions .btn-bless {
+        background: linear-gradient(145deg,
+                    #4A3A6A 0%,
+                    #3D2E58 55%,
+                    #2D1F42 100%);
+        color: #F39C70;
+        border: 1.5px solid rgba(230, 126, 82, 0.35);
+        box-shadow:
+                    0 4px 16px rgba(0, 0, 0, 0.5),
+                    0 0 10px rgba(120, 100, 160, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+[data-theme="dark"] .bday-actions .btn-bless:hover {
+        background: linear-gradient(145deg,
+                    #5A4A7A 0%,
+                    #4D3E68 55%,
+                    #3D2F52 100%);
+        border-color: rgba(230, 126, 82, 0.5);
+        box-shadow:
+                    0 8px 24px rgba(0, 0, 0, 0.55),
+                    0 0 14px rgba(140, 110, 180, 0.45),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+[data-theme="dark"] .fx-wish-card {
+    background: linear-gradient(145deg, #2a2a3a, #1e1e2e);
+    box-shadow: 0 25px 60px rgba(245, 87, 108, 0.3), 0 0 80px rgba(240, 147, 251, 0.2);
+}
+[data-theme="dark"] .fx-wish-text {
+    color: #f0f0f0;
+}
+[data-theme="dark"] .fx-wish-sub {
+    color: #aaa;
+}
+[data-theme="dark"] .fx-wish-btn {
+    background: rgba(60, 50, 80, 0.6);
+    color: #bbb;
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+[data-theme="dark"] .fx-wish-btn:hover {
+    background: rgba(80, 65, 110, 0.75);
+    color: var(--color-accent-hover);
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .fx-wish-btn.copied {
+    color: #73d13d;
+    background: rgba(82, 196, 26, 0.15);
+}
+[data-theme="dark"] .fx-close {
+    background: radial-gradient(circle at 35% 30%,
+                rgba(130, 105, 170, 0.5) 0%,
+                rgba(50, 45, 75, 0.95) 55%,
+                rgba(28, 28, 48, 0.98) 100%);
+    border: 1.5px solid rgba(140, 120, 175, 0.35);
+    color: #ccc;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55),
+                0 0 12px rgba(120, 100, 160, 0.4),
+                0 0 24px rgba(70, 110, 120, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.06);
+}
+[data-theme="dark"] .fx-close:hover {
+    background: radial-gradient(circle at 35% 30%,
+                rgba(150, 120, 190, 0.6) 0%,
+                rgba(60, 55, 85, 0.95) 55%,
+                rgba(32, 32, 55, 0.98) 100%);
+    border-color: rgba(160, 130, 195, 0.6);
+    color: #f5576c;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55),
+                0 0 16px rgba(130, 110, 175, 0.5),
+                0 0 28px rgba(75, 120, 130, 0.35),
+                inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    transform: translateX(-50%) scale(1.12);
+}
+[data-theme="dark"] .fx-close:active {
+    transform: translateX(-50%) scale(0.88);
+    background: radial-gradient(circle at 35% 30%,
+                rgba(160, 130, 200, 0.7) 0%,
+                rgba(55, 50, 80, 0.95) 55%,
+                rgba(30, 30, 52, 0.98) 100%);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5),
+                0 0 8px rgba(120, 100, 160, 0.3),
+                0 0 16px rgba(70, 110, 120, 0.25),
+                inset 0 2px 4px rgba(0, 0, 0, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.06);
+    transition-duration: 0.12s;
+}
+[data-theme="dark"] .fx-close::after {
+    background: radial-gradient(circle,
+                rgba(130, 110, 175, 0.45) 0%,
+                rgba(70, 110, 120, 0.3) 40%,
+                transparent 70%);
+}
+[data-theme="dark"] .redpacket-card {
+    background: #1e1e2e;
+    color: #eee;
+}
+[data-theme="dark"] .redpacket-title {
+    color: #f5576c;
+}
+[data-theme="dark"] .redpacket-desc {
+    color: #aaa;
+}
+[data-theme="dark"] .qr-img {
+    background: #f0f0f0;
+    border-color: #444;
+}
+[data-theme="dark"] .qr-label {
+    color: #ddd;
+}
+[data-theme="dark"] .redpacket-close {
+    background: rgba(255,255,255,0.1);
+    color: #ccc;
+}
+[data-theme="dark"] .redpacket-close:hover {
+    background: #f5576c;
+    color: #fff;
+}
+[data-theme="dark"] .wish-card-redpacket {
+    background: rgba(245, 87, 108, 0.15);
+    border-color: rgba(245, 87, 108, 0.4);
+    color: #f5576c;
+}
+[data-theme="dark"] .wish-card-redpacket:hover {
+    background: rgba(245, 87, 108, 0.25);
+    color: #ff6b8a;
+}
+[data-theme="dark"] .scan-tip-content {
+    background: #1e1e2e;
+    color: #eee;
+}
+[data-theme="dark"] .scan-tip-title {
+    color: #f5576c;
+}
+[data-theme="dark"] .scan-tip-desc {
+    color: #aaa;
+}
+[data-theme="dark"] .scan-tip-steps {
+    background: rgba(255,255,255,0.06);
+}
+[data-theme="dark"] .scan-tip-steps p {
+    color: #ccc;
+}
+[data-theme="dark"] .scan-tip-steps #scanTipApp {
+    color: #f5576c;
+}
+</style>
+<script>
+/* ---------- 樱花飘落全局特效（与 index.html 一致） ---------- */
+(function initSakura() {
+    const canvas = document.createElement('canvas');
+    canvas.className = 'sakura-canvas';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+
+    let petals = [];
+    let animationId = null;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    // 根据屏幕宽度调整花瓣数量（移动端少一些以保证性能）
+    function getPetalCount() {
+        const w = window.innerWidth;
+        if (w <= 430) return 15;
+        if (w <= 768) return 25;
+        if (w <= 1080) return 35;
+        return 45;
+    }
+
+    function createPetal(fromTop) {
+        return {
+            x: Math.random() * canvas.width,
+            y: fromTop ? -20 - Math.random() * 100 : Math.random() * canvas.height,
+            size: Math.random() * 6 + 5,
+            speedY: Math.random() * 1.2 + 0.4,
+            speedX: Math.random() * 0.6 - 0.3,
+            sway: Math.random() * 2 + 1,
+            swaySpeed: Math.random() * 0.015 + 0.008,
+            swayOffset: Math.random() * Math.PI * 2,
+            angle: Math.random() * Math.PI * 2,
+            rotation: (Math.random() - 0.5) * 0.03,
+            opacity: Math.random() * 0.4 + 0.4,
+            hue: Math.random() * 20 - 10
+        };
+    }
+
+    function initPetals() {
+        const count = getPetalCount();
+        petals = [];
+        for (let i = 0; i < count; i++) petals.push(createPetal(false));
+    }
+
+    function drawPetal(p) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.globalAlpha = p.opacity;
+        const size = p.size;
+        // 樱花粉色花瓣
+        ctx.fillStyle = `hsl(${340 + p.hue}, 70%, 85%)`;
+        ctx.beginPath();
+        ctx.moveTo(0, -size);
+        ctx.bezierCurveTo(size * 0.5, -size * 0.8, size * 0.5, size * 0.3, 0, size);
+        ctx.bezierCurveTo(-size * 0.5, size * 0.3, -size * 0.5, -size * 0.8, 0, -size);
+        ctx.fill();
+        // 花瓣顶端凹口
+        ctx.fillStyle = `hsl(${340 + p.hue}, 60%, 92%)`;
+        ctx.beginPath();
+        ctx.arc(0, -size * 0.65, size * 0.13, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < petals.length; i++) {
+            const p = petals[i];
+            p.y += p.speedY;
+            p.x += Math.sin(p.swayOffset + p.y * p.swaySpeed) * p.sway * 0.3 + p.speedX;
+            p.angle += p.rotation;
+            if (p.y > canvas.height + 20 || p.x < -30 || p.x > canvas.width + 30) {
+                petals[i] = createPetal(true);
+            }
+            drawPetal(p);
+        }
+        animationId = requestAnimationFrame(animate);
+    }
+
+    // 页面切到后台时暂停动画（节省性能）
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+        } else {
+            if (!animationId) animate();
+        }
+    });
+
+    resize();
+    initPetals();
+    animate();
+
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+        resize();
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(initPetals, 300);
+    });
+})();
+</script>
+</body>
+</html>

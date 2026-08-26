@@ -1,0 +1,22 @@
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 日志
+*.log
+npm-debug.log*
+
+# Node（虽然本项目无依赖，但保留以防万一）
+node_modules/
+
+# 系统临时文件
+*.tmp
+*.bak
