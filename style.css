@@ -128,38 +128,61 @@ body {
             #E8EED8 65%, 
             #D4E8D0 85%, 
             #C8E0C8 100%);
-    background-size: 240% 240%;
+    background-size: 340% 340%;
     animation:
-        liquidFlow 22s ease-in-out infinite alternate,
+        liquidFlow 11s ease-in-out infinite alternate,
         hueShift 60s linear infinite;
 }
 
 @keyframes liquidFlow {
     0%   { background-position: 0% 0%; }
-    100% { background-position: 100% 100%; }
+    25%  { background-position: 70% 25%; }
+    50%  { background-position: 100% 60%; }
+    75%  { background-position: 35% 85%; }
+    100% { background-position: 5% 100%; }
 }
 @keyframes hueShift {
     0%   { filter: hue-rotate(0deg); }
     100% { filter: hue-rotate(360deg); }
 }
 
-/* 全局彩色光斑叠加层（液态流动） */
+/* 液态波光高光层（水面波光粼粼） */
+.bg-gradient-layer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 55% 38% at 28% 22%, rgba(255, 255, 255, 0.32), transparent 68%),
+        radial-gradient(ellipse 45% 32% at 72% 55%, rgba(255, 255, 255, 0.24), transparent 68%),
+        radial-gradient(ellipse 50% 34% at 50% 88%, rgba(255, 255, 255, 0.20), transparent 68%);
+    background-size: 220% 220%;
+    animation: waveSheen 15s ease-in-out infinite alternate;
+}
+
+@keyframes waveSheen {
+    0%   { background-position: 0% 0%; opacity: 0.55; }
+    100% { background-position: 100% 100%; opacity: 0.9; }
+}
+
+/* 全局彩色光斑叠加层（液态流动 + 呼吸） */
 .bg-gradient-layer::after {
     content: '';
     position: absolute;
     inset: 0;
     background: 
-        radial-gradient(ellipse 60% 50% at 20% 30%, rgba(255, 180, 140, 0.5), transparent 70%),
-        radial-gradient(ellipse 55% 45% at 80% 40%, rgba(170, 210, 160, 0.5), transparent 70%),
-        radial-gradient(ellipse 40% 35% at 60% 80%, rgba(255, 200, 180, 0.4), transparent 70%),
-        radial-gradient(ellipse 35% 30% at 30% 85%, rgba(190, 220, 180, 0.35), transparent 70%);
-    background-size: 200% 200%;
-    animation: blobFlow 26s ease-in-out infinite alternate;
+        radial-gradient(ellipse 62% 52% at 20% 30%, rgba(255, 180, 140, 0.55), transparent 72%),
+        radial-gradient(ellipse 57% 47% at 80% 40%, rgba(170, 210, 160, 0.55), transparent 72%),
+        radial-gradient(ellipse 42% 37% at 60% 80%, rgba(255, 200, 180, 0.45), transparent 72%),
+        radial-gradient(ellipse 36% 31% at 30% 85%, rgba(190, 220, 180, 0.4), transparent 72%);
+    background-size: 240% 240%;
+    animation: blobFlow 13s ease-in-out infinite alternate;
 }
 
 @keyframes blobFlow {
-    0%   { background-position: 0% 0%; }
-    100% { background-position: 100% 100%; }
+    0%   { background-position: 0% 0%; transform: scale(1); }
+    50%  { background-position: 45% 55%; transform: scale(1.06); }
+    100% { background-position: 100% 100%; transform: scale(0.96); }
 }
 
 /* 全局光点 */
@@ -185,11 +208,11 @@ body {
 
 @keyframes sparkleFloat {
     0%, 100% { 
-        transform: translate(0, 0) scale(0.9); 
-        opacity: 0.55;
+        transform: translate(0, 0) scale(0.85); 
+        opacity: 0.5;
     }
     50% { 
-        transform: translate(26px, -40px) scale(1.7); 
+        transform: translate(34px, -52px) scale(1.8); 
         opacity: 1;
     }
 }
@@ -250,6 +273,7 @@ body {
     .navbar::before,
     body::before,
     .bg-gradient-layer,
+    .bg-gradient-layer::before,
     .bg-gradient-layer::after,
     .bg-gradient-layer .sparkle { animation: none; }
 }
@@ -5239,19 +5263,27 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
             #1F2530 65%, 
             #1A2828 85%, 
             #182028 100%);
-    background-size: 240% 240%;
+    background-size: 340% 340%;
     animation:
-        liquidFlow 22s ease-in-out infinite alternate,
+        liquidFlow 11s ease-in-out infinite alternate,
         hueShift 60s linear infinite;
+}
+[data-theme="dark"] .bg-gradient-layer::before {
+    background:
+        radial-gradient(ellipse 55% 38% at 28% 22%, rgba(255, 255, 255, 0.10), transparent 68%),
+        radial-gradient(ellipse 45% 32% at 72% 55%, rgba(255, 255, 255, 0.08), transparent 68%),
+        radial-gradient(ellipse 50% 34% at 50% 88%, rgba(255, 255, 255, 0.06), transparent 68%);
+    background-size: 220% 220%;
+    animation: waveSheen 15s ease-in-out infinite alternate;
 }
 [data-theme="dark"] .bg-gradient-layer::after {
     background: 
-        radial-gradient(ellipse 60% 50% at 20% 30%, rgba(230, 126, 82, 0.25), transparent 70%),
-        radial-gradient(ellipse 55% 45% at 80% 40%, rgba(107, 142, 81, 0.2), transparent 70%),
-        radial-gradient(ellipse 40% 35% at 60% 80%, rgba(180, 100, 70, 0.2), transparent 70%),
-        radial-gradient(ellipse 35% 30% at 30% 85%, rgba(70, 100, 80, 0.18), transparent 70%);
-    background-size: 200% 200%;
-    animation: blobFlow 26s ease-in-out infinite alternate;
+        radial-gradient(ellipse 62% 52% at 20% 30%, rgba(230, 126, 82, 0.28), transparent 72%),
+        radial-gradient(ellipse 57% 47% at 80% 40%, rgba(107, 142, 81, 0.24), transparent 72%),
+        radial-gradient(ellipse 42% 37% at 60% 80%, rgba(180, 100, 70, 0.22), transparent 72%),
+        radial-gradient(ellipse 36% 31% at 30% 85%, rgba(70, 100, 80, 0.2), transparent 72%);
+    background-size: 240% 240%;
+    animation: blobFlow 13s ease-in-out infinite alternate;
 }
 [data-theme="dark"] .bg-gradient-layer .sparkle {
     background: rgba(255, 255, 255, 0.5);
