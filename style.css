@@ -28,34 +28,36 @@
     --shadow-sm: 0 2px 8px rgba(58, 58, 58, 0.06);
     --shadow-md: 0 6px 24px rgba(58, 58, 58, 0.08);
     --shadow-lg: 0 16px 48px rgba(58, 58, 58, 0.10);
-    /* 液态玻璃变量 - 高透明度版 */
-    --glass-bg: rgba(255, 255, 255, 0.18);
-    --glass-bg-strong: rgba(255, 255, 255, 0.30);
-    --glass-border: rgba(255, 255, 255, 0.45);
-    --glass-blur: blur(28px) saturate(200%);
-    --glass-blur-strong: blur(48px) saturate(220%);
+    /* 液态玻璃变量 - Apple Liquid Glass 质感（更通透 + 四边边缘高光） */
+    --glass-bg: rgba(255, 255, 255, 0.14);
+    --glass-bg-strong: rgba(255, 255, 255, 0.26);
+    --glass-border: rgba(255, 255, 255, 0.55);
+    --glass-blur: blur(30px) saturate(180%);
+    --glass-blur-strong: blur(52px) saturate(200%);
     --glass-shadow: 0 8px 32px rgba(58, 58, 58, 0.10),
-                    inset 0 1px 1px rgba(255, 255, 255, 0.85),
-                    inset 0 -2px 4px rgba(255, 255, 255, 0.10),
-                    inset 2px 0 4px rgba(255, 255, 255, 0.20),
-                    inset -2px 0 4px rgba(255, 255, 255, 0.10),
-                    inset 0 8px 16px rgba(255, 255, 255, 0.04);
-    --glass-shadow-hover: 0 20px 60px rgba(58, 58, 58, 0.15),
-                          inset 0 1px 2px rgba(255, 255, 255, 0.95),
-                          inset 0 -2px 4px rgba(255, 255, 255, 0.18),
-                          inset 2px 0 4px rgba(255, 255, 255, 0.30),
-                          inset -2px 0 4px rgba(255, 255, 255, 0.15),
-                          inset 0 12px 24px rgba(255, 255, 255, 0.08);
+                    inset 0 0 0 0.5px rgba(255, 255, 255, 0.60),
+                    inset 0 1px 1px rgba(255, 255, 255, 0.95),
+                    inset 0 -1px 1px rgba(255, 255, 255, 0.30),
+                    inset 1px 0 1px rgba(255, 255, 255, 0.35),
+                    inset -1px 0 1px rgba(255, 255, 255, 0.35),
+                    inset 0 8px 20px rgba(255, 255, 255, 0.05);
+    --glass-shadow-hover: 0 20px 60px rgba(58, 58, 58, 0.16),
+                          inset 0 0 0 0.5px rgba(255, 255, 255, 0.75),
+                          inset 0 1px 2px rgba(255, 255, 255, 1),
+                          inset 0 -1px 1px rgba(255, 255, 255, 0.40),
+                          inset 1px 0 1px rgba(255, 255, 255, 0.50),
+                          inset -1px 0 1px rgba(255, 255, 255, 0.50),
+                          inset 0 12px 28px rgba(255, 255, 255, 0.08);
     --glass-highlight: linear-gradient(180deg,
-        rgba(255, 255, 255, 0.35) 0%,
-        rgba(255, 255, 255, 0.08) 40%,
-        transparent 100%);
+        rgba(255, 255, 255, 0.42) 0%,
+        rgba(255, 255, 255, 0.14) 45%,
+        rgba(255, 255, 255, 0.02) 100%);
     --glass-sheen: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.25) 0%,
-        rgba(255, 255, 255, 0.04) 25%,
-        rgba(255, 255, 255, 0.12) 50%,
-        rgba(255, 255, 255, 0.04) 75%,
-        rgba(255, 255, 255, 0.25) 100%);
+        rgba(255, 255, 255, 0.35) 0%,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.18) 50%,
+        rgba(255, 255, 255, 0.05) 75%,
+        rgba(255, 255, 255, 0.35) 100%);
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
@@ -212,15 +214,15 @@ body {
 .music-player-expanded::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 65%;
+    inset: 0;
     border-radius: inherit;
-    background: linear-gradient(180deg,
-        rgba(255, 255, 255, 0.14) 0%,
-        rgba(255, 255, 255, 0.04) 40%,
-        transparent 100%);
+    background:
+        /* 顶部边缘玻璃高光线（Apple 液态玻璃顶边反光） */
+        linear-gradient(180deg, rgba(255, 255, 255, 0.90) 0%, rgba(255, 255, 255, 0.14) 4%, rgba(255, 255, 255, 0) 9%),
+        /* 上部大面积柔和高光 */
+        linear-gradient(180deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.06) 42%, rgba(255, 255, 255, 0) 100%),
+        /* 斜向光泽 */
+        linear-gradient(135deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.04) 30%, rgba(255, 255, 255, 0.14) 55%, rgba(255, 255, 255, 0.04) 80%, rgba(255, 255, 255, 0.20) 100%);
     pointer-events: none;
     z-index: -1;
 }
@@ -5182,32 +5184,35 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.45);
     --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
     /* 深色模式液态玻璃变量 */
-    --glass-bg: rgba(40, 35, 50, 0.55);
-    --glass-bg-strong: rgba(50, 42, 62, 0.65);
-    --glass-border: rgba(200, 180, 160, 0.18);
-    --glass-blur: blur(28px) saturate(200%);
-    --glass-blur-strong: blur(48px) saturate(220%);
+    --glass-bg: rgba(40, 35, 52, 0.48);
+    --glass-bg-strong: rgba(48, 42, 62, 0.58);
+    --glass-border: rgba(200, 190, 220, 0.22);
+    --glass-blur: blur(30px) saturate(180%);
+    --glass-blur-strong: blur(52px) saturate(200%);
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.50),
-                    inset 0 1px 1px rgba(255, 255, 255, 0.06),
-                    inset 0 -2px 4px rgba(0, 0, 0, 0.25),
-                    inset 2px 0 4px rgba(255, 255, 255, 0.04),
-                    inset -2px 0 4px rgba(255, 255, 255, 0.02),
+                    inset 0 0 0 0.5px rgba(255, 255, 255, 0.10),
+                    inset 0 1px 1px rgba(255, 255, 255, 0.10),
+                    inset 0 -1px 1px rgba(0, 0, 0, 0.30),
+                    inset 1px 0 1px rgba(255, 255, 255, 0.06),
+                    inset -1px 0 1px rgba(255, 255, 255, 0.06),
                     inset 0 8px 16px rgba(0, 0, 0, 0.15);
     --glass-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.60),
-                          inset 0 1px 2px rgba(255, 255, 255, 0.08),
-                          inset 0 -2px 4px rgba(0, 0, 0, 0.35),
-                          inset 2px 0 4px rgba(255, 255, 255, 0.06),
-                          inset -2px 0 4px rgba(255, 255, 255, 0.04);
+                          inset 0 0 0 0.5px rgba(255, 255, 255, 0.14),
+                          inset 0 1px 2px rgba(255, 255, 255, 0.12),
+                          inset 0 -1px 1px rgba(0, 0, 0, 0.35),
+                          inset 1px 0 1px rgba(255, 255, 255, 0.08),
+                          inset -1px 0 1px rgba(255, 255, 255, 0.08),
+                          inset 0 12px 24px rgba(0, 0, 0, 0.18);
     --glass-highlight: linear-gradient(180deg,
-        rgba(255, 255, 255, 0.06) 0%,
-        rgba(255, 255, 255, 0.015) 40%,
+        rgba(255, 255, 255, 0.09) 0%,
+        rgba(255, 255, 255, 0.025) 45%,
         transparent 100%);
     --glass-sheen: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.08) 0%,
-        rgba(255, 255, 255, 0.015) 25%,
-        rgba(255, 255, 255, 0.05) 50%,
-        rgba(255, 255, 255, 0.015) 75%,
-        rgba(255, 255, 255, 0.08) 100%);
+        rgba(255, 255, 255, 0.10) 0%,
+        rgba(255, 255, 255, 0.02) 25%,
+        rgba(255, 255, 255, 0.06) 50%,
+        rgba(255, 255, 255, 0.02) 75%,
+        rgba(255, 255, 255, 0.10) 100%);
     /* 深色模式导航栏彩色光斑变量 */
     --nav-blob-1: rgba(130, 105, 170, 0.32);
     --nav-blob-2: rgba(70, 110, 120, 0.32);
