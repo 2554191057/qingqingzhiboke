@@ -21,7 +21,7 @@
 - 撤销未提交的改动（还原到最近提交）：`git restore .`
 - 恢复被误删的文件：`git restore <文件路径>` 或 `git checkout HEAD -- <文件路径>`
 - 回退到某次快照：`git reset --hard <commit>`（误操作后仍可用 `git reflog` 找回）
-- 用户也可以双击项目根目录的 `rollback.bat` 使用回溯工具。
+- 回溯统一走 Git/Gitee：本地每次提交都已同步到 Gitee 远程仓库，需要回退时直接用上面的 Git 命令即可。
 
 ## 环境
 - Git 安装在 `D:\Git\cmd`。若当前终端找不到 `git` 命令，把 `D:\Git\cmd` 加入 PATH 或使用完整路径 `D:\Git\cmd\git.exe`。
