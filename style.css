@@ -112,34 +112,33 @@ body {
     padding-right: env(safe-area-inset-right);
 }
 
-/* 全局 iOS 液态玻璃背景层（替代原彩色光斑） */
+/* 全局 iOS 液态玻璃背景层：透过毛玻璃看到日间街景 */
 .bg-gradient-layer {
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
-    /* 磨砂玻璃基底：柔和通透的日间光感 */
-    background:
-        radial-gradient(ellipse 95% 72% at 12% 16%, rgba(255, 255, 255, 0.95), transparent 62%),
-        radial-gradient(ellipse 80% 60% at 88% 20%, rgba(224, 236, 255, 0.88), transparent 60%),
-        radial-gradient(ellipse 85% 64% at 62% 96%, rgba(240, 230, 255, 0.85), transparent 62%),
-        linear-gradient(155deg, #f8fbff 0%, #eef4ff 40%, #f3eeff 66%, #edf6ff 100%);
+    /* 透过毛玻璃看到的日间街景（作为底层实景） */
+    background-image: url('bg-city-glass.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: scale(1.08);
 }
 
-/* 液态玻璃：大块磨砂光斑（折射环境光） */
+/* 液态玻璃：全屏毛玻璃面板（模糊街景 + 半透明提亮） */
 .bg-gradient-layer::before {
     content: '';
     position: absolute;
-    inset: -30%;
+    inset: -40px;
     pointer-events: none;
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
     background:
-        radial-gradient(ellipse 40% 34% at 26% 30%, rgba(255, 255, 255, 0.72), transparent 68%),
-        radial-gradient(ellipse 34% 30% at 76% 44%, rgba(200, 220, 255, 0.5), transparent 68%),
-        radial-gradient(ellipse 30% 26% at 52% 82%, rgba(228, 210, 255, 0.46), transparent 68%),
-        radial-gradient(ellipse 26% 22% at 18% 82%, rgba(214, 240, 255, 0.42), transparent 68%);
-    opacity: 0.85;
-    animation: glassOrbDrift 38s ease-in-out infinite;
+        radial-gradient(ellipse 70% 55% at 25% 18%, rgba(255, 255, 255, 0.4), transparent 70%),
+        radial-gradient(ellipse 60% 45% at 80% 28%, rgba(230, 240, 255, 0.3), transparent 70%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0.28) 45%, rgba(248, 250, 255, 0.42) 100%);
 }
 
 /* 液态玻璃：斜向镜面高光扫过 */
@@ -181,10 +180,6 @@ body {
 .bg-gradient-layer .sparkle:nth-child(9) { left: 55%; top: 45%; animation-delay: -4s;  animation-duration: 8s;  }
 .bg-gradient-layer .sparkle:nth-child(10){ left: 30%; top: 25%; animation-delay: -7s;  animation-duration: 10s; }
 
-@keyframes glassOrbDrift {
-    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-    50%      { transform: translate3d(-2%, 1.5%, 0) scale(1.06); }
-}
 @keyframes glassSheen {
     0%, 100% { background-position: 120% 0%; }
     50%      { background-position: -20% 100%; }
@@ -5226,21 +5221,21 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     background-color: var(--color-bg);
 }
 
-/* 深色模式液态玻璃背景层 */
+/* 深色模式液态玻璃背景层（夜间压暗的街景玻璃） */
 [data-theme="dark"] .bg-gradient-layer {
-    background:
-        radial-gradient(ellipse 95% 72% at 12% 16%, rgba(72, 66, 100, 0.9), transparent 62%),
-        radial-gradient(ellipse 80% 60% at 88% 20%, rgba(40, 52, 82, 0.92), transparent 60%),
-        radial-gradient(ellipse 85% 64% at 62% 96%, rgba(52, 46, 78, 0.9), transparent 62%),
-        linear-gradient(155deg, #1e1c31 0%, #171a2d 40%, #1e1934 66%, #141b2a 100%);
+    background-image: url('bg-city-glass.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: scale(1.08);
 }
 [data-theme="dark"] .bg-gradient-layer::before {
+    backdrop-filter: blur(16px) saturate(1.1);
+    -webkit-backdrop-filter: blur(16px) saturate(1.1);
     background:
-        radial-gradient(ellipse 40% 34% at 26% 30%, rgba(158, 148, 212, 0.3), transparent 68%),
-        radial-gradient(ellipse 34% 30% at 76% 44%, rgba(96, 128, 200, 0.24), transparent 68%),
-        radial-gradient(ellipse 30% 26% at 52% 82%, rgba(160, 118, 214, 0.22), transparent 68%),
-        radial-gradient(ellipse 26% 22% at 18% 82%, rgba(86, 148, 190, 0.2), transparent 68%);
-    opacity: 0.65;
+        radial-gradient(ellipse 70% 55% at 25% 18%, rgba(74, 68, 104, 0.5), transparent 70%),
+        radial-gradient(ellipse 60% 45% at 80% 28%, rgba(46, 58, 92, 0.44), transparent 70%),
+        linear-gradient(180deg, rgba(30, 28, 46, 0.6) 0%, rgba(23, 25, 44, 0.5) 45%, rgba(28, 26, 48, 0.6) 100%);
 }
 [data-theme="dark"] .bg-gradient-layer::after {
     background:
