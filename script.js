@@ -622,19 +622,22 @@
       icon.className = 'toast-icon fa-solid ' + (isError ? 'fa-circle-xmark' : 'fa-circle-check');
     }
 
-    // 测量：解除所有尺寸约束
+    // 测量：解除所有尺寸约束，按单行测文字自然宽度
     toast.style.maxWidth = 'none';
     toast.style.width = 'auto';
     toast.style.minWidth = '0';
     toast.style.transition = 'none';
     label.style.maxWidth = 'none';
+    label.style.whiteSpace = 'nowrap';
+    toast.style.whiteSpace = 'nowrap';
 
     requestAnimationFrame(() => {
       label.textContent = text;
       toast.classList.toggle('error', !!isError);
 
       const naturalW = toast.scrollWidth;
-      const targetW = Math.min(Math.max(naturalW, 180), maxAllowed);
+      // 目标宽度按单行自然宽度自适应（≥180px），允许突破视口以完整单行显示；上限 560px 防止超长文字爆屏
+      const targetW = Math.min(Math.max(naturalW, 180), Math.max(maxAllowed, 560));
 
       // 恢复过渡
       requestAnimationFrame(() => {
