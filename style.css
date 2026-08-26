@@ -3445,6 +3445,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     max-width: 0;
     overflow: hidden;
     white-space: nowrap;
+    flex-shrink: 0;
     transition:
         opacity 0.3s ease,
         transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -5420,6 +5421,38 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     border-color: rgba(230, 126, 82, 0.3);
 }
 
+/* 深色模式「关于我」卡片强化：精致玻璃质感 + 紫青彩色光斑 + 清晰描边 */
+[data-theme="dark"] .about-card {
+    background:
+        radial-gradient(ellipse 130% 90% at 15% 0%, rgba(130, 105, 170, 0.14), transparent 55%),
+        radial-gradient(ellipse 110% 75% at 100% 100%, rgba(70, 110, 130, 0.12), transparent 55%),
+        linear-gradient(160deg, rgba(46, 40, 62, 0.66) 0%, rgba(36, 32, 48, 0.72) 100%);
+    border: 1px solid rgba(210, 195, 235, 0.18);
+    backdrop-filter: blur(26px) saturate(170%);
+    -webkit-backdrop-filter: blur(26px) saturate(170%);
+    box-shadow:
+        0 12px 36px rgba(0, 0, 0, 0.45),
+        inset 0 1px 1px rgba(255, 255, 255, 0.10),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.30),
+        0 0 30px rgba(110, 90, 150, 0.10);
+}
+[data-theme="dark"] .about-card:hover {
+    background:
+        radial-gradient(ellipse 130% 90% at 15% 0%, rgba(130, 105, 170, 0.20), transparent 55%),
+        radial-gradient(ellipse 110% 75% at 100% 100%, rgba(70, 110, 130, 0.18), transparent 55%),
+        linear-gradient(160deg, rgba(50, 43, 68, 0.70) 0%, rgba(40, 35, 54, 0.76) 100%);
+    border-color: rgba(230, 126, 82, 0.35);
+    box-shadow:
+        0 18px 48px rgba(0, 0, 0, 0.55),
+        inset 0 1px 1px rgba(255, 255, 255, 0.12),
+        0 0 40px rgba(130, 105, 170, 0.18);
+}
+[data-theme="dark"] .about-card:active {
+    border-color: rgba(230, 126, 82, 0.50);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.50),
+        inset 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
 /* 深色模式各 section 背景透明，使用 body 深色 */
 [data-theme="dark"] .about-section,
 [data-theme="dark"] .social-section,
@@ -6151,11 +6184,29 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     opacity: 0.6;
 }
 
-/* 深色模式关于我图标 */
+/* 深色模式关于我图标 - 柔和紫橙渐变 + 品牌色发光 */
 [data-theme="dark"] .about-icon {
-    background: var(--color-accent-light);
-    color: var(--color-accent);
-    border: 1px solid rgba(230, 126, 82, 0.2);
+    background: linear-gradient(145deg,
+        rgba(230, 126, 82, 0.30) 0%,
+        rgba(140, 100, 170, 0.22) 55%,
+        rgba(70, 62, 100, 0.30) 100%);
+    border: 1px solid rgba(255, 170, 120, 0.25);
+    color: #FFB48A;
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.35),
+        inset 0 1px 1px rgba(255, 255, 255, 0.18),
+        0 0 18px rgba(230, 126, 82, 0.15);
+}
+/* 深色模式关于我标题：暖橙渐变强调 */
+[data-theme="dark"] .about-card h3 {
+    background: linear-gradient(135deg, #FFC8A6, #E8926A);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+/* 深色模式关于我正文：亮灰提升可读性 */
+[data-theme="dark"] .about-card p {
+    color: #C9C2D6;
 }
 
 /* 深色模式社交图标保持品牌色 */
