@@ -283,7 +283,10 @@ body {
     .bg-gradient-layer::after,
     .bg-gradient-layer .sparkle,
     .nav-toggle::before,
-    .theme-toggle::before { animation: none; }
+    .theme-toggle::before,
+    .hero-scroll-hint,
+    .section-scroll-down,
+    .back-to-top { animation: none; }
 }
 
 .container {
@@ -1040,6 +1043,7 @@ img { max-width: 100%; display: block; }
     align-items: center;
     justify-content: center;
     background: radial-gradient(circle at 35% 30%, #FFB88C, var(--color-accent) 60%, var(--color-accent-hover));
+    background-size: 220% 220%;
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
@@ -1048,7 +1052,8 @@ img { max-width: 100%; display: block; }
                 0 2px 8px rgba(230,126,82,0.2),
                 inset 0 2px 4px rgba(255,255,255,0.45),
                 inset 0 -2px 6px rgba(0,0,0,0.1);
-    animation: heroScrollBounce 2s ease-in-out infinite;
+    animation: btnFlow 6s ease-in-out infinite alternate,
+               heroScrollBounce 2s ease-in-out infinite;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     z-index: 10;
     text-decoration: none;
@@ -3393,6 +3398,9 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     width: auto;
     max-width: var(--toast-w, 360px);
     min-width: 180px;
+    height: auto;
+    min-height: 40px;
+    white-space: normal;
     padding: 10px 20px;
     gap: 10px;
     pointer-events: auto;
@@ -3445,6 +3453,10 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     opacity: 1;
     transform: translateX(0);
     max-width: none;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.45;
 }
 
 /* 外层光晕 */
@@ -3647,6 +3659,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
                 rgba(255, 200, 155, 0.75) 0%,
                 rgba(255, 180, 140, 0.85) 40%,
                 rgba(230, 126, 82, 0.9) 100%) !important;
+    background-size: 220% 220%;
     backdrop-filter: var(--glass-blur-strong);
     -webkit-backdrop-filter: var(--glass-blur-strong);
     border: 1.5px solid rgba(255, 210, 175, 0.8) !important;
@@ -3663,6 +3676,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     pointer-events: none;
     transform: translateY(12px);
     transition: all 0.3s ease;
+    animation: btnFlow 6s ease-in-out infinite alternate;
     z-index: 90;
 }
 .back-to-top::after {
@@ -3704,6 +3718,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     align-items: center;
     justify-content: center;
     background: radial-gradient(circle at 35% 30%, #FFB88C, var(--color-accent) 60%, var(--color-accent-hover));
+    background-size: 220% 220%;
     color: #fff;
     text-decoration: none;
     cursor: pointer;
@@ -3712,7 +3727,8 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
                 0 2px 8px rgba(230,126,82,0.2),
                 inset 0 2px 4px rgba(255,255,255,0.45),
                 inset 0 -2px 6px rgba(0,0,0,0.1);
-    animation: sectionScrollBounce 2s ease-in-out infinite;
+    animation: btnFlow 6s ease-in-out infinite alternate,
+               sectionScrollBounce 2s ease-in-out infinite;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .section-scroll-down i {
@@ -5603,6 +5619,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
                 rgba(130, 105, 170, 0.55) 0%,
                 rgba(80, 65, 110, 0.9) 55%,
                 rgba(40, 38, 65, 0.95) 100%) !important;
+    background-size: 220% 220%;
     border: 1.5px solid rgba(140, 120, 175, 0.4) !important;
     backdrop-filter: blur(20px) saturate(140%);
     -webkit-backdrop-filter: blur(20px) saturate(140%);
@@ -6092,6 +6109,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
 /* 深色模式滚动提示 */
 [data-theme="dark"] .hero-scroll-hint {
     background: radial-gradient(circle at 35% 30%, #8B6EB5, #5A3F7A 60%, #3D2958);
+    background-size: 220% 220%;
     color: #fff;
     box-shadow: 0 6px 20px rgba(139,110,181,0.35),
                 0 2px 8px rgba(139,110,181,0.2),
@@ -6107,6 +6125,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
 }
 [data-theme="dark"] .section-scroll-down {
     background: radial-gradient(circle at 35% 30%, #8B6EB5, #5A3F7A 60%, #3D2958);
+    background-size: 220% 220%;
     color: #fff;
     box-shadow: 0 6px 20px rgba(139,110,181,0.35),
                 0 2px 8px rgba(139,110,181,0.2),
