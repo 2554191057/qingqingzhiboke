@@ -616,12 +616,6 @@
     const wasVisible = toast.classList.contains('show');
     const maxAllowed = window.innerWidth - 40;
 
-    // 更新图标
-    const icon = toast.querySelector('.toast-icon');
-    if (icon) {
-      icon.className = 'toast-icon fa-solid ' + (isError ? 'fa-circle-xmark' : 'fa-circle-check');
-    }
-
     // 测量：解除所有尺寸约束，按单行测文字自然宽度
     toast.style.maxWidth = 'none';
     toast.style.width = 'auto';
