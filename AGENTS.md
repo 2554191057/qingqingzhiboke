@@ -10,6 +10,11 @@
 - **严禁在未提交的情况下直接覆盖或删除已有代码文件**——这是本项目唯一的"事故来源"，必须杜绝。
 - 删除任何文件前，先确认该文件已存在于最近一次提交中（`git ls-files <文件路径>`），否则先提交再做删除。
 
+### 推送远程（双保险，必须执行）
+- 本项目已关联 Gitee 私有远程仓库：`https://gitee.com/qingqingzhinb/qingqingzhiboke.git`（Gitee 账号：qingqingzhinb）。
+- 每次 `git commit` 之后，**必须**执行 `git push origin master` 把改动同步到远程，作为本地之外的第二重备份。
+- 若远程与本地不一致（提示 non-fast-forward），先 `git pull --rebase origin master` 再推送，禁止直接 force push。
+
 ### 常用命令
 - 查看历史快照：`git log --oneline`
 - 查看某次快照改了什么：`git show <commit>`
