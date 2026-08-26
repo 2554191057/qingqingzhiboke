@@ -269,13 +269,21 @@ body {
     50%      { background-position: 100% 100%; }
 }
 
+@keyframes navbarFlow {
+    0%   { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
+    100% { background-position: 100% 100%, 100% 100%, 100% 100%, 100% 100%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+    .navbar,
     .navbar::before,
     body::before,
     .bg-gradient-layer,
     .bg-gradient-layer::before,
     .bg-gradient-layer::after,
-    .bg-gradient-layer .sparkle { animation: none; }
+    .bg-gradient-layer .sparkle,
+    .nav-toggle::before,
+    .theme-toggle::before { animation: none; }
 }
 
 .container {
@@ -473,6 +481,8 @@ img { max-width: 100%; display: block; }
         radial-gradient(ellipse 70% 60% at 50% 100%, var(--nav-blob-3), transparent 60%),
         radial-gradient(ellipse 55% 45% at 30% 85%, var(--nav-blob-4), transparent 60%),
         var(--nav-blob-base);
+    background-size: 220% 220%, 220% 220%, 220% 220%, 220% 220%;
+    animation: navbarFlow 16s ease-in-out infinite alternate;
     backdrop-filter: var(--glass-blur-strong);
     -webkit-backdrop-filter: var(--glass-blur-strong);
     border-bottom: 1px solid rgba(255, 210, 175, 0.5);
@@ -498,6 +508,8 @@ img { max-width: 100%; display: block; }
         radial-gradient(ellipse 60% 50% at 50% 100%, var(--nav-blob-3), transparent 55%),
         radial-gradient(ellipse 50% 45% at 30% 85%, var(--nav-blob-4), transparent 55%),
         var(--nav-blob-base);
+    background-size: 220% 220%, 220% 220%, 220% 220%, 220% 220%;
+    animation: navbarFlow 16s ease-in-out infinite alternate;
     backdrop-filter: var(--glass-blur-strong);
     -webkit-backdrop-filter: var(--glass-blur-strong);
     box-shadow: 0 6px 28px rgba(58, 58, 58, 0.12),
@@ -589,6 +601,8 @@ img { max-width: 100%; display: block; }
 /* 汉堡菜单 */
 .nav-toggle {
     display: none;
+    position: relative;
+    overflow: hidden;
     width: 48px;
     height: 48px;
     flex-direction: column;
@@ -606,6 +620,23 @@ img { max-width: 100%; display: block; }
                 0 0 20px rgba(170, 210, 160, 0.3),
                 inset 0 1px 1px rgba(255, 255, 255, 1);
     transition: all 0.25s ease;
+}
+/* 汉堡按钮：彩色液态流动层 */
+.nav-toggle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg,
+        rgba(255, 178, 138, 0.55) 0%,
+        rgba(255, 236, 216, 0.6) 28%,
+        rgba(176, 214, 160, 0.5) 55%,
+        rgba(255, 196, 160, 0.5) 82%,
+        rgba(238, 214, 190, 0.55) 100%);
+    background-size: 300% 300%;
+    animation: btnFlow 8s ease-in-out infinite alternate;
+    z-index: 0;
+    pointer-events: none;
 }
 .nav-toggle:hover {
     background: radial-gradient(circle at 35% 30%,
@@ -628,6 +659,8 @@ img { max-width: 100%; display: block; }
     height: 2px;
     background: var(--color-text);
     border-radius: 2px;
+    position: relative;
+    z-index: 1;
     transition: all 0.3s ease;
 }
 .nav-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -680,6 +713,27 @@ img { max-width: 100%; display: block; }
     -webkit-tap-highlight-color: transparent;
     user-select: none;
 }
+/* 主题切换按钮：彩色液态流动层 */
+.theme-toggle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg,
+        rgba(255, 178, 138, 0.55) 0%,
+        rgba(255, 236, 216, 0.6) 28%,
+        rgba(176, 214, 160, 0.5) 55%,
+        rgba(255, 196, 160, 0.5) 82%,
+        rgba(238, 214, 190, 0.55) 100%);
+    background-size: 300% 300%;
+    animation: btnFlow 8s ease-in-out infinite alternate;
+    z-index: 0;
+    pointer-events: none;
+}
+@keyframes btnFlow {
+    0%   { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}
 /* 导航栏内的主题按钮：绝对居中定位 */
 .nav-container .theme-toggle {
     position: absolute;
@@ -727,6 +781,7 @@ img { max-width: 100%; display: block; }
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 1;
     transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .theme-toggle .icon-sun {
@@ -5298,6 +5353,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
         radial-gradient(ellipse 70% 60% at 50% 100%, var(--nav-blob-3), transparent 60%),
         radial-gradient(ellipse 55% 45% at 30% 85%, var(--nav-blob-4), transparent 60%),
         var(--nav-blob-base) !important;
+    background-size: 220% 220%, 220% 220%, 220% 220%, 220% 220%;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     border-bottom: 1px solid rgba(140, 120, 175, 0.25);
@@ -5311,6 +5367,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
         radial-gradient(ellipse 60% 50% at 50% 100%, var(--nav-blob-3), transparent 55%),
         radial-gradient(ellipse 50% 45% at 30% 85%, var(--nav-blob-4), transparent 55%),
         var(--nav-blob-base) !important;
+    background-size: 220% 220%, 220% 220%, 220% 220%, 220% 220%;
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6),
                 0 0 40px rgba(120, 100, 160, 0.18);
 }
