@@ -23,6 +23,8 @@ const MIME = {
 
 const server = http.createServer((req, res) => {
     let urlPath = req.url.split('?')[0];
+    // 解码 URL（%20 -> 空格等），避免带空格/中文的文件名 404
+    try { urlPath = decodeURIComponent(urlPath); } catch (e) { /* 保留原样 */ }
     if (urlPath === '/') urlPath = '/index.html';
     const fp = path.join(ROOT, urlPath);
     const ext = path.extname(fp).toLowerCase();
