@@ -114,7 +114,7 @@ body {
     padding-right: env(safe-area-inset-right);
 }
 
-/* 全局彩色渐变背景层 */
+/* 全局彩色渐变背景层（自动变色 + 液态流动） */
 .bg-gradient-layer {
     position: fixed;
     inset: 0;
@@ -128,9 +128,22 @@ body {
             #E8EED8 65%, 
             #D4E8D0 85%, 
             #C8E0C8 100%);
+    background-size: 240% 240%;
+    animation:
+        liquidFlow 22s ease-in-out infinite alternate,
+        hueShift 60s linear infinite;
 }
 
-/* 全局彩色光斑叠加层 */
+@keyframes liquidFlow {
+    0%   { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}
+@keyframes hueShift {
+    0%   { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+}
+
+/* 全局彩色光斑叠加层（液态流动） */
 .bg-gradient-layer::after {
     content: '';
     position: absolute;
@@ -140,6 +153,13 @@ body {
         radial-gradient(ellipse 55% 45% at 80% 40%, rgba(170, 210, 160, 0.5), transparent 70%),
         radial-gradient(ellipse 40% 35% at 60% 80%, rgba(255, 200, 180, 0.4), transparent 70%),
         radial-gradient(ellipse 35% 30% at 30% 85%, rgba(190, 220, 180, 0.35), transparent 70%);
+    background-size: 200% 200%;
+    animation: blobFlow 26s ease-in-out infinite alternate;
+}
+
+@keyframes blobFlow {
+    0%   { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
 }
 
 /* 全局光点 */
@@ -165,11 +185,11 @@ body {
 
 @keyframes sparkleFloat {
     0%, 100% { 
-        transform: translate(0, 0) scale(1); 
-        opacity: 0.7;
+        transform: translate(0, 0) scale(0.9); 
+        opacity: 0.55;
     }
     50% { 
-        transform: translate(15px, -25px) scale(1.6); 
+        transform: translate(26px, -40px) scale(1.7); 
         opacity: 1;
     }
 }
@@ -229,7 +249,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
     .navbar::before,
     body::before,
-    .bg-gradient-layer::before,
+    .bg-gradient-layer,
     .bg-gradient-layer::after,
     .bg-gradient-layer .sparkle { animation: none; }
 }
@@ -5219,6 +5239,10 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
             #1F2530 65%, 
             #1A2828 85%, 
             #182028 100%);
+    background-size: 240% 240%;
+    animation:
+        liquidFlow 22s ease-in-out infinite alternate,
+        hueShift 60s linear infinite;
 }
 [data-theme="dark"] .bg-gradient-layer::after {
     background: 
@@ -5226,6 +5250,8 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
         radial-gradient(ellipse 55% 45% at 80% 40%, rgba(107, 142, 81, 0.2), transparent 70%),
         radial-gradient(ellipse 40% 35% at 60% 80%, rgba(180, 100, 70, 0.2), transparent 70%),
         radial-gradient(ellipse 35% 30% at 30% 85%, rgba(70, 100, 80, 0.18), transparent 70%);
+    background-size: 200% 200%;
+    animation: blobFlow 26s ease-in-out infinite alternate;
 }
 [data-theme="dark"] .bg-gradient-layer .sparkle {
     background: rgba(255, 255, 255, 0.5);
