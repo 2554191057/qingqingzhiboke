@@ -1994,6 +1994,16 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
 .blog-cover.has-image {
     cursor: default;
 }
+/* 封面图 <img>：保证任何浏览器/缩放比例下封面可靠渲染，background 渐变作兜底 */
+.blog-cover img.blog-cover-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+}
 .blog-cover.has-image::after {
     content: '';
     position: absolute;

@@ -1006,6 +1006,8 @@
     const linkCardClass = isLinkCard ? ' blog-card-tool' : '';
     const coverStyle = hasImage ? ` style="background-image: url('${p.image}'); background-size: cover; background-position: center;"` : '';
     const coverIcon = hasImage ? '' : `<span>${p.icon}</span>`;
+    // 封面图：用 <img> 元素保证渲染可靠（不受 background 渲染管线/浏览器缩放影响），background 作为兜底
+    const coverImg = hasImage ? `<img class="blog-cover-img" src="${p.image}" alt="" decoding="async" referrerpolicy="no-referrer">` : '';
     // QQ资源分享交流群：保持原有普通按钮（用户不需要扩展触摸区域）
     // 其他所有文章：额外加一个"隐形全屏触摸层"，触摸范围 = 整封面
     const isQQGroup = p.title === 'QQ资源分享交流群';
@@ -1019,7 +1021,7 @@
         viewImageBtn = btnHtml + `<button class="blog-view-image-touch" type="button" aria-hidden="true" tabindex="-1"></button>`;
       }
     }
-    const coverTag = `<div class="blog-cover ${p.coverClass}${hasImage ? ' has-image' : ''}"${coverStyle}>${coverIcon}${viewImageBtn}</div>`;
+    const coverTag = `<div class="blog-cover ${p.coverClass}${hasImage ? ' has-image' : ''}"${coverStyle}>${coverImg}${coverIcon}${viewImageBtn}</div>`;
     const titleTag = `<h3>${p.title}</h3>`;
     return `
       <article class="blog-card${linkCardClass}"${vpnAttr}${imageAttr}${typeAttr}${contentAttr}${officialAttr}>
