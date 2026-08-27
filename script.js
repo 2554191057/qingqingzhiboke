@@ -1007,7 +1007,8 @@
     const coverStyle = hasImage ? ` style="background-image: url('${p.image}'); background-size: cover; background-position: center;"` : '';
     const coverIcon = hasImage ? '' : `<span>${p.icon}</span>`;
     // 封面图：用 <img> 元素保证渲染可靠（不受 background 渲染管线/浏览器缩放影响），background 作为兜底
-    const coverImg = hasImage ? `<img class="blog-cover-img" src="${p.image}" alt="" decoding="async" referrerpolicy="no-referrer">` : '';
+    // 注意：不能加 referrerpolicy="no-referrer"——imagehub 图床防盗链，无 referrer 的请求会被拒绝
+    const coverImg = hasImage ? `<img class="blog-cover-img" src="${p.image}" alt="" decoding="async">` : '';
     // QQ资源分享交流群：保持原有普通按钮（用户不需要扩展触摸区域）
     // 其他所有文章：额外加一个"隐形全屏触摸层"，触摸范围 = 整封面
     const isQQGroup = p.title === 'QQ资源分享交流群';
