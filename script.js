@@ -277,49 +277,44 @@
       image: 'https://s1.imagehub.cc/images/2026/08/25/5d15dfe11632c0bda145a9ec4ada89c7.jpg'
     },
     {
-      title: '拖延症自救：5 分钟起步法',
-      tag: '效率',
+      title: 'Uotan Toolbox：为极客打造的现代刷机工具箱',
+      tag: '工具',
       date: '2026-08-24',
-      readTime: '4分钟',
-      excerpt: '最难的是开始。我用「只做 5 分钟」骗自己动手，结果 90% 的时候一旦开始就停不下来。分享这个屡试不爽的起步法',
-      icon: '🕐',
+      readTime: '5分钟',
+      excerpt: '一款开源的图形化刷机工具箱：刷入 Recovery、修补 Boot、线刷、应用管理、Scrcpy 投屏全都有，Windows / Linux / macOS 全平台可用',
+      icon: '🔧',
       coverClass: 'blog-cover-2',
       url: '#',
       type: 'article',
       content: `
-        <h2>拖延症自救：5分钟起步法</h2>
-        <p>你是不是也这样？看着待办清单上的任务，心里盘算着"等会儿再做"，结果一天过去了，什么也没开始。拖延症不是懒，而是恐惧——害怕做不好，害怕面对，于是干脆逃避。</p>
-        <h3>我曾经也是重度拖延患者</h3>
-        <p>毕业论文拖到最后一周才动笔、工作任务提前两周收到却在截止当天才开始、健身卡办了一年去了不到十次……我深知拖延的滋味：时间在焦虑中流逝，最后关头的压力让人喘不过气。</p>
-        <h3>直到我遇到了"5分钟法则"</h3>
-        <p>这个方法很简单：<strong>不要告诉自己"我要写报告了"，而是告诉自己"我只写5分钟，写不好就停"。</strong></p>
-        <p>听起来像自欺欺人，但它的原理很聪明：</p>
+        <h2>Uotan Toolbox：为极客打造的现代刷机工具箱</h2>
+        <p>玩机刷机总在命令行里敲来敲去？推荐一款开源又清爽的图形化工具箱——<strong>Uotan Toolbox（柚坛工具箱）</strong>。它把刷机、设备管理、应用操作等高频玩法集中到一个干净的图形界面里，官网即可下载，覆盖 Windows、Linux、macOS 三大平台。</p>
+        <h3>它是什么</h3>
+        <p>Uotan Toolbox 是一款基于 C# 开发的开源图形界面程序（GitHub：Uotan-Dev/UotanToolBox），从最初的"Recovery 刷入工具"一路迭代成功能完整的刷机工具箱。官网的标语是 "A Modern Toolbox for Geeks"——为极客打造的现代工具箱，目前全新版本 UotanToolboxNT 也在开发中。</p>
+        <h3>核心刷机功能</h3>
         <ul>
-          <li>降低启动门槛——5分钟太短，大脑找不到理由拒绝</li>
-          <li>减少心理压力——"只做5分钟"比"完成这项艰巨任务"轻松太多</li>
-          <li>建立心理惯性——一旦开始，大脑会自然延续当前状态</li>
+          <li><strong>刷入 Recovery</strong>：一键刷入第三方 Recovery，省去手动敲命令</li>
+          <li><strong>修补 Boot</strong>：支持修补 boot 镜像（如 Magisk 补丁），方便获取 Root</li>
+          <li><strong>线刷模式</strong>：Fastboot 线刷系统，支持分区管理、详细刷机日志记录</li>
+          <li><strong>自定义刷入</strong>：按需选择分区与刷机脚本，适配不同机型</li>
+          <li><strong>一键刷机</strong>：选好 ROM 包和脚本即可完成流程，无需繁琐手动操作</li>
         </ul>
-        <h3>我的亲身体验</h3>
-        <p>第一次尝试是写一篇周报。我告诉自己"只写5分钟大纲，写不出来就算了"。结果5分钟后，我发现思路顺畅，不知不觉就写了一个小时。从那以后，这个方法成了我的日常习惯。</p>
-        <h3>具体怎么做</h3>
-        <ol>
-          <li>把任务拆解到"最小可执行单位"——不是"写论文"，而是"打开文档，写一行字"</li>
-          <li>设一个5分钟的计时器</li>
-          <li>告诉自己"时间到就停，不强求"</li>
-          <li>5分钟到了之后，问自己"要不要再做5分钟？"——90%的情况下你会说"好啊"</li>
-        </ol>
-        <h3>进阶：让启动更轻松</h3>
+        <h3>除了刷机，还有这些实用模块</h3>
         <ul>
-          <li>为每个任务准备一个"启动仪式"——比如写作前先冲一杯咖啡</li>
-          <li>固定每天的"黄金时段"——我是早上7点到9点，这段时间精力最旺盛</li>
-          <li>记录启动成功率——每完成一次就打个勾，可视化进步</li>
+          <li><strong>系统备份与恢复</strong>：刷机前完整备份数据，支持加密备份包，避免数据丢失</li>
+          <li><strong>应用管理</strong>：批量安装 / 卸载 / 备份 / 恢复应用，一站式管理</li>
+          <li><strong>Scrcpy 投屏</strong>：把安卓设备屏幕投射到电脑，用键鼠直接控制</li>
+          <li><strong>无级调节</strong>：调整 CPU 频率与内存分配策略，提升游戏与应用流畅度</li>
+          <li><strong>设备解锁</strong>：解锁文件解锁、基本命令解锁、ADB / Fastboot 驱动补丁、高通 9008 等</li>
         </ul>
-        <h3>写在最后</h3>
-        <p>拖延不是你的错，它只是大脑对压力的自我保护机制。而5分钟法则，就是绕过这个保护的后门。试试看吧，今天就用它启动一件你一直在拖的事。</p>
-        <p>记住：<strong>最难的不是完成，而是开始。而最好的开始，就是现在。</strong></p>
+        <h3>多平台下载</h3>
+        <p>官网 <strong>toolbox.uotan.cn</strong> 提供全平台安装包：Windows 有 x64 / arm64 的 Installer 和 Portable 两个版本；Linux 提供 x64 / arm64 / loong64（龙芯）三个版本；macOS 提供 x64 / arm64 版本。选好对应架构下载即可，Portable 版免安装、解压即用。</p>
+        <h3>适合谁用</h3>
+        <p>无论你是刷机老手还是刚入门的新手，Uotan Toolbox 都能降低操作门槛：新手靠图形界面避免敲错命令，老手靠丰富的模块提升效率。而且它完全开源（LGPL-3.0 协议），功能还在持续迭代，值得玩机爱好者收藏。</p>
+        <p>官方下载：<a href="https://toolbox.uotan.cn/" target="_blank" rel="noopener">https://toolbox.uotan.cn/</a></p>
       `,
       cta: '阅读全文',
-      image: 'https://picsum.photos/seed/blog8/800/500'
+      image: 'https://picsum.photos/seed/blog9/800/500'
     },
     {
       title: '我的桌面整理哲学：少即是多',
