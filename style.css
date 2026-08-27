@@ -510,7 +510,6 @@ img { max-width: 100%; display: block; }
 /* 全局点击效果（按钮/链接/卡片按下反馈） */
 .logo:active,
 .nav-toggle:active,
-.nav-cta:active,
 .hero-scroll-hint:active,
 .blog-readmore:active,
 .modal-close:active,
@@ -658,17 +657,6 @@ img { max-width: 100%; display: block; }
     transition: background-color 0.05s ease-in,
                 color 0.05s ease-in;
 }
-.nav-cta {
-    background: var(--color-accent);
-    color: #fff !important;
-    padding: 11px 22px;
-    min-height: 44px;
-}
-.nav-cta:hover {
-    background: var(--color-accent-hover) !important;
-    color: #fff !important;
-}
-
 /* 汉堡菜单 */
 .nav-toggle {
     display: none;
@@ -1444,18 +1432,6 @@ img { max-width: 100%; display: block; }
 }
 .about-age-card .btn-birthday {
     margin-top: auto;
-}
-.about-age-card .age-btns {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-}
-.about-age-card .age-btns .btn {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    padding: 11px 16px;
-    font-size: 0.9rem;
 }
 .about-age-card .btn-bless {
     margin-top: 0;
@@ -3373,38 +3349,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     width: 220px;
     margin: 0 auto 22px;
 }
-.qrcode-placeholder {
-    width: 220px;
-    height: 220px;
-    background:
-        linear-gradient(45deg, #111 25%, transparent 25%) 0 0 / 20px 20px,
-        linear-gradient(-45deg, #111 25%, transparent 25%) 0 0 / 20px 20px,
-        linear-gradient(45deg, transparent 75%, #111 75%) 0 0 / 20px 20px,
-        linear-gradient(-45deg, transparent 75%, #111 75%) 0 0 / 20px 20px,
-        #fff;
-    background-color: #fff;
-    border-radius: 12px;
-    position: relative;
-    padding: 14px;
-    border: 8px solid #fff;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.qrcode-center {
-    position: absolute;
-    width: 56px;
-    height: 56px;
-    background: #fff;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-wechat);
-    font-size: 2rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
 .qrcode-hint {
     text-align: center;
     font-size: 0.82rem;
@@ -4018,15 +3962,8 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
         color: var(--color-accent);
         font-weight: 600;
     }
-    .nav-cta {
-        text-align: center;
-        margin-top: 6px;
-        padding: 11px 16px;
-        border-radius: 12px;
-    }
     @media (hover: hover) {
         .nav-link:hover { color: var(--color-accent); background: var(--color-accent-light); }
-        .nav-cta:hover { background: var(--color-accent-hover) !important; }
     }
 
     .hero { padding: 90px 18px 40px; }
@@ -4111,7 +4048,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     .back-to-top { bottom: 20px; right: 20px; width: 48px; height: 48px; }
     .modal { padding: clamp(20px, 4vw, 28px) clamp(16px, 4vw, 20px) clamp(18px, 4vw, 22px); }
     .wechat-qrcode { width: clamp(160px, 40vw, 200px); }
-    .qrcode-placeholder { width: clamp(160px, 40vw, 200px); height: clamp(160px, 40vw, 200px); }
     .link-modal-actions { grid-template-columns: 1fr; }
 }
 
@@ -4174,7 +4110,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     .wechat-icon-big { width: 44px; height: 44px; margin-bottom: 8px; }
     .wechat-header { margin-bottom: 10px; }
     .wechat-qrcode { width: 160px; margin-bottom: 10px; }
-    .qrcode-placeholder { width: 160px; height: 160px; }
     .wechat-id-row { margin-bottom: 8px; }
 
     /* 音乐播放器：横屏矮屏手机 */
@@ -4186,7 +4121,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
 @media (max-width: 768px), (hover: none) and (pointer: coarse) {
     .btn:active,
     .nav-link:active,
-    .nav-cta:active,
     .nav-toggle:active,
     .logo:active,
     .blog-readmore:active,
@@ -4871,9 +4805,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     border-radius: 50%;
     z-index: 0;
 }
-
-/* 收起态右下角的小播放/暂停指示图标（已移除，保留占位以防旧 HTML 未更新时不报错） */
-.mc-arrow { display: none !important; }
 
 /* 收起态显示（弹性缩放进入）
    默认隐藏（防止 FOUC 闪烁），等 JS 设置完位置加 .pos-ready 后才显示 */
@@ -5828,10 +5759,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     -webkit-backdrop-filter: blur(20px) saturate(140%);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
-[data-theme="dark"] .modal-header,
-[data-theme="dark"] .modal-body {
-    color: var(--color-text);
-}
 [data-theme="dark"] .modal-close {
     color: var(--color-text-soft);
     background: radial-gradient(circle at 35% 30%,
@@ -5892,26 +5819,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     box-shadow: 0 6px 18px rgba(139, 111, 176, 0.55);
 }
 
-[data-theme="dark"] .image-download-btn {
-    background: radial-gradient(circle at 35% 30%,
-                rgba(130, 105, 170, 0.5) 0%,
-                rgba(80, 65, 110, 0.9) 55%,
-                rgba(40, 38, 65, 0.95) 100%) !important;
-    border: 1.5px solid rgba(140, 120, 175, 0.4) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55),
-                0 0 12px rgba(120, 100, 160, 0.4),
-                0 0 24px rgba(70, 110, 120, 0.3),
-                inset 0 1px 1px rgba(255, 255, 255, 0.06);
-}
-[data-theme="dark"] .image-download-btn:hover {
-    background: radial-gradient(circle at 35% 30%,
-                rgba(150, 125, 190, 0.7) 0%,
-                rgba(90, 75, 120, 0.95) 55%,
-                rgba(50, 45, 75, 0.98) 100%) !important;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6),
-                0 0 18px rgba(140, 110, 180, 0.5),
-                0 0 36px rgba(80, 120, 130, 0.4);
-}
 [data-theme="dark"] .poster-container {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
@@ -5989,9 +5896,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
 /* 深色模式博客卡片 */
 [data-theme="dark"] .blog-excerpt {
     color: var(--color-text-soft);
-}
-[data-theme="dark"] .blog-date {
-    color: var(--color-text-faint);
 }
 [data-theme="dark"] .blog-tag {
     background: var(--color-accent-light);
@@ -6107,12 +6011,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     color: var(--color-text-soft);
 }
 
-/* 深色模式联系我区域 */
-[data-theme="dark"] .contact-card {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-}
-
 /* 深色模式页脚 */
 [data-theme="dark"] .footer {
     background: #0F0F1A;
@@ -6121,23 +6019,8 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
 [data-theme="dark"] .footer::before {
     display: none;
 }
-[data-theme="dark"] .footer-text,
 [data-theme="dark"] .footer-desc {
     color: var(--color-text-soft);
-}
-[data-theme="dark"] .footer-heading {
-    color: var(--color-text);
-}
-[data-theme="dark"] .footer-link,
-[data-theme="dark"] .footer-contact-item {
-    color: var(--color-text-soft);
-}
-[data-theme="dark"] .footer-link:hover,
-[data-theme="dark"] .footer-contact-item:hover {
-    color: var(--color-accent);
-}
-[data-theme="dark"] .footer-runtime {
-    color: var(--color-text-faint);
 }
 [data-theme="dark"] .footer-icon-btn {
     background: radial-gradient(circle at 35% 30%,
@@ -6371,17 +6254,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     color: transparent;
 }
 
-/* 深色模式导航 CTA 按钮 */
-[data-theme="dark"] .nav-cta {
-    background: var(--color-accent);
-    color: #fff;
-    border-color: var(--color-accent);
-}
-[data-theme="dark"] .nav-cta:hover {
-    background: var(--color-accent-hover);
-    box-shadow: 0 4px 16px rgba(230, 126, 82, 0.4);
-}
-
 /* 主题按钮移动端适配 - 统一使用普通电脑端尺寸 */
 @media (max-width: 768px) {
     .nav-container .theme-toggle {
@@ -6424,15 +6296,4 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5),
                     inset 0 1px 1px rgba(255, 255, 255, 0.06);
     }
-}
-
-/* 深色模式导航 CTA 按钮 */
-[data-theme="dark"] .nav-cta {
-    background: var(--color-accent);
-    color: #fff;
-    border-color: var(--color-accent);
-}
-[data-theme="dark"] .nav-cta:hover {
-    background: var(--color-accent-hover);
-    box-shadow: 0 4px 16px rgba(230, 126, 82, 0.4);
 }

@@ -1025,12 +1025,6 @@
     `;
   }
 
-  function renderBlog(list, container, prepend = false) {
-    const html = list.map(buildBlogCard).join('');
-    if (prepend) container.innerHTML = html + container.innerHTML;
-    else container.insertAdjacentHTML('beforeend', html);
-  }
-
   // 资源类型图标映射
   const RES_TYPE_ICON = {
     guangya: '<svg class="res-icon-svg"><use href="#icon-guangya"/></svg>',
@@ -2108,8 +2102,6 @@
     const playlistEmpty = document.getElementById('musicPlaylistEmpty');
     // 收起态小圆形元素
     const collapsedCover = document.getElementById('musicCollapsedCover');
-    // 收起态右下角的播放/暂停小图标已移除（用户不再需要）
-    const collapsedPlay = null;
 
     if (!player) return;
 
@@ -2212,7 +2204,6 @@
             let mimeEnd = pos + 1;
             while (mimeEnd < tagEnd && buf[mimeEnd] !== 0) mimeEnd++;
             const mime = new TextDecoder('ascii').decode(buf.subarray(pos + 1, mimeEnd));
-            const picType = buf[mimeEnd + 1]; // 0x03 = front cover
             // 描述字段：encoding 0/3 单字节 null，1/2 双字节 null
             let descStart = mimeEnd + 2;
             let picStart;
@@ -3118,7 +3109,6 @@
     // 加 180ms 忽略窗口，避免松手后又跳回旧位置（回弹）
     let seekIgnoreUntil = 0;
     const DRAG_THRESHOLD = 4; // 像素：超过此距离才算"拖拽"，否则算普通点击
-    let usingTouch = false;  // 移动端：同一轮拖拽优先走 touch 事件，pointer 事件跳过
 
     // 计算指针在进度条中的百分比（0~1，含边界保护）
     function getProgressPercent(clientX) {
