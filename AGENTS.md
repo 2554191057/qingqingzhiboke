@@ -26,3 +26,17 @@
 ## 环境
 - Git 安装在 `D:\Git\cmd`。若当前终端找不到 `git` 命令，把 `D:\Git\cmd` 加入 PATH 或使用完整路径 `D:\Git\cmd\git.exe`。
 - 本仓库的 git 提交身份（local 级 user.name / user.email）已配置，请勿改动。
+
+## 在线部署（每次修改后必须执行）
+本项目使用 HSK 静态文件托管，公网域名 **https://qqzttkx.ficp.fun/**（该域名已绑定到 HSK 资源 `1787743956892235141`，资源访问地址 https://oujn2c.gicp.fun）。
+
+**每次修改 index.html / style.css / script.js（或任意网站文件）并 git 提交后，必须同步执行一次在线部署：**
+
+```bash
+hsk-cli +host "D:\Download\qingqingzhiboke" --resource-id 1787743956892235141 --entry-file index.html
+```
+
+- hsk-cli 已全局安装（@aweray/hsk-cli），API Key 已保存在 `~/.hsk/api_key.json`（file_hosting 场景），无需重复配置；找不到 `hsk-cli` 命令时先 `npm install -g @aweray/hsk-cli` 并 `hsk-cli update`。
+- 部署成功后用 `curl https://qqzttkx.ficp.fun/` 验证线上版本（index.html 里的 style.css/script.js 版本号）与本地一致。
+- **严禁**新建别的 HSK 资源来部署本网站（会占用新资源、域名无法复用）；一律复用资源 `1787743956892235141`。
+
