@@ -3049,10 +3049,11 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     max-height: calc(100vh - 60px);
 }
 .article-modal-title {
+    flex: 1;
     font-size: 1.6rem;
     font-weight: 800;
-    margin: 0 0 24px;
-    text-align: center;
+    margin: 0;
+    text-align: left;
     color: var(--color-text);
     line-height: 1.4;
 }
@@ -3110,46 +3111,24 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     color: var(--color-accent);
 }
 
-/* 文章弹窗顶部：封面图 + 官方下载（图片在左、下载按钮在右） */
-.article-modal-head {
+/* 文章弹窗标题行：标题在左 + 官方下载按钮在标题右侧 */
+.article-modal-title-row {
     display: flex;
     align-items: center;
-    gap: 20px;
-    margin: 0 0 20px;
-    padding: 16px;
-    border-radius: 16px;
-    background: var(--color-card);
-    border: 1px solid var(--glass-border);
-}
-.article-modal-cover {
-    flex: 0 0 auto;
-    width: 96px;
-    height: 96px;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, .15);
-    background: #e8e8ee;
-}
-.article-modal-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-.article-modal-download {
-    flex: 1;
-    display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 24px;
 }
 .article-modal-link-btn {
+    flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 30px;
+    padding: 10px 22px;
     border-radius: 12px;
     background: var(--color-accent);
     color: #fff;
-    font-size: 1rem;
+    font-size: .95rem;
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
@@ -3162,14 +3141,10 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     filter: brightness(1.05);
 }
 @media (max-width: 480px) {
-    .article-modal-head {
-        gap: 14px;
-        padding: 12px;
-    }
-    .article-modal-cover {
-        width: 72px;
-        height: 72px;
-        border-radius: 12px;
+    .article-modal-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
     .article-modal-link-btn {
         padding: 10px 18px;

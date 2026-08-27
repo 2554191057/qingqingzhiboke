@@ -3791,14 +3791,9 @@
         const titleEl = $('#articleModalTitle');
         const contentEl = $('#articleModalContent');
 
-        // 弹窗顶部：封面图 + 官方下载链接（图片在左、下载按钮在右）
-        const headEl = $('#articleModalHead');
-        const imgEl = $('#articleModalImg');
+        // 官方下载按钮（标题右侧）：仅带 official 的文章显示
         const linkEl = $('#articleModalLink');
         const official = card.dataset.official ? decodeURIComponent(card.dataset.official) : '';
-        const coverImg = card.dataset.image || '';
-        if (headEl) headEl.style.display = (official && coverImg) ? '' : 'none';
-        if (imgEl) imgEl.src = coverImg;
         if (linkEl) { linkEl.href = official || '#'; linkEl.style.display = official ? '' : 'none'; }
 
         if (titleEl) titleEl.textContent = title;

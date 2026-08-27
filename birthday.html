@@ -1112,6 +1112,85 @@
         .zl-signs { font-size: 0.65rem; }
         .zl-item { padding: 8px 6px; }
     }
+    /* ========== 精确年龄 · 已度过时光 ========== */
+    .age-wrap {
+        position: relative; z-index: 1;
+        max-width: 640px; width: 100%;
+        background: var(--glass-bg-strong);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--glass-shadow);
+        padding: 24px 28px 26px;
+        text-align: center;
+        margin: 0 auto 24px;
+    }
+    .age-head { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px; }
+    .age-head-icon { font-size: 1.3rem; line-height: 1; }
+    .age-title { font-size: 1.15rem; font-weight: 700; color: var(--color-text); margin: 0; }
+    .age-main { display: flex; align-items: baseline; justify-content: center; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+    .age-years { font-size: 2.6rem; font-weight: 800; color: var(--color-accent); line-height: 1; font-variant-numeric: tabular-nums; }
+    .age-years-label { font-size: 1rem; font-weight: 600; color: var(--color-text); margin-right: 6px; }
+    .age-sub { font-size: 1.05rem; font-weight: 600; color: var(--color-text-soft); font-variant-numeric: tabular-nums; }
+    .age-time { font-size: 0.85rem; color: var(--color-text-faint); margin-bottom: 14px; font-variant-numeric: tabular-nums; letter-spacing: 0.5px; }
+    .age-time .t-num { color: var(--color-text-soft); font-weight: 600; }
+    .age-stats { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; padding-top: 12px; border-top: 1px solid var(--glass-border); }
+    .age-stat { text-align: center; min-width: 70px; }
+    .age-stat-num { font-size: 1.15rem; font-weight: 700; color: var(--color-text); font-variant-numeric: tabular-nums; line-height: 1.2; }
+    .age-stat-label { font-size: 0.7rem; color: var(--color-text-faint); margin-top: 2px; }
+    @media (max-width: 480px) {
+        .age-wrap { padding: 18px 16px 20px; border-radius: 20px; margin-bottom: 16px; }
+        .age-title { font-size: 1rem; }
+        .age-years { font-size: 2rem; }
+        .age-sub { font-size: 0.9rem; }
+        .age-time { font-size: 0.75rem; }
+        .age-stats { gap: 10px; }
+        .age-stat { min-width: 56px; }
+        .age-stat-num { font-size: 0.95rem; }
+    }
+    /* ========== 生日属性卡 · 生肖/诞生石/生日花/生日树 ========== */
+    .attr-wrap {
+        position: relative; z-index: 1;
+        max-width: 640px; width: 100%;
+        background: var(--glass-bg-strong);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--glass-shadow);
+        padding: 24px 28px 26px;
+        text-align: center;
+        margin: 0 auto 24px;
+    }
+    .attr-head { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; }
+    .attr-head-icon { font-size: 1.3rem; line-height: 1; }
+    .attr-title { font-size: 1.15rem; font-weight: 700; color: var(--color-text); margin: 0; }
+    .attr-tabs { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+    .attr-tab {
+        padding: 7px 14px; border-radius: 999px; border: 1px solid var(--glass-border);
+        background: var(--glass-bg); color: var(--color-text-soft); font-size: 0.85rem;
+        font-weight: 600; cursor: pointer; transition: all 0.2s ease; outline: none;
+    }
+    .attr-tab:hover { color: var(--color-text); border-color: var(--color-accent); }
+    .attr-tab.active { background: var(--color-accent); color: #fff; border-color: var(--color-accent); box-shadow: 0 4px 12px rgba(230,126,82,0.3); }
+    .attr-panel { display: none; animation: attrFadeIn 0.3s ease; }
+    .attr-panel.active { display: block; }
+    @keyframes attrFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .attr-icon { font-size: 3rem; line-height: 1; margin-bottom: 8px; }
+    .attr-name { font-size: 1.4rem; font-weight: 800; color: var(--color-accent); margin-bottom: 4px; }
+    .attr-en { font-size: 0.8rem; color: var(--color-text-faint); margin-bottom: 10px; letter-spacing: 0.5px; }
+    .attr-desc { font-size: 0.9rem; color: var(--color-text-soft); line-height: 1.7; max-width: 420px; margin: 0 auto; }
+    .attr-extra { margin-top: 12px; font-size: 0.8rem; color: var(--color-text-faint); }
+    .attr-extra span { display: inline-block; margin: 0 6px; padding: 3px 10px; border-radius: 999px; background: var(--glass-bg); border: 1px solid var(--glass-border); }
+    @media (max-width: 480px) {
+        .attr-wrap { padding: 18px 16px 20px; border-radius: 20px; margin-bottom: 16px; }
+        .attr-title { font-size: 1rem; }
+        .attr-tab { padding: 6px 11px; font-size: 0.78rem; }
+        .attr-icon { font-size: 2.4rem; }
+        .attr-name { font-size: 1.2rem; }
+        .attr-desc { font-size: 0.82rem; }
+    }
 </style>
 </head>
 <body>
@@ -1154,6 +1233,37 @@
         <a href="index.html#social" class="btn btn-bless"><i class="fa-solid fa-comment-dots"></i>联系我</a>
     </div>
 </main>
+<!-- 精确年龄 · 已度过时光 -->
+<section class="age-wrap" id="ageSection">
+    <div class="age-head">
+        <span class="age-head-icon">⏳</span>
+        <h2 class="age-title">已度过的时光</h2>
+    </div>
+    <div class="age-main">
+        <span class="age-years" id="ageYears">--</span>
+        <span class="age-years-label">岁</span>
+        <span class="age-sub" id="ageSub">-- 月 -- 天</span>
+    </div>
+    <div class="age-time" id="ageTime">-- 时 -- 分 -- 秒</div>
+    <div class="age-stats">
+        <div class="age-stat">
+            <div class="age-stat-num" id="ageDays">--</div>
+            <div class="age-stat-label">已度过（天）</div>
+        </div>
+        <div class="age-stat">
+            <div class="age-stat-num" id="ageHours">--</div>
+            <div class="age-stat-label">小时</div>
+        </div>
+        <div class="age-stat">
+            <div class="age-stat-num" id="ageMinutes">--</div>
+            <div class="age-stat-label">分钟</div>
+        </div>
+        <div class="age-stat">
+            <div class="age-stat-num" id="ageSeconds">--</div>
+            <div class="age-stat-label">秒</div>
+        </div>
+    </div>
+</section>
 <!-- 星座 · 四象查询 -->
 <section class="zodiac-wrap" id="zodiacSection">
     <div class="zodiac-head">
@@ -1185,6 +1295,47 @@
         <div class="zl-item"><span class="zl-ico">🌍</span><span class="zl-name">土象</span><span class="zl-signs">金牛 · 处女 · 摩羯</span></div>
         <div class="zl-item"><span class="zl-ico">🌬️</span><span class="zl-name">风象</span><span class="zl-signs">双子 · 天秤 · 水瓶</span></div>
         <div class="zl-item"><span class="zl-ico">💧</span><span class="zl-name">水象</span><span class="zl-signs">巨蟹 · 天蝎 · 双鱼</span></div>
+    </div>
+</section>
+<!-- 生日属性卡 · 生肖/诞生石/生日花/生日树 -->
+<section class="attr-wrap" id="attrSection">
+    <div class="attr-head">
+        <span class="attr-head-icon">🎁</span>
+        <h2 class="attr-title">我的生日属性</h2>
+    </div>
+    <div class="attr-tabs" id="attrTabs">
+        <button class="attr-tab active" data-attr="zodiac">🐷 生肖</button>
+        <button class="attr-tab" data-attr="stone">💎 诞生石</button>
+        <button class="attr-tab" data-attr="flower">🌸 生日花</button>
+        <button class="attr-tab" data-attr="tree">🌳 生日树</button>
+    </div>
+    <div class="attr-panel active" data-panel="zodiac">
+        <div class="attr-icon">🐷</div>
+        <div class="attr-name">猪 · 丁亥年</div>
+        <div class="attr-en">Chinese Zodiac · Pig (2007)</div>
+        <div class="attr-desc">2007 年是丁亥猪年。属猪的你善良宽厚、乐观真诚，待人温和有礼，人缘极好。做事踏实认真，有责任感，对生活充满热情，是值得信赖的好朋友。</div>
+        <div class="attr-extra"><span>五行：火猪</span><span>幸运色：黄 / 棕</span><span>幸运数字：2 / 5 / 8</span></div>
+    </div>
+    <div class="attr-panel" data-panel="stone">
+        <div class="attr-icon">💎</div>
+        <div class="attr-name">橄榄石 · Peridot</div>
+        <div class="attr-en">August Birthstone</div>
+        <div class="attr-desc">八月的诞生石是橄榄石，那一抹清新的翠绿色如同夏日森林里的阳光。传说橄榄石能驱散黑暗、带来和平与幸福，象征和谐、美满与永恒的友谊。</div>
+        <div class="attr-extra"><span>颜色：翠绿</span><span>象征：和平 / 幸福</span><span>硬度：6.5-7</span></div>
+    </div>
+    <div class="attr-panel" data-panel="flower">
+        <div class="attr-icon">🌸</div>
+        <div class="attr-name">剑兰 · Gladiolus</div>
+        <div class="attr-en">August Birth Flower</div>
+        <div class="attr-desc">八月的生日花是剑兰（唐菖蒲），花茎挺拔如剑，花朵依次绽放，优雅而坚韧。剑兰象征用心、正直、坚韧与怀念，也代表着对生活的热爱和对未来的期待。</div>
+        <div class="attr-extra"><span>花语：用心 / 坚韧</span><span>别名：唐菖蒲</span><span>花期：7-9 月</span></div>
+    </div>
+    <div class="attr-panel" data-panel="tree">
+        <div class="attr-icon">🌳</div>
+        <div class="attr-name">榛树 · Hazel</div>
+        <div class="attr-en">Celtic Tree Zodiac (Aug 5 - Sep 1)</div>
+        <div class="attr-desc">在凯尔特树历中，8 月 5 日至 9 月 1 日出生的人属于榛树。榛树象征智慧、创造力与洞察力，你思维敏捷、善于表达，有丰富的想象力和艺术天赋，总能在平凡中发现美好。</div>
+        <div class="attr-extra"><span>凯尔特历：8/5 - 9/1</span><span>象征：智慧 / 创造</span><span>果实：榛子</span></div>
     </div>
 </section>
 <script>
@@ -1617,6 +1768,65 @@
         { text: '🚀 愿你乘风破浪，驶向星辰大海！', sub: '未来可期' },
         { text: '☕ 愿你的生活有咖啡、有书香、有挚友！', sub: '知足常乐' }
     ];
+
+    // ========== 精确年龄 · 已度过时光 实时计数器 ==========
+    (function initAgeCounter() {
+        if (typeof SB === 'undefined' || !SB || !SB.BIRTHDAY) return;
+        var b = SB.BIRTHDAY;
+        var birthDate = new Date(b.year, b.month - 1, b.day, 0, 0, 0);
+        var elYears = document.getElementById('ageYears');
+        var elSub = document.getElementById('ageSub');
+        var elTime = document.getElementById('ageTime');
+        var elDays = document.getElementById('ageDays');
+        var elHours = document.getElementById('ageHours');
+        var elMinutes = document.getElementById('ageMinutes');
+        var elSeconds = document.getElementById('ageSeconds');
+        if (!elYears) return;
+        function pad(n) { return String(n).padStart(2, '0'); }
+        function fmt(n) { return n.toLocaleString('zh-CN'); }
+        function update() {
+            var now = new Date();
+            var diff = now - birthDate;
+            // 精确年龄：岁/月/天
+            var years = now.getFullYear() - b.year;
+            var months = now.getMonth() + 1 - b.month;
+            var days = now.getDate() - b.day;
+            if (days < 0) {
+                months--;
+                days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+            }
+            if (months < 0) { years--; months += 12; }
+            var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            // 总计
+            var totalSec = Math.floor(diff / 1000);
+            var totalMin = Math.floor(totalSec / 60);
+            var totalHour = Math.floor(totalMin / 60);
+            var totalDay = Math.floor(totalHour / 24);
+            elYears.textContent = years;
+            elSub.textContent = months + ' 月 ' + days + ' 天';
+            elTime.innerHTML = '<span class="t-num">' + pad(h) + '</span> 时 <span class="t-num">' + pad(m) + '</span> 分 <span class="t-num">' + pad(s) + '</span> 秒';
+            elDays.textContent = fmt(totalDay);
+            elHours.textContent = fmt(totalHour);
+            elMinutes.textContent = fmt(totalMin);
+            elSeconds.textContent = fmt(totalSec);
+        }
+        update();
+        setInterval(update, 1000);
+    })();
+
+    // ========== 生日属性卡 · 标签切换 ==========
+    (function initAttrTabs() {
+        var tabs = document.querySelectorAll('.attr-tab');
+        var panels = document.querySelectorAll('.attr-panel');
+        if (!tabs.length) return;
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                var key = this.getAttribute('data-attr');
+                tabs.forEach(function(t) { t.classList.toggle('active', t === tab); });
+                panels.forEach(function(p) { p.classList.toggle('active', p.getAttribute('data-panel') === key); });
+            });
+        });
+    })();
 
     // ========== 音乐播放器 ==========
     let bgMusicPlaying = false;
