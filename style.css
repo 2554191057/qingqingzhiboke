@@ -87,24 +87,6 @@
     .bg-gradient-layer {
         animation: liquidFlow 11s ease-in-out infinite alternate !important;
     }
-    /* 触摸设备：波光/光斑层停止 background-position 流动（保留静态光斑与高光，视觉柔和感仍在），
-       消除这些全屏重绘动画与毛玻璃采样叠加造成的卡顿/闪烁 */
-    .bg-gradient-layer::before,
-    .bg-gradient-layer::after {
-        animation: none !important;
-    }
-    /* 触摸设备：光点动画放慢，降低高频重绘 */
-    .bg-gradient-layer .sparkle {
-        animation-duration: 24s !important;
-        animation-delay: 0s !important;
-    }
-    /* 触摸设备：导航栏与汉堡面板统一使用低模糊（其固定 20/30px 模糊 + 背景动画是菜单打开突兀的卡顿源） */
-    .navbar,
-    .navbar.scrolled,
-    .nav-links {
-        backdrop-filter: blur(12px) saturate(140%) !important;
-        -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
-    }
 }
 
 /* 背景层动画不随滚动暂停（保证视觉连续、避免暂停/恢复跳变引起的卡片闪烁）；
