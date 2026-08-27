@@ -246,6 +246,7 @@
       coverClass: 'blog-cover-4',
       url: '#',
       type: 'article',
+      official: 'https://www.nexttun.net/',
       content: `
         <h2>TunNet · 免费VPN：一键连接全球网络</h2>
         <p><strong>TunNet</strong> 是一款面向 Windows、Mac、Android 与 Android TV 的免费 VPN 客户端。无需注册、不限流量，经国内入口直连全球节点——下载、打开、点连接，一分钟即可用上。</p>
@@ -274,7 +275,6 @@
           <li><strong>Android TV / 盒子</strong>：通用 APK 直接安装，或开启电脑端局域网共享</li>
         </ul>
         <p>当前最新版本 v0.2.2，所有安装包均由 TunNet 官方下载服务器直发，无捆绑、无广告、无恶意软件。</p>
-        <p>官方下载：<a href="https://www.nexttun.net/" target="_blank" rel="noopener">https://www.nexttun.net/</a></p>
       `,
       cta: '阅读全文',
       image: 'https://s1.imagehub.cc/images/2026/08/25/659f01d0e0b605f55809fb625bd9abcb.jpg'
@@ -317,6 +317,7 @@
       coverClass: 'blog-cover-2',
       url: '#',
       type: 'article',
+      official: 'https://toolbox.uotan.cn/',
       content: `
         <h2>Uotan Toolbox：为极客打造的现代刷机工具箱</h2>
         <p>玩机刷机总在命令行里敲来敲去？推荐一款开源又清爽的图形化工具箱——<strong>Uotan Toolbox（柚坛工具箱）</strong>。它把刷机、设备管理、应用操作等高频玩法集中到一个干净的图形界面里，官网即可下载，覆盖 Windows、Linux、macOS 三大平台。</p>
@@ -342,7 +343,6 @@
         <p>官网 <strong>toolbox.uotan.cn</strong> 提供全平台安装包：Windows 有 x64 / arm64 的 Installer 和 Portable 两个版本；Linux 提供 x64 / arm64 / loong64（龙芯）三个版本；macOS 提供 x64 / arm64 版本。选好对应架构下载即可，Portable 版免安装、解压即用。</p>
         <h3>适合谁用</h3>
         <p>无论你是刷机老手还是刚入门的新手，Uotan Toolbox 都能降低操作门槛：新手靠图形界面避免敲错命令，老手靠丰富的模块提升效率。而且它完全开源（LGPL-3.0 协议），功能还在持续迭代，值得玩机爱好者收藏。</p>
-        <p>官方下载：<a href="https://toolbox.uotan.cn/" target="_blank" rel="noopener">https://toolbox.uotan.cn/</a></p>
       `,
       cta: '阅读全文',
       image: 'https://picsum.photos/seed/blog9/800/500'
@@ -357,6 +357,7 @@
       coverClass: 'blog-cover-3',
       url: '#',
       type: 'article',
+      official: 'https://rom.oppo.help/',
       content: `
         <h2>ROM 固件下载站：刷机救砖升级降级一站搞定</h2>
         <p>刷机、救砖、升级、降级，最怕的就是找不到靠谱的官方固件。推荐一个简洁好用的固件下载站——<strong>rom.oppo.help</strong>，按品牌分类收录官方 ROM，从选择厂商到下载固件只需几步。</p>
@@ -377,7 +378,6 @@
         </ul>
         <h3>使用建议</h3>
         <p>刷机有风险，动手前记得备份重要数据，确认好机型和对应固件版本再操作；变砖救砖时按官方步骤进行，避免误刷导致更严重的问题。</p>
-        <p>访问地址：<a href="https://rom.oppo.help/" target="_blank" rel="noopener">https://rom.oppo.help/</a></p>
       `,
       cta: '阅读全文',
       image: 'https://picsum.photos/seed/blog17/800/500'
@@ -392,6 +392,7 @@
       coverClass: 'blog-cover-4',
       url: '#',
       type: 'article',
+      official: 'https://iknow.lenovo.com.cn/',
       content: `
         <h2>联想知识库：电脑问题不求人的官方帮助中心</h2>
         <p>电脑遇到问题，与其到处搜零散的回答，不如直接查官方知识库。<strong>联想知识库（iknow.lenovo.com.cn）</strong>是联想官方的帮助中心，收录了大量经过验证的电脑使用技巧、故障排查方案和前沿 AI 知识，覆盖联想笔记本、台式机、ThinkPad、拯救者、小新、YOGA 等全系机型。</p>
@@ -409,7 +410,6 @@
         <p>知识库还紧跟热点，收录了 <strong>DeepSeek 使用指南、AI PC 入门、RAG 检索增强生成技术、如何判断处理器是否支持 AI</strong> 等内容，想了解 AI 电脑相关概念也可以在这里系统入门。</p>
         <h3>六大知识专区</h3>
         <p>知识库按 操作系统 / AI 知识 / 专区（网络、多媒体、游戏、病毒安全）/ 硬件设备（打印机、接口外设、内置设备）/ 软件（预装、第三方）/ 产品与政策（维修退换、服务政策）分类，按需进入对应专区即可快速定位。</p>
-        <p>访问地址：<a href="https://iknow.lenovo.com.cn/" target="_blank" rel="noopener">https://iknow.lenovo.com.cn/</a></p>
       `,
       cta: '阅读全文',
       image: 'https://picsum.photos/seed/blog18/800/500'
@@ -424,6 +424,7 @@
       coverClass: 'blog-cover-5',
       url: '#',
       type: 'article',
+      official: 'https://violettool.top/',
       content: `
         <h2>紫罗兰工具箱：免费的安卓刷机救砖多功能工具箱</h2>
         <p>如果你玩机刷机，想找一款免费又好用的多功能工具箱，推荐 <strong>紫罗兰工具箱（VioletToolBox）</strong>——一款运行于 Windows 的免费 Android 刷机、救砖与设备维护工具，主打 Fastboot 线刷、高通 EDL 9008 底层维修、ROOT 和镜像处理，被不少圈内用户称为"最好用的免费多功能刷机工具箱"。</p>
@@ -452,7 +453,6 @@
         </ul>
         <h3>适合谁用</h3>
         <p>刷机新手和老玩家都合适：官方在 B 站、抖音提供了详细使用教程，入门友好；老手也能靠 80+ 功能覆盖刷机、救砖、ROOT、分区处理的完整流程。据官网统计，目前已有超过 30 万台电脑安装，日均打开活跃度在同类工具中名列前茅。</p>
-        <p>官网下载：<a href="https://violettool.top/" target="_blank" rel="noopener">https://violettool.top/</a></p>
       `,
       cta: '阅读全文',
       image: 'https://picsum.photos/seed/blog19/800/500'
@@ -478,6 +478,7 @@
       coverClass: 'blog-cover-1',
       url: '#',
       type: 'article',
+      official: 'https://doc.byyoung.top/',
       content: `
         <h2>爱玩机工具箱：解锁玩机新姿势</h2>
         <p>如果你喜欢折腾安卓设备，一定听说过 <strong>爱玩机工具箱（爱玩机）</strong>——一款运营了 9 年（2016–2026+）的老牌安卓系统工具。它集成了 400+ 项专业功能，主打"基于 ROOT + 系统 API + 自由奇思妙想"，无论是小白还是极客都能找到适合自己的玩法。</p>
@@ -495,7 +496,6 @@
         <p>爱玩机提供清晰的版本分支：<strong>试用版</strong>（先免费体验再决定是否付费）、<strong>A 版本</strong>（内测用户抢先体验新功能）、<strong>B 版本</strong>（极客用户临时功能整改）、<strong>S 版本</strong>（稳定用户慢速更新）。不同版本对应不同的尝鲜与稳定需求。</p>
         <h3>使用与支持</h3>
         <p>应用文件目录：主文件在内部存储 Documents/advanced，下载文件在 Download/advanced。官网 doc.byyoung.top 提供下载、使用教程、常见问题、交流讨论与捐赠支持。</p>
-        <p>官方文档：<a href="https://doc.byyoung.top/" target="_blank" rel="noopener">https://doc.byyoung.top/</a></p>
       `,
       cta: '阅读全文',
       image: 'https://picsum.photos/seed/blog13/800/500'
@@ -1002,6 +1002,7 @@
       typeAttr = ` data-type="article" data-title="${p.title}"`;
     }
     const contentAttr = isArticle ? ` data-content="${encodeURIComponent(p.content || '')}"` : '';
+    const officialAttr = isArticle && p.official ? ` data-official="${encodeURIComponent(p.official)}"` : '';
     const linkCardClass = isLinkCard ? ' blog-card-tool' : '';
     const coverStyle = hasImage ? ` style="background-image: url('${p.image}'); background-size: cover; background-position: center;"` : '';
     const coverIcon = hasImage ? '' : `<span>${p.icon}</span>`;
@@ -1021,7 +1022,7 @@
     const coverTag = `<div class="blog-cover ${p.coverClass}${hasImage ? ' has-image' : ''}"${coverStyle}>${coverIcon}${viewImageBtn}</div>`;
     const titleTag = `<h3>${p.title}</h3>`;
     return `
-      <article class="blog-card${linkCardClass}"${vpnAttr}${imageAttr}${typeAttr}${contentAttr}>
+      <article class="blog-card${linkCardClass}"${vpnAttr}${imageAttr}${typeAttr}${contentAttr}${officialAttr}>
         ${coverTag}
         <div class="blog-body">
           <div class="blog-meta">
@@ -3789,7 +3790,17 @@
         const modal = $('#articleModal');
         const titleEl = $('#articleModalTitle');
         const contentEl = $('#articleModalContent');
-        
+
+        // 弹窗顶部：封面图 + 官方下载链接（图片在左、下载按钮在右）
+        const headEl = $('#articleModalHead');
+        const imgEl = $('#articleModalImg');
+        const linkEl = $('#articleModalLink');
+        const official = card.dataset.official ? decodeURIComponent(card.dataset.official) : '';
+        const coverImg = card.dataset.image || '';
+        if (headEl) headEl.style.display = (official && coverImg) ? '' : 'none';
+        if (imgEl) imgEl.src = coverImg;
+        if (linkEl) { linkEl.href = official || '#'; linkEl.style.display = official ? '' : 'none'; }
+
         if (titleEl) titleEl.textContent = title;
         if (contentEl) contentEl.innerHTML = content;
         if (modal) modal.classList.add('show');
