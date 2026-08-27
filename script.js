@@ -1344,14 +1344,18 @@
     if (!toggle || !links) return;
 
     toggle.addEventListener('click', () => {
+      const willOpen = !toggle.classList.contains('active');
       toggle.classList.toggle('active');
       links.classList.toggle('show');
+      // 菜单打开/收起期间暂停背景动画并降级毛玻璃，避免菜单切换突兀、卡顿
+      document.documentElement.classList.toggle('glass-off-scroll', willOpen);
     });
 
     // 点击汉堡菜单里的链接 → 自动收起汉堡
     $$('.nav-link', links).forEach(a => a.addEventListener('click', () => {
       toggle.classList.remove('active');
       links.classList.remove('show');
+      document.documentElement.classList.remove('glass-off-scroll');
     }));
   }
 
@@ -2047,17 +2051,31 @@
       ctx.restore();
     }
 
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < petals.length; i++) {
-        const p = petals[i];
-        p.y += p.speedY;
-        p.x += Math.sin(p.swayOffset + p.y * p.swaySpeed) * p.sway * 0.3 + p.speedX;
-        p.angle += p.rotation;
-        if (p.y > canvas.height + 20 || p.x < -30 || p.x > canvas.width + 30) {
-          petals[i] = createPetal(true);
+    // 滚动期间降低樱花绘制帧率（不暂停，樱花仍持续飘落），减少滚动时 Canvas 全屏重绘开销
+    let petalLowFpsTimer = null;
+    let petalLowFps = false;
+    window.addEventListener('scroll', () => {
+      petalLowFps = true;
+      clearTimeout(petalLowFpsTimer);
+      petalLowFpsTimer = setTimeout(() => { petalLowFps = false; }, 400);
+    }, { passive: true });
+
+    let lastPetalDraw = 0;
+    function animate(ts) {
+      // 滚动时隔帧绘制（约 20fps），樱花不消失但减少 Canvas 重绘；停止滚动后恢复满帧
+      if (!petalLowFps || !lastPetalDraw || (ts - lastPetalDraw) > 50) {
+        lastPetalDraw = ts || performance.now();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < petals.length; i++) {
+          const p = petals[i];
+          p.y += p.speedY;
+          p.x += Math.sin(p.swayOffset + p.y * p.swaySpeed) * p.sway * 0.3 + p.speedX;
+          p.angle += p.rotation;
+          if (p.y > canvas.height + 20 || p.x < -30 || p.x > canvas.width + 30) {
+            petals[i] = createPetal(true);
+          }
+          drawPetal(p);
         }
-        drawPetal(p);
       }
       animationId = requestAnimationFrame(animate);
     }
@@ -2075,8 +2093,8 @@
     initPetals();
     animate();
 
-    // 樱花动画始终持续飘落（不因滚动而暂停/消失）；
-    // 滚动性能由移动端玻璃降级、背景层合成层与 scroll 节流保证，此处不做暂停。
+    // 樱花动画始终持续飘落（滚动时仅降低帧率，不暂停/消失）；
+    // 滚动性能由移动端玻璃降级、背景层合成层与 scroll 节流保证。
 
     let resizeTimer;
     window.addEventListener('resize', () => {
