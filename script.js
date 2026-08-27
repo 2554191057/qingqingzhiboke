@@ -2075,13 +2075,15 @@
     initPetals();
     animate();
 
-    // 滚动期间暂停花瓣动画（滚动停止 400ms 后恢复）→ 减少滚动时的 GPU/CPU 占用
+    // 滚动期间暂停花瓣动画 + 背景层动画（滚动停止 400ms 后恢复）→ 减少滚动时的 GPU/CPU 占用与渲染闪烁
     let petalScrollTimer = null;
     window.addEventListener('scroll', () => {
       if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+      document.documentElement.classList.add('bg-anim-paused');
       clearTimeout(petalScrollTimer);
       petalScrollTimer = setTimeout(() => {
         if (!animationId) animate();
+        document.documentElement.classList.remove('bg-anim-paused');
       }, 400);
     }, { passive: true });
 

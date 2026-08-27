@@ -83,6 +83,18 @@
         --glass-blur: blur(12px) saturate(140%);
         --glass-blur-strong: blur(18px) saturate(160%);
     }
+    /* 触摸设备：去掉 filter 色相旋转动画（filter 动画 + 毛玻璃实时采样是整页闪烁主因），保留液态流动效果 */
+    .bg-gradient-layer {
+        animation: liquidFlow 11s ease-in-out infinite alternate !important;
+    }
+}
+
+/* 滚动期间暂停背景层动画（配合 JS 在滚动时添加该类，减少滚动时渲染闪烁） */
+.bg-anim-paused .bg-gradient-layer,
+.bg-anim-paused .bg-gradient-layer::before,
+.bg-anim-paused .bg-gradient-layer::after,
+.bg-anim-paused .bg-gradient-layer .sparkle {
+    animation-play-state: paused !important;
 }
 
 html {
@@ -128,6 +140,9 @@ body {
     inset: 0;
     z-index: 0;
     pointer-events: none;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
     background: 
         linear-gradient(135deg, 
             #FDE8D8 0%, 
@@ -160,6 +175,8 @@ body {
     position: absolute;
     inset: 0;
     pointer-events: none;
+    will-change: transform;
+    transform: translateZ(0);
     background:
         radial-gradient(ellipse 55% 38% at 28% 22%, rgba(255, 255, 255, 0.32), transparent 68%),
         radial-gradient(ellipse 45% 32% at 72% 55%, rgba(255, 255, 255, 0.24), transparent 68%),
@@ -178,6 +195,9 @@ body {
     content: '';
     position: absolute;
     inset: 0;
+    pointer-events: none;
+    will-change: transform;
+    transform: translateZ(0);
     background: 
         radial-gradient(ellipse 62% 52% at 20% 30%, rgba(255, 180, 140, 0.55), transparent 72%),
         radial-gradient(ellipse 57% 47% at 80% 40%, rgba(170, 210, 160, 0.55), transparent 72%),
