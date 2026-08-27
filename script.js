@@ -1143,40 +1143,56 @@
     let navJumpLock = false;
     let navJumpUnlockTimer = null;
 
+    // 缓存各 section 的顶部位置（避免滚动时反复读取 offsetTop 触发强制同步布局）
+    let sectionTops = [];
+    function cacheSectionTops() {
+      sectionTops = sections.map(s => s.offsetTop);
+    }
+    cacheSectionTops();
+    window.addEventListener('resize', cacheSectionTops);
+
+    let scrollRafId = null;
     function onScroll() {
-      const st = window.scrollY || document.documentElement.scrollTop;
-      nav.classList.toggle('scrolled', st > 20);
-      back.classList.toggle('show', st > 400);
+      if (scrollRafId) return;
+      scrollRafId = requestAnimationFrame(() => {
+        scrollRafId = null;
+        const st = window.scrollY || document.documentElement.scrollTop;
+        nav.classList.toggle('scrolled', st > 20);
+        back.classList.toggle('show', st > 400);
 
-      const delta = st - lastScrollY;
+        const delta = st - lastScrollY;
 
-      if (Math.abs(delta) > 1) {
-        lastScrollDir = delta > 0 ? 1 : -1;
-      }
-
-      // 跳转锁定期间：跳过方向隐藏逻辑，保持导航栏可见
-      if (!navJumpLock) {
-        if (delta > 5 && st > SCROLL_THRESHOLD) {
-          nav.classList.add('nav-hidden');
-          themeToggle?.classList.add('btn-hidden');
-        } else if (delta < -5) {
-          nav.classList.remove('nav-hidden');
-          themeToggle?.classList.remove('btn-hidden');
+        if (Math.abs(delta) > 1) {
+          lastScrollDir = delta > 0 ? 1 : -1;
         }
-      }
-      lastScrollY = st;
 
-      $$('.section-scroll-down, .hero-scroll-hint').forEach(btn => {
-        btn.classList.toggle('dir-up', lastScrollDir === -1);
-      });
+        // 跳转锁定期间：跳过方向隐藏逻辑，保持导航栏可见
+        if (!navJumpLock) {
+          if (delta > 5 && st > SCROLL_THRESHOLD) {
+            nav.classList.add('nav-hidden');
+            themeToggle?.classList.add('btn-hidden');
+          } else if (delta < -5) {
+            nav.classList.remove('nav-hidden');
+            themeToggle?.classList.remove('btn-hidden');
+          }
+        }
+        lastScrollY = st;
 
-      for (const s of sections) {
-        if (s.offsetTop - 120 <= st) {
+        $$('.section-scroll-down, .hero-scroll-hint').forEach(btn => {
+          btn.classList.toggle('dir-up', lastScrollDir === -1);
+        });
+
+        // 用缓存的 offsetTop 判断当前 section（避免每帧读取布局）
+        let activeId = null;
+        for (let k = 0; k < sectionTops.length; k++) {
+          if (sectionTops[k] - 120 <= st) activeId = sections[k].id;
+          else break;
+        }
+        if (activeId) {
           $$('.nav-link').forEach(a => a.classList.remove('active'));
-          linkMap.get(s.id)?.classList.add('active');
-          break;
+          linkMap.get(activeId)?.classList.add('active');
         }
-      }
+      });
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -2058,6 +2074,16 @@
     resize();
     initPetals();
     animate();
+
+    // 滚动期间暂停花瓣动画（滚动停止 400ms 后恢复）→ 减少滚动时的 GPU/CPU 占用
+    let petalScrollTimer = null;
+    window.addEventListener('scroll', () => {
+      if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+      clearTimeout(petalScrollTimer);
+      petalScrollTimer = setTimeout(() => {
+        if (!animationId) animate();
+      }, 400);
+    }, { passive: true });
 
     let resizeTimer;
     window.addEventListener('resize', () => {

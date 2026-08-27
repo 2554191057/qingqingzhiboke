@@ -77,6 +77,14 @@
     --touch-target: 44px;
 }
 
+/* 触摸设备（手机/平板）性能优化：降低液态玻璃模糊半径，滚动更流畅，视觉几乎无差异 */
+@media (hover: none), (max-width: 768px) {
+    :root {
+        --glass-blur: blur(12px) saturate(140%);
+        --glass-blur-strong: blur(18px) saturate(160%);
+    }
+}
+
 html {
     scroll-behavior: smooth;
     scroll-padding-top: var(--nav-offset, 80px);
