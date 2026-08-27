@@ -2558,6 +2558,16 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     width: 16px;
     text-align: center;
 }
+/* 页脚位置链接：点击跳转高德地图搜索 */
+.footer-contact .footer-contact-link {
+    color: #B0B0B0;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.footer-contact .footer-contact-link:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
 
 .footer-bottom {
     padding: 24px 0 30px;
