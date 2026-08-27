@@ -1630,6 +1630,153 @@
         return;
     }
 
+    // ========== Toast（iOS 灵动岛风格） ==========
+    let toastTimer = null;
+    const TOAST_DURATION = 5000;
+    let toastClickCount = 0;
+    const MAX_CLICK_INTENSITY = 4;
+
+    function showToast(text, isError) {
+        isError = isError || false;
+        const toast = $('toast');
+        const label = $('toastText');
+        if (!toast || !label) return;
+        const wasVisible = toast.classList.contains('show');
+        const maxAllowed = window.innerWidth - 40;
+        const icon = toast.querySelector('.toast-icon');
+        if (icon) {
+            icon.className = 'toast-icon fa-solid ' + (isError ? 'fa-circle-xmark' : 'fa-circle-check');
+        }
+        toast.classList.toggle('no-icon', text.indexOf('点击任意位置开始播放音乐') !== -1);
+        toast.style.maxWidth = 'none';
+        toast.style.width = 'auto';
+        toast.style.minWidth = '0';
+        toast.style.transition = 'none';
+        label.style.maxWidth = 'none';
+        label.style.whiteSpace = 'nowrap';
+        toast.style.whiteSpace = 'nowrap';
+        requestAnimationFrame(function () {
+            label.textContent = text;
+            toast.classList.toggle('error', !!isError);
+            const naturalW = toast.scrollWidth;
+            const targetW = Math.min(Math.max(naturalW, 180), Math.max(maxAllowed, 560));
+            requestAnimationFrame(function () {
+                toast.style.transition = '';
+                toast.style.width = 'auto';
+                toast.style.minWidth = '180px';
+                toast.style.maxWidth = targetW + 'px';
+                toast.style.setProperty('--toast-w', targetW + 'px');
+                if (!wasVisible) toast.classList.add('show');
+                resetToastTimer();
+            });
+        });
+    }
+
+    function resetToastTimer() {
+        const toast = $('toast');
+        if (!toast) return;
+        const progress = toast.querySelector('#toastProgress');
+        if (progress) {
+            progress.style.animation = 'none';
+            progress.offsetHeight;
+            progress.style.animation = '';
+        }
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+            const label = toast.querySelector('#toastText');
+            if (label) {
+                label.style.transition = 'opacity 0.38s ease, transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                label.style.maxWidth = 'none';
+            }
+            toast.style.maxWidth = '';
+            toast.style.width = '';
+            toast.style.minWidth = '';
+            toast.classList.remove('show');
+            toastClickCount = 0;
+            toast.classList.remove(
+                'click-intense-1','click-intense-2','click-intense-3','click-intense-4','click-intense-max',
+                'click-shake-1','click-shake-2','click-shake-3','click-shake-4','click-shake-max',
+                'click-glow-1','click-glow-2','click-glow-3','click-glow-4','click-glow-max'
+            );
+            setTimeout(function () {
+                if (label) {
+                    label.style.transition = '';
+                    label.style.maxWidth = '';
+                }
+            }, 500);
+        }, TOAST_DURATION);
+    }
+
+    function applyClickIntensity(toast, count) {
+        const level = Math.min(count, MAX_CLICK_INTENSITY);
+        const intenseCls = level >= MAX_CLICK_INTENSITY ? 'click-intense-max' : 'click-intense-' + level;
+        const shakeCls = level >= MAX_CLICK_INTENSITY ? 'click-shake-max' : 'click-shake-' + level;
+        const glowCls = level >= MAX_CLICK_INTENSITY ? 'click-glow-max' : 'click-glow-' + level;
+        toast.classList.remove(
+            'click-shake-1','click-shake-2','click-shake-3','click-shake-4','click-shake-max',
+            'click-glow-1','click-glow-2','click-glow-3','click-glow-4','click-glow-max',
+            'click-pulse-glow','click-pulse-glow-intense'
+        );
+        toast.classList.add(shakeCls);
+        toast.classList.add(glowCls);
+        const cleanupTime = 650 + level * 50;
+        setTimeout(function () {
+            toast.classList.remove(
+                'click-shake-1','click-shake-2','click-shake-3','click-shake-4','click-shake-max',
+                'click-glow-1','click-glow-2','click-glow-3','click-glow-4','click-glow-max'
+            );
+        }, cleanupTime);
+        return intenseCls;
+    }
+
+    function initToastInteractions() {
+        const toast = $('toast');
+        if (!toast) return;
+        toast.addEventListener('click', function (e) {
+            if (!toast.classList.contains('show')) return;
+            toastClickCount++;
+            const intenseCls = applyClickIntensity(toast, toastClickCount);
+            const ripple = toast.querySelector('.toast-ripple');
+            if (ripple) {
+                const rect = toast.getBoundingClientRect();
+                const baseSize = Math.max(rect.width, rect.height);
+                const level = Math.min(toastClickCount, MAX_CLICK_INTENSITY);
+                const scaleFactor = 1.2 + level * 0.35;
+                const size = baseSize * scaleFactor;
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.remove('animate');
+                ripple.offsetHeight;
+                ripple.classList.add('animate');
+                toast.classList.remove('click-intense-1','click-intense-2','click-intense-3','click-intense-4','click-intense-max');
+                toast.classList.add(intenseCls);
+            }
+            resetToastTimer();
+        });
+        toast.addEventListener('mouseenter', function () {
+            if (!toast.classList.contains('show')) return;
+            toast.classList.add('paused');
+            if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+        });
+        toast.addEventListener('mouseleave', function () {
+            if (!toast.classList.contains('show')) return;
+            toast.classList.remove('paused');
+            resetToastTimer();
+        });
+        toast.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toast.click(); }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initToastInteractions);
+    } else {
+        initToastInteractions();
+    }
+
     const isToday = SB.isBirthdayToday();
     const target = SB.nextBirthday();
     const z = SB.getZodiacInfo();
@@ -4091,5 +4238,14 @@
     });
 })();
 </script>
+
+<!-- ========== Toast 通知（iOS 灵动岛风格） ========== -->
+<div class="toast" id="toast" role="status" aria-live="polite" tabindex="0">
+    <span class="toast-glow"></span>
+    <i class="fa-solid fa-circle-check toast-icon"></i>
+    <span class="toast-text" id="toastText">操作成功</span>
+    <span class="toast-progress" id="toastProgress"></span>
+    <span class="toast-ripple"></span>
+</div>
 </body>
 </html>

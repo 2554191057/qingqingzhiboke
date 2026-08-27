@@ -478,7 +478,7 @@
         <p>应用文件目录：主文件在内部存储 Documents/advanced，下载文件在 Download/advanced。官网 doc.byyoung.top 提供下载、使用教程、常见问题、交流讨论与捐赠支持。</p>
       `,
       cta: '阅读全文',
-      image: 'https://picsum.photos/seed/blog13/800/500'
+      image: 'https://s1.imagehub.cc/images/2026/08/27/d0450ec540cabb6321c08074fc1c1310.jpg'
     },
     {
       title: '给自己设个"免打扰"时段',
