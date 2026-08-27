@@ -3102,22 +3102,22 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     color: var(--color-accent);
 }
 
-/* 文章弹窗正文标题行：标题在左 + 官方下载按钮在标题右侧 */
+/* 文章弹窗正文标题行：标题在左 + 官方下载按钮紧挨标题右侧 */
 .article-title-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+    justify-content: flex-start;
+    gap: 12px;
     margin: 0 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-accent);
 }
 .article-title-bar h2 {
-    flex: 1;
     margin: 0;
     font-size: 1.4rem;
     font-weight: 700;
     color: var(--color-text);
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--color-accent);
+    line-height: 1.4;
 }
 .article-modal-link-btn {
     flex: 0 0 auto;
