@@ -92,6 +92,43 @@
 /* 背景层动画不随滚动暂停（保证视觉连续、避免暂停/恢复跳变引起的卡片闪烁）；
    滚动性能由移动端玻璃降级、背景层合成层与 scroll 节流保证 */
 
+/* ---- 滚动时降级毛玻璃 + 暂停背景动画（滚动结束 300ms 后由 JS 移除本类） ----
+   滚动期间 backdrop-filter 实时采样 + 背景动画持续重绘是 Android 端卡顿主因；
+   降级后卡片显示半透明实色（视觉柔和感仍在），滚动零重绘开销，停止后液态玻璃效果完整恢复 */
+html.glass-off-scroll .btn-outline,
+html.glass-off-scroll .navbar,
+html.glass-off-scroll .navbar.scrolled,
+html.glass-off-scroll .hero-hot-comment,
+html.glass-off-scroll .about-card,
+html.glass-off-scroll .social-card,
+html.glass-off-scroll .blog-card,
+html.glass-off-scroll .blog-view-image-btn,
+html.glass-off-scroll .resource-card,
+html.glass-off-scroll .resource-tip,
+html.glass-off-scroll .runtime-card,
+html.glass-off-scroll .modal-mask,
+html.glass-off-scroll .modal,
+html.glass-off-scroll .vpn-btn-secondary,
+html.glass-off-scroll .poster-tag,
+html.glass-off-scroll .back-to-top,
+html.glass-off-scroll .nav-links,
+html.glass-off-scroll .music-player-expanded,
+html.glass-off-scroll .music-collapse-btn,
+html.glass-off-scroll .music-disc,
+html.glass-off-scroll .music-player-collapsed,
+html.glass-off-scroll .mc-disc,
+html.glass-off-scroll .music-playlist,
+html.glass-off-scroll .bday-wrap {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+html.glass-off-scroll .bg-gradient-layer,
+html.glass-off-scroll .bg-gradient-layer::before,
+html.glass-off-scroll .bg-gradient-layer::after,
+html.glass-off-scroll .bg-gradient-layer .sparkle {
+    animation-play-state: paused !important;
+}
+
 html {
     scroll-behavior: smooth;
     scroll-padding-top: var(--nav-offset, 80px);

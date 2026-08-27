@@ -3514,6 +3514,18 @@
     // 樱花飘落特效
     initSakura();
 
+    // 滚动时降级毛玻璃 + 暂停背景动画（滚动停止 300ms 后恢复）
+    // 滚动期间 backdrop-filter 实时采样 + 背景动画持续重绘是 Android 端卡顿主因；
+    // 降级后卡片显示半透明实色，滚动零重绘开销，停止后液态玻璃效果完整恢复
+    let glassScrollTimer = null;
+    window.addEventListener('scroll', () => {
+      document.documentElement.classList.add('glass-off-scroll');
+      clearTimeout(glassScrollTimer);
+      glassScrollTimer = setTimeout(() => {
+        document.documentElement.classList.remove('glass-off-scroll');
+      }, 300);
+    }, { passive: true });
+
     // 顺序展示网易云热评（从上往下）+ 切换功能
     let lastCommentIndex = -1;
     
