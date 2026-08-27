@@ -89,13 +89,8 @@
     }
 }
 
-/* 滚动期间暂停背景层动画（配合 JS 在滚动时添加该类，减少滚动时渲染闪烁） */
-.bg-anim-paused .bg-gradient-layer,
-.bg-anim-paused .bg-gradient-layer::before,
-.bg-anim-paused .bg-gradient-layer::after,
-.bg-anim-paused .bg-gradient-layer .sparkle {
-    animation-play-state: paused !important;
-}
+/* 背景层动画不随滚动暂停（保证视觉连续、避免暂停/恢复跳变引起的卡片闪烁）；
+   滚动性能由移动端玻璃降级、背景层合成层与 scroll 节流保证 */
 
 html {
     scroll-behavior: smooth;

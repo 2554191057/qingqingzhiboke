@@ -2075,17 +2075,8 @@
     initPetals();
     animate();
 
-    // 滚动期间暂停花瓣动画 + 背景层动画（滚动停止 400ms 后恢复）→ 减少滚动时的 GPU/CPU 占用与渲染闪烁
-    let petalScrollTimer = null;
-    window.addEventListener('scroll', () => {
-      if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
-      document.documentElement.classList.add('bg-anim-paused');
-      clearTimeout(petalScrollTimer);
-      petalScrollTimer = setTimeout(() => {
-        if (!animationId) animate();
-        document.documentElement.classList.remove('bg-anim-paused');
-      }, 400);
-    }, { passive: true });
+    // 樱花动画始终持续飘落（不因滚动而暂停/消失）；
+    // 滚动性能由移动端玻璃降级、背景层合成层与 scroll 节流保证，此处不做暂停。
 
     let resizeTimer;
     window.addEventListener('resize', () => {
