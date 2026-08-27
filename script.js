@@ -384,15 +384,47 @@
       image: 'https://picsum.photos/seed/blog18/800/500'
     },
     {
-      title: '数字极简：删掉 80% App 之后',
-      tag: '数字',
+      title: '紫罗兰工具箱：免费的安卓刷机救砖多功能工具箱',
+      tag: '工具',
       date: '2026-08-24',
-      readTime: '7分钟',
-      excerpt: '一次删掉手机里 80% 的 App，只留 12 个真正常用的。第一周难受，第三周开始轻松——原来我之前一直在给工具打工。',
-      icon: '📲',
+      readTime: '5分钟',
+      excerpt: '运行于 Windows 的免费 Android 刷机救砖工具箱：80+ 功能，支持小米/OPPO/一加/真我/红魔/联想/魅族线刷、EDL 9008 救砖、一键 ROOT、投屏等',
+      icon: '🔧',
       coverClass: 'blog-cover-5',
       url: '#',
-      image: 'https://picsum.photos/seed/blog11/800/500'
+      type: 'article',
+      content: `
+        <h2>紫罗兰工具箱：免费的安卓刷机救砖多功能工具箱</h2>
+        <p>如果你玩机刷机，想找一款免费又好用的多功能工具箱，推荐 <strong>紫罗兰工具箱（VioletToolBox）</strong>——一款运行于 Windows 的免费 Android 刷机、救砖与设备维护工具，主打 Fastboot 线刷、高通 EDL 9008 底层维修、ROOT 和镜像处理，被不少圈内用户称为"最好用的免费多功能刷机工具箱"。</p>
+        <h3>基本概况</h3>
+        <ul>
+          <li>发布于 2025 年 8 月，2025 年 12 月正式更名"紫罗兰工具箱"，已迭代 53 个版本</li>
+          <li>累计可用功能 80+，程序体积仅接近 20MB</li>
+          <li>支持小米、OPPO、一加、真我、红魔、联想、魅族等主流品牌</li>
+          <li>承诺永久免费并持续更新维护</li>
+        </ul>
+        <h3>核心刷机能力</h3>
+        <ul>
+          <li><strong>欧加线刷</strong>：OPPO / 真我 / 一加支持全量包、售后包、OTA 三种模式，可跨大版本降级，还带自动救砖模式</li>
+          <li><strong>小米线刷</strong>：官方脚本线刷 + 可视化线刷两种方式可选</li>
+          <li><strong>EDL 9008 刷写</strong>：支持高通 9008 底层维修与救砖</li>
+          <li><strong>一键 ROOT & 脱机修补</strong>：支持 Magisk Alpha、KernelSU、APatch 等自动 ROOT 及 KMI 识别修补</li>
+          <li><strong>ROM 下载</strong>：内置欧加真小米全系列全量包与线刷包，云端不限速下载</li>
+        </ul>
+        <h3>更多实用功能</h3>
+        <ul>
+          <li>多设备检测：同时识别多个 ADB / Fastboot 设备，随时切换</li>
+          <li>全自动投屏：多台设备同时投屏、模拟按键、自定义清晰度与帧率</li>
+          <li>可视化刷写分区、快捷刷入镜像（刷入后自动重启）</li>
+          <li>应用管理：免 ROOT 提取 APK；文件传输 & 批量安装应用</li>
+          <li>Payload 解包：自研 C# 原生解包，支持 zip 与云端 URL 提取镜像</li>
+        </ul>
+        <h3>适合谁用</h3>
+        <p>刷机新手和老玩家都合适：官方在 B 站、抖音提供了详细使用教程，入门友好；老手也能靠 80+ 功能覆盖刷机、救砖、ROOT、分区处理的完整流程。据官网统计，目前已有超过 30 万台电脑安装，日均打开活跃度在同类工具中名列前茅。</p>
+        <p>官网下载：<a href="https://violettool.top/" target="_blank" rel="noopener">https://violettool.top/</a></p>
+      `,
+      cta: '阅读全文',
+      image: 'https://picsum.photos/seed/blog19/800/500'
     },
     {
       title: '深度阅读：在信息洪流里真正吸收',
