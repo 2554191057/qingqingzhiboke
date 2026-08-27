@@ -237,15 +237,46 @@
       image: 'https://s1.imagehub.cc/images/2026/08/25/f4cf7db1a6e0966193011fd3f5e6baf5.jpg'
     },
     {
-      title: 'TunNet · VPN',
+      title: 'TunNet · 免费VPN：一键连接全球网络',
       tag: '工具',
       date: '2026-08-24',
-      readTime: '1分钟',
-      excerpt: '延迟低，多路线选择，完全免费',
+      readTime: '3分钟',
+      excerpt: '面向 Windows / Mac / Android / TV 的免费 VPN 客户端：无需注册、不限流量，智能分流 + TUN 全局模式，全球 40+ 节点，下载打开即可连接',
       icon: '🧰',
       coverClass: 'blog-cover-4',
-      url: 'https://www.nexttun.net/',
-      cta: '访问工具',
+      url: '#',
+      type: 'article',
+      content: `
+        <h2>TunNet · 免费VPN：一键连接全球网络</h2>
+        <p><strong>TunNet</strong> 是一款面向 Windows、Mac、Android 与 Android TV 的免费 VPN 客户端。无需注册、不限流量，经国内入口直连全球节点——下载、打开、点连接，一分钟即可用上。</p>
+        <h3>核心亮点</h3>
+        <ul>
+          <li><strong>永久免费 · 不限流量</strong>：没有每日流量上限、没有连接时长限制、也没有试用期</li>
+          <li><strong>无需注册 · 不留信息</strong>：没有账号体系，不要求手机号与邮箱；加密隧道传输数据，不记录浏览内容与访问历史</li>
+          <li><strong>智能分流</strong>：国内网站直连不绕路，访问全球网络的流量自动进入 TunNet 加密通道</li>
+          <li><strong>TUN 全局模式</strong>：统一接管设备全部网络流量，游戏与办公软件无需逐个设置代理</li>
+          <li><strong>局域网共享</strong>：电脑连接后，一键共享给同一 Wi-Fi 下的手机、平板与电视</li>
+          <li><strong>实时状态可视</strong>：入口延迟、节点负载、上下行网速与流量统计实时可见</li>
+        </ul>
+        <h3>三步接入全球网络</h3>
+        <ol>
+          <li><strong>选择国内入口</strong>：客户端列出电信、联通、移动等国内接入点，每个入口的实时延迟一目了然，选延迟最低的那个</li>
+          <li><strong>选择全球节点</strong>：按地区与实时负载挑选落地节点，东京、新加坡、洛杉矶随心切换</li>
+          <li><strong>点击连接即用</strong>：智能分流自动生效，国内流量保持直连，全球流量走加密通道</li>
+        </ol>
+        <h3>全球 40+ 节点</h3>
+        <p>东京 42ms、新加坡 58ms、首尔 49ms、香港 31ms、台北 38ms、洛杉矶 128ms、圣何塞 135ms、法兰克福 162ms、伦敦 171ms、悉尼 98ms、孟买 112ms、迪拜 145ms……节点延迟与负载清晰可见，方便随时切换。</p>
+        <h3>全平台支持</h3>
+        <ul>
+          <li><strong>Windows</strong>：Windows 10 / 11 64 位，解压即用（ZIP 约 20MB）</li>
+          <li><strong>Android</strong>：官方 APK 直装，Android 8.1 以上，手机 / 平板 / 电视盒子通用（约 28MB）</li>
+          <li><strong>macOS</strong>：Universal 安装包，同时兼容 Intel 与 Apple Silicon 芯片（约 33MB）</li>
+          <li><strong>Android TV / 盒子</strong>：通用 APK 直接安装，或开启电脑端局域网共享</li>
+        </ul>
+        <p>当前最新版本 v0.2.2，所有安装包均由 TunNet 官方下载服务器直发，无捆绑、无广告、无恶意软件。</p>
+        <p>官方下载：<a href="https://www.nexttun.net/" target="_blank" rel="noopener">https://www.nexttun.net/</a></p>
+      `,
+      cta: '阅读全文',
       image: 'https://s1.imagehub.cc/images/2026/08/25/659f01d0e0b605f55809fb625bd9abcb.jpg'
     },
     {
