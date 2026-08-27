@@ -234,7 +234,7 @@
       coverClass: 'blog-cover-3',
       url: 'https://xz.yodlx.com/',
       cta: '访问工具',
-      image: 'https://s1.imagehub.cc/images/2026/08/25/f4cf7db1a6e0966193011fd3f5e6baf5.jpg'
+      image: 'https://s1.imagehub.cc/images/2026/08/27/4b1315157c0216e6e03f90126d312d42.png'
     },
     {
       title: 'TunNet · 免费VPN：一键连接全球网络',
@@ -277,7 +277,7 @@
         <p>当前最新版本 v0.2.2，所有安装包均由 TunNet 官方下载服务器直发，无捆绑、无广告、无恶意软件。</p>
       `,
       cta: '阅读全文',
-      image: 'https://s1.imagehub.cc/images/2026/08/25/659f01d0e0b605f55809fb625bd9abcb.jpg'
+      image: 'https://s1.imagehub.cc/images/2026/08/27/a29bceade4d0f62830b0dd0dbdba752f.png'
     },
     {
       title: '哲风壁纸 · 顶级高清壁纸',
@@ -289,7 +289,7 @@
       coverClass: 'blog-cover-5',
       url: 'https://haowallpaper.com/',
       cta: '访问网站',
-      image: 'https://s1.imagehub.cc/images/2026/08/25/c707a8222ada184f4415c7bd0841f6c6.jpg'
+      image: 'https://s1.imagehub.cc/images/2026/08/27/87afd0f7c2ede0f4b4549332d7ef32f3.png'
     }
   ];
 
@@ -345,7 +345,7 @@
         <p>无论你是刷机老手还是刚入门的新手，Uotan Toolbox 都能降低操作门槛：新手靠图形界面避免敲错命令，老手靠丰富的模块提升效率。而且它完全开源（LGPL-3.0 协议），功能还在持续迭代，值得玩机爱好者收藏。</p>
       `,
       cta: '阅读全文',
-      image: 'https://picsum.photos/seed/blog9/800/500'
+      image: 'https://s1.imagehub.cc/images/2026/08/27/c6074c6b3cd2d83613d94f1e1f39f237.png'
     },
     {
       title: 'ROM 固件下载站：刷机救砖升级降级一站搞定',
@@ -380,7 +380,7 @@
         <p>刷机有风险，动手前记得备份重要数据，确认好机型和对应固件版本再操作；变砖救砖时按官方步骤进行，避免误刷导致更严重的问题。</p>
       `,
       cta: '阅读全文',
-      image: 'https://picsum.photos/seed/blog17/800/500'
+      image: 'https://s1.imagehub.cc/images/2026/08/27/51a11b8bb3970e6a2ea389307d01d2d1.png'
     },
     {
       title: '新闻联播：每日19:00 央视直播',
@@ -392,7 +392,7 @@
       coverClass: 'blog-cover-6',
       url: 'https://tv.cctv.com/lm/xwlb/',
       cta: '立即观看',
-      image: 'https://picsum.photos/seed/xwlb1/800/500'
+      image: 'https://s1.imagehub.cc/images/2026/08/27/4a089953b095600db37fead76e8c3d87.png'
     },
     {
       title: '紫罗兰工具箱：免费的安卓刷机救砖多功能工具箱',
@@ -435,7 +435,7 @@
         <p>刷机新手和老玩家都合适：官方在 B 站、抖音提供了详细使用教程，入门友好；老手也能靠 80+ 功能覆盖刷机、救砖、ROOT、分区处理的完整流程。据官网统计，目前已有超过 30 万台电脑安装，日均打开活跃度在同类工具中名列前茅。</p>
       `,
       cta: '阅读全文',
-      image: 'https://picsum.photos/seed/blog19/800/500'
+      image: 'https://s1.imagehub.cc/images/2026/08/27/0b38d9e5c7c47d4cc2bdb41ccedb2a21.png'
     },
     {
       title: '深度阅读：在信息洪流里真正吸收',
