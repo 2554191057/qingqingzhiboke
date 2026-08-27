@@ -3785,19 +3785,30 @@
       // 文章类型：打开阅读弹窗
       if (card.dataset.type === 'article') {
         e.preventDefault();
-        const title = card.dataset.title;
         const content = decodeURIComponent(card.dataset.content || '');
         const modal = $('#articleModal');
-        const titleEl = $('#articleModalTitle');
         const contentEl = $('#articleModalContent');
-
-        // 官方下载按钮（标题右侧）：仅带 official 的文章显示
         const linkEl = $('#articleModalLink');
         const official = card.dataset.official ? decodeURIComponent(card.dataset.official) : '';
-        if (linkEl) { linkEl.href = official || '#'; linkEl.style.display = official ? '' : 'none'; }
 
-        if (titleEl) titleEl.textContent = title;
+        // 按钮先移回弹窗根（避免被 content 重置清除），并设置链接
+        if (linkEl) { linkEl.href = official || '#'; linkEl.style.display = 'none'; if (modal) modal.appendChild(linkEl); }
+
         if (contentEl) contentEl.innerHTML = content;
+
+        // 官方下载按钮移到正文第一个 h2 的右侧
+        if (linkEl && official) {
+          const firstH2 = contentEl.querySelector('h2');
+          if (firstH2) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'article-title-bar';
+            firstH2.parentNode.insertBefore(wrapper, firstH2);
+            wrapper.appendChild(firstH2);
+            wrapper.appendChild(linkEl);
+            linkEl.style.display = 'inline-flex';
+          }
+        }
+
         if (modal) modal.classList.add('show');
         document.body.style.overflow = 'hidden';
         return;

@@ -3048,15 +3048,6 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     padding: 48px 40px 36px;
     max-height: calc(100vh - 60px);
 }
-.article-modal-title {
-    flex: 1;
-    font-size: 1.6rem;
-    font-weight: 800;
-    margin: 0;
-    text-align: left;
-    color: var(--color-text);
-    line-height: 1.4;
-}
 .article-modal-content {
     font-size: 1rem;
     line-height: 1.9;
@@ -3111,13 +3102,22 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     color: var(--color-accent);
 }
 
-/* 文章弹窗标题行：标题在左 + 官方下载按钮在标题右侧 */
-.article-modal-title-row {
+/* 文章弹窗正文标题行：标题在左 + 官方下载按钮在标题右侧 */
+.article-title-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin: 0 0 24px;
+    margin: 0 0 16px;
+}
+.article-title-bar h2 {
+    flex: 1;
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-text);
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-accent);
 }
 .article-modal-link-btn {
     flex: 0 0 auto;
@@ -3141,7 +3141,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     filter: brightness(1.05);
 }
 @media (max-width: 480px) {
-    .article-modal-title-row {
+    .article-title-bar {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
