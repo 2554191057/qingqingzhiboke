@@ -352,15 +352,36 @@
       image: 'https://picsum.photos/seed/blog17/800/500'
     },
     {
-      title: '为什么我开始写晨间日记',
-      tag: '生活',
+      title: '联想知识库：电脑问题不求人的官方帮助中心',
+      tag: '工具',
       date: '2026-08-24',
-      readTime: '6分钟',
-      excerpt: '每天早上写三行字：今天最该做什么、昨天的一个小确幸、一句给自己的话。坚持 60 天，它成了我和自己开早会的方式。',
-      icon: '🌞',
+      readTime: '4分钟',
+      excerpt: '联想官方知识库（iknow.lenovo.com.cn）：收录海量电脑使用技巧、故障排查、AI 知识与 Lenovo Quick Fix 智能解决工具，按专区分类，电脑问题不用求人',
+      icon: '💡',
       coverClass: 'blog-cover-4',
       url: '#',
-      image: 'https://picsum.photos/seed/blog10/800/500'
+      type: 'article',
+      content: `
+        <h2>联想知识库：电脑问题不求人的官方帮助中心</h2>
+        <p>电脑遇到问题，与其到处搜零散的回答，不如直接查官方知识库。<strong>联想知识库（iknow.lenovo.com.cn）</strong>是联想官方的帮助中心，收录了大量经过验证的电脑使用技巧、故障排查方案和前沿 AI 知识，覆盖联想笔记本、台式机、ThinkPad、拯救者、小新、YOGA 等全系机型。</p>
+        <h3>能查到什么</h3>
+        <p>知识库里既有实用教程，也有疑难杂症的官方处理方案，例如：</p>
+        <ul>
+          <li><strong>系统异常处理</strong>：蓝屏错误（如 PAGE_FAULT_IN_NONPAGED_AREA）、Win10/11 流氓软件一键清除（MRT 工具 + 拦截技巧）、死机重启排查等</li>
+          <li><strong>新机使用</strong>：新电脑第一天从磁盘分区、存储感知、隐私保护到分辨率设置的 5 件必做事</li>
+          <li><strong>硬件保养</strong>：低温对电池续航的影响、键盘进液与散热孔堵塞等"毁机"习惯自查</li>
+          <li><strong>效率技巧</strong>：Win+R 运行指令速查、任务管理器 / 系统配置 / 清理缓存等快捷操作</li>
+        </ul>
+        <h3>Lenovo Quick Fix 智能解决工具</h3>
+        <p>除了图文知识，联想还提供 <strong>Lenovo Quick Fix</strong> 系列工具，比如"黑神话悟空性能优化工具""QuickFix·AI 工具集"等，针对特定场景一键智能修复，比手动排查省心不少。</p>
+        <h3>AI 知识专区</h3>
+        <p>知识库还紧跟热点，收录了 <strong>DeepSeek 使用指南、AI PC 入门、RAG 检索增强生成技术、如何判断处理器是否支持 AI</strong> 等内容，想了解 AI 电脑相关概念也可以在这里系统入门。</p>
+        <h3>六大知识专区</h3>
+        <p>知识库按 操作系统 / AI 知识 / 专区（网络、多媒体、游戏、病毒安全）/ 硬件设备（打印机、接口外设、内置设备）/ 软件（预装、第三方）/ 产品与政策（维修退换、服务政策）分类，按需进入对应专区即可快速定位。</p>
+        <p>访问地址：<a href="https://iknow.lenovo.com.cn/" target="_blank" rel="noopener">https://iknow.lenovo.com.cn/</a></p>
+      `,
+      cta: '阅读全文',
+      image: 'https://picsum.photos/seed/blog18/800/500'
     },
     {
       title: '数字极简：删掉 80% App 之后',
