@@ -802,12 +802,31 @@
     initToastInteractions();
   }
 
+  // 点击账号复制（QQ号 / 微信号 / 快手号 / 抖音号 / 页脚联系方式）
+  function bindCopyButtons() {
+    $$('.copy-id-btn').forEach(btn => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = btn.dataset.copyId;
+        const ok = await copyText(id);
+        const label = btn.dataset.label || btn.closest('.social-card')?.querySelector('h3')?.textContent || '账号';
+        const suffix = btn.dataset.label ? '' : '号';
+        showToast(ok ? `${label}${suffix} ${id} 已复制` : '复制失败，请手动长按复制', !ok);
+      });
+    });
+  }
+
   // 复制文本
   async function copyText(text) {
     try {
       if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
-        return true;
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (_) { /* 剪贴板 API 被拒时继续走 execCommand 回退 */ }
       }
       // 兼容回退
       const ta = document.createElement('textarea');
@@ -1329,18 +1348,8 @@
       showToast(ok ? `微信号 ${id} 已复制` : '复制失败，请手动长按复制', !ok);
     });
 
-    // 点击账号复制（QQ号 / 微信号 / 快手号 / 抖音号）
-    $$('.copy-id-btn').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const id = btn.dataset.copyId;
-        const ok = await copyText(id);
-        const label = btn.dataset.label || btn.closest('.social-card')?.querySelector('h3')?.textContent || '账号';
-        const suffix = btn.dataset.label ? '' : '号';
-        showToast(ok ? `${label}${suffix} ${id} 已复制` : '复制失败，请手动长按复制', !ok);
-      });
-    });
+    // 点击账号复制（QQ号 / 微信号 / 快手号 / 抖音号 / 页脚联系方式）
+    bindCopyButtons();
 
     // App 唤起按钮：尝试 deep link 唤起客户端；首次失败变"重试"，重试仍失败变"去应用商店"
     $$('.app-wake-btn').forEach(btn => {
@@ -3765,11 +3774,13 @@
     });
     // 页脚同步
     const footQQ = $('.footer-contact li:nth-child(2)');
-    if (footQQ) footQQ.innerHTML = `<i class="fa-brands fa-qq"></i> QQ: ${SOCIAL_CONFIG.qq.number}`;
+    if (footQQ) footQQ.innerHTML = `<i class="fa-brands fa-qq"></i> <span class="copy-id-btn" data-copy-id="${SOCIAL_CONFIG.qq.number}" data-label="QQ号" title="点击复制">QQ: ${SOCIAL_CONFIG.qq.number} <i class="fa-solid fa-copy"></i></span>`;
     const footWx = $('.footer-contact li:nth-child(3)');
-    if (footWx) footWx.innerHTML = `<i class="fa-brands fa-weixin"></i> 微信: ${SOCIAL_CONFIG.wechat.id}`;
+    if (footWx) footWx.innerHTML = `<i class="fa-brands fa-weixin"></i> <span class="copy-id-btn" data-copy-id="${SOCIAL_CONFIG.wechat.id}" data-label="微信号" title="点击复制">微信: ${SOCIAL_CONFIG.wechat.id} <i class="fa-solid fa-copy"></i></span>`;
     const footEmail = $('.footer-contact li:nth-child(1)');
-    if (footEmail) footEmail.innerHTML = `<i class="fa-solid fa-envelope"></i> ${SOCIAL_CONFIG.email}`;
+    if (footEmail) footEmail.innerHTML = `<i class="fa-solid fa-envelope"></i> <span class="copy-id-btn" data-copy-id="${SOCIAL_CONFIG.email}" data-label="邮箱" title="点击复制">${SOCIAL_CONFIG.email} <i class="fa-solid fa-copy"></i></span>`;
+    // 页脚动态写入的复制按钮需重新绑定点击事件
+    bindCopyButtons();
 
     // 平滑滚动修正（适配所有缩放比例和屏幕方向）
     $$('a[href^="#"]:not(.section-scroll-down)').forEach(a => {
