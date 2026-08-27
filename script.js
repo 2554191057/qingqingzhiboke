@@ -1336,8 +1336,9 @@
         e.stopPropagation();
         const id = btn.dataset.copyId;
         const ok = await copyText(id);
-        const label = btn.closest('.social-card')?.querySelector('h3')?.textContent || '账号';
-        showToast(ok ? `${label}号 ${id} 已复制` : '复制失败，请手动长按复制', !ok);
+        const label = btn.dataset.label || btn.closest('.social-card')?.querySelector('h3')?.textContent || '账号';
+        const suffix = btn.dataset.label ? '' : '号';
+        showToast(ok ? `${label}${suffix} ${id} 已复制` : '复制失败，请手动长按复制', !ok);
       });
     });
 
