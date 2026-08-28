@@ -3363,6 +3363,9 @@
       const isDark = html.getAttribute('data-theme') === 'dark';
       const newIsDark = !isDark;
       
+      // 切换前启用全局过渡（仅本次切换生效，避免影响平时交互）
+      html.classList.add('theme-transition');
+      
       if (newIsDark) {
         html.setAttribute('data-theme', 'dark');
         themeToggle?.classList.add('dark');
@@ -3375,6 +3378,11 @@
       
       updateThemeIcon(newIsDark);
       showToast(newIsDark ? '🌙 已切换到夜间模式' : '☀️ 已切换到日间模式');
+      
+      // 过渡结束后移除过渡类
+      setTimeout(() => {
+        html.classList.remove('theme-transition');
+      }, 550);
     }
     
     // 绑定点击事件
