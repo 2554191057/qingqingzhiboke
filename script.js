@@ -3362,27 +3362,39 @@
     function toggleDarkMode() {
       const isDark = html.getAttribute('data-theme') === 'dark';
       const newIsDark = !isDark;
+      const overlay = $('#themeOverlay');
       
-      // 切换前启用全局过渡（仅本次切换生效，避免影响平时交互）
-      html.classList.add('theme-transition');
+      // 决定遮罩方向：切到夜间→从下往上（深色遮罩），切到日间→从上往下（浅色遮罩）
+      overlay.className = 'theme-overlay ' + (newIsDark ? 'from-bottom' : 'from-top');
+      // 强制重排，确保初始状态生效
+      void overlay.offsetWidth;
+      // 遮罩滑入覆盖全屏
+      overlay.classList.add('cover');
       
-      if (newIsDark) {
-        html.setAttribute('data-theme', 'dark');
-        themeToggle?.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        html.removeAttribute('data-theme');
-        themeToggle?.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      }
-      
-      updateThemeIcon(newIsDark);
-      showToast(newIsDark ? '🌙 已切换到夜间模式' : '☀️ 已切换到日间模式');
-      
-      // 过渡结束后移除过渡类
+      // 遮罩覆盖到约一半时切换主题（此时内容被遮住，切换不可见）
       setTimeout(() => {
-        html.classList.remove('theme-transition');
-      }, 550);
+        if (newIsDark) {
+          html.setAttribute('data-theme', 'dark');
+          themeToggle?.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          html.removeAttribute('data-theme');
+          themeToggle?.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        }
+        updateThemeIcon(newIsDark);
+      }, 280);
+      
+      // 遮罩完全覆盖后淡出，露出新主题
+      setTimeout(() => {
+        overlay.classList.add('fade-out');
+        showToast(newIsDark ? '🌙 已切换到夜间模式' : '☀️ 已切换到日间模式');
+      }, 560);
+      
+      // 动画结束后重置遮罩
+      setTimeout(() => {
+        overlay.className = 'theme-overlay';
+      }, 1050);
     }
     
     // 绑定点击事件
