@@ -627,6 +627,31 @@
       size: '不限速下载',
       date: '2026-08-24',
       badges: [{ text: '✨ 新更', cls: 'new' }]
+    },
+    {
+      title: '【蓝奏云】2026最新资源',
+      desc: '蓝奏云资源分享。',
+      icon: '📦',
+      type: 'lanzou',
+      typeLabel: '蓝奏云',
+      link: 'https://wwbrb.lanzoum.com/b00tcqxs7c',
+      code: 'i1np',
+      size: '不限速下载',
+      date: '2026-08-28',
+      badges: [{ text: '✨ 新更', cls: 'new' }]
+    },
+    {
+      title: '【小飞机网盘】2026最新资源',
+      desc: '下载不限速、一键转存无上限、在线播放无损音视频。',
+      icon: '✈️',
+      type: 'feijipan',
+      typeLabel: '小飞机网盘',
+      link: 'https://share.feijipan.com/s/LS8WXgzb',
+      code: '无提取码',
+      size: '不限速下载',
+      date: '2026-08-28',
+      copyText: '小飞机网盘，下载不限速、一键转存无上限、在线播放无损音视频。复制这段内容打开「小飞机网盘」APP即可获取 链接：https://share.feijipan.com/s/LS8WXgzb',
+      badges: [{ text: '✨ 新更', cls: 'new' }]
     }
   ];
 
@@ -999,6 +1024,8 @@
     xunlei: '<svg class="res-icon-svg"><use href="#icon-xunlei"/></svg>',
     baidu: '<svg class="res-icon-svg"><use href="#icon-baidu"/></svg>',
     quark: '<svg class="res-icon-svg"><use href="#icon-quark"/></svg>',
+    lanzou: '📦',
+    feijipan: '✈️',
     onedrive: '🟩',
     google: '🌈',
     other: '📦'
@@ -1010,9 +1037,9 @@
       const badges = (r.badges || []).map(b =>
         `<span class="resource-badge ${b.cls ? 'resource-badge-' + b.cls : ''}">${b.text}</span>`
       ).join('');
-      const fullLink = r.code && r.code !== '无需提取码'
+      const fullLink = r.copyText || (r.code && r.code !== '无需提取码'
         ? `${r.link}  提取码: ${r.code}`
-        : r.link;
+        : r.link);
       return `
         <div class="resource-card">
           <div class="resource-icon res-type-${r.type}">
