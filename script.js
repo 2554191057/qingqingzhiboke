@@ -1037,8 +1037,8 @@
       const badges = (r.badges || []).map(b =>
         `<span class="resource-badge ${b.cls ? 'resource-badge-' + b.cls : ''}">${b.text}</span>`
       ).join('');
-      const fullLink = r.copyText || (r.code && r.code !== '无需提取码'
-        ? `${r.link}  提取码: ${r.code}`
+      const fullLink = r.copyText || (r.code && r.code !== '无需提取码' && r.code !== '无提取码'
+        ? r.code
         : r.link);
       return `
         <div class="resource-card">
@@ -1067,7 +1067,7 @@
                       data-action="copy-resource"
                       data-link="${fullLink}"
                       data-name="${r.title}">
-                <i class="fa-regular fa-copy"></i>&nbsp; 复制链接+提取码
+                <i class="fa-regular fa-copy"></i>&nbsp; 复制提取码
               </button>
             </div>
           </div>
@@ -1625,7 +1625,8 @@
           return;
         }
         const ok = await copyText(link);
-        showToast(ok ? (name ? name + ' 链接与提取码已复制' : '链接已复制') : '复制失败，请手动长按复制', !ok);
+        const isLink = /^https?:\/\//i.test(link);
+        showToast(ok ? (name ? name + (isLink ? ' 链接已复制' : ' 提取码已复制') : (isLink ? '链接已复制' : '提取码已复制')) : '复制失败，请手动长按复制', !ok);
       }
     });
   }
