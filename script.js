@@ -188,6 +188,49 @@
   // 博客文章数据 · 可自由增减
   const BLOG_POSTS = [
     {
+      title: 'Neat Download Manager · 免费轻量的多线程下载管理器',
+      tag: '工具',
+      date: '2026-08-28',
+      readTime: '3分钟',
+      excerpt: '完全免费、安装包不到 1MB 的多线程下载管理器，最高 32 线程并发下载，支持断点续传、浏览器扩展集成、HTTP/HTTPS/FTP 协议与代理，是 IDM 的最佳免费替代',
+      icon: '📥',
+      coverClass: 'blog-cover-1',
+      url: '#',
+      type: 'article',
+      official: 'https://www.neatdownloadmanager.com/index.php/en/',
+      content: `
+        <h2>Neat Download Manager · 免费轻量的多线程下载管理器</h2>
+        <p><strong>Neat Download Manager</strong>（简称 NDM）是一款完全免费、简洁轻量的多线程下载管理器。安装包不到 1MB，干净无广告，支持最高 32 线程并发下载、断点续传、浏览器扩展集成与音视频嗅探，是付费下载工具 IDM 的最佳免费替代品。官网 <strong>neatdownloadmanager.com</strong> 即可免费下载。</p>
+        <h3>核心亮点</h3>
+        <ul>
+          <li><strong>完全免费 · 无广告</strong>：没有付费墙、没有功能限制、没有广告弹窗，安装即用</li>
+          <li><strong>极致轻量</strong>：安装包不到 1MB，内存占用极低，老旧电脑也能流畅运行</li>
+          <li><strong>多线程加速</strong>：最高支持 32 线程并发下载（默认 16 线程），智能拆分文件为多个片段并行传输，充分压榨带宽，大文件下载速度提升 2-5 倍</li>
+          <li><strong>断点续传</strong>：网络中断、手动暂停或意外关机后，重新下载时自动从断点处继续，无需从头开始，节省时间和流量</li>
+          <li><strong>浏览器扩展集成</strong>：支持 Chrome、Edge、Firefox 等主流浏览器扩展，自动接管网页下载链接，一键调用 NDM 下载</li>
+          <li><strong>音视频嗅探</strong>：配合浏览器扩展可自动抓取网页中的视频、音频资源，支持 HLS 流媒体下载并自动合并片段</li>
+        </ul>
+        <h3>协议与代理支持</h3>
+        <ul>
+          <li><strong>多协议</strong>：支持 HTTP、HTTPS、FTP 协议下载</li>
+          <li><strong>代理支持</strong>：支持 HTTP Proxy 和 SOCKS（V4/V5）代理，可按协议分别配置</li>
+          <li><strong>身份验证</strong>：支持 HTTP 身份验证与代理身份验证（Basic、Digest、NTLM）</li>
+        </ul>
+        <h3>下载管理</h3>
+        <p>NDM 会自动按下载状态（已完成 / 未完成）和文件类型（视频、音频、压缩包、文档、应用程序等）分类整理，左侧导航栏一目了然。下载过程中可实时查看速度、进度、剩余时间，随时暂停、恢复或删除任务。</p>
+        <h3>三步开始高速下载</h3>
+        <ol>
+          <li><strong>下载安装</strong>：从官网下载 NeatDM_setup.exe 安装包，双击安装（Windows），Mac 用户下载对应版本</li>
+          <li><strong>安装浏览器扩展</strong>：打开 NDM 后点击「Browsers」按钮，按提示为 Chrome / Edge / Firefox 安装扩展，重启浏览器</li>
+          <li><strong>开始下载</strong>：在网页中点击下载链接，NDM 会自动弹出接管；或复制下载链接，在 NDM 中点击「New URL」新建任务</li>
+        </ol>
+        <h3>IDM 的免费替代</h3>
+        <p>在下载管理器领域，IDM（Internet Download Manager）常年占据头把交椅，但 IDM 是付费软件（约 30 美元）且仅有 Windows 版。NDM 提供了几乎相同的核心体验——多线程加速、断点续传、浏览器集成、媒体嗅探——而且完全免费、支持 Windows 和 macOS 双平台，是追求性价比用户的首选。</p>
+      `,
+      cta: '阅读全文',
+      image: 'https://aka.doubaocdn.com/s/da78jKXcD3'
+    },
+    {
       title: 'QQ资源分享交流群',
       tag: '组织',
       date: '2026-08-24',
