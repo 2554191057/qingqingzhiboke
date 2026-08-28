@@ -657,7 +657,7 @@
       code: '4p6j',
       size: '不限速下载',
       date: '2026-08-28',
-      badges: [{ text: '🔥 热门', cls: 'hot' }]
+      badges: []
     },
     {
       title: '【夸克网盘】2026最新资源',
@@ -681,7 +681,7 @@
       code: 'i1np',
       size: '不限速下载',
       date: '2026-08-28',
-      badges: [{ text: '✨ 新更', cls: 'new' }]
+      badges: [{ text: '🔥 热门', cls: 'hot' }, { text: '✨ 新更', cls: 'new' }]
     },
     {
       title: '【小飞机网盘】2026最新资源',
