@@ -395,6 +395,49 @@
       image: 'https://s1.imagehub.cc/images/2026/08/27/4a089953b095600db37fead76e8c3d87.png'
     },
     {
+      title: '咕噜咕噜影院：永久免费追剧，四端同步',
+      tag: '影视',
+      date: '2026-08-28',
+      readTime: '3分钟',
+      excerpt: '覆盖安卓、苹果、电视、电脑四端的免费追剧应用，电影、电视剧、动漫、综艺、短剧、直播应有尽有，4K 片源、投屏、一起看房间、弹幕联动',
+      icon: '🎬',
+      coverClass: 'blog-cover-4',
+      url: '#',
+      type: 'article',
+      official: 'https://glgl.tv',
+      content: `
+        <h2>咕噜咕噜影院：永久免费追剧</h2>
+        <p><strong>咕噜咕噜</strong>是一款永久免费的追剧应用，覆盖安卓、苹果、电视、电脑四端，电影、电视剧、动漫、综艺、短剧、直播应有尽有。官网 <strong>glgl.tv</strong> 即可下载，百分百安全、不收费。</p>
+        <h3>海量片库</h3>
+        <ul>
+          <li>电影、电视剧、动漫、综艺、短剧、直播全覆盖</li>
+          <li>4K 超清晰视频，秒播不卡</li>
+          <li>支持超前点播，热门剧集抢先看</li>
+        </ul>
+        <h3>一起看房间</h3>
+        <p>支持情侣、多人房间创建，密码私密互动，弹幕同步，远距离也能一起追剧。</p>
+        <h3>播放体验</h3>
+        <ul>
+          <li><strong>边播边缓存</strong>：智能清理，网速差也能流畅追剧</li>
+          <li><strong>离线缓存</strong>：下载视频弹幕同步下载，不联网也有弹幕</li>
+          <li><strong>去片头片尾</strong>：自定义跳过，小窗口模式更精美</li>
+          <li><strong>预加载下一集</strong>：切集秒播不卡</li>
+        </ul>
+        <h3>多端联动</h3>
+        <ul>
+          <li><strong>投屏</strong>：支持投屏、投屏自动下一集</li>
+          <li><strong>云端历史同步</strong>：一个账号多端同步观看进度</li>
+          <li><strong>电视端</strong>：4K 超清晰入口，适合遥控器方向键焦点切换</li>
+          <li><strong>电脑端</strong>：点击即看，弹幕同步</li>
+          <li><strong>平板</strong>：完美兼容，界面优美</li>
+        </ul>
+        <h3>下载说明</h3>
+        <p>官网 glgl.tv 提供四端安装包。安卓端如安装不上，可下载完成后先开启飞行模式并完全断网再安装。如个别手机提示病毒、恶意、风险应用或签名异常，通常是因为这类应用无法备案而触发误报，可放心安装。</p>
+      `,
+      cta: '阅读全文',
+      image: 'https://glgl.tv/assets/media/app-logo.jpg'
+    },
+    {
       title: '紫罗兰工具箱：免费的安卓刷机救砖多功能工具箱',
       tag: '玩机工具',
       date: '2026-08-24',
@@ -2389,10 +2432,6 @@
           coverEl.classList.add('playing');
           renderPlaylistActive();
           syncCollapsedUi();
-          if (!hasShownMusicStartedToast) {
-            hasShownMusicStartedToast = true;
-            showToast('🎵 音乐已开启');
-          }
         }).catch(() => {
           // 浏览器阻止自动播放，等待用户交互
           isPlaying = false;
@@ -3266,11 +3305,17 @@
     });
 
     // 首次用户交互时启动播放（解决浏览器自动播放限制）
-    function firstInteraction() {
+    function firstInteraction(e) {
       if (!hasInteracted) {
         hasInteracted = true;
         if (!isPlaying) play();
-        // 不弹 toast：音乐播放本身有声音反馈，避免覆盖按钮自身的提示（如日夜间切换）
+        // 点击按钮/链接等交互控件时不弹 toast，避免覆盖控件自身的提示（如日夜间切换）；
+        // 点击空白区域才提示"音乐已开启"
+        const t = e.target;
+        const isInteractive = t && t.closest && t.closest('button, a, input, [role="button"], .music-player, .theme-toggle, .toast, .nav-container, .back-to-top');
+        if (!isInteractive) {
+          showToast('🎵 音乐已开启', false);
+        }
       }
       document.removeEventListener('click', firstInteraction);
       document.removeEventListener('touchstart', firstInteraction);
