@@ -188,18 +188,6 @@
   // 博客文章数据 · 可自由增减
   const BLOG_POSTS = [
     {
-      title: '为什么我搭建了这个个人博客？',
-      tag: '随笔',
-      date: '2026-08-24',
-      readTime: '5分钟',
-      excerpt: '在这个社交媒体当道的年代，我为什么还要费劲搭建一个属于自己的小博客？其实是用Ai写的',
-      icon: '📝',
-      coverClass: 'blog-cover-1',
-      url: '#social',
-      cta: '联系我',
-      image: 'https://picsum.photos/seed/blog1/800/500'
-    },
-    {
       title: 'QQ资源分享交流群',
       tag: '组织',
       date: '2026-08-24',
@@ -481,17 +469,6 @@
       image: 'https://s1.imagehub.cc/images/2026/08/27/0b38d9e5c7c47d4cc2bdb41ccedb2a21.png'
     },
     {
-      title: '深度阅读：在信息洪流里真正吸收',
-      tag: '方法',
-      date: '2026-08-24',
-      readTime: '8分钟',
-      excerpt: '收藏不等于学到。我改用“读一章、合上、写三句话”的方式，一年读的书少了，记住的反而多了。这是我的深度阅读流程。',
-      icon: '📚',
-      coverClass: 'blog-cover-6',
-      url: '#',
-      image: 'https://picsum.photos/seed/blog12/800/500'
-    },
-    {
       title: '爱玩机工具箱：解锁玩机新姿势的安卓系统工具',
       tag: '玩机工具',
       date: '2026-08-24',
@@ -522,83 +499,6 @@
       `,
       cta: '阅读全文',
       image: 'https://s1.imagehub.cc/images/2026/08/27/d0450ec540cabb6321c08074fc1c1310.jpg'
-    },
-    {
-      title: '给自己设个"免打扰"时段',
-      tag: '方法',
-      date: '2026-08-24',
-      readTime: '4分钟',
-      excerpt: '每天 90 分钟免打扰：关通知、关微信、只做一件难事。坚持两个月，这是我产出最高、焦虑最少的一个习惯。',
-      icon: '🔕',
-      coverClass: 'blog-cover-2',
-      url: '#',
-      image: 'https://picsum.photos/seed/blog14/800/500'
-    },
-    {
-      title: '从焦虑到行动：两分钟法则',
-      tag: '随笔',
-      date: '2026-08-24',
-      readTime: '5分钟',
-      excerpt: '能在两分钟内做完的事，立刻做掉。这个小规矩帮我清掉了无数拖延的小事，也让大脑腾出空间留给真正重要的事。',
-      icon: '⚡',
-      coverClass: 'blog-cover-3',
-      url: '#',
-      image: 'https://picsum.photos/seed/blog15/800/500'
-    },
-    {
-      title: '给生活做减法：我的断舍离清单',
-      tag: '生活',
-      date: '2026-08-24',
-      readTime: '5分钟',
-      excerpt: '一年扔掉 200 件东西后我发现：真正需要的远比以为的少。分享我的断舍离三问——还用吗、还爱吗、没了会怎样。',
-      icon: '🧹',
-      coverClass: 'blog-cover-4',
-      url: '#',
-      image: 'https://picsum.photos/seed/blog16/800/500'
-    },
-    {
-      title: '写作是最便宜的思考工具',
-      tag: '随笔',
-      date: '2026-08-24',
-      readTime: '6分钟',
-      excerpt: '想不清楚就写下来。写作不是输出，是思考的过程。这三年我用每天 15 分钟自由书写，理清了大多数纠结。',
-      icon: '✍️',
-      coverClass: 'blog-cover-5',
-      url: '#',
-      image: 'https://picsum.photos/seed/blog17/800/500'
-    },
-    {
-      title: '为什么我每周留一个"无计划日"',
-      tag: '生活',
-      date: '2026-08-24',
-      readTime: '4分钟',
-      excerpt: '每周日我不排任何计划，爱做什么做什么。最初觉得浪费，后来发现正是这一天养回了下一周的行动力。',
-      icon: '🛋️',
-      coverClass: 'blog-cover-6',
-      url: '#',
-      image: 'https://picsum.photos/seed/blog18/800/500'
-    },
-    {
-      title: '用清单代替记忆：解放大脑的 7 个场景',
-      tag: '效率',
-      date: '2026-08-24',
-      readTime: '7分钟',
-      excerpt: '大脑用来思考，不是用来记事。从购物、旅行到搬家，我用 7 类清单把记忆外包，从此少忘事、少焦虑。',
-      icon: '📝',
-      coverClass: 'blog-cover-1',
-      url: '#',
-      image: 'https://picsum.photos/seed/blog19/800/500'
-    },
-    {
-      title: '在通勤路上的一年：碎片时间变成了什么',
-      tag: '随笔',
-      date: '2026-08-24',
-      readTime: '8分钟',
-      excerpt: '每天通勤 40 分钟，一年就是 240 小时。我用它听书、复盘、发呆。一年下来，竟读完了 12 本一直没空读的书。',
-      icon: '🚇',
-      coverClass: 'blog-cover-2',
-      url: '#',
-      image: 'https://picsum.photos/seed/blog20/800/500'
     }
   ];
 
