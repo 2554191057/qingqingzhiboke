@@ -1626,7 +1626,7 @@
         }
         const ok = await copyText(link);
         const isLink = /^https?:\/\//i.test(link);
-        showToast(ok ? (name ? name + (isLink ? ' 链接已复制' : ' 提取码已复制') : (isLink ? '链接已复制' : '提取码已复制')) : '复制失败，请手动长按复制', !ok);
+        showToast(ok ? (isLink ? '链接已复制' : '提取码已复制') : '复制失败，请手动长按复制', !ok);
       }
     });
   }
