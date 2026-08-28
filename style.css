@@ -2387,6 +2387,8 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
 .res-type-guangya { background: linear-gradient(135deg, #FFD63A, #FFA726); }
 .res-type-123 { background: linear-gradient(135deg, #3385FF, #1A5FE0); }
 .res-type-xunlei { background: linear-gradient(135deg, #00A0E9, #288CF0); }
+.res-type-lanzou { background: linear-gradient(135deg, #1565C0, #42A5F5); }
+.res-type-feijipan { background: linear-gradient(135deg, #00ACC1, #4DD0E1); }
 .res-type-other { background: linear-gradient(135deg, #8E44AD, #C65A2E); }
 .res-icon-svg { width: 34px; height: 34px; fill: #fff; display: block; }
 

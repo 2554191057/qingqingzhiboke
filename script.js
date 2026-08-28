@@ -1067,8 +1067,8 @@
     xunlei: '<svg class="res-icon-svg"><use href="#icon-xunlei"/></svg>',
     baidu: '<svg class="res-icon-svg"><use href="#icon-baidu"/></svg>',
     quark: '<svg class="res-icon-svg"><use href="#icon-quark"/></svg>',
-    lanzou: '<i class="fa-solid fa-box-archive" style="font-size:26px;"></i>',
-    feijipan: '<i class="fa-solid fa-paper-plane" style="font-size:26px;"></i>',
+    lanzou: '<i class="fa-solid fa-box-archive"></i>',
+    feijipan: '<i class="fa-solid fa-paper-plane"></i>',
     onedrive: '🟩',
     google: '🌈',
     other: '📦'
@@ -2906,6 +2906,8 @@
       if (!hasInteracted) {
         hasInteracted = true;
         if (!isPlaying) play();
+        // 首次通过播放器按钮启动播放时，也显示「音乐已开启」提示（避免先点播放器按钮后空白区域点击不再弹 toast）
+        showToast('🎵 音乐已开启', false);
       }
     });
 
