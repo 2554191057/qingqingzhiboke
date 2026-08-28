@@ -3362,17 +3362,13 @@
     function toggleDarkMode() {
       const isDark = html.getAttribute('data-theme') === 'dark';
       const newIsDark = !isDark;
-      const overlay = $('#themeOverlay');
       
-      // 决定遮罩方向：切到夜间→从下往上（深色遮罩），切到日间→从上往下（浅色遮罩）
-      overlay.className = 'theme-overlay ' + (newIsDark ? 'from-bottom' : 'from-top');
-      // 强制重排，确保初始状态生效
-      void overlay.offsetWidth;
-      // 遮罩滑入覆盖全屏
-      overlay.classList.add('cover');
+      // 方向：切到日间→从上往下(vt-from-top)，切到夜间→从下往上(vt-from-bottom)
+      const dirClass = newIsDark ? 'vt-from-bottom' : 'vt-from-top';
+      html.classList.add(dirClass);
       
-      // 遮罩覆盖到约一半时切换主题（此时内容被遮住，切换不可见）
-      setTimeout(() => {
+      // 执行主题切换
+      function doSwitch() {
         if (newIsDark) {
           html.setAttribute('data-theme', 'dark');
           themeToggle?.classList.add('dark');
@@ -3383,18 +3379,21 @@
           localStorage.setItem('theme', 'light');
         }
         updateThemeIcon(newIsDark);
-      }, 280);
+      }
       
-      // 遮罩完全覆盖后淡出，露出新主题
-      setTimeout(() => {
-        overlay.classList.add('fade-out');
-        showToast(newIsDark ? '🌙 已切换到夜间模式' : '☀️ 已切换到日间模式');
-      }, 560);
+      // 支持 View Transition API 时用方向性展开动画，不支持时回退到全局颜色过渡
+      if (document.startViewTransition) {
+        const transition = document.startViewTransition(doSwitch);
+        transition.finished.finally(() => {
+          html.classList.remove(dirClass);
+        });
+      } else {
+        html.classList.add('theme-transition');
+        doSwitch();
+        setTimeout(() => html.classList.remove('theme-transition'), 550);
+      }
       
-      // 动画结束后重置遮罩
-      setTimeout(() => {
-        overlay.className = 'theme-overlay';
-      }, 1050);
+      showToast(newIsDark ? '🌙 已切换到夜间模式' : '☀️ 已切换到日间模式');
     }
     
     // 绑定点击事件

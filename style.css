@@ -10,7 +10,7 @@
     box-sizing: border-box;
 }
 
-/* 主题切换过渡：仅在切换时临时启用，平滑过渡背景/文字/边框/阴影 */
+/* 主题切换过渡：仅在切换时临时启用，平滑过渡背景/文字/边框/阴影（View Transition 不支持时的回退） */
 html.theme-transition,
 html.theme-transition * {
     transition: background-color 0.45s ease,
@@ -21,37 +21,38 @@ html.theme-transition * {
                 stroke 0.45s ease !important;
 }
 
-/* 主题切换方向性遮罩：日间从上往下，夜间从下往上 */
-.theme-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 99999;
-    pointer-events: none;
-    opacity: 0;
-    visibility: hidden;
+/* View Transition 方向性主题切换：日间从上往下，夜间从下往上 */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
 }
-.theme-overlay.from-top {
-    background: linear-gradient(180deg, #FAF7F2 0%, #F5EFE6 100%);
-    transform: translateY(-100%);
-    visibility: visible;
+/* 切到日间：新主题从顶部向下展开 */
+html.vt-from-top::view-transition-new(root) {
+    clip-path: inset(0 0 100% 0);
+    animation: vt-reveal-top 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-.theme-overlay.from-bottom {
-    background: linear-gradient(0deg, #1a1a2e 0%, #16213e 100%);
-    transform: translateY(100%);
-    visibility: visible;
+html.vt-from-top::view-transition-old(root) {
+    animation: vt-old-fade 0.55s ease forwards;
 }
-.theme-overlay.cover {
-    transform: translateY(0);
-    opacity: 1;
-    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-                opacity 0.1s ease;
+/* 切到夜间：新主题从底部向上展开 */
+html.vt-from-bottom::view-transition-new(root) {
+    clip-path: inset(100% 0 0 0);
+    animation: vt-reveal-bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-.theme-overlay.fade-out {
-    opacity: 0;
-    transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+html.vt-from-bottom::view-transition-old(root) {
+    animation: vt-old-fade 0.55s ease forwards;
+}
+@keyframes vt-reveal-top {
+    from { clip-path: inset(0 0 100% 0); }
+    to   { clip-path: inset(0 0 0 0); }
+}
+@keyframes vt-reveal-bottom {
+    from { clip-path: inset(100% 0 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+}
+@keyframes vt-old-fade {
+    from { opacity: 1; }
+    to   { opacity: 0.4; }
 }
 
 :root {
