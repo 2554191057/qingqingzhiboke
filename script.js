@@ -1024,8 +1024,8 @@
     xunlei: '<svg class="res-icon-svg"><use href="#icon-xunlei"/></svg>',
     baidu: '<svg class="res-icon-svg"><use href="#icon-baidu"/></svg>',
     quark: '<svg class="res-icon-svg"><use href="#icon-quark"/></svg>',
-    lanzou: '📦',
-    feijipan: '✈️',
+    lanzou: '<i class="fa-solid fa-box-archive" style="font-size:26px;"></i>',
+    feijipan: '<i class="fa-solid fa-paper-plane" style="font-size:26px;"></i>',
     onedrive: '🟩',
     google: '🌈',
     other: '📦'
