@@ -631,7 +631,7 @@
         </ul>
       `,
       cta: '阅读全文',
-      image: 'https://picsum.photos/seed/tubawinui3/800/500'
+      image: 'images/tuba-toolbox.jpg'
     },
     {
       title: 'Mineradio：开源 3D 可视化音乐播放器，手势操控粒子舞台',
@@ -691,7 +691,7 @@
         <p>依托完全开源的底层代码逻辑，全程无强制弹窗广告，没有任何诱导点击的付费入口。与"音域回响"等项目联动，小红车（Wallpaper Engine）原生植入。</p>
       `,
       cta: '阅读全文',
-      image: 'https://picsum.photos/seed/mineradio/800/500'
+      image: 'images/mineradio.jpg'
     }
   ];
 
