@@ -565,6 +565,73 @@
       `,
       cta: '阅读全文',
       image: 'https://s1.imagehub.cc/images/2026/08/27/d0450ec540cabb6321c08074fc1c1310.jpg'
+    },
+    {
+      title: '图吧工具箱 WinUI 3：PC 硬件检测与系统维护工具集',
+      tag: '工具',
+      date: '2026-08-29',
+      readTime: '3分钟',
+      excerpt: '社区重构的图吧工具箱 WinUI 3 版，82 款专业工具一键启动，12 款内置实用功能，硬件信息查询、证书屏蔽流氓软件、磁盘空间分析，WinUI 3 现代界面，完全离线零数据收集',
+      icon: '🔧',
+      coverClass: 'blog-cover-1',
+      url: '#',
+      type: 'article',
+      official: 'https://tubawinui3.cn/',
+      content: `
+        <h2>图吧工具箱 WinUI 3：PC 硬件检测与系统维护工具集</h2>
+        <p><strong>图吧工具箱 WinUI 3</strong> 是社区开发的图吧工具箱重构版，专为 PC 硬件爱好者和系统维护人员打造。采用 WinUI 3 现代界面，收录 82 款专业工具一键启动，12 款内置实用功能，8 大工具分类，完全离线运行、零数据收集。官网 <strong>tubawinui3.cn</strong> 即可下载。</p>
+        <p>注意：本项目为社区开发的 WinUI 3 重构版，与原版图吧工具箱无隶属关系。</p>
+        <h3>一键启动 82 款专业工具</h3>
+        <p>自动扫描本地 Tools 文件夹，按处理器、显卡、硬盘、内存等 8 大分类整齐归档。点一下就能跑，支持实时搜索、收藏夹、管理员运行、创建桌面快捷方式。</p>
+        <ul>
+          <li><strong>CPU-Z / GPU-Z / AIDA64 / HWiNFO</strong>：全面硬件检测</li>
+          <li><strong>FurMark</strong>：显卡烤机压力测试</li>
+          <li><strong>CrystalDiskMark</strong>：磁盘读写速度测试</li>
+          <li><strong>DiskGenius</strong>：磁盘分区与数据管理</li>
+          <li><strong>Everything</strong>：文件名极速搜索</li>
+        </ul>
+        <h3>硬件信息查询</h3>
+        <p>基于 WMI 实时读取全面硬件信息，后台线程查询不阻塞 UI：</p>
+        <ul>
+          <li>处理器型号、核心/线程数、频率</li>
+          <li>显卡型号、显存、驱动版本</li>
+          <li>内存容量、频率、插槽信息</li>
+          <li>硬盘型号、容量、健康状态</li>
+          <li>显示器分辨率、刷新率</li>
+        </ul>
+        <h3>12 款内置实用工具</h3>
+        <ul>
+          <li><strong>功耗监控</strong>：实时监控系统功耗</li>
+          <li><strong>证书屏蔽</strong>：从根源拦截流氓软件数字证书，支持 2345浏览器、毒霸、360安全、瑞星、万能壁纸、快压、驱动精灵、小鸟壁纸等</li>
+          <li><strong>端口查看</strong>：查看网络端口占用情况</li>
+          <li><strong>Hosts 编辑</strong>：可视化编辑系统 Hosts 文件</li>
+          <li><strong>键盘测试</strong>：检测键盘按键是否正常</li>
+          <li><strong>垃圾清理</strong>：清理系统垃圾文件</li>
+          <li><strong>蓝屏分析</strong>：分析蓝屏 Dump 文件定位原因</li>
+          <li><strong>WiFi 密码查看</strong>：查看已连接 WiFi 的密码</li>
+          <li><strong>网速测试</strong>：测试网络上下行速度</li>
+        </ul>
+        <h3>可视化磁盘空间分析</h3>
+        <p>超快 MFT 扫描，树状图可视化展示每个文件夹大小，彩色方块直观呈现空间占用，快速定位大文件，释放磁盘空间，告别存储焦虑。</p>
+        <h3>WinUI 3 现代界面</h3>
+        <ul>
+          <li>原生 Windows 11 风格设计</li>
+          <li>支持亮色 / 暗色 / 跟随系统主题切换</li>
+          <li>毛玻璃 Acrylic 效果</li>
+          <li>流畅的导航体验</li>
+        </ul>
+        <h3>完全离线 · 零数据收集</h3>
+        <p>纯离线应用，不收集任何用户数据，所有操作均在本地完成。零 Cookie、零追踪、零第三方服务。启动时静默检查更新，有新版本自动提醒。</p>
+        <h3>系统要求</h3>
+        <ul>
+          <li>Windows 10 1809 (17763) 及以上</li>
+          <li>支持 x86 / x64 / ARM64 架构</li>
+          <li>无需额外安装运行时，应用自带 .NET 运行时</li>
+          <li>技术栈：.NET 10 + WinUI 3 (Windows App SDK) + WMI</li>
+        </ul>
+      `,
+      cta: '阅读全文',
+      image: 'https://picsum.photos/seed/tubawinui3/800/500'
     }
   ];
 
