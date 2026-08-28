@@ -643,7 +643,7 @@
       coverClass: 'blog-cover-2',
       url: '#',
       type: 'article',
-      official: 'https://mineradio.art/',
+      official: 'https://release-assets.githubusercontent.com/github-production-release-asset/1257186289/e01851f5-3f15-4a72-a731-78bdb7894433?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-08-28T19%3A35%3A24Z&rscd=attachment%3B+filename%3DMineradio-2.1.0-Setup.exe&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-08-28T18%3A34%3A56Z&ske=2026-08-28T19%3A35%3A24Z&sks=b&skv=2018-11-09&sig=m8HkUgO7ZTeZpJOdUvtbtyizhT2NfJMI%2Brq%2FXzvfzJ8%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4Nzk0Njk2NywibmJmIjoxNzg3OTQzMzY3LCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.2mpZVSXKlNZR5K2NH-i8mso8Jna2HJMdgpzHO_x6Pig&response-content-disposition=attachment%3B%20filename%3DMineradio-2.1.0-Setup.exe&response-content-type=application%2Foctet-stream',
       content: `
         <h2>Mineradio：开源 3D 可视化音乐播放器</h2>
         <p><strong>Mineradio</strong> 是一款完全开源的私人视觉电台（private visual radio），把听歌变成视听结合的沉浸式体验。粒子光影跟随歌曲节拍与旋律动态变化，鼓点落下瞬间粒子顺着指尖炸开；支持摄像头手势操控，360° 3D 播放界面，悬浮桌面歌词，八大平台歌单导入。官网 <strong>mineradio.art</strong> 即可下载。</p>
