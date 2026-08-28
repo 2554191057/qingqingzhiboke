@@ -610,10 +610,10 @@
       icon: '📁',
       type: 'baidu',
       typeLabel: '百度网盘',
-      link: 'https://pan.baidu.com/s/your-link',
-      code: '无提取码',
+      link: 'https://pan.baidu.com/s/1AxzO8M7HA0K3H8446dtcng',
+      code: '4p6j',
       size: '不限速下载',
-      date: '2026-08-24',
+      date: '2026-08-28',
       badges: [{ text: '🔥 热门', cls: 'hot' }]
     },
     {
@@ -622,10 +622,10 @@
       icon: '📂',
       type: 'quark',
       typeLabel: '夸克网盘',
-      link: 'https://pan.quark.cn/s/your-link',
+      link: 'https://pan.quark.cn/s/671d1725cb16',
       code: '无提取码',
       size: '不限速下载',
-      date: '2026-08-24',
+      date: '2026-08-28',
       badges: [{ text: '✨ 新更', cls: 'new' }]
     },
     {
