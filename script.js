@@ -632,6 +632,66 @@
       `,
       cta: '阅读全文',
       image: 'https://picsum.photos/seed/tubawinui3/800/500'
+    },
+    {
+      title: 'Mineradio：开源 3D 可视化音乐播放器，手势操控粒子舞台',
+      tag: '工具',
+      date: '2026-08-29',
+      readTime: '3分钟',
+      excerpt: '完全开源的私人视觉电台，粒子光影跟随节拍律动，摄像头手势操控（推开/捏合/握拳），360° 3D 播放界面，悬浮歌词，八大平台歌单导入，29 种音乐电台，无广告无付费',
+      icon: '🎵',
+      coverClass: 'blog-cover-2',
+      url: '#',
+      type: 'article',
+      official: 'https://mineradio.art/',
+      content: `
+        <h2>Mineradio：开源 3D 可视化音乐播放器</h2>
+        <p><strong>Mineradio</strong> 是一款完全开源的私人视觉电台（private visual radio），把听歌变成视听结合的沉浸式体验。粒子光影跟随歌曲节拍与旋律动态变化，鼓点落下瞬间粒子顺着指尖炸开；支持摄像头手势操控，360° 3D 播放界面，悬浮桌面歌词，八大平台歌单导入。官网 <strong>mineradio.art</strong> 即可下载。</p>
+        <h3>手势操控粒子舞台</h3>
+        <p>将手放进摄像头视野，即可用手势与浮动粒子实时互动：</p>
+        <ul>
+          <li><strong>手掌推开</strong>：粒子向外扩散</li>
+          <li><strong>捏合</strong>：旋转视角</li>
+          <li><strong>握拳</strong>：粒子收束</li>
+          <li><strong>手掌悬停</strong>：选择歌单</li>
+        </ul>
+        <p>重音落下瞬间粒子顺着指尖炸开，交互体验新鲜有趣。</p>
+        <h3>3D 可视化播放界面</h3>
+        <ul>
+          <li>播放界面支持鼠标 360° 自由旋转</li>
+          <li>粒子光影跟随节拍、旋律动态变化，鼓点强弱直接体现在画面上</li>
+          <li>流动歌词在彩色光束中缓缓穿行</li>
+          <li>流体云控制架，可开关</li>
+        </ul>
+        <h3>DIY 视觉控制台</h3>
+        <ul>
+          <li>开放全套视觉参数自由调整：界面配色、粒子密度、特效、显示场景均可自定义</li>
+          <li>不同风格歌单可单独绑定一套专属视觉特效，切换歌单自动适配对应画面</li>
+          <li>主页可自定义全部透明或半透明，底部实时频谱</li>
+        </ul>
+        <h3>音乐与歌单</h3>
+        <ul>
+          <li><strong>八大平台歌单导入</strong>：支持网易云、QQ音乐、汽水音乐、Apple Music、Spotify 等</li>
+          <li><strong>29 种音乐电台</strong>：可收藏放置到首部</li>
+          <li><strong>精选乐评</strong>：从今日歌曲里摘取高赞热评，点播放即可收听</li>
+          <li><strong>3D 环绕音效</strong></li>
+          <li>兼容本地音乐播放</li>
+        </ul>
+        <h3>悬浮桌面歌词</h3>
+        <p>精准同步的悬浮桌面歌词，跨窗口悬浮随时跟随音频滚动，支持多语种歌词翻译。</p>
+        <h3>多端覆盖</h3>
+        <ul>
+          <li><strong>Windows 桌面版</strong>：完整 3D 可视化与手势体验</li>
+          <li><strong>Android 版</strong>：针对安卓底层优化，适配流体云</li>
+          <li><strong>iOS 版</strong></li>
+          <li><strong>TV 版</strong>：大屏听歌，手机扫码遥控操作</li>
+          <li><strong>多设备遥控</strong>：手机和电脑同一网络扫码即可遥控</li>
+        </ul>
+        <h3>完全开源 · 无广告</h3>
+        <p>依托完全开源的底层代码逻辑，全程无强制弹窗广告，没有任何诱导点击的付费入口。与"音域回响"等项目联动，小红车（Wallpaper Engine）原生植入。</p>
+      `,
+      cta: '阅读全文',
+      image: 'https://picsum.photos/seed/mineradio/800/500'
     }
   ];
 
