@@ -1080,9 +1080,9 @@
       const badges = (r.badges || []).map(b =>
         `<span class="resource-badge ${b.cls ? 'resource-badge-' + b.cls : ''}">${b.text}</span>`
       ).join('');
-      const fullLink = r.copyText || (r.code && r.code !== '无需提取码' && r.code !== '无提取码'
-        ? r.code
-        : r.link);
+      // 是否有真实提取码（排除"无提取码"/"无需提取码"占位值）
+      const hasCode = r.code && r.code !== '无提取码' && r.code !== '无需提取码';
+      const fullLink = r.copyText || (hasCode ? r.code : r.link);
       return `
         <div class="resource-card">
           <div class="resource-icon res-type-${r.type}">
@@ -1095,7 +1095,7 @@
               <span class="resource-badge"><i class="fa-solid fa-database"></i> ${r.typeLabel}</span>
               ${r.size ? `<span class="resource-badge"><i class="fa-solid fa-file-zipper"></i> ${r.size}</span>` : ''}
               ${r.date ? `<span class="resource-badge"><i class="fa-regular fa-calendar"></i> ${r.date}</span>` : ''}
-              ${r.code ? `<span class="resource-badge"><i class="fa-solid fa-key"></i> 提取码: <strong style="letter-spacing:1px;">${r.code}</strong></span>` : ''}
+              ${hasCode ? `<span class="resource-badge"><i class="fa-solid fa-key"></i> 提取码: <strong style="letter-spacing:1px;">${r.code}</strong></span>` : ''}
               ${badges}
             </div>
             <div class="resource-actions">
@@ -1106,12 +1106,12 @@
                       data-desc="点击跳转网盘页面，如遇验证请手动输入提取码">
                 <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp; 立即前往
               </button>
-              <button class="resource-btn resource-btn-secondary"
+              ${hasCode ? `<button class="resource-btn resource-btn-secondary"
                       data-action="copy-resource"
                       data-link="${fullLink}"
                       data-name="${r.title}">
                 <i class="fa-regular fa-copy"></i>&nbsp; 复制提取码
-              </button>
+              </button>` : ''}
             </div>
           </div>
         </div>
