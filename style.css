@@ -763,15 +763,14 @@ img { max-width: 100%; display: block; }
     box-shadow: 0 12px 40px rgba(0,0,0,0.15), var(--glass-shadow);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-8px) scale(0.97);
-    transform-origin: top right;
-    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+    clip-path: inset(0 0 100% 0 round 18px);
+    transition: opacity 0.22s ease, clip-path 0.22s ease, visibility 0.22s;
     z-index: 200;
 }
 .nav-dropdown.open .nav-dropdown-menu {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0) scale(1);
+    clip-path: inset(0 0 0 0 round 18px);
 }
 .nav-dropdown-item {
     display: flex;
