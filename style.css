@@ -3603,6 +3603,7 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     margin-bottom: 16px;
 }
 .link-box {
+    position: relative;
     padding: 14px 16px;
     background: var(--color-bg-alt);
     border: 1px dashed var(--color-line);
@@ -3614,6 +3615,28 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     line-height: 1.6;
     margin-bottom: 18px;
     user-select: all;
+}
+.link-box-copy {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 1;
+}
+.link-box-copy:hover {
+    opacity: 0.85;
+    transform: scale(1.08);
 }
 .link-modal-actions {
     display: grid;

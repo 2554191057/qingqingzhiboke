@@ -1819,6 +1819,15 @@
         };
       }
     }
+    // 链接框右上角复制按钮：复制完整信息
+    const boxCopyBtn = $('#linkBoxCopyBtn');
+    if (boxCopyBtn) {
+      boxCopyBtn.onclick = async () => {
+        const text = $('#linkBoxText').textContent;
+        const ok = await copyText(text);
+        showToast(ok ? '完整信息已复制到剪贴板' : '复制失败，请手动长按复制', !ok);
+      };
+    }
     openModal('linkModal');
   }
 
