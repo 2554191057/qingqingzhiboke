@@ -792,7 +792,7 @@
       icon: '📂',
       type: 'quark',
       typeLabel: '夸克网盘',
-      link: 'https://pan.quark.cn/s/671d1725cb16',
+      link: 'https://pan.quark.cn/s/a9f341eda48f',
       code: '无提取码',
       size: '不限速下载',
       date: '2026-08-28',
@@ -1787,20 +1787,37 @@
     $('#linkBoxText').textContent = link;
     const copyContent = copyValue || link;
     const hasRealCode = !!copyValue && copyValue !== link;
+    const actionsEl = document.querySelector('.link-modal-actions');
+    const openBtn = $('#linkOpenBtn');
     const copyBtn = $('#linkCopyBtn');
-    if (copyBtn) {
-      copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>&nbsp; ' + (hasRealCode ? '复制提取码并跳转网盘' : '复制链接并跳转网盘');
-    }
-    if (copyBtn) {
-      copyBtn.onclick = async () => {
-        const ok = await copyText(copyContent);
-        const label = copyLabel || (hasRealCode ? '提取码已复制，正在跳转网盘…' : '链接已复制，正在跳转…');
-        showToast(ok ? label : '复制失败，请手动长按复制', !ok);
-        // 复制成功后自动跳转到网盘链接
-        if (ok && openLink) {
-          setTimeout(() => window.open(openLink, '_blank', 'noopener'), 600);
-        }
-      };
+    if (hasRealCode) {
+      // 有提取码：只显示一个"复制提取码并跳转网盘"按钮，居中
+      if (actionsEl) actionsEl.classList.add('single');
+      if (openBtn) openBtn.style.display = 'none';
+      if (copyBtn) {
+        copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>&nbsp; 复制提取码并跳转网盘';
+        copyBtn.onclick = async () => {
+          const ok = await copyText(copyContent);
+          showToast(ok ? '提取码已复制，正在跳转网盘…' : '复制失败，请手动长按复制', !ok);
+          if (ok && openLink) {
+            setTimeout(() => window.open(openLink, '_blank', 'noopener'), 600);
+          }
+        };
+      }
+    } else {
+      // 无提取码：显示"立即前往"+"复制链接"两个按钮
+      if (actionsEl) actionsEl.classList.remove('single');
+      if (openBtn) {
+        openBtn.style.display = 'inline-flex';
+        openBtn.href = openLink || link;
+      }
+      if (copyBtn) {
+        copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>&nbsp; 复制链接';
+        copyBtn.onclick = async () => {
+          const ok = await copyText(copyContent);
+          showToast(ok ? '链接已复制到剪贴板' : '复制失败，请手动长按复制', !ok);
+        };
+      }
     }
     openModal('linkModal');
   }

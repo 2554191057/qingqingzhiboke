@@ -3616,12 +3616,16 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     user-select: all;
 }
 .link-modal-actions {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
-.link-modal-actions .btn {
-    min-width: 260px;
+.link-modal-actions.single {
+    display: flex;
+    justify-content: center;
+}
+.link-modal-actions.single .btn {
+    min-width: 280px;
     justify-content: center;
 }
 
