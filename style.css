@@ -1,4 +1,4 @@
-/* ========================================
+﻿/* ========================================
    庆庆纸博客 · 简约风格 · 纸张温暖配色
    Palette: 米白 #FAF7F2 / 暖橙 #E67E52 / 墨灰 #3A3A3A / 沙色 #D9C8AE
    ======================================== */
@@ -748,7 +748,6 @@ img { max-width: 100%; display: block; }
     opacity: 0.7;
     transition: transform 0.25s ease;
 }
-.nav-dropdown:hover .nav-dropdown-toggle .nav-caret,
 .nav-dropdown.open .nav-dropdown-toggle .nav-caret { transform: rotate(180deg); }
 .nav-dropdown-menu {
     position: absolute;
@@ -769,7 +768,6 @@ img { max-width: 100%; display: block; }
     transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
     z-index: 200;
 }
-.nav-dropdown:hover .nav-dropdown-menu,
 .nav-dropdown.open .nav-dropdown-menu {
     opacity: 1;
     visibility: visible;
