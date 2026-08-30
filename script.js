@@ -1,4 +1,4 @@
-/* =============================================
+﻿/* =============================================
    庆庆纸博客 · 交互脚本
    ============================================= */
 (function () {
@@ -1281,6 +1281,7 @@
     $$('.nav-link[href^="#"]').forEach(a => linkMap.set(a.getAttribute('href').slice(1), a));
     let lastScrollY = 0;
     let lastScrollDir = 0; // 0=未滚动, 1=向下, -1=向上
+    let scrollAccum = 0; // 累积同方向滚动距离（解决缓慢上滑时导航栏不灵敏的问题）
     const SCROLL_THRESHOLD = 60;
     // 导航链接跳转平滑滚动期间：禁止 onScroll 隐藏导航栏
     let navJumpLock = false;
@@ -1309,16 +1310,26 @@
           lastScrollDir = delta > 0 ? 1 : -1;
         }
 
+        // 累积同方向滚动距离（方向变化时重置），解决缓慢上滑时单帧 delta 太小导致导航栏不显示的问题
+        if (delta > 0) {
+          if (scrollAccum < 0) scrollAccum = 0;
+          scrollAccum += delta;
+        } else if (delta < 0) {
+          if (scrollAccum > 0) scrollAccum = 0;
+          scrollAccum += delta;
+        }
+
         // 页面在顶部（scrollY ≤ SCROLL_THRESHOLD）：导航栏始终可见，优先于方向隐藏逻辑
         if (st <= SCROLL_THRESHOLD) {
           nav.classList.remove('nav-hidden');
           themeToggle?.classList.remove('btn-hidden');
+          scrollAccum = 0;
         } else if (!navJumpLock) {
           // 跳转锁定期间：跳过方向隐藏逻辑，保持导航栏可见
-          if (delta > 5) {
+          if (scrollAccum > 5) {
             nav.classList.add('nav-hidden');
             themeToggle?.classList.add('btn-hidden');
-          } else if (delta < -5) {
+          } else if (scrollAccum < -5) {
             nav.classList.remove('nav-hidden');
             themeToggle?.classList.remove('btn-hidden');
           }
