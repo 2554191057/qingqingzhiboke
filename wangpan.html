@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="庆庆纸博客 - 文章列表">
-    <title>文章 · 庆庆纸博客</title>
+    <meta name="description" content="庆庆纸博客 - 网盘资源分享">
+    <title>资源分享 · 庆庆纸博客</title>
     <link rel="icon" type="image/png" href="images/%E7%BD%91%E9%A1%B5%E6%A0%87%E7%AD%BE/favicon.png">
     <link rel="apple-touch-icon" href="images/%E7%BD%91%E9%A1%B5%E6%A0%87%E7%AD%BE/favicon.png">
     <link rel="stylesheet" href="style.css?v=59">
@@ -115,8 +115,8 @@
             <a href="boke.html#home" class="nav-link">首页</a>
             <a href="boke.html#about" class="nav-link">关于</a>
             <a href="boke.html#social" class="nav-link">联系</a>
-            <a href="#blog" class="nav-link active">文章</a>
-            <a href="wangpan.html#resources" class="nav-link">资源</a>
+            <a href="library.html#blog" class="nav-link">文章</a>
+            <a href="#resources" class="nav-link active">资源</a>
         </nav>
         <button class="nav-toggle" id="navToggle" aria-label="菜单">
             <span></span><span></span><span></span>
@@ -124,34 +124,29 @@
     </div>
 </header>
 
-<!-- ========== 博客文章列表 ========== -->
-<section class="section blog-section" id="blog">
+<!-- ========== 资源分享 ========== -->
+<section class="section resources-section" id="resources">
     <div class="container">
         <div class="section-header">
-            <span class="section-tag">BLOG POSTS</span>
-            <h2 class="section-title">文章</h2>
+            <span class="section-tag">RESOURCES</span>
+            <h2 class="section-title">资源分享</h2>
             <div class="section-line"></div>
-            <p class="section-sub">记录思考、分享经验</p>
+            <p class="section-sub">精心整理的网盘资源，点击即可跳转或复制链接</p>
         </div>
 
-        <div class="blog-grid" id="blogGrid">
+        <div class="resources-grid" id="resourcesGrid">
             <!-- JS渲染 -->
         </div>
 
-        <div class="blog-more" id="blogMore">
-            <button class="btn btn-outline" id="loadMoreBtn">
-                <i class="fa-solid fa-angles-down"></i>&nbsp; 加载更多文章
-            </button>
-            <button class="btn btn-outline" id="collapseBlogBtn" hidden>
-                <i class="fa-solid fa-angles-up"></i>&nbsp; 收纳文章
-            </button>
+        <div class="resource-tip">
+            <i class="fa-solid fa-circle-info"></i>&nbsp;
+            <strong>温馨提示：</strong>如链接失效，可通过上方「关于我」添加 QQ/微信 联系我补发
         </div>
     </div>
-    <div class="blog-more" style="margin-top:24px;text-align:center;">
-        <a href="wangpan.html#resources" class="btn btn-outline">
-            <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp; 查看网盘资源
-        </a>
-    </div>
+    <a href="#contact" class="section-scroll-down" data-next="contact" data-prev="resources" aria-label="向下滚动">
+        <i class="fa-solid fa-arrow-down dir-down"></i>
+        <i class="fa-solid fa-arrow-up dir-up"></i>
+    </a>
 </section>
 <!-- ========== 联系/页脚 ========== -->
 <footer class="footer" id="contact">
@@ -176,8 +171,8 @@
                     <li><a href="boke.html#home"><i class="fa-solid fa-angle-right"></i> 首页</a></li>
                     <li><a href="boke.html#about"><i class="fa-solid fa-angle-right"></i> 关于我</a></li>
                     <li><a href="boke.html#social"><i class="fa-solid fa-angle-right"></i> 联系我</a></li>
-                    <li><a href="#blog"><i class="fa-solid fa-angle-right"></i> 文章列表</a></li>
-                    <li><a href="wangpan.html#resources"><i class="fa-solid fa-angle-right"></i> 资源分享</a></li>
+                    <li><a href="library.html#blog"><i class="fa-solid fa-angle-right"></i> 文章列表</a></li>
+                    <li><a href="#resources"><i class="fa-solid fa-angle-right"></i> 资源分享</a></li>
                 </ul>
             </div>
             <div class="footer-contact">

@@ -1232,11 +1232,11 @@
     <p class="bday-sub" id="bdaySub">目标日期：<span class="bday-target" id="targetDate">--</span></p>
     <p class="bday-note" id="bdayNote">--</p>
     <div class="bday-actions">
-        <a href="index.html#birthdayCard" class="btn btn-bless"><i class="fa-solid fa-user"></i>关于我</a>
+        <a href="boke.html#birthdayCard" class="btn btn-bless"><i class="fa-solid fa-user"></i>关于我</a>
         <button class="btn btn-bless" id="birthdayBlessBtn">
             <i class="fa-solid fa-gift"></i>提前送祝福
         </button>
-        <a href="index.html#social" class="btn btn-bless"><i class="fa-solid fa-comment-dots"></i>联系我</a>
+        <a href="boke.html#social" class="btn btn-bless"><i class="fa-solid fa-comment-dots"></i>联系我</a>
     </div>
 </main>
 <!-- 精确年龄 · 已度过时光 -->
@@ -1779,7 +1779,7 @@
     } else {
         initToastInteractions();
     }
-    // 暴露到全局，供页面其他脚本调用（与 index.html 一致）
+    // 暴露到全局，供页面其他脚本调用（与 boke.html 一致）
     window.showToast = showToast;
 
     const isToday = SB.isBirthdayToday();
@@ -1795,7 +1795,7 @@
         $('targetDate').textContent = target.getFullYear() + ' 年 ' + SB.BIRTHDAY.month + ' 月 ' + SB.BIRTHDAY.day + ' 日 00:00';
     }
 
-    $('bdayNote').innerHTML = '我的出生日期是 <strong>' + SB.formatBirthDate() + '</strong>（' + z.icon + ' ' + z.name + '）。每年8月6日这天，<a href="index.html#about">庆庆纸</a> 又长大一岁啦～';
+    $('bdayNote').innerHTML = '我的出生日期是 <strong>' + SB.formatBirthDate() + '</strong>（' + z.icon + ' ' + z.name + '）。每年8月6日这天，<a href="boke.html#about">庆庆纸</a> 又长大一岁啦～';
 
     function pad(n) { return String(n).padStart(2, '0'); }
     function tick() {
@@ -3813,7 +3813,7 @@
     });
 
     // 返回主页时停止音乐
-    const homeBtn = document.querySelector('a[href="index.html#birthdayCard"]');
+    const homeBtn = document.querySelector('a[href="boke.html#birthdayCard"]');
     if (homeBtn) {
         homeBtn.addEventListener('click', () => {
             mp.stop();
@@ -4149,7 +4149,7 @@
 }
 </style>
 <script>
-/* ---------- 樱花飘落全局特效（与 index.html 一致） ---------- */
+/* ---------- 樱花飘落全局特效（与 boke.html 一致） ---------- */
 (function initSakura() {
     const canvas = document.createElement('canvas');
     canvas.className = 'sakura-canvas';
