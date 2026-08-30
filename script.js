@@ -1392,6 +1392,23 @@
     });
   })();
 
+  // 右侧资源与分享下拉菜单：点击展开/收起
+  (function bindNavDropdown() {
+    const dropdown = document.getElementById('navDropdown');
+    const toggle = document.getElementById('navDropdownToggle');
+    if (!dropdown || !toggle) return;
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
+    dropdown.querySelectorAll('.nav-dropdown-item').forEach(item => {
+      item.addEventListener('click', () => dropdown.classList.remove('open'));
+    });
+  })();
+
   // 导航链接点击后5秒自动隐藏导航栏（桌面端 + 移动端通用）
   function bindNavAutoHide() {
     const nav = $('#navbar');
