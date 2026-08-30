@@ -657,6 +657,69 @@ img { max-width: 100%; display: block; }
     background-clip: text;
     color: transparent;
 }
+/* logo 文章与资源入口下拉 */
+.logo-entry { position: relative; cursor: pointer; }
+.logo-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
+}
+.logo-caret {
+    font-size: 0.6rem;
+    opacity: 0.55;
+    margin-left: -2px;
+    transition: transform 0.25s ease;
+}
+.logo-entry:hover .logo-caret,
+.logo-entry.open .logo-caret { transform: rotate(180deg); }
+.logo-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    min-width: 168px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur-strong);
+    -webkit-backdrop-filter: var(--glass-blur-strong);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), var(--glass-shadow);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+    z-index: 200;
+}
+.logo-entry:hover .logo-menu,
+.logo-entry.open .logo-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.logo-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: background 0.15s, color 0.15s;
+}
+.logo-menu-item i {
+    width: 18px;
+    text-align: center;
+    color: var(--color-accent);
+    font-size: 0.95rem;
+}
+.logo-menu-item:hover {
+    background: var(--color-accent-light);
+    color: var(--color-accent);
+}
 .nav-links {
     display: flex;
     align-items: center;

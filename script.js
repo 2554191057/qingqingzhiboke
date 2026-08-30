@@ -1376,6 +1376,22 @@
     });
   }
 
+  // logo 文章与资源入口：移动端点击展开下拉菜单
+  (function bindLogoEntry() {
+    const entry = document.getElementById('logoEntry');
+    if (!entry) return;
+    const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+    entry.addEventListener('click', (e) => {
+      if (!isMobile()) return;
+      if (e.target.closest('.logo-menu-item')) return;
+      e.preventDefault();
+      entry.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+      if (!entry.contains(e.target)) entry.classList.remove('open');
+    });
+  })();
+
   // 导航链接点击后5秒自动隐藏导航栏（桌面端 + 移动端通用）
   function bindNavAutoHide() {
     const nav = $('#navbar');
