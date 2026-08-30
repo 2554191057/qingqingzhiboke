@@ -1762,7 +1762,7 @@
   }
 
   // 通用链接弹窗
-  function openLinkModal({ headerIcon = 'fa-link', headerColor, title, desc, link, openText = '打开链接', openLink, openEnabled = true }) {
+  function openLinkModal({ headerIcon = 'fa-link', headerColor, title, desc, link, openText = '打开链接', openLink, openEnabled = true, copyText, copyLabel }) {
     const headerIconEl = $('#linkModalHeader i');
     if (headerIconEl) {
       headerIconEl.className = 'fa-solid ' + headerIcon;
@@ -1782,9 +1782,11 @@
     } else {
       openBtn.style.display = 'none';
     }
+    const copyContent = copyText || link;
     $('#linkCopyBtn').onclick = async () => {
-      const ok = await copyText(link);
-      showToast(ok ? '链接已复制到剪贴板' : '复制失败，请手动长按复制', !ok);
+      const ok = await copyText(copyContent);
+      const label = copyLabel || (copyText ? '提取码已复制到剪贴板' : '链接已复制到剪贴板');
+      showToast(ok ? label : '复制失败，请手动长按复制', !ok);
     };
     openModal('linkModal');
   }
@@ -1812,6 +1814,7 @@
         const fullLink = full
           ? (full.code && full.code !== '无需提取码' ? `${full.link}\n提取码：${full.code}` : full.link)
           : link;
+        const resCode = full && full.code && full.code !== '无需提取码' ? full.code : null;
         setTimeout(() => openLinkModal({
           headerIcon: 'fa-cloud',
           headerColor: '#E67E52',
@@ -1820,7 +1823,9 @@
           link: fullLink,
           openText: '重新打开',
           openLink: link,
-          openEnabled: true
+          openEnabled: true,
+          copyText: resCode || fullLink,
+          copyLabel: resCode ? '提取码已复制到剪贴板' : '链接已复制到剪贴板'
         }), 400);
       }
       if (btnCopy) {
