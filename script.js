@@ -1785,19 +1785,11 @@
     $('#linkModalTitle').textContent = title;
     $('#linkModalDesc').textContent = desc || '';
     $('#linkBoxText').textContent = link;
-    const openBtn = $('#linkOpenBtn');
-    if (openEnabled && openLink) {
-      openBtn.style.display = 'inline-flex';
-      openBtn.href = openLink;
-      openBtn.firstChild?.nextSibling && (openBtn.lastChild.textContent = ' ' + openText);
-    } else {
-      openBtn.style.display = 'none';
-    }
     const copyContent = copyValue || link;
     const hasRealCode = !!copyValue && copyValue !== link;
     const copyBtn = $('#linkCopyBtn');
     if (copyBtn) {
-      copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>&nbsp; ' + (hasRealCode ? '复制提取码' : '复制链接');
+      copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>&nbsp; ' + (hasRealCode ? '复制提取码并跳转网盘' : '复制链接并跳转网盘');
     }
     if (copyBtn) {
       copyBtn.onclick = async () => {
