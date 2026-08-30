@@ -1203,6 +1203,7 @@
 
   // 渲染资源
   function renderResources(list, container) {
+    if (!container) return;
     const html = list.map(r => {
       const badges = (r.badges || []).map(b =>
         `<span class="resource-badge ${b.cls ? 'resource-badge-' + b.cls : ''}">${b.text}</span>`
@@ -1757,7 +1758,9 @@
 
   // 资源卡按钮
   function bindResourceCards() {
-    $('#resourcesGrid').addEventListener('click', async (e) => {
+    const __resGrid = $('#resourcesGrid');
+    if (!__resGrid) return;
+    __resGrid.addEventListener('click', async (e) => {
       const btnOpen = e.target.closest('[data-action="open-resource"]');
       const btnCopy = e.target.closest('[data-action="copy-resource"]');
       if (btnOpen) {

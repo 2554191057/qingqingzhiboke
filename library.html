@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="庆庆纸博客 - 分享生活、技术与资源的个人简约博客">
-    <title>庆庆纸博客</title>
+    <meta name="description" content="庆庆纸博客 - 文章与网盘资源分享">
+    <title>文章与资源 · 庆庆纸博客</title>
     <link rel="icon" type="image/png" href="images/%E7%BD%91%E9%A1%B5%E6%A0%87%E7%AD%BE/favicon.png">
     <link rel="apple-touch-icon" href="images/%E7%BD%91%E9%A1%B5%E6%A0%87%E7%AD%BE/favicon.png">
     <link rel="stylesheet" href="style.css?v=58">
@@ -93,11 +93,10 @@
         <rect x="34" y="38" width="18" height="7" rx="3.5"/>
     </symbol>
 </svg>
-
 <!-- ========== 顶部导航 ========== -->
 <header class="navbar" id="navbar">
     <div class="nav-container">
-        <a href="#home" class="logo">
+        <a href="index.html#home" class="logo">
             <span class="logo-icon">🧑‍💻</span>
             <span class="logo-text">庆庆纸天天开心</span>
         </a>
@@ -106,11 +105,11 @@
             <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
         <nav class="nav-links" id="navLinks">
-            <a href="#home" class="nav-link active">首页</a>
-            <a href="#about" class="nav-link">关于</a>
-            <a href="#social" class="nav-link">联系</a>
-            <a href="library.html#blog" class="nav-link">文章</a>
-            <a href="library.html#resources" class="nav-link">资源</a>
+            <a href="index.html#home" class="nav-link">首页</a>
+            <a href="index.html#about" class="nav-link">关于</a>
+            <a href="index.html#social" class="nav-link">联系</a>
+            <a href="#blog" class="nav-link active">文章</a>
+            <a href="#resources" class="nav-link">资源</a>
         </nav>
         <button class="nav-toggle" id="navToggle" aria-label="菜单">
             <span></span><span></span><span></span>
@@ -118,174 +117,58 @@
     </div>
 </header>
 
-<!-- ========== 首屏 Hero ========== -->
-<section class="hero" id="home">
-    <div class="hero-bg-decoration">
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-    </div>
-    <div class="hero-content">
-        <div class="hero-avatar">
-            <div class="avatar-ring"></div>
-                     <div class="avatar-inner">
-             <img src="https://q1.qlogo.cn/g?b=qq&nk=2554191057&s=640" alt="庆庆纸头像" class="avatar-img">
-         </div>
-        </div>
-        <h1 class="hero-title">你好欢迎来到<span class="accent-text" id="heroAccent">庆庆纸博客</span></h1>
-        <p class="hero-desc">一个简简单单的个人小站，在这里分享我精心整理的各类网盘资源</p>
-        <div class="hero-btns">
-            <a href="#about" class="btn btn-primary btn-lg">
-                <i class="fa-solid fa-user"></i>&nbsp; 关于我
-            </a>
-            <a href="#social" class="btn btn-primary btn-lg">
-                <i class="fa-solid fa-envelope"></i>&nbsp; 联系我
-            </a>
-            <a href="library.html#blog" class="btn btn-primary btn-lg">
-                <i class="fa-solid fa-book-open"></i>&nbsp; 阅读文章
-            </a>
-            <a href="library.html#resources" class="btn btn-primary btn-lg">
-                <i class="fa-solid fa-cloud"></i>&nbsp; 资源分享
-            </a>
-        </div>
-        <div class="hero-hot-comment" id="heroHotComment" role="note" aria-label="随机网易云热评">
-            <span class="hot-comment-text"></span>
-            <span class="hot-comment-song"></span>
-            <div class="hot-comment-actions">
-                <button class="hot-comment-copy" id="hotCommentCopy" title="复制热评" type="button">
-                    <i class="fa-regular fa-copy"></i>
-                </button>
-                <button class="hot-comment-refresh" id="hotCommentRefresh" title="换一条热评" type="button">
-                    <i class="fa-solid fa-rotate"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div class="hero-scroll-hint" onclick="scrollToSection('about')" data-next="about" data-prev="home" aria-label="向下滚动">
-        <i class="fa-solid fa-arrow-down dir-down"></i>
-        <i class="fa-solid fa-arrow-up dir-up"></i>
-    </div>
-</section>
-
-<!-- ========== 关于我 ========== -->
-<section class="section about-section" id="about">
+<!-- ========== 博客文章列表 ========== -->
+<section class="section blog-section" id="blog">
     <div class="container">
         <div class="section-header">
-            <span class="section-tag">ABOUT ME</span>
-            <h2 class="section-title">关于我</h2>
+            <span class="section-tag">BLOG POSTS</span>
+            <h2 class="section-title">文章</h2>
             <div class="section-line"></div>
+            <p class="section-sub">记录思考、分享经验</p>
         </div>
-        <div class="about-grid">
-            <div class="about-card">
-                <div class="about-icon"><i class="fa-solid fa-user"></i></div>
-                <h3>我是谁</h3>
-                <p>一个热爱生活、喜欢分享的普通人。平时喜欢折腾数码、研究技术、收藏各种学习资源，也喜欢记录下生活中的点滴</p>
-            </div>
-            <div class="about-card">
-                <div class="about-icon"><i class="fa-solid fa-lightbulb"></i></div>
-                <h3>博客内容</h3>
-                <p>你可以在这里找到：技术笔记与教程、软件工具推荐、以及精心整理的各类学习资料和资源</p>
-            </div>
-            <div class="about-card">
-                <div class="about-icon"><i class="fa-solid fa-heart"></i></div>
-                <h3>兴趣爱好</h3>
-                <p>📷 摄影 / 🎵 音乐 / 🎬 电影 / 🖥️ 数码 / 🎮 游戏 / 🍜 美食 / ✈️ 旅行</p>
-            </div>
-            <!-- 年龄 + 生日倒计时入口（与其他三张卡片样式一致） -->
-            <div class="about-card about-age-card" id="birthdayCard">
-                <div class="about-icon"><i class="fa-solid fa-cake-candles"></i></div>
-                <h3>今年 <span class="age-num" id="myAge">--</span> 岁</h3>
-                <p>出生日期：<span id="birthDate">--</span> · <span id="birthZodiac">--</span></p>
-                <a href="birthday.html?auto=1&v=52" class="btn btn-primary btn-birthday">
-                    <i class="fa-solid fa-hourglass-half"></i>&nbsp; 生日倒计时
-                </a>
-            </div>
+
+        <div class="blog-grid" id="blogGrid">
+            <!-- JS渲染 -->
+        </div>
+
+        <div class="blog-more" id="blogMore">
+            <button class="btn btn-outline" id="loadMoreBtn">
+                <i class="fa-solid fa-angles-down"></i>&nbsp; 加载更多文章
+            </button>
+            <button class="btn btn-outline" id="collapseBlogBtn" hidden>
+                <i class="fa-solid fa-angles-up"></i>&nbsp; 收纳文章
+            </button>
         </div>
     </div>
-    <a href="#social" class="section-scroll-down" data-next="social" data-prev="home" aria-label="向下滚动">
+    <a href="#resources" class="section-scroll-down" data-next="resources" data-prev="blog" aria-label="向下滚动">
         <i class="fa-solid fa-arrow-down dir-down"></i>
         <i class="fa-solid fa-arrow-up dir-up"></i>
     </a>
 </section>
-
-<!-- ========== 关于我 / 社交入口 ========== -->
-<section class="section social-section" id="social">
+<!-- ========== 资源分享 ========== -->
+<section class="section resources-section" id="resources">
     <div class="container">
         <div class="section-header">
-            <span class="section-tag">FOLLOW ME</span>
-            <h2 class="section-title">我的联系方式</h2>
+            <span class="section-tag">RESOURCES</span>
+            <h2 class="section-title">资源分享</h2>
             <div class="section-line"></div>
-            <p class="section-sub">欢迎通过以下平台找到我，一起交流～</p>
+            <p class="section-sub">精心整理的网盘资源，点击即可跳转或复制链接</p>
         </div>
 
-        <div class="social-grid">
-            <!-- QQ -->
-            <div class="social-card social-qq">
-                <div class="social-bg-icon"><i class="fa-brands fa-qq"></i></div>
-                <div class="social-icon"><i class="fa-brands fa-qq"></i></div>
-                <h3>QQ</h3>
-                <p class="social-handle">点击添加好友</p>
-                <p class="social-account"><strong>QQ号：</strong><span class="copy-id-btn" data-copy-id="2554191057">2554191057 <i class="fa-solid fa-copy"></i></span></p>
-                <span class="app-wake-btn" data-app="qq" role="button" tabindex="0">App 未打开？点此唤起</span>
-                <button class="social-action" type="button" data-action="qq" data-qq="2554191057" data-qq-link="tencent://message/?uin=2554191057&Site=&Menu=yes">
-                    打开QQ <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </button>
-            </div>
+        <div class="resources-grid" id="resourcesGrid">
+            <!-- JS渲染 -->
+        </div>
 
-            <!-- 微信 -->
-            <div class="social-card social-wechat">
-                <div class="social-bg-icon"><i class="fa-brands fa-weixin"></i></div>
-                <div class="social-icon"><i class="fa-brands fa-weixin"></i></div>
-                <h3>微信</h3>
-                <p class="social-handle">扫码或搜索添加</p>
-                <p class="social-account"><strong>微信号：</strong><span class="copy-id-btn" data-copy-id="yjqjava">yjqjava <i class="fa-solid fa-copy"></i></span></p>
-                <span class="app-wake-btn" data-app="wechat" role="button" tabindex="0">App 未打开？点此唤起</span>
-                <button class="social-action" type="button" data-action="wechat" data-wechat="yjqjava" data-wechat-name="庆庆纸">
-                    显示二维码 <i class="fa-solid fa-qrcode"></i>
-                </button>
-            </div>
-
-            <!-- 快手 -->
-            <div class="social-card social-kuaishou">
-                <div class="social-bg-icon"><svg class="icon-brand" aria-hidden="true"><use href="#icon-kuaishou"/></svg></div>
-                <div class="social-icon">
-                    <svg class="icon-brand" style="font-size:1.6rem;" aria-hidden="true"><use href="#icon-kuaishou"/></svg>
-                </div>
-                <h3>快手</h3>
-                <p class="social-handle">短视频 · 生活记录</p>
-                <p class="social-account"><strong>快手号：</strong><span class="copy-id-btn" data-copy-id="qqz200786">qqz200786 <i class="fa-solid fa-copy"></i></span></p>
-                <span class="app-wake-btn" data-app="kuaishou" role="button" tabindex="0">App 未打开？点此唤起</span>
-                <p class="social-tip">PC端自动复制快手号并跳转快手首页  移动端直接访问主页</p>
-                <a class="social-action" href="https://v.kuaishou.com/KW1HbUAN" target="_blank" rel="noopener noreferrer">
-                    访问主页 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-            </div>
-
-            <!-- 抖音 -->
-            <div class="social-card social-douyin">
-                <div class="social-bg-icon"><svg class="icon-brand" aria-hidden="true"><use href="#icon-douyin"/></svg></div>
-                <div class="social-icon">
-                    <svg class="icon-brand" style="font-size:1.4rem;" aria-hidden="true"><use href="#icon-douyin"/></svg>
-                </div>
-                <h3>抖音</h3>
-                <p class="social-handle">创意视频 · 日常分享</p>
-                <p class="social-account"><strong>抖音号：</strong><span class="copy-id-btn" data-copy-id="69997247319">69997247319 <i class="fa-solid fa-copy"></i></span></p>
-                <span class="app-wake-btn" data-app="douyin" role="button" tabindex="0">App 未打开？点此唤起</span>
-                <a class="social-action" href="https://v.douyin.com/-IDbOAWYFAg/" target="_blank" rel="noopener noreferrer">
-                    访问主页 <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-            </div>
+        <div class="resource-tip">
+            <i class="fa-solid fa-circle-info"></i>&nbsp;
+            <strong>温馨提示：</strong>如链接失效，可通过上方「关于我」添加 QQ/微信 联系我补发
         </div>
     </div>
+    <a href="#contact" class="section-scroll-down" data-next="contact" data-prev="resources" aria-label="向下滚动">
+        <i class="fa-solid fa-arrow-down dir-down"></i>
+        <i class="fa-solid fa-arrow-up dir-up"></i>
+    </a>
 </section>
-
 <!-- ========== 联系/页脚 ========== -->
 <footer class="footer" id="contact">
     <div class="container">
@@ -306,11 +189,11 @@
             <div class="footer-links">
                 <h4>快速导航</h4>
                 <ul>
-                    <li><a href="#home"><i class="fa-solid fa-angle-right"></i> 首页</a></li>
-                    <li><a href="#about"><i class="fa-solid fa-angle-right"></i> 关于我</a></li>
-                    <li><a href="#social"><i class="fa-solid fa-angle-right"></i> 联系我</a></li>
-                    <li><a href="library.html#blog"><i class="fa-solid fa-angle-right"></i> 文章列表</a></li>
-                    <li><a href="library.html#resources"><i class="fa-solid fa-angle-right"></i> 资源分享</a></li>
+                    <li><a href="index.html#home"><i class="fa-solid fa-angle-right"></i> 首页</a></li>
+                    <li><a href="index.html#about"><i class="fa-solid fa-angle-right"></i> 关于我</a></li>
+                    <li><a href="index.html#social"><i class="fa-solid fa-angle-right"></i> 联系我</a></li>
+                    <li><a href="#blog"><i class="fa-solid fa-angle-right"></i> 文章列表</a></li>
+                    <li><a href="#resources"><i class="fa-solid fa-angle-right"></i> 资源分享</a></li>
                 </ul>
             </div>
             <div class="footer-contact">
@@ -352,7 +235,6 @@
         </div>
     </div>
 </footer>
-
 <!-- ========== 微信二维码弹窗 ========== -->
 <div class="modal-mask" id="wechatModal">
     <div class="modal wechat-modal">
@@ -451,7 +333,6 @@
         </div>
     </div>
 </div>
-
 <!-- ========== Toast 通知（iOS 灵动岛风格） ========== -->
 <div class="toast" id="toast" role="status" aria-live="polite" tabindex="0">
     <span class="toast-glow"></span>
@@ -535,7 +416,6 @@
         </div>
     </button>
 </div>
-
 <script src="site-config.js"></script>
 <script src="script.js?v=55"></script></script>
 </body>
