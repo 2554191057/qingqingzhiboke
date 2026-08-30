@@ -1234,12 +1234,12 @@
                       data-desc="点击跳转网盘页面，如遇验证请手动输入提取码">
                 <i class="fa-solid fa-cloud-arrow-down"></i>&nbsp; 立即前往
               </button>
-              ${hasCode ? `<button class="resource-btn resource-btn-secondary"
+              <button class="resource-btn resource-btn-secondary"
                       data-action="copy-resource"
                       data-link="${fullLink}"
                       data-name="${r.title}">
-                <i class="fa-regular fa-copy"></i>&nbsp; 复制提取码
-              </button>` : ''}
+                <i class="fa-regular fa-copy"></i>&nbsp; ${hasCode ? '复制提取码' : '复制链接'}
+              </button>
             </div>
           </div>
         </div>
@@ -1835,16 +1835,21 @@
           showToast('链接为演示数据，请在 script.js RESOURCES 数组中配置真实链接', true);
           return;
         }
-        // 先弹窗展示提取码，用户复制后自动跳转（不立即打开）
         const title = btnOpen.dataset.title || '';
-        const desc = btnOpen.dataset.desc || '';
-        // 从资源数据里找回完整链接+提取码
+        // 从资源数据里找回提取码
         const full = RESOURCES.find(r => r.title === title.split(' · ')[0]);
+        const NO_CODE = ['无提取码', '无需提取码', '无', '', null, undefined];
+        const resCode = full && full.code && !NO_CODE.includes(full.code) ? full.code : null;
+        // 无提取码：直接打开链接，不弹窗
+        if (!resCode) {
+          window.open(link, '_blank', 'noopener');
+          return;
+        }
+        // 有提取码：先弹窗，用户复制后自动跳转
+        const desc = btnOpen.dataset.desc || '';
         const fullLink = full
           ? (full.code && full.code !== '无需提取码' ? `${full.link}\n提取码：${full.code}` : full.link)
           : link;
-        const NO_CODE = ['无提取码', '无需提取码', '无', '', null, undefined];
-        const resCode = full && full.code && !NO_CODE.includes(full.code) ? full.code : null;
         openLinkModal({
           headerIcon: 'fa-cloud',
           headerColor: '#E67E52',
