@@ -1783,11 +1783,18 @@
       openBtn.style.display = 'none';
     }
     const copyContent = copyText || link;
-    $('#linkCopyBtn').onclick = async () => {
-      const ok = await copyText(copyContent);
-      const label = copyLabel || (copyText ? '提取码已复制到剪贴板' : '链接已复制到剪贴板');
-      showToast(ok ? label : '复制失败，请手动长按复制', !ok);
-    };
+    const hasRealCode = !!copyText && copyText !== link;
+    const copyBtn = $('#linkCopyBtn');
+    if (copyBtn) {
+      copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>&nbsp; ' + (hasRealCode ? '复制提取码' : '复制链接');
+    }
+    if (copyBtn) {
+      copyBtn.onclick = async () => {
+        const ok = await copyText(copyContent);
+        const label = copyLabel || (hasRealCode ? '提取码已复制到剪贴板' : '链接已复制到剪贴板');
+        showToast(ok ? label : '复制失败，请手动长按复制', !ok);
+      };
+    }
     openModal('linkModal');
   }
 
@@ -1814,7 +1821,8 @@
         const fullLink = full
           ? (full.code && full.code !== '无需提取码' ? `${full.link}\n提取码：${full.code}` : full.link)
           : link;
-        const resCode = full && full.code && full.code !== '无需提取码' ? full.code : null;
+        const NO_CODE = ['无提取码', '无需提取码', '无', '', null, undefined];
+        const resCode = full && full.code && !NO_CODE.includes(full.code) ? full.code : null;
         setTimeout(() => openLinkModal({
           headerIcon: 'fa-cloud',
           headerColor: '#E67E52',
