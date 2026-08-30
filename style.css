@@ -3616,9 +3616,13 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     user-select: all;
 }
 .link-modal-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    justify-content: center;
     gap: 10px;
+}
+.link-modal-actions .btn {
+    min-width: 260px;
+    justify-content: center;
 }
 
 /* ========== Toast（iOS 灵动岛风格 - 圆圈→胶囊动画） ========== */
