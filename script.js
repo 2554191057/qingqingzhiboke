@@ -1802,8 +1802,12 @@
     if (copyBtn) {
       copyBtn.onclick = async () => {
         const ok = await copyText(copyContent);
-        const label = copyLabel || (hasRealCode ? '提取码已复制到剪贴板' : '链接已复制到剪贴板');
+        const label = copyLabel || (hasRealCode ? '提取码已复制，正在跳转网盘…' : '链接已复制，正在跳转…');
         showToast(ok ? label : '复制失败，请手动长按复制', !ok);
+        // 复制成功后自动跳转到网盘链接
+        if (ok && openLink) {
+          setTimeout(() => window.open(openLink, '_blank', 'noopener'), 600);
+        }
       };
     }
     openModal('linkModal');
@@ -1822,9 +1826,7 @@
           showToast('链接为演示数据，请在 script.js RESOURCES 数组中配置真实链接', true);
           return;
         }
-        // 新窗口打开
-        window.open(link, '_blank', 'noopener');
-        // 同时弹窗展示提取码
+        // 先弹窗展示提取码，用户复制后自动跳转（不立即打开）
         const title = btnOpen.dataset.title || '';
         const desc = btnOpen.dataset.desc || '';
         // 从资源数据里找回完整链接+提取码
@@ -1834,18 +1836,18 @@
           : link;
         const NO_CODE = ['无提取码', '无需提取码', '无', '', null, undefined];
         const resCode = full && full.code && !NO_CODE.includes(full.code) ? full.code : null;
-        setTimeout(() => openLinkModal({
+        openLinkModal({
           headerIcon: 'fa-cloud',
           headerColor: '#E67E52',
           title: title,
-          desc: desc + ' · 如页面关闭可在此复制完整信息',
+          desc: desc + ' · 复制提取码后将自动跳转网盘',
           link: fullLink,
           openText: '重新打开',
           openLink: link,
           openEnabled: true,
           copyValue: resCode || fullLink,
-          copyLabel: resCode ? '提取码已复制到剪贴板' : '链接已复制到剪贴板'
-        }), 400);
+          copyLabel: resCode ? '提取码已复制，正在跳转网盘…' : '链接已复制，正在跳转…'
+        });
       }
       if (btnCopy) {
         const link = btnCopy.dataset.link;
