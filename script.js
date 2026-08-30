@@ -1773,7 +1773,7 @@
   }
 
   // 通用链接弹窗
-  function openLinkModal({ headerIcon = 'fa-link', headerColor, title, desc, link, openText = '打开链接', openLink, openEnabled = true, copyText, copyLabel }) {
+  function openLinkModal({ headerIcon = 'fa-link', headerColor, title, desc, link, openText = '打开链接', openLink, openEnabled = true, copyValue, copyLabel }) {
     const headerIconEl = $('#linkModalHeader i');
     if (headerIconEl) {
       headerIconEl.className = 'fa-solid ' + headerIcon;
@@ -1793,8 +1793,8 @@
     } else {
       openBtn.style.display = 'none';
     }
-    const copyContent = copyText || link;
-    const hasRealCode = !!copyText && copyText !== link;
+    const copyContent = copyValue || link;
+    const hasRealCode = !!copyValue && copyValue !== link;
     const copyBtn = $('#linkCopyBtn');
     if (copyBtn) {
       copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>&nbsp; ' + (hasRealCode ? '复制提取码' : '复制链接');
@@ -1843,7 +1843,7 @@
           openText: '重新打开',
           openLink: link,
           openEnabled: true,
-          copyText: resCode || fullLink,
+          copyValue: resCode || fullLink,
           copyLabel: resCode ? '提取码已复制到剪贴板' : '链接已复制到剪贴板'
         }), 400);
       }
