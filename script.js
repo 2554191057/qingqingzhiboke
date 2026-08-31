@@ -3565,15 +3565,21 @@
       }
     }
     
-    // 切换主题
+    // 切换主题（带防抖锁，防止移动端快速连点卡死；移动端禁用 View Transition 整页快照）
+    let isThemeSwitching = false;
     function toggleDarkMode() {
+      if (isThemeSwitching) return;
+      isThemeSwitching = true;
+
       const isDark = html.getAttribute('data-theme') === 'dark';
       const newIsDark = !isDark;
-      
+
+      // 清理旧的方向 class，防止快速切换时泄漏
+      html.classList.remove('vt-from-top', 'vt-from-bottom');
+
       // 方向：切到日间→从上往下(vt-from-top)，切到夜间→从下往上(vt-from-bottom)
       const dirClass = newIsDark ? 'vt-from-bottom' : 'vt-from-top';
-      html.classList.add(dirClass);
-      
+
       // 执行主题切换
       function doSwitch() {
         if (newIsDark) {
@@ -3585,19 +3591,30 @@
         }
         updateThemeIcon(newIsDark);
       }
-      
-      // 支持 View Transition API 时用方向性展开动画，不支持时回退到全局颜色过渡
-      if (document.startViewTransition) {
+
+      const unlock = () => { isThemeSwitching = false; };
+
+      // 移动端（触屏/小屏）禁用 View Transition 整页快照动画，只用简单颜色过渡，防止 GPU 过载卡死
+      const isMobile = window.matchMedia('(hover: none), (pointer: coarse)').matches || window.innerWidth < 768;
+      const useVT = document.startViewTransition && !isMobile;
+
+      if (useVT) {
+        html.classList.add(dirClass);
         const transition = document.startViewTransition(doSwitch);
-        transition.finished.finally(() => {
+        // 超时兜底：800ms 后强制释放锁，防止 transition 永远不 finished
+        Promise.race([transition.finished, new Promise(r => setTimeout(r, 800))]).finally(() => {
           html.classList.remove(dirClass);
+          unlock();
         });
       } else {
         html.classList.add('theme-transition');
         doSwitch();
-        setTimeout(() => html.classList.remove('theme-transition'), 550);
+        setTimeout(() => {
+          html.classList.remove('theme-transition');
+          unlock();
+        }, 550);
       }
-      
+
       showToast(newIsDark ? '🌙 已切换到夜间模式' : '☀️ 已切换到日间模式');
     }
     
