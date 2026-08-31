@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -7,7 +7,7 @@
 <title>生日倒计时 · 庆庆纸博客</title>
 <link rel="icon" type="image/png" href="images/%E7%BD%91%E9%A1%B5%E6%A0%87%E7%AD%BE/favicon.png">
 <link rel="apple-touch-icon" href="images/%E7%BD%91%E9%A1%B5%E6%A0%87%E7%AD%BE/favicon.png">
-<link rel="stylesheet" href="style.css?v=32">
+<link rel="stylesheet" href="style.css?v=70">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
 <script src="site-config.js"></script>
 <script>
@@ -3296,7 +3296,7 @@
             size: 35,
             isFlash: true
         });
-        const baseCount = window.innerWidth < 480 ? 120 : (window.innerWidth < 768 ? 160 : 200);
+        const baseCount = window.innerWidth < 480 ? 60 : (window.innerWidth < 768 ? 80 : 200);
         if (type < 0.3) {
             // 环形爆炸
             const count = baseCount;
@@ -3381,7 +3381,7 @@
         const x = Math.random() * window.innerWidth;
         const y = Math.random() * window.innerHeight * 0.35 + 100;
         const hue = Math.floor(Math.random() * 360);
-        const baseCount = window.innerWidth < 480 ? 100 : (window.innerWidth < 768 ? 130 : 160);
+        const baseCount = window.innerWidth < 480 ? 50 : (window.innerWidth < 768 ? 65 : 160);
         const count = baseCount + Math.floor(Math.random() * 35);
         // 中心闪光
         fwParticles.push({
@@ -3520,7 +3520,7 @@
         let autoLaunchTimer = setInterval(() => {
             if (fwParticles.length > getMaxParticles()) return;
             const w = window.innerWidth;
-            const count = w < 480 ? 2 : (w < 768 ? 3 : (Math.random() < 0.4 ? 4 : 3));
+            const count = w < 480 ? 1 : (w < 768 ? 2 : (Math.random() < 0.4 ? 4 : 3));
             for (let i = 0; i < count; i++) {
                 const targetX = Math.random() * window.innerWidth;
                 const targetY = window.innerHeight * 0.25 + 60 + Math.random() * (window.innerHeight * 0.2);
@@ -3530,7 +3530,7 @@
         // 背景闪烁星光
         let sparkleTimer = setInterval(() => {
             if (bgSparkles.length > 50) return;
-            const count = window.innerWidth < 480 ? 2 : 3;
+            const count = window.innerWidth < 480 ? 1 : 2;
             for (let i = 0; i < count; i++) addBgSparkle();
         }, 120);
         const animate = () => {
@@ -3564,7 +3564,7 @@
 
     function spawnBalloons() {
         const colors = ['#f5576c', '#f093fb', '#ffa640', '#6bcB77', '#4d96ff', '#c56cf0', '#ffd93d'];
-        const baseCount = window.innerWidth < 480 ? 8 : (window.innerWidth < 768 ? 10 : 12);
+        const baseCount = window.innerWidth < 480 ? 4 : (window.innerWidth < 768 ? 5 : 12);
         const count = baseCount + Math.floor(Math.random() * 6);
         for (let i = 0; i < count; i++) {
             const b = document.createElement('div');
@@ -3581,7 +3581,7 @@
 
     function spawnHearts() {
         const hearts = ['❤️', '💖', '💕', '💗', '💝', '❤️‍🔥', '🩷'];
-        const baseCount = window.innerWidth < 480 ? 10 : (window.innerWidth < 768 ? 14 : 18);
+        const baseCount = window.innerWidth < 480 ? 5 : (window.innerWidth < 768 ? 7 : 18);
         const count = baseCount + Math.floor(Math.random() * 8);
         for (let i = 0; i < count; i++) {
             const h = document.createElement('div');
@@ -3597,7 +3597,7 @@
 
     function spawnConfetti() {
         const colors = ['#f093fb', '#f5576c', '#ffa640', '#ffd93d', '#6bcB77', '#4d96ff', '#c56cf0'];
-        const baseCount = window.innerWidth < 480 ? 50 : (window.innerWidth < 768 ? 65 : 80);
+        const baseCount = window.innerWidth < 480 ? 25 : (window.innerWidth < 768 ? 33 : 80);
         const count = baseCount + Math.floor(Math.random() * 40);
         for (let i = 0; i < count; i++) {
             const c = document.createElement('div');

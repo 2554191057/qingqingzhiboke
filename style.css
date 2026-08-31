@@ -6521,3 +6521,28 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
                     inset 0 1px 1px rgba(255, 255, 255, 0.06);
     }
 }
+
+/* ================================================================
+   移动端性能优化：禁用 backdrop-filter 毛玻璃（Android/iOS GPU 瓶颈）
+   改用半透明纯色背景，视觉接近但性能大幅提升
+   ================================================================ */
+@media (max-width: 768px) {
+    *, *::before, *::after {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    .navbar, .music-player, .mc-disc, .music-playlist,
+    .social-card, .blog-card, .resource-card,
+    .modal-content, .toast, .hot-comment,
+    .fx-fullscreen, .article-modal, .link-modal {
+        background-color: rgba(255, 255, 255, 0.88) !important;
+    }
+    html.dark .navbar, html.dark .music-player,
+    html.dark .social-card, html.dark .blog-card,
+    html.dark .resource-card, html.dark .modal-content,
+    html.dark .toast, html.dark .hot-comment,
+    html.dark .fx-fullscreen, html.dark .article-modal,
+    html.dark .link-modal {
+        background-color: rgba(28, 28, 32, 0.92) !important;
+    }
+}
