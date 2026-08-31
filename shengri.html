@@ -2463,7 +2463,20 @@
         { name: 'Happy Birthday (英文版)', artist: '库库小队', url: 'music/生日快乐(英文版)_库库小队_.mp3' }
     ];
     mp.renderList();
-    mp.loadTrack(0);
+    mp.loadTrack(0).then(() => {
+        // 自动播放中文版生日快乐：页面加载时尝试，被浏览器策略阻止时等待首次交互
+        const tryAutoPlay = () => {
+            mp.audio.play().then(() => {
+                mp.isPlaying = true;
+                mp.updatePlayIcon();
+            }).catch(() => {
+                // 浏览器自动播放策略阻止（需用户交互），监听首次点击/触摸
+                document.addEventListener('click', tryAutoPlay, { once: true });
+                document.addEventListener('touchstart', tryAutoPlay, { once: true });
+            });
+        };
+        tryAutoPlay();
+    });
 
     if (!isPlayerPeriod) {
         // 非生日期间只隐藏播放器UI

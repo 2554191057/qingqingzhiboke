@@ -3609,10 +3609,12 @@
       } else {
         html.classList.add('theme-transition');
         doSwitch();
+        // 移动端只过渡根元素背景(0.2s)，桌面端全元素过渡(0.45s)
+        const transDur = isMobile ? 250 : 550;
         setTimeout(() => {
           html.classList.remove('theme-transition');
           unlock();
-        }, 550);
+        }, transDur);
       }
 
       showToast(newIsDark ? '🌙 已切换到夜间模式' : '☀️ 已切换到日间模式');
