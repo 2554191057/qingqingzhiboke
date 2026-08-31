@@ -6537,9 +6537,19 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
    改用半透明纯色背景，视觉接近但性能大幅提升
    ================================================================ */
 @media (max-width: 768px) {
+    /* 移动端禁用所有动画：背景流动类动画（btnFlow/liquid-sheen/blobFlow等）
+       在低端设备上重绘不连贯，表现为"一闪一闪"；统一禁用后性能大幅提升 */
     *, *::before, *::after {
+        animation: none !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
+    }
+    /* 仅保留音乐播放器黑胶旋转动画（不涉及背景重绘，不会闪烁） */
+    .music-disc, .mc-disc {
+        animation: musicDiscSpin 16s linear infinite !important;
+    }
+    .music-player.collapsed.playing .mc-disc {
+        animation: musicDiscSpin 12s linear infinite !important;
     }
     .navbar, .music-player, .mc-disc, .music-playlist,
     .social-card, .blog-card, .resource-card,
@@ -6554,5 +6564,11 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     html.dark .fx-fullscreen, html.dark .article-modal,
     html.dark .link-modal {
         background-color: rgba(28, 28, 32, 0.92) !important;
+    }
+    /* 禁用背景流动动画（btnFlow/liquid-sheen），移动端性能差导致跳跃式闪烁 */
+    .back-to-top, .nav-toggle, .theme-toggle,
+    .hero-scroll-hint, .section-scroll-down,
+    .navbar::before {
+        animation: none !important;
     }
 }
