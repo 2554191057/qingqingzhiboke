@@ -2432,7 +2432,7 @@
     // 计算日期窗口（移到 try 外部，供后续自动播放逻辑使用）
     const _now = new Date();
     const _year = _now.getFullYear();
-    const _playerStart = new Date(_year, 7, 5, 23, 0, 0); // 8月5日23:58
+    const _playerStart = new Date(_year, 7, 5, 23, 58, 0); // 8月5日23:58
     const _playerEnd = new Date(_year, 7, 7, 0, 0, 0);    // 8月7日0点（即8月6日结束）
     const isPlayerPeriod = (_now >= _playerStart && _now <= _playerEnd);
 
@@ -2466,10 +2466,11 @@
         { name: 'Happy Birthday (英文版)', artist: '库库小队', url: 'music/生日快乐(英文版)_库库小队_.mp3' }
     ];
     mp.renderList();
-    // 自动播放中文版生日快乐：页面加载时尝试，被浏览器策略阻止时等待首次交互
+    // 自动播放中文版生日快乐：仅在生日播放时段内，页面加载时尝试，被浏览器策略阻止时等待首次交互
     let autoPlayTriggered = false;
     const tryAutoPlay = () => {
         if (autoPlayTriggered) return;
+        if (!isPlayerPeriod) return; // 非播放时段禁止自动播放
         autoPlayTriggered = true;
         document.removeEventListener('click', tryAutoPlay);
         document.removeEventListener('touchstart', tryAutoPlay);
@@ -2481,15 +2482,17 @@
             autoPlayTriggered = false;
         });
     };
-    // 页面加载时即监听首次交互（不依赖音频加载完成）
-    document.addEventListener('click', tryAutoPlay);
-    document.addEventListener('touchstart', tryAutoPlay);
-    // 加载中文版并尝试自动播放
-    mp.loadTrack(0).then(() => { tryAutoPlay(); });
+    if (isPlayerPeriod) {
+        // 仅播放时段内监听首次交互并加载音频
+        document.addEventListener('click', tryAutoPlay);
+        document.addEventListener('touchstart', tryAutoPlay);
+        mp.loadTrack(0).then(() => { tryAutoPlay(); });
+    }
 
     if (!isPlayerPeriod) {
-        // 非生日期间只隐藏播放器UI
+        // 非生日期间隐藏播放器UI并停止任何音乐
         mp.player.style.display = 'none';
+        mp.stop();
     } else {
         // 播放器初始为收起态，不启动自动收起定时器
     }
