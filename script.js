@@ -1,4 +1,4 @@
-﻿/* =============================================
+/* =============================================
    庆庆纸博客 · 交互脚本
    ============================================= */
 (function () {
@@ -3543,16 +3543,11 @@
     const themeToggle = $('#themeToggle');
     const html = document.documentElement;
     
-    // 初始化：检查 localStorage 或时间判断/系统偏好
-    // 优先级：用户手动选择 > 时间判断（夜间19-7点/日间） > 系统偏好
+    // 初始化：按时间自动判断（夜间19-7点 / 其余日间），进入网站时自动切换
     function initDarkMode() {
-      const saved = localStorage.getItem('theme');
       const h = new Date().getHours();
       const isNight = h >= 19 || h < 7;
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const shouldBeDark = saved === 'dark' || (!saved && (isNight || prefersDark));
-      
-      if (shouldBeDark) {
+      if (isNight) {
         html.setAttribute('data-theme', 'dark');
         themeToggle?.classList.add('dark');
         updateThemeIcon(true);
@@ -3584,11 +3579,9 @@
         if (newIsDark) {
           html.setAttribute('data-theme', 'dark');
           themeToggle?.classList.add('dark');
-          localStorage.setItem('theme', 'dark');
         } else {
           html.removeAttribute('data-theme');
           themeToggle?.classList.remove('dark');
-          localStorage.setItem('theme', 'light');
         }
         updateThemeIcon(newIsDark);
       }

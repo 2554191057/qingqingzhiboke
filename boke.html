@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -20,11 +20,9 @@
     // 早期深色模式初始化：防止 FOUC
     // 优先级：用户手动选择 > 时间判断（夜间19-7点/日间） > 系统偏好
     (function() {
-        const saved = localStorage.getItem('theme');
         const h = new Date().getHours();
         const isNight = h >= 19 || h < 7;
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (saved === 'dark' || (!saved && (isNight || prefersDark))) {
+        if (isNight) {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
     })();
@@ -542,6 +540,6 @@
 </div>
 
 <script src="site-config.js"></script>
-<script src="script.js?v=66"></script>
+<script src="script.js?v=67"></script>
 </body>
 </html>
