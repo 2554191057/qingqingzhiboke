@@ -6509,3 +6509,10 @@ html.touch-only .social-douyin:hover .social-icon { box-shadow: 0 8px 20px rgba(
         animation: island-breath 3s ease-in-out infinite !important;
     }
 }
+
+/* 移动端隐藏快手"PC端自动复制"提示条（移动端无此行为，避免误导） */
+@media (max-width: 768px) {
+    .social-tip {
+        display: none;
+    }
+}
