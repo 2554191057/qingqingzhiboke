@@ -1044,6 +1044,24 @@
       });
     });
   }
+  // 账号文字单行自适应：内容溢出时自动缩小字号，保持与其它卡片一致的单行显示
+  function autoFitAccountText() {
+    $$('.social-account').forEach(el => {
+      const inner = el.querySelector('.copy-id-btn');
+      if (!inner) return;
+      el.style.whiteSpace = 'nowrap';
+      el.style.overflow = 'hidden';
+      const baseFont = parseFloat(getComputedStyle(el).fontSize);
+      let fs = baseFont;
+      const minFont = 11;
+      let guard = 0;
+      while (el.scrollWidth > el.clientWidth + 1 && fs > minFont && guard < 40) {
+        fs -= 0.25;
+        el.style.fontSize = fs + 'px';
+        guard++;
+      }
+    });
+  }
 
   // 复制文本
   async function copyText(text) {
@@ -1652,6 +1670,7 @@
 
     // 点击账号复制（QQ号 / 微信号 / 快手号 / 抖音号 / 页脚联系方式）
     bindCopyButtons();
+    autoFitAccountText();
 
   }
 
