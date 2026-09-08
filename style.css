@@ -6587,17 +6587,18 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     html.dark .social-card {
         background: rgba(35, 30, 46, 0.82) !important;
     }
-    /* 深色模式：App 唤起按钮改深色底 + 亮色文字，解决看不清 */
+    /* 深色模式：App 唤起按钮——深色底 + 纯白加粗大字，保证文字清晰 */
     html.dark .app-wake-btn {
-        background: rgba(255, 255, 255, 0.14);
-        border-color: rgba(255, 255, 255, 0.30);
-        color: #F2ECE4;
-        font-size: 0.78rem;
-        font-weight: 500;
+        background: rgba(30, 26, 42, 0.55);
+        border-color: rgba(255, 255, 255, 0.35);
+        color: #FFFFFF;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.2px;
     }
     html.dark .app-wake-btn:active {
-        background: rgba(230, 126, 82, 0.22);
+        background: rgba(230, 126, 82, 0.3);
         border-color: #E67E52;
-        color: #FFB896;
+        color: #FFFFFF;
     }
 }
