@@ -6493,3 +6493,19 @@ html.touch-only .social-douyin:hover .social-icon { box-shadow: 0 8px 20px rgba(
         background: rgba(35, 30, 46, 0.82) !important;
     }
 }
+
+/* ================================================================
+   Toast（灵动岛）例外：恢复黑色外观与呼吸动画，与电脑端一致
+   覆盖上方通配符 animation:none 与强制背景色（Toast 元素少、动画轻量，不影响性能）
+   ================================================================ */
+@media (max-width: 768px) {
+    .toast {
+        background-color: #000 !important;
+    }
+    html.dark .toast {
+        background-color: #000 !important;
+    }
+    .toast.show {
+        animation: island-breath 3s ease-in-out infinite !important;
+    }
+}
