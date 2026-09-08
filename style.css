@@ -6572,3 +6572,18 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
         animation: none !important;
     }
 }
+
+/* ================================================================
+   社交卡片例外：恢复毛玻璃质感（仅社交卡片，数量少，性能影响小）
+   覆盖上方通配符 backdrop-filter:none；小屏 --glass-blur 已自动降级为 blur(12px)
+   ================================================================ */
+@media (max-width: 768px) {
+    .social-card {
+        backdrop-filter: var(--glass-blur) !important;
+        -webkit-backdrop-filter: var(--glass-blur) !important;
+        background: var(--glass-bg) !important;
+    }
+    html.dark .social-card {
+        background: var(--glass-bg) !important;
+    }
+}
