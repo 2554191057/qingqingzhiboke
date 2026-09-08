@@ -6589,13 +6589,15 @@ html.touch-only .app-wake-btn.app-wake-store:hover {
     }
     /* 深色模式：App 唤起按钮改深色底 + 亮色文字，解决看不清 */
     html.dark .app-wake-btn {
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.16);
-        color: #D8D2C8;
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.30);
+        color: #F2ECE4;
+        font-size: 0.78rem;
+        font-weight: 500;
     }
     html.dark .app-wake-btn:active {
-        background: rgba(230, 126, 82, 0.18);
-        border-color: var(--color-accent);
-        color: #FFB08A;
+        background: rgba(230, 126, 82, 0.22);
+        border-color: #E67E52;
+        color: #FFB896;
     }
 }
