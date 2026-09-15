@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -31,6 +31,13 @@
     })();
 
     </script>
+<script>
+if (!sessionStorage.getItem('auth_ok')) {
+  var __p = (location.pathname.split('/').pop() || '');
+  var __q = (__p && __p !== 'yanzheng.html') ? '?back=' + encodeURIComponent(__p) : '';
+  window.location.replace('yanzheng.html' + __q);
+}
+</script>
 </head>
 <body>
 

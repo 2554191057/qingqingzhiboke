@@ -369,8 +369,10 @@
                 sliderText.textContent = '✓ 验证通过';
                 sliderTrack.parentElement.classList.add('success');
                 hintLink.style.display = 'block';
+                sessionStorage.setItem('auth_ok', '1');
+                var __back = new URLSearchParams(location.search).get('back');
                 setTimeout(function () {
-                    window.location.replace('boke.html');
+                    window.location.replace(__back || 'boke.html');
                 }, 600);
             }
 
