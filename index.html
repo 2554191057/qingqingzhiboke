@@ -22,6 +22,7 @@
             background: rgba(255,255,255,0.85);
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
         .box h2 { margin: 0 0 8px; font-size: 1.3rem; }
         .box .tip { margin: 0 0 6px; color: #888; font-size: 0.9rem; }
@@ -36,12 +37,39 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .puzzle {
+            position: relative;
+            width: 100%;
+            height: 110px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 14px;
+            background: #ddd;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.12);
+        }
+        .puzzle-bg canvas { width: 100%; height: 100%; display: block; }
+        .puzzle-slot {
+            position: absolute;
+            width: 44px; height: 44px;
+            border: 2px dashed rgba(255,255,255,0.85);
+            border-radius: 6px;
+            box-sizing: border-box;
+            background: rgba(0,0,0,0.12);
+        }
+        .puzzle-piece {
+            position: absolute;
+            width: 44px; height: 44px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+            border: 1px solid rgba(0,0,0,0.12);
+            box-sizing: border-box;
+        }
         .slider-track {
             position: relative;
             height: 46px;
             background: rgba(0,0,0,0.06);
             border-radius: 23px;
-            margin: 14px 0 0;
+            margin-top: 10px;
             overflow: hidden;
             user-select: none;
             -webkit-user-select: none;
@@ -54,22 +82,6 @@
             background: linear-gradient(90deg, #ffb199, #e8704a);
             border-radius: 23px;
         }
-        .slider-gap {
-            position: absolute;
-            top: 3px;
-            width: 40px; height: 40px;
-            border-radius: 20px;
-            border: 2px dashed #bbb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #aaa;
-            z-index: 1;
-            pointer-events: none;
-            background: rgba(255,255,255,0.5);
-            box-sizing: border-box;
-        }
         .slider-btn {
             position: absolute;
             top: 3px; left: 3px;
@@ -80,7 +92,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
             color: #e8704a;
             cursor: grab;
             z-index: 3;
@@ -102,9 +114,8 @@
         }
         .slider.success .slider-btn { background: #4cd964; color: #fff; }
         .slider.success .slider-text { color: #fff; }
-        .slider.success .slider-gap {
+        .slider.success .puzzle-slot {
             border-color: #4cd964;
-            color: #4cd964;
         }
     </style>
 </head>
@@ -112,12 +123,16 @@
     <div class="box">
         <div class="spinner"></div>
         <h2>欢迎来到庆庆纸博客</h2>
-        <p class="tip">请将滑块拖到锁的位置完成验证</p>
+        <p class="tip">拖动拼图块到缺口位置完成验证</p>
+        <div class="puzzle" id="puzzle">
+            <div class="puzzle-bg" id="puzzleBg"></div>
+            <div class="puzzle-slot" id="puzzleSlot"></div>
+            <div class="puzzle-piece" id="puzzlePiece"></div>
+        </div>
         <div class="slider" id="slider">
             <div class="slider-track" id="sliderTrack">
                 <div class="slider-fill" id="sliderFill"></div>
-                <div class="slider-gap" id="sliderGap">🔒</div>
-                <span class="slider-text" id="sliderText">按住滑块，拖到 🔒 位置</span>
+                <span class="slider-text" id="sliderText">按住滑块，拖动拼图块对齐缺口</span>
                 <div class="slider-btn" id="sliderBtn">→</div>
             </div>
         </div>
@@ -125,38 +140,81 @@
     </div>
     <script>
         (function () {
+            var PUZZLE_W = 252, PUZZLE_H = 110, PIECE = 44, TOL = 6;
+            var puzzle = document.getElementById('puzzle');
+            var slot = document.getElementById('puzzleSlot');
+            var piece = document.getElementById('puzzlePiece');
             var track = document.getElementById('sliderTrack');
             var btn = document.getElementById('sliderBtn');
             var fill = document.getElementById('sliderFill');
-            var gap = document.getElementById('sliderGap');
             var text = document.getElementById('sliderText');
             var slider = document.getElementById('slider');
-            var done = false;
-            var pressed = false;
-            var startX = 0;
+
+            // —— 随机生成背景图（每次进入都不一样）——
+            var canvas = document.createElement('canvas');
+            canvas.width = PUZZLE_W; canvas.height = PUZZLE_H;
+            var ctx = canvas.getContext('2d');
+            var hue1 = Math.floor(Math.random() * 360);
+            var hue2 = (hue1 + 50 + Math.floor(Math.random() * 110)) % 360;
+            var g = ctx.createLinearGradient(0, 0, PUZZLE_W, PUZZLE_H);
+            g.addColorStop(0, 'hsl(' + hue1 + ',65%,62%)');
+            g.addColorStop(1, 'hsl(' + hue2 + ',65%,50%)');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, PUZZLE_W, PUZZLE_H);
+            for (var i = 0; i < 8; i++) {
+                ctx.globalAlpha = 0.12 + Math.random() * 0.22;
+                if (Math.random() > 0.5) {
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath();
+                    ctx.arc(Math.random() * PUZZLE_W, Math.random() * PUZZLE_H, 8 + Math.random() * 20, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
+                    var rw = 18 + Math.random() * 46, rh = 3 + Math.random() * 9;
+                    ctx.beginPath();
+                    ctx.roundRect(Math.random() * (PUZZLE_W - rw), Math.random() * (PUZZLE_H - rh), rw, rh, 4);
+                    ctx.fill();
+                }
+            }
+            ctx.globalAlpha = 1;
+            var bgUrl = canvas.toDataURL();
+            document.getElementById('puzzleBg').appendChild(canvas);
+
+            // —— 随机缺口位置 ——
+            var gapX = Math.round(34 + Math.random() * (PUZZLE_W - PIECE - 68));
+            var gapY = Math.round((PUZZLE_H - PIECE) / 2);
+            slot.style.left = gapX + 'px';
+            slot.style.top = gapY + 'px';
+            piece.style.top = gapY + 'px';
+            piece.style.backgroundImage = 'url(' + bgUrl + ')';
+            piece.style.backgroundSize = PUZZLE_W + 'px ' + PUZZLE_H + 'px';
+            piece.style.backgroundPosition = (-gapX) + 'px ' + (-gapY) + 'px';
+
+            // —— 滑块拖动 ——
+            var done = false, pressed = false, startX = 0;
             var trackW = track.clientWidth;
-            var btnW = 40;
-            var pad = 3;
-            var gapX = Math.round((trackW - btnW) * 0.62);  // 目标位置
-            var TOL = 8;  // 命中容差
+            var btnW = 40, pad = 3;
+            var max = trackW - btnW - pad * 2;
+            var pieceMax = PUZZLE_W - PIECE - 4;
 
             function layout() {
                 trackW = track.clientWidth;
-                gapX = Math.round((trackW - btnW) * 0.62);
-                gap.style.left = (gapX + 1) + 'px';
+                max = trackW - btnW - pad * 2;
             }
 
             function update(x) {
-                var max = trackW - btnW - pad * 2;
                 var v = Math.max(0, Math.min(max, x));
                 fill.style.width = (v + btnW / 2) + 'px';
                 btn.style.left = (pad + v) + 'px';
-                return v;
+                var px = 2 + (v / max) * pieceMax;
+                piece.style.left = px + 'px';
+                return px;
             }
 
             function reset() {
                 fill.style.width = '0px';
                 btn.style.left = pad + 'px';
+                piece.style.left = '2px';
             }
 
             function onStart(e) {
@@ -166,16 +224,14 @@
                 startX = t.clientX - btn.offsetLeft;
                 btn.style.transition = 'none';
                 fill.style.transition = 'none';
+                piece.style.transition = 'none';
             }
 
             function onMove(e) {
                 if (done || !pressed) return;
                 var t = e.touches ? e.touches[0] : e;
-                var v = update(t.clientX - startX);
-                // 滑块位置与目标缺口重合 → 验证成功
-                if (Math.abs(btn.offsetLeft - gapX) <= TOL) {
-                    finish();
-                }
+                var px = update(t.clientX - startX);
+                if (Math.abs(px - gapX) <= TOL) finish();
             }
 
             function onEnd() {
@@ -183,6 +239,7 @@
                 if (!done) {
                     btn.style.transition = 'left .3s ease';
                     fill.style.transition = 'width .3s ease';
+                    piece.style.transition = 'left .3s ease';
                     reset();
                 }
             }
@@ -192,10 +249,11 @@
                 done = true;
                 btn.style.transition = 'left .15s ease';
                 fill.style.transition = 'width .15s ease';
-                btn.style.left = gapX + 'px';
-                fill.style.width = (gapX + btnW / 2) + 'px';
+                piece.style.transition = 'left .15s ease';
+                piece.style.left = gapX + 'px';
+                fill.style.width = (gapX / pieceMax * max + btnW / 2) + 'px';
+                btn.style.left = (pad + gapX / pieceMax * max) + 'px';
                 slider.classList.add('success');
-                gap.textContent = '🔓';
                 var sec = 3;
                 text.textContent = '✓ 验证成功，' + sec + ' 秒后自动进入…';
                 var timer = setInterval(function () {
