@@ -79,6 +79,48 @@
             padding: 0;
         }
         .refresh-btn:active { background: #fff; transform: scale(0.94); }
+        .slider-track {
+            position: relative;
+            height: 44px;
+            background: rgba(0,0,0,0.06);
+            border-radius: 22px;
+            margin-top: 10px;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .slider-fill {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 0;
+            background: linear-gradient(90deg, #ffb199, #e8704a);
+            border-radius: 22px;
+        }
+        .slider-btn {
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #e8704a;
+        }
+        .slider-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 13px;
+            pointer-events: none;
+        }
+        .slider.success .slider-fill { background: linear-gradient(90deg, #4cd964, #2fbd52); }
+        .slider.success .slider-btn { background: #4cd964; color: #fff; }
+        .slider.success .slider-text { color: #fff; }
         .status {
             min-height: 18px;
             margin-top: 10px;
@@ -100,6 +142,11 @@
             <canvas class="piece" id="pieceCanvas" width="44" height="44"></canvas>
             <button class="refresh-btn" id="refreshBtn" title="换一张">↻</button>
         </div>
+        <div class="slider-track" id="sliderTrack">
+            <div class="slider-fill" id="sliderFill"></div>
+            <span class="slider-text" id="sliderText">拖动进度</span>
+            <div class="slider-btn" id="sliderBtn">→</div>
+        </div>
         <div class="status" id="status"></div>
         <p class="hint" id="hintLink" style="display:none">如果没有自动跳转，请 <a href="boke.html">点击这里</a></p>
     </div>
@@ -112,6 +159,10 @@
             var refreshBtn = document.getElementById('refreshBtn');
             var status = document.getElementById('status');
             var hintLink = document.getElementById('hintLink');
+            var sliderTrack = document.getElementById('sliderTrack');
+            var sliderFill = document.getElementById('sliderFill');
+            var sliderBtn = document.getElementById('sliderBtn');
+            var sliderText = document.getElementById('sliderText');
             var bctx = bgCanvas.getContext('2d');
             var pctx = pieceCanvas.getContext('2d');
 
@@ -256,6 +307,8 @@
                 status.textContent = '';
                 status.className = 'status';
                 hintLink.style.display = 'none';
+                sliderText.textContent = '拖动进度';
+                sliderTrack.parentElement.classList.remove('success');
                 applyPos();
                 loadImage();
             }
@@ -263,6 +316,14 @@
             function applyPos() {
                 pieceCanvas.style.left = pieceX + 'px';
                 pieceCanvas.style.top = pieceY + 'px';
+                // 同步进度条（仅视觉指示，不参与拖动）
+                var trackW = sliderTrack.clientWidth || 320;
+                var btnW = 40, pad = 2;
+                var max = trackW - btnW - pad * 2;
+                var pieceMax = W - PIECE - 4;
+                var ratio = Math.max(0, Math.min(1, pieceX / pieceMax));
+                sliderFill.style.width = (ratio * max + btnW / 2) + 'px';
+                sliderBtn.style.left = (pad + ratio * max) + 'px';
             }
 
             // —— 全局拖动 ——
@@ -296,6 +357,7 @@
             function fail() {
                 status.textContent = '✗ 未对准缺口，已换新图，请重新拖动';
                 status.className = 'status fail';
+                sliderText.textContent = '未对准，已换新图';
                 failTimer = setTimeout(refresh, 900);
             }
 
@@ -304,6 +366,8 @@
                 done = true;
                 status.textContent = '✓ 验证通过，正在进入…';
                 status.className = 'status ok';
+                sliderText.textContent = '✓ 验证通过';
+                sliderTrack.parentElement.classList.add('success');
                 hintLink.style.display = 'block';
                 setTimeout(function () {
                     window.location.replace('boke.html');
