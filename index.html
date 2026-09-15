@@ -101,7 +101,7 @@
             <button class="refresh-btn" id="refreshBtn" title="换一张">↻</button>
         </div>
         <div class="status" id="status"></div>
-        <p class="hint">如果没有自动跳转，请 <a href="boke.html">点击这里</a></p>
+        <p class="hint" id="hintLink" style="display:none">如果没有自动跳转，请 <a href="boke.html">点击这里</a></p>
     </div>
     <script>
         (function () {
@@ -111,6 +111,7 @@
             var puzzle = document.getElementById('puzzle');
             var refreshBtn = document.getElementById('refreshBtn');
             var status = document.getElementById('status');
+            var hintLink = document.getElementById('hintLink');
             var bctx = bgCanvas.getContext('2d');
             var pctx = pieceCanvas.getContext('2d');
 
@@ -254,6 +255,7 @@
                 pieceY = gapY;
                 status.textContent = '';
                 status.className = 'status';
+                hintLink.style.display = 'none';
                 applyPos();
                 loadImage();
             }
@@ -302,6 +304,7 @@
                 done = true;
                 status.textContent = '✓ 验证通过，正在进入…';
                 status.className = 'status ok';
+                hintLink.style.display = 'block';
                 setTimeout(function () {
                     window.location.replace('boke.html');
                 }, 600);
