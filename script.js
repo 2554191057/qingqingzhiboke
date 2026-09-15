@@ -6,12 +6,17 @@
 
   // 混合设备动态检测：触摸时加 .touch-only 禁用悬停，真实鼠标移动时移除
   // 纯触屏设备已由 <head> 内联脚本提前检测；此处处理 Surface/iPad 等混合输入设备
+  let lastTouchAt = 0;
   document.addEventListener('touchstart', function() {
+    lastTouchAt = Date.now();
     document.documentElement.classList.add('touch-only');
   }, { passive: true });
   document.addEventListener('mousemove', function(e) {
     // movementX/Y 为 0 表示是触摸合成的鼠标事件，跳过
-    if ((e.movementX || e.movementY) && document.documentElement.classList.contains('touch-only')) {
+    // 触摸后 5 秒内不因鼠标移动移除 touch-only：触屏的粘性 :hover 需要 touch-only 覆盖压制，
+    // 否则会看到"鼠标已移走但前一项仍高亮"的残留
+    if ((e.movementX || e.movementY) && document.documentElement.classList.contains('touch-only') &&
+        (Date.now() - lastTouchAt) > 5000) {
       document.documentElement.classList.remove('touch-only');
     }
   }, { passive: true });
