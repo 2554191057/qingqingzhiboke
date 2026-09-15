@@ -198,7 +198,7 @@
         <p class="tip">完成验证后自动进入</p>
         <div id="captcha">
             <canvas class="bg" id="bgCanvas" width="310" height="155"></canvas>
-            <canvas class="j-block" id="blockCanvas" width="42" height="42"></canvas>
+            <canvas class="j-block" id="blockCanvas" width="310" height="155"></canvas>
             <div class="j-refresh" id="refreshBtn" title="换一张">↻</div>
             <div class="j-loading" id="loadingBox"><span class="j-spin"></span><span>加载中...</span></div>
             <div class="j-slider" id="sliderBox">
@@ -265,15 +265,18 @@
 
             function draw() {
                 bctx.clearRect(0, 0, W, H);
-                sctx.clearRect(0, 0, S, S);
+                sctx.clearRect(0, 0, W, H);
                 gapX = Math.round(73 + Math.random() * (W - 146));
                 gapY = Math.round(28 + Math.random() * (H - 101));
                 // 背景缺口
                 jigsawPath(bctx, gapX, gapY, 'fill');
                 bctx.drawImage(img, 0, 0, W, H);
-                // 拼图块（取缺口处图像）
-                jigsawPath(sctx, 0, 0, 'clip');
+                // 拼图块：在缺口位置 clip，取缺口处图像
+                sctx.save();
+                jigsawPath(sctx, gapX, gapY, 'clip');
                 sctx.drawImage(img, 0, 0, W, H);
+                sctx.restore();
+                // 截取缺口附近图像区域，移到画布左侧（供拖动）
                 var clipY = gapY - 18 - 1;
                 var data = sctx.getImageData(gapX - 3, clipY, 63, 63);
                 blockCanvas.width = 63;
@@ -299,13 +302,20 @@
                 }
                 bctx.globalAlpha = 1;
                 jigsawPath(bctx, gapX, gapY, 'fill');
-                sctx.clearRect(0, 0, S, S);
-                jigsawPath(sctx, 0, 0, 'clip');
-                var pg = sctx.createLinearGradient(0, 0, S, S);
-                pg.addColorStop(0, 'hsl(' + hue1 + ',60%,66%)');
-                pg.addColorStop(1, 'hsl(' + hue2 + ',60%,52%)');
-                sctx.fillStyle = pg;
-                sctx.fillRect(0, 0, S, S);
+                // 拼图块：渐变底 + 缺口描边
+                sctx.clearRect(0, 0, W, H);
+                sctx.fillStyle = g;
+                sctx.fillRect(0, 0, W, H);
+                sctx.save();
+                jigsawPath(sctx, gapX, gapY, 'clip');
+                sctx.strokeStyle = 'rgba(255,255,255,0.9)';
+                sctx.lineWidth = 2;
+                sctx.stroke();
+                sctx.restore();
+                var clipY = gapY - 18 - 1;
+                var data = sctx.getImageData(gapX - 3, clipY, 63, 63);
+                blockCanvas.width = 63;
+                sctx.putImageData(data, 0, clipY);
                 blockCanvas.style.left = '0px';
                 pieceX = 0;
             }
