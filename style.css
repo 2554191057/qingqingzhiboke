@@ -1,4 +1,4 @@
-/* ========================================
+﻿/* ========================================
    庆庆纸博客 · 简约风格 · 纸张温暖配色
    Palette: 米白 #FAF7F2 / 暖橙 #E67E52 / 墨灰 #3A3A3A / 沙色 #D9C8AE
    ======================================== */
@@ -84,13 +84,13 @@ html.vt-from-bottom::view-transition-old(root) {
     --shadow-md: 0 6px 24px rgba(58, 58, 58, 0.08);
     --shadow-lg: 0 16px 48px rgba(58, 58, 58, 0.10);
     /* 液态玻璃变量 - Apple Liquid Glass 质感（更通透 + 四边边缘高光） */
-    --glass-bg: rgba(255, 255, 255, 0.14);
-    --glass-bg-strong: rgba(255, 255, 255, 0.26);
-    --glass-border: rgba(255, 255, 255, 0.55);
-    --glass-blur: blur(30px) saturate(180%);
-    --glass-blur-strong: blur(52px) saturate(200%);
-    --glass-shadow: 0 8px 32px rgba(58, 58, 58, 0.10),
-                    inset 0 0 0 0.5px rgba(255, 255, 255, 0.60),
+    --glass-bg: #ffffff;
+    --glass-bg-strong: #ffffff;
+    --glass-border: #e5e5e5;
+    --glass-blur: none;
+    --glass-blur-strong: none;
+    --glass-shadow: none;
+    --glass-shadow-hover: none;
                     inset 0 1px 1px rgba(255, 255, 255, 0.95),
                     inset 0 -1px 1px rgba(255, 255, 255, 0.30),
                     inset 1px 0 1px rgba(255, 255, 255, 0.35),
@@ -238,9 +238,9 @@ body {
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
-    background: 
-        linear-gradient(135deg, 
-            #FDE8D8 0%, 
+    background: #ffffff;
+    background-size: auto;
+    animation: none;
             #F8D4BE 25%, 
             #F5E6D8 45%, 
             #E8EED8 65%, 
@@ -1593,7 +1593,7 @@ img { max-width: 100%; display: block; }
 .about-icon {
     width: 64px;
     height: 64px;
-    margin: 0 auto 20px;
+    margin: 0 auto 0px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -4295,7 +4295,7 @@ html.touch-only .social-douyin:hover .social-icon { box-shadow: 0 8px 20px rgba(
 
 /* ========== 樱花飘落特效 ========== */
 .sakura-canvas {
-    position: fixed;
+    display: none;
     top: 0;
     left: 0;
     width: 100%;
@@ -5492,11 +5492,11 @@ html.touch-only .social-douyin:hover .social-icon { box-shadow: 0 8px 20px rgba(
     --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.45);
     --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
     /* 深色模式液态玻璃变量 */
-    --glass-bg: rgba(40, 35, 52, 0.48);
-    --glass-bg-strong: rgba(48, 42, 62, 0.58);
-    --glass-border: rgba(200, 190, 220, 0.22);
-    --glass-blur: blur(30px) saturate(180%);
-    --glass-blur-strong: blur(52px) saturate(200%);
+    --glass-bg: #1a1a1a;
+    --glass-bg-strong: #1a1a1a;
+    --glass-border: #333333;
+    --glass-blur: none;
+    --glass-blur-strong: none;
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.50),
                     inset 0 0 0 0.5px rgba(255, 255, 255, 0.10),
                     inset 0 1px 1px rgba(255, 255, 255, 0.10),
@@ -5536,18 +5536,18 @@ html.touch-only .social-douyin:hover .social-icon { box-shadow: 0 8px 20px rgba(
 
 /* 深色模式全局渐变背景层 */
 [data-theme="dark"] .bg-gradient-layer {
-    background: 
-        linear-gradient(135deg, 
-            #2A2535 0%, 
-            #2D2838 25%, 
-            #252030 45%, 
-            #1F2530 65%, 
-            #1A2828 85%, 
-            #182028 100%);
-    background-size: 340% 340%;
-    animation:
-        liquidFlow 11s ease-in-out infinite alternate,
-        hueShift 60s linear infinite;
+[data-theme="dark"] .bg-gradient-layer {
+    background: #000000;
+    background-size: auto;
+    animation: none;
+}
+[data-theme="dark"] .bg-gradient-layer::before {
+    background: none;
+    animation: none;
+}
+[data-theme="dark"] .bg-gradient-layer::after {
+    background: none;
+    animation: none;
 }
 [data-theme="dark"] .bg-gradient-layer::before {
     background:
