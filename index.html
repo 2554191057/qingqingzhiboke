@@ -54,6 +54,22 @@
             background: linear-gradient(90deg, #ffb199, #e8704a);
             border-radius: 23px;
         }
+        .slider-gap {
+            position: absolute;
+            top: 3px;
+            width: 40px; height: 40px;
+            border-radius: 20px;
+            border: 2px dashed #bbb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #aaa;
+            z-index: 1;
+            pointer-events: none;
+            background: rgba(255,255,255,0.5);
+            box-sizing: border-box;
+        }
         .slider-btn {
             position: absolute;
             top: 3px; left: 3px;
@@ -67,7 +83,7 @@
             font-size: 18px;
             color: #e8704a;
             cursor: grab;
-            z-index: 2;
+            z-index: 3;
         }
         .slider-btn:active { cursor: grabbing; }
         .slider-text {
@@ -79,24 +95,29 @@
             color: #999;
             font-size: 14px;
             pointer-events: none;
-            z-index: 1;
+            z-index: 2;
         }
         .slider.success .slider-fill {
             background: linear-gradient(90deg, #4cd964, #2fbd52);
         }
         .slider.success .slider-btn { background: #4cd964; color: #fff; }
         .slider.success .slider-text { color: #fff; }
+        .slider.success .slider-gap {
+            border-color: #4cd964;
+            color: #4cd964;
+        }
     </style>
 </head>
 <body>
     <div class="box">
         <div class="spinner"></div>
         <h2>欢迎来到庆庆纸博客</h2>
-        <p class="tip">拖动滑块完成验证后进入</p>
+        <p class="tip">请将滑块拖到锁的位置完成验证</p>
         <div class="slider" id="slider">
             <div class="slider-track" id="sliderTrack">
                 <div class="slider-fill" id="sliderFill"></div>
-                <span class="slider-text" id="sliderText">按住滑块，拖到最右边</span>
+                <div class="slider-gap" id="sliderGap">🔒</div>
+                <span class="slider-text" id="sliderText">按住滑块，拖到 🔒 位置</span>
                 <div class="slider-btn" id="sliderBtn">→</div>
             </div>
         </div>
@@ -107,20 +128,30 @@
             var track = document.getElementById('sliderTrack');
             var btn = document.getElementById('sliderBtn');
             var fill = document.getElementById('sliderFill');
+            var gap = document.getElementById('sliderGap');
             var text = document.getElementById('sliderText');
             var slider = document.getElementById('slider');
             var done = false;
+            var pressed = false;
             var startX = 0;
             var trackW = track.clientWidth;
             var btnW = 40;
             var pad = 3;
+            var gapX = Math.round((trackW - btnW) * 0.62);  // 目标位置
+            var TOL = 8;  // 命中容差
+
+            function layout() {
+                trackW = track.clientWidth;
+                gapX = Math.round((trackW - btnW) * 0.62);
+                gap.style.left = (gapX + 1) + 'px';
+            }
 
             function update(x) {
                 var max = trackW - btnW - pad * 2;
                 var v = Math.max(0, Math.min(max, x));
                 fill.style.width = (v + btnW / 2) + 'px';
                 btn.style.left = (pad + v) + 'px';
-                return v >= max;
+                return v;
             }
 
             function reset() {
@@ -131,26 +162,24 @@
             function onStart(e) {
                 if (done) return;
                 var t = e.touches ? e.touches[0] : e;
+                pressed = true;
                 startX = t.clientX - btn.offsetLeft;
                 btn.style.transition = 'none';
                 fill.style.transition = 'none';
             }
 
             function onMove(e) {
-                if (done) return;
+                if (done || !pressed) return;
                 var t = e.touches ? e.touches[0] : e;
-                var ok = update(t.clientX - startX);
-                if (ok) {
-                    done = true;
-                    slider.classList.add('success');
-                    text.textContent = '✓ 验证通过，正在进入…';
-                    setTimeout(function () {
-                        window.location.replace('boke.html');
-                    }, 400);
+                var v = update(t.clientX - startX);
+                // 滑块位置与目标缺口重合 → 验证成功
+                if (Math.abs(btn.offsetLeft - gapX) <= TOL) {
+                    finish();
                 }
             }
 
             function onEnd() {
+                pressed = false;
                 if (!done) {
                     btn.style.transition = 'left .3s ease';
                     fill.style.transition = 'width .3s ease';
@@ -158,6 +187,29 @@
                 }
             }
 
+            function finish() {
+                if (done) return;
+                done = true;
+                btn.style.transition = 'left .15s ease';
+                fill.style.transition = 'width .15s ease';
+                btn.style.left = gapX + 'px';
+                fill.style.width = (gapX + btnW / 2) + 'px';
+                slider.classList.add('success');
+                gap.textContent = '🔓';
+                var sec = 3;
+                text.textContent = '✓ 验证成功，' + sec + ' 秒后自动进入…';
+                var timer = setInterval(function () {
+                    sec--;
+                    if (sec <= 0) {
+                        clearInterval(timer);
+                        window.location.replace('boke.html');
+                    } else {
+                        text.textContent = '✓ 验证成功，' + sec + ' 秒后自动进入…';
+                    }
+                }, 1000);
+            }
+
+            layout();
             btn.addEventListener('touchstart', onStart, { passive: true });
             btn.addEventListener('touchmove', onMove, { passive: true });
             btn.addEventListener('touchend', onEnd);
@@ -165,7 +217,8 @@
             document.addEventListener('mousemove', onMove);
             document.addEventListener('mouseup', onEnd);
             window.addEventListener('resize', function () {
-                trackW = track.clientWidth;
+                layout();
+                if (!done) reset();
             });
         })();
     </script>
