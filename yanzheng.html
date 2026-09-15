@@ -16,10 +16,10 @@
             color: #333;
         }
         .box {
-            width: 320px;
+            width: 330px;
             text-align: center;
             padding: 40px 34px;
-            background: rgba(255,255,255,0.85);
+            background: rgba(255,255,255,0.9);
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             box-sizing: border-box;
@@ -37,91 +37,150 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .puzzle {
+
+        /* ==== jigsaw 风格验证码 ==== */
+        #captcha {
             position: relative;
-            width: 100%;
-            height: 140px;
-            border-radius: 12px;
+            width: 310px;
+            margin: 14px auto 0;
+            border-radius: 8px;
             overflow: hidden;
-            margin-top: 14px;
-            background: #ddd;
-            box-shadow: inset 0 1px 4px rgba(0,0,0,0.12);
-            touch-action: none;
-            -webkit-user-select: none;
-            user-select: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+            background: #fff;
+            padding: 1px 0 1px;
+        }
+        #captcha > canvas.bg {
+            display: block;
+            width: 310px;
+            height: 155px;
+            border-radius: 6px;
+        }
+        .j-block {
+            position: absolute;
+            left: 0;
+            top: 0;
             cursor: grab;
-        }
-        .puzzle:active { cursor: grabbing; }
-        .puzzle canvas.bg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
-        .puzzle canvas.piece {
-            position: absolute;
-            left: 2px; top: 48px;
             z-index: 2;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-            pointer-events: none;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
         }
-        .refresh-btn {
+        .j-block:active { cursor: grabbing; }
+        .j-refresh {
             position: absolute;
-            right: 8px; top: 8px;
-            width: 30px; height: 30px;
+            right: 6px;
+            top: 6px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            border: none;
             background: rgba(255,255,255,0.92);
             box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 16px;
-            line-height: 1;
             color: #666;
             cursor: pointer;
             z-index: 3;
-            display: flex;
+            user-select: none;
+        }
+        .j-refresh:active { transform: scale(0.94); }
+        .j-loading {
+            position: absolute;
+            left: 0; top: 0;
+            width: 310px;
+            height: 155px;
+            display: none;
             align-items: center;
             justify-content: center;
-            padding: 0;
-        }
-        .refresh-btn:active { background: #fff; transform: scale(0.94); }
-        .slider-track {
-            position: relative;
-            height: 44px;
-            background: #f2f3f5;
-            border: 1px solid #d8d8d8;
-            border-radius: 24px;
-            margin-top: 10px;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        .slider-fill {
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 0;
-            background: linear-gradient(90deg, #ffb199, #e8704a);
-            border-radius: 24px;
-        }
-        .slider-btn {
-            position: absolute;
-            top: 2px; left: 2px;
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #444;
-        }
-        .slider-text {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
+            gap: 8px;
+            color: #45494c;
             font-size: 13px;
-            pointer-events: none;
+            background: #fff;
+            z-index: 4;
         }
-        .slider.success .slider-fill { background: linear-gradient(90deg, #4cd964, #2fbd52); }
-        .slider.success .slider-btn { background: #4cd964; color: #fff; }
-        .slider.success .slider-text { color: #fff; }
+        .j-loading .j-spin {
+            width: 16px; height: 16px;
+            border: 2px solid #D1E9FE;
+            border-top-color: #1991FA;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .j-slider {
+            position: relative;
+            width: 310px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            margin: 12px 0 1px;
+            background: #f7f9fa;
+            color: #45494c;
+            border: 1px solid #e4e7eb;
+            box-sizing: border-box;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .j-mask {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 40px;
+            border: 0 solid #1991FA;
+            background: #D1E9FE;
+            box-sizing: border-box;
+        }
+        .j-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            box-shadow: 0 0 3px rgba(0,0,0,0.3);
+            transition: background .2s linear;
+            cursor: grab;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        .j-btn:active { cursor: grabbing; }
+        .j-btn:hover { background: #1991FA; color: #fff; }
+        .j-btn .j-arrow {
+            font-size: 15px;
+            color: #1991FA;
+            line-height: 1;
+        }
+        .j-btn:hover .j-arrow { color: #fff; }
+        .j-text {
+            position: relative;
+            z-index: 1;
+            font-size: 13px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .j-slider.active .j-btn { border: 1px solid #1991FA; }
+        .j-slider.active .j-mask { border-width: 1px; }
+        .j-slider.success .j-btn {
+            border: 1px solid #52CCBA;
+            background-color: #52CCBA !important;
+        }
+        .j-slider.success .j-btn .j-arrow { color: #fff; }
+        .j-slider.success .j-mask {
+            border: 1px solid #52CCBA;
+            background-color: #D2F4EF;
+        }
+        .j-slider.fail .j-btn {
+            border: 1px solid #f57a7a;
+            background-color: #f57a7a !important;
+        }
+        .j-slider.fail .j-btn .j-arrow { color: #fff; }
+        .j-slider.fail .j-mask {
+            border: 1px solid #f57a7a;
+            background-color: #fce1e1;
+        }
+        .j-slider.active .j-text,
+        .j-slider.success .j-text,
+        .j-slider.fail .j-text { display: none; }
         .status {
             min-height: 18px;
             margin-top: 10px;
@@ -130,272 +189,249 @@
         }
         .status.ok { color: #2fbd52; font-weight: 600; }
         .status.fail { color: #e74c3c; font-weight: 600; }
-        .puzzle.loading canvas.bg { opacity: 0.4; }
     </style>
 </head>
 <body>
     <div class="box">
         <div class="spinner"></div>
         <h2>欢迎来到庆庆纸博客</h2>
-        <p class="tip">按住图片任意位置，拖动拼图块到缺口处松手完成验证</p>
-        <div class="puzzle" id="puzzle">
-            <canvas class="bg" id="bgCanvas" width="252" height="140"></canvas>
-            <canvas class="piece" id="pieceCanvas" width="44" height="44"></canvas>
-            <button class="refresh-btn" id="refreshBtn" title="换一张">↻</button>
-        </div>
-        <div class="slider-track" id="sliderTrack">
-            <div class="slider-fill" id="sliderFill"></div>
-            <span class="slider-text" id="sliderText">拖动进度</span>
-            <div class="slider-btn" id="sliderBtn">→</div>
+        <p class="tip">完成验证后自动进入</p>
+        <div id="captcha">
+            <canvas class="bg" id="bgCanvas" width="310" height="155"></canvas>
+            <canvas class="j-block" id="blockCanvas" width="42" height="42"></canvas>
+            <div class="j-refresh" id="refreshBtn" title="换一张">↻</div>
+            <div class="j-loading" id="loadingBox"><span class="j-spin"></span><span>加载中...</span></div>
+            <div class="j-slider" id="sliderBox">
+                <div class="j-mask" id="sliderMask">
+                    <div class="j-btn" id="sliderBtn"><span class="j-arrow">→</span></div>
+                </div>
+                <span class="j-text" id="sliderText">向右滑动填充拼图</span>
+            </div>
         </div>
         <div class="status" id="status"></div>
         <p class="hint" id="hintLink" style="display:none">如果没有自动跳转，请 <a href="boke.html">点击这里</a></p>
     </div>
     <script>
         (function () {
-            var W = 252, H = 140, PIECE = 44, TOL = 6;
+            var W = 310, H = 155, S = 42, TOL = 10;
             var bgCanvas = document.getElementById('bgCanvas');
-            var pieceCanvas = document.getElementById('pieceCanvas');
-            var puzzle = document.getElementById('puzzle');
-            var refreshBtn = document.getElementById('refreshBtn');
-            var status = document.getElementById('status');
-            var hintLink = document.getElementById('hintLink');
-            var sliderTrack = document.getElementById('sliderTrack');
-            var sliderFill = document.getElementById('sliderFill');
+            var blockCanvas = document.getElementById('blockCanvas');
+            var sliderBox = document.getElementById('sliderBox');
+            var sliderMask = document.getElementById('sliderMask');
             var sliderBtn = document.getElementById('sliderBtn');
             var sliderText = document.getElementById('sliderText');
+            var refreshBtn = document.getElementById('refreshBtn');
+            var loadingBox = document.getElementById('loadingBox');
+            var status = document.getElementById('status');
+            var hintLink = document.getElementById('hintLink');
             var bctx = bgCanvas.getContext('2d');
-            var pctx = pieceCanvas.getContext('2d');
+            var sctx = blockCanvas.getContext('2d');
 
-            var gapX = 0, gapY = 48;
-            var pieceX = 2, pieceY = 48;
-            var seed = 1 + Math.floor(Math.random() * 100000);
-            var done = false, pressed = false;
-            var startDX = 0, startDY = 0;
-            var imgCache = null;
-            var failTimer = null;
+            var gapX = 0, gapY = 0, pieceX = 0;
+            var img = new Image();
+            img.crossOrigin = 'Anonymous';
+            var pressed = false;
+            var startX = 0;
+            var trail = [];
+            var done = false;
+            var resetTimer = null;
 
-            // —— 拼图锯齿路径 ——
-            function jigsawPath(ctx, x, y, s) {
-                var r = s * 0.22, m = s * 0.28;
-                var mid = s / 2;
+            // —— 缺口路径（与 yeild/jigsaw 一致：右侧上凸齿 + 右侧下凸齿 + 左侧下凸齿）——
+            function jigsawPath(ctx, x, y, mode) {
+                var PI = Math.PI, L = S;
                 ctx.beginPath();
-                ctx.moveTo(x, y + r);
-                ctx.lineTo(x + mid - m, y + r);
-                ctx.arc(x + mid, y + r, r, Math.PI, 0, true);
-                ctx.lineTo(x + s - r, y + r);
-                ctx.arc(x + s - r, y + r, r, 0, Math.PI / 2, false);
-                ctx.lineTo(x + s - r, y + s - r);
-                ctx.arc(x + s - r, y + s - r, r, Math.PI / 2, 0, false);
-                ctx.lineTo(x + mid + m, y + s - r);
-                ctx.arc(x + mid, y + s - r, r, 0, Math.PI, false);
-                ctx.lineTo(x + r, y + s - r);
-                ctx.arc(x + r, y + s - r, r, Math.PI / 2, Math.PI, false);
-                ctx.lineTo(x + r, y + r);
-                ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 3 / 2, false);
-                ctx.closePath();
+                ctx.moveTo(x, y);
+                ctx.arc(x + 21, y - 7, 9, 0.72 * PI, 2.26 * PI);
+                ctx.lineTo(x + L, y);
+                ctx.arc(x + L + 7, y + 21, 9, 1.21 * PI, 2.78 * PI);
+                ctx.lineTo(x + L, y + L);
+                ctx.lineTo(x, y + L);
+                ctx.arc(x + 7, y + 21, 9.4, 2.76 * PI, 1.24 * PI, true);
+                ctx.lineTo(x, y);
+                ctx.lineWidth = 2;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.stroke();
+                ctx.globalCompositeOperation = 'destination-over';
+                if (mode === 'fill') ctx.fill();
+                else ctx.clip();
             }
 
-            // —— 背景 + 缺口遮罩 ——
-            function drawBg(img) {
+            // —— 图片源（picsum id 模式，高清 2x）——
+            function imgUrl() {
+                var id = Math.floor(Math.random() * 1085);
+                return 'https://picsum.photos/id/' + id + '/620/310';
+            }
+
+            function draw() {
                 bctx.clearRect(0, 0, W, H);
-                var scale = Math.max(W / img.width, H / img.height);
-                var dw = img.width * scale, dh = img.height * scale;
-                bctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
-                bctx.save();
-                bctx.globalAlpha = 0.55;
-                bctx.fillStyle = '#000';
-                jigsawPath(bctx, gapX, gapY, PIECE);
-                bctx.fill();
-                bctx.restore();
-                bctx.save();
-                bctx.strokeStyle = 'rgba(255,255,255,0.95)';
-                bctx.lineWidth = 1.5;
-                bctx.setLineDash([4, 3]);
-                jigsawPath(bctx, gapX, gapY, PIECE);
-                bctx.stroke();
-                bctx.restore();
+                sctx.clearRect(0, 0, S, S);
+                gapX = Math.round(73 + Math.random() * (W - 146));
+                gapY = Math.round(28 + Math.random() * (H - 101));
+                // 背景缺口
+                jigsawPath(bctx, gapX, gapY, 'fill');
+                bctx.drawImage(img, 0, 0, W, H);
+                // 拼图块（取缺口处图像）
+                jigsawPath(sctx, 0, 0, 'clip');
+                sctx.drawImage(img, 0, 0, W, H);
+                var clipY = gapY - 18 - 1;
+                var data = sctx.getImageData(gapX - 3, clipY, 63, 63);
+                blockCanvas.width = 63;
+                sctx.putImageData(data, 0, clipY);
+                blockCanvas.style.left = '0px';
+                pieceX = 0;
             }
 
-            // —— 拼图块 ——
-            function drawPiece(img) {
-                pctx.clearRect(0, 0, PIECE, PIECE);
-                pctx.save();
-                jigsawPath(pctx, 0, 0, PIECE);
-                pctx.clip();
-                var scale = Math.max(W / img.width, H / img.height);
-                var dw = img.width * scale, dh = img.height * scale;
-                var ox = (W - dw) / 2, oy = (H - dh) / 2;
-                pctx.drawImage(img, ox + gapX, oy + gapY, PIECE, PIECE, 0, 0, PIECE, PIECE);
-                pctx.restore();
-                pctx.strokeStyle = 'rgba(0,0,0,0.3)';
-                pctx.lineWidth = 1;
-                jigsawPath(pctx, 0, 0, PIECE);
-                pctx.stroke();
-            }
-
-            // —— 兜底背景 ——
-            function drawFallback() {
+            function fallback() {
                 var hue1 = Math.floor(Math.random() * 360);
                 var hue2 = (hue1 + 60) % 360;
                 var g = bctx.createLinearGradient(0, 0, W, H);
-                g.addColorStop(0, 'hsl(' + hue1 + ',60%,60%)');
-                g.addColorStop(1, 'hsl(' + hue2 + ',60%,48%)');
+                g.addColorStop(0, 'hsl(' + hue1 + ',55%,62%)');
+                g.addColorStop(1, 'hsl(' + hue2 + ',55%,48%)');
                 bctx.fillStyle = g;
                 bctx.fillRect(0, 0, W, H);
-                for (var i = 0; i < 8; i++) {
-                    bctx.globalAlpha = 0.12 + Math.random() * 0.2;
+                for (var i = 0; i < 10; i++) {
+                    bctx.globalAlpha = 0.1 + Math.random() * 0.2;
                     bctx.fillStyle = i % 2 ? '#fff' : '#000';
                     bctx.beginPath();
-                    bctx.arc(Math.random() * W, Math.random() * H, 6 + Math.random() * 18, 0, Math.PI * 2);
+                    bctx.arc(Math.random() * W, Math.random() * H, 5 + Math.random() * 16, 0, Math.PI * 2);
                     bctx.fill();
                 }
                 bctx.globalAlpha = 1;
-                bctx.save();
-                bctx.globalAlpha = 0.5;
-                bctx.fillStyle = '#000';
-                jigsawPath(bctx, gapX, gapY, PIECE);
-                bctx.fill();
-                bctx.restore();
-                bctx.save();
-                bctx.strokeStyle = 'rgba(255,255,255,0.95)';
-                bctx.setLineDash([4, 3]);
-                jigsawPath(bctx, gapX, gapY, PIECE);
-                bctx.stroke();
-                bctx.restore();
-                pctx.clearRect(0, 0, PIECE, PIECE);
-                pctx.save();
-                jigsawPath(pctx, 0, 0, PIECE);
-                pctx.clip();
-                var pg = pctx.createLinearGradient(0, 0, PIECE, PIECE);
-                pg.addColorStop(0, 'hsl(' + hue1 + ',65%,66%)');
-                pg.addColorStop(1, 'hsl(' + hue2 + ',65%,54%)');
-                pctx.fillStyle = pg;
-                pctx.fillRect(0, 0, PIECE, PIECE);
-                pctx.restore();
-                pctx.strokeStyle = 'rgba(0,0,0,0.3)';
-                jigsawPath(pctx, 0, 0, PIECE);
-                pctx.stroke();
+                jigsawPath(bctx, gapX, gapY, 'fill');
+                sctx.clearRect(0, 0, S, S);
+                jigsawPath(sctx, 0, 0, 'clip');
+                var pg = sctx.createLinearGradient(0, 0, S, S);
+                pg.addColorStop(0, 'hsl(' + hue1 + ',60%,66%)');
+                pg.addColorStop(1, 'hsl(' + hue2 + ',60%,52%)');
+                sctx.fillStyle = pg;
+                sctx.fillRect(0, 0, S, S);
+                blockCanvas.style.left = '0px';
+                pieceX = 0;
             }
 
-            // —— 加载随机图片 ——
             function loadImage() {
-                puzzle.classList.add('loading');
-                var img = new Image();
+                loadingBox.style.display = 'flex';
+                sliderBox.style.pointerEvents = 'none';
                 img.onload = function () {
-                    imgCache = img;
-                    puzzle.classList.remove('loading');
-                    drawBg(img);
-                    drawPiece(img);
+                    loadingBox.style.display = 'none';
+                    sliderBox.style.pointerEvents = '';
+                    draw();
                 };
                 img.onerror = function () {
-                    puzzle.classList.remove('loading');
-                    imgCache = null;
-                    drawFallback();
+                    loadingBox.style.display = 'none';
+                    sliderBox.style.pointerEvents = '';
+                    fallback();
                 };
-                img.src = 'https://picsum.photos/seed/' + seed + '/640/360';
+                img.src = imgUrl();
             }
 
-            // —— 重新生成（新图 + 随机缺口 + 重置）——
-            function refresh() {
-                if (done) return;
-                clearTimeout(failTimer);
-                seed = 1 + Math.floor(Math.random() * 100000);
-                gapX = Math.round(30 + Math.random() * (W - PIECE - 60));
-                gapY = Math.round(15 + Math.random() * (H - PIECE - 30));
-                pieceX = 2;
-                pieceY = gapY;
-                status.textContent = '';
-                status.className = 'status';
-                hintLink.style.display = 'none';
-                sliderText.textContent = '拖动进度';
-                sliderTrack.parentElement.classList.remove('success');
-                applyPos();
-                loadImage();
-            }
-
-            function applyPos() {
-                pieceCanvas.style.left = pieceX + 'px';
-                pieceCanvas.style.top = pieceY + 'px';
-                // 同步进度条（仅视觉指示，不参与拖动）
-                var trackW = sliderTrack.clientWidth || 320;
-                var btnW = 40, pad = 2;
-                var max = trackW - btnW - pad * 2;
-                var pieceMax = W - PIECE - 4;
-                var ratio = Math.max(0, Math.min(1, pieceX / pieceMax));
-                sliderFill.style.width = (ratio * max + btnW / 2) + 'px';
-                sliderBtn.style.left = (pad + ratio * max) + 'px';
-            }
-
-            // —— 全局拖动 ——
-            function startDrag(e) {
+            // —— 拖动 ——
+            function onStart(e) {
                 if (done) return;
                 var t = e.touches ? e.touches[0] : e;
                 pressed = true;
-                startDX = t.clientX - pieceX;
-                startDY = t.clientY - pieceY;
+                startX = t.clientX;
+                trail = [];
                 if (e.cancelable) e.preventDefault();
             }
 
-            function moveDrag(e) {
+            function onMove(e) {
                 if (done || !pressed) return;
+                e.preventDefault();
                 var t = e.touches ? e.touches[0] : e;
-                pieceX = Math.max(0, Math.min(W - PIECE, t.clientX - startDX));
-                // 仅水平移动，垂直位置固定
-                applyPos();
+                var c = t.clientX - startX;
+                if (c < 0 || c + 40 >= W) return;
+                var map = (W - 60) / (W - 40);
+                var px = map * c;
+                sliderBtn.style.left = c + 'px';
+                sliderMask.style.width = c + 'px';
+                blockCanvas.style.left = px + 'px';
+                pieceX = px;
+                sliderBox.classList.add('active');
+                trail.push(t.clientY);
             }
 
-            function endDrag(e) {
+            function onEnd(e) {
                 if (done || !pressed) return;
                 pressed = false;
-                if (Math.abs(pieceX - gapX) <= TOL && Math.abs(pieceY - gapY) <= TOL) {
-                    finish();
+                sliderBox.classList.remove('active');
+                var l = verify();
+                if (l.spliced) {
+                    if (l.verified) {
+                        finish();
+                    } else {
+                        sliderBox.classList.add('fail');
+                        sliderText.textContent = '请再试一次';
+                        status.textContent = '✗ 拖动轨迹异常，已换新图';
+                        status.className = 'status fail';
+                        clearTimeout(resetTimer);
+                        resetTimer = setTimeout(reset, 500);
+                    }
                 } else {
-                    fail();
+                    sliderBox.classList.add('fail');
+                    sliderText.textContent = '请再试一次';
+                    status.textContent = '✗ 未对准缺口，已换新图';
+                    status.className = 'status fail';
+                    clearTimeout(resetTimer);
+                    resetTimer = setTimeout(reset, 1000);
                 }
             }
 
-            function fail() {
-                status.textContent = '✗ 未对准缺口，已换新图，请重新拖动';
-                status.className = 'status fail';
-                sliderText.textContent = '未对准，已换新图';
-                failTimer = setTimeout(refresh, 900);
+            function verify() {
+                var n = trail.length;
+                if (n < 2) return { spliced: Math.abs(pieceX - gapX) < TOL, verified: false };
+                var avg = trail.reduce(function (a, b) { return a + b; }) / n;
+                var sd = Math.sqrt(trail.map(function (v) { var d = v - avg; return d * d; }).reduce(function (a, b) { return a + b; }) / n);
+                return {
+                    spliced: Math.abs(pieceX - gapX) < TOL,
+                    verified: sd > 0
+                };
+            }
+
+            function reset() {
+                clearTimeout(resetTimer);
+                done = false;
+                sliderBox.classList.remove('active', 'success', 'fail');
+                sliderText.textContent = '向右滑动填充拼图';
+                sliderBtn.style.left = '0px';
+                sliderMask.style.width = '0px';
+                blockCanvas.style.left = '0px';
+                status.textContent = '';
+                status.className = 'status';
+                hintLink.style.display = 'none';
+                loadImage();
             }
 
             function finish() {
                 if (done) return;
                 done = true;
+                sliderBox.classList.add('success');
+                sliderText.textContent = '✓ 验证通过';
                 status.textContent = '✓ 验证通过，正在进入…';
                 status.className = 'status ok';
-                sliderText.textContent = '✓ 验证通过';
-                sliderTrack.parentElement.classList.add('success');
                 hintLink.style.display = 'block';
                 sessionStorage.setItem('auth_ok', '1');
-                var __back = new URLSearchParams(location.search).get('back');
+                var back = new URLSearchParams(location.search).get('back');
                 setTimeout(function () {
-                    window.location.replace(__back || 'boke.html');
+                    window.location.replace(back || 'boke.html');
                 }, 600);
             }
 
-            // —— 事件绑定（桌面全局 + 移动端拼图区域）——
-            document.addEventListener('mousedown', startDrag);
-            document.addEventListener('mousemove', moveDrag);
-            document.addEventListener('mouseup', endDrag);
-            puzzle.addEventListener('touchstart', startDrag, { passive: false });
-            puzzle.addEventListener('touchmove', moveDrag, { passive: false });
-            puzzle.addEventListener('touchend', endDrag);
-            puzzle.addEventListener('touchcancel', endDrag);
-            refreshBtn.addEventListener('click', refresh);
-            // 刷新按钮点击不应触发拖动开始
-            refreshBtn.addEventListener('mousedown', function (e) { e.stopPropagation(); });
-            refreshBtn.addEventListener('touchstart', function (e) { e.stopPropagation(); }, { passive: false });
+            // —— 事件绑定 ——
+            sliderBtn.addEventListener('mousedown', onStart);
+            sliderBtn.addEventListener('touchstart', onStart, { passive: false });
+            blockCanvas.addEventListener('mousedown', onStart);
+            blockCanvas.addEventListener('touchstart', onStart, { passive: false });
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('touchmove', onMove, { passive: false });
+            document.addEventListener('mouseup', onEnd);
+            document.addEventListener('touchend', onEnd);
+            refreshBtn.addEventListener('click', function () {
+                clearTimeout(resetTimer);
+                reset();
+            });
 
-            // —— 初始化 ——
-            gapX = Math.round(30 + Math.random() * (W - PIECE - 60));
-            gapY = Math.round(15 + Math.random() * (H - PIECE - 30));
-            pieceX = 2;
-            pieceY = gapY;
-            applyPos();
             loadImage();
         })();
     </script>
