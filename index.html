@@ -340,7 +340,7 @@
                 if (done || !pressed) return;
                 var t = e.touches ? e.touches[0] : e;
                 pieceX = Math.max(0, Math.min(W - PIECE, t.clientX - startDX));
-                pieceY = Math.max(0, Math.min(H - PIECE, t.clientY - startDY));
+                // 仅水平移动，垂直位置固定
                 applyPos();
             }
 
