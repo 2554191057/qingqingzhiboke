@@ -28,9 +28,10 @@
 - 本仓库的 git 提交身份（local 级 user.name / user.email）已配置，请勿改动。
 
 ## 在线部署（每次修改后必须执行）
-本项目使用 HSK 静态文件托管。**当前有效资源**：`1789472958204165095`（2026-09-15 创建，资源访问地址 https://6hnpox.gicp.fun）。
-**公网域名 `https://qqzttkx.ficp.fun/`** 目前仍绑定在资源 `1789471342039255230`（该资源已被平台禁用更新、内容冻结在 style v=265）；如需域名指向最新内容，需在花生壳后台把域名重新绑定到当前有效资源 `1789472958204165095`（**尚未绑定，绑定后须在 AGENTS.md 更新说明**）。
-旧资源 `1787743956892235141` / `1789471342039255230` / `1789471753168216449` 均已被平台禁用更新（403 update function is disabled），不得再用于部署。
+**用户固定要求（2026-09-15 确认）：部署链接一律为 `https://qqzttkx.ficp.fun/`，严禁新建 HSK 资源。**
+
+- 公网域名 `https://qqzttkx.ficp.fun/` 已由用户在花生壳后台绑定到资源 `1789472958204165095`（已重绑，当前域名即最新内容，已验证 style v=266 / script v=73）。
+- 旧资源 `1787743956892235141` / `1789471342039255230` / `1789471753168216449` / `1789472499149792180` 均已被平台禁用更新（403 update function is disabled），不得再用于部署。
 
 **每次修改 index.html / style.css / script.js（或任意网站文件）并 git 提交后，必须同步执行一次在线部署：**
 
@@ -39,6 +40,6 @@ hsk-cli file-hosting "D:\Download\qingqingzhiboke" --entry-file index.html --res
 ```
 
 - hsk-cli 已全局安装（@aweray/hsk-cli，当前版本 0.7.13），API Key 已保存在 `~/.hsk/api_key.json`（file_hosting 场景），无需重复配置；找不到 `hsk-cli` 命令时先 `npm install -g @aweray/hsk-cli` 并 `hsk-cli update`。业务命令前须先跑 `hsk-cli context wizard --format json` 建立画像（见 https://hsk.oray.com/doc/cli-setup.md）。
-- 部署成功后用 `curl https://6hnpox.gicp.fun/` 验证线上版本（index.html 里的 style.css/script.js 版本号）与本地一致。
-- **严禁**再新建别的 HSK 资源来部署本网站（会占用新资源）；一律复用资源 `1789472958204165095`。
+- 部署成功后用 `curl https://qqzttkx.ficp.fun/` 验证线上版本（index.html 里的 style.css/script.js 版本号）与本地一致。
+- **严禁新建任何 HSK 资源**（用户明确要求）：若复用资源 `1789472958204165095` 更新返回 403（免费资源更新被平台禁用），**停止部署并如实向用户说明，等待用户指示**（可选项：开通正式版 / 转 GitHub Pages），不得擅自创建新资源。
 
