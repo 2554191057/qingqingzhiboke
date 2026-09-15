@@ -1,4 +1,4 @@
-# AGENTS.md — 本项目工作规则
+﻿# AGENTS.md — 本项目工作规则
 
 ## 版本控制与防误删（必须遵守）
 
@@ -42,4 +42,5 @@ hsk-cli file-hosting "D:\Download\qingqingzhiboke" --entry-file index.html --res
 - hsk-cli 已全局安装（@aweray/hsk-cli，当前版本 0.7.13），API Key 已保存在 `~/.hsk/api_key.json`（file_hosting 场景），无需重复配置；找不到 `hsk-cli` 命令时先 `npm install -g @aweray/hsk-cli` 并 `hsk-cli update`。业务命令前须先跑 `hsk-cli context wizard --format json` 建立画像（见 https://hsk.oray.com/doc/cli-setup.md）。
 - 部署成功后用 `curl https://qqzttkx.ficp.fun/` 验证线上版本（index.html 里的 style.css/script.js 版本号）与本地一致。
 - **严禁新建任何 HSK 资源**（用户明确要求）：若复用资源 `1789472958204165095` 更新返回 403（免费资源更新被平台禁用），**停止部署并如实向用户说明，等待用户指示**（可选项：开通正式版 / 转 GitHub Pages），不得擅自创建新资源。
+
 
