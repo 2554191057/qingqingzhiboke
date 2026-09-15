@@ -718,7 +718,8 @@ img { max-width: 100%; display: block; }
     text-decoration: none;
     font-size: 0.92rem;
     font-weight: 600;
-    transition: background 0.15s, color 0.15s;
+    /* 移除背景/颜色过渡：避免鼠标移开后高亮渐变残留 */
+    transition: none;
 }
 .logo-menu-item i {
     width: 18px;
@@ -790,7 +791,8 @@ img { max-width: 100%; display: block; }
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 500;
-    transition: background 0.15s, color 0.15s;
+    /* 移除背景/颜色过渡：避免鼠标移开后高亮渐变残留 */
+    transition: none;
 }
 .nav-dropdown-item i {
     width: 20px;
@@ -1922,6 +1924,7 @@ html.touch-only .social-qq:hover .social-icon,
 html.touch-only .social-wechat:hover .social-icon,
 html.touch-only .social-kuaishou:hover .social-icon,
 html.touch-only .social-douyin:hover .social-icon { box-shadow: 0 8px 20px rgba(0,0,0,0.10); }
+html.touch-only .nav-dropdown-item:hover { background: transparent !important; color: inherit !important; font-weight: inherit !important; }
 
 .social-card h3 {
     font-size: 1.2rem;
