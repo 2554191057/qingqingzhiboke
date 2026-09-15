@@ -228,8 +228,10 @@
             var sctx = blockCanvas.getContext('2d');
 
             var gapX = 0, gapY = 0, pieceX = 0;
-            var img = new Image();
-            img.crossOrigin = 'Anonymous';
+            // 离屏背景画布（同源绘制，避免跨域 getImageData 报错）
+            var srcCanvas = document.createElement('canvas');
+            srcCanvas.width = 620;
+            srcCanvas.height = 310;
             var pressed = false;
             var startX = 0;
             var trail = [];
@@ -257,83 +259,89 @@
                 else ctx.clip();
             }
 
-            // —— 图片源（picsum id 模式，高清 2x）——
-            function imgUrl() {
-                var id = Math.floor(Math.random() * 1085);
-                return 'https://picsum.photos/id/' + id + '/620/310';
+            // —— 随机背景生成（每次不同：渐变 + 光斑 + 几何图形，620x310 高清）——
+            function randomBg() {
+                var c = srcCanvas, x = c.getContext('2d');
+                x.clearRect(0, 0, c.width, c.height);
+                var h1 = Math.floor(Math.random() * 360);
+                var h2 = (h1 + 50 + Math.floor(Math.random() * 90)) % 360;
+                var h3 = (h2 + 40 + Math.floor(Math.random() * 90)) % 360;
+                var g = x.createLinearGradient(0, 0, c.width, c.height);
+                g.addColorStop(0, 'hsl(' + h1 + ',58%,62%)');
+                g.addColorStop(0.55, 'hsl(' + h2 + ',55%,54%)');
+                g.addColorStop(1, 'hsl(' + h3 + ',58%,46%)');
+                x.fillStyle = g;
+                x.fillRect(0, 0, c.width, c.height);
+                // 大光斑
+                for (var i = 0; i < 12; i++) {
+                    x.globalAlpha = 0.06 + Math.random() * 0.14;
+                    x.fillStyle = Math.random() > 0.5 ? '#ffffff' : 'rgba(0,0,0,0.35)';
+                    x.beginPath();
+                    x.arc(Math.random() * c.width, Math.random() * c.height, 25 + Math.random() * 95, 0, Math.PI * 2);
+                    x.fill();
+                }
+                // 几何图形（圆/三角/方块/线段）
+                for (var i = 0; i < 11; i++) {
+                    var px = Math.random() * c.width, py = Math.random() * c.height;
+                    var s = 14 + Math.random() * 48;
+                    x.globalAlpha = 0.16 + Math.random() * 0.28;
+                    x.fillStyle = 'hsl(' + Math.floor(Math.random() * 360) + ',72%,' + (48 + Math.floor(Math.random() * 32)) + '%)';
+                    var k = Math.random();
+                    x.beginPath();
+                    if (k < 0.38) {
+                        x.arc(px, py, s / 2, 0, Math.PI * 2);
+                        x.fill();
+                    } else if (k < 0.66) {
+                        x.moveTo(px, py - s / 2);
+                        x.lineTo(px + s / 2, py + s / 2);
+                        x.lineTo(px - s / 2, py + s / 2);
+                        x.fill();
+                    } else if (k < 0.88) {
+                        x.rect(px - s / 2, py - s / 2, s, s);
+                        x.fill();
+                    } else {
+                        x.lineWidth = 3 + Math.random() * 5;
+                        x.strokeStyle = x.fillStyle;
+                        x.moveTo(px, py);
+                        x.lineTo(px + s * 1.2, py - s * 0.7);
+                        x.stroke();
+                    }
+                }
+                // 柔和细杂点
+                x.globalAlpha = 0.05;
+                x.fillStyle = '#fff';
+                for (var i = 0; i < 40; i++) {
+                    x.fillRect(Math.random() * c.width, Math.random() * c.height, 2, 2);
+                }
+                x.globalAlpha = 1;
             }
 
             function draw() {
                 bctx.clearRect(0, 0, W, H);
-                sctx.clearRect(0, 0, W, H);
+                // 先重置拼图块画布为全尺寸（清除上次的 clip/尺寸残留）
+                blockCanvas.width = W;
+                blockCanvas.height = H;
+                var sctx2 = blockCanvas.getContext('2d');
                 gapX = Math.round(73 + Math.random() * (W - 146));
                 gapY = Math.round(28 + Math.random() * (H - 101));
+                randomBg();
                 // 背景缺口
                 jigsawPath(bctx, gapX, gapY, 'fill');
-                bctx.drawImage(img, 0, 0, W, H);
+                bctx.drawImage(srcCanvas, 0, 0, W, H);
                 // 拼图块：在缺口位置 clip，取缺口处图像
-                sctx.save();
-                jigsawPath(sctx, gapX, gapY, 'clip');
-                sctx.drawImage(img, 0, 0, W, H);
-                sctx.restore();
+                jigsawPath(sctx2, gapX, gapY, 'clip');
+                sctx2.drawImage(srcCanvas, 0, 0, W, H);
                 // 截取缺口附近图像区域，移到画布左侧（供拖动）
                 var clipY = gapY - 18 - 1;
-                var data = sctx.getImageData(gapX - 3, clipY, 63, 63);
+                var data = sctx2.getImageData(gapX - 3, clipY, 63, 63);
                 blockCanvas.width = 63;
-                sctx.putImageData(data, 0, clipY);
-                blockCanvas.style.left = '0px';
-                pieceX = 0;
-            }
-
-            function fallback() {
-                var hue1 = Math.floor(Math.random() * 360);
-                var hue2 = (hue1 + 60) % 360;
-                var g = bctx.createLinearGradient(0, 0, W, H);
-                g.addColorStop(0, 'hsl(' + hue1 + ',55%,62%)');
-                g.addColorStop(1, 'hsl(' + hue2 + ',55%,48%)');
-                bctx.fillStyle = g;
-                bctx.fillRect(0, 0, W, H);
-                for (var i = 0; i < 10; i++) {
-                    bctx.globalAlpha = 0.1 + Math.random() * 0.2;
-                    bctx.fillStyle = i % 2 ? '#fff' : '#000';
-                    bctx.beginPath();
-                    bctx.arc(Math.random() * W, Math.random() * H, 5 + Math.random() * 16, 0, Math.PI * 2);
-                    bctx.fill();
-                }
-                bctx.globalAlpha = 1;
-                jigsawPath(bctx, gapX, gapY, 'fill');
-                // 拼图块：渐变底 + 缺口描边
-                sctx.clearRect(0, 0, W, H);
-                sctx.fillStyle = g;
-                sctx.fillRect(0, 0, W, H);
-                sctx.save();
-                jigsawPath(sctx, gapX, gapY, 'clip');
-                sctx.strokeStyle = 'rgba(255,255,255,0.9)';
-                sctx.lineWidth = 2;
-                sctx.stroke();
-                sctx.restore();
-                var clipY = gapY - 18 - 1;
-                var data = sctx.getImageData(gapX - 3, clipY, 63, 63);
-                blockCanvas.width = 63;
-                sctx.putImageData(data, 0, clipY);
+                sctx2.putImageData(data, 0, clipY);
                 blockCanvas.style.left = '0px';
                 pieceX = 0;
             }
 
             function loadImage() {
-                loadingBox.style.display = 'flex';
-                sliderBox.style.pointerEvents = 'none';
-                img.onload = function () {
-                    loadingBox.style.display = 'none';
-                    sliderBox.style.pointerEvents = '';
-                    draw();
-                };
-                img.onerror = function () {
-                    loadingBox.style.display = 'none';
-                    sliderBox.style.pointerEvents = '';
-                    fallback();
-                };
-                img.src = imgUrl();
+                draw();
             }
 
             // —— 拖动 ——
