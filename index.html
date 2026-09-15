@@ -41,12 +41,21 @@
     <div class="box">
         <div class="spinner"></div>
         <h2>正在进入庆庆纸博客…</h2>
+        <p id="cd">5 秒后自动进入…</p>
         <p>如果没有自动跳转，请 <a href="boke.html">点击这里</a></p>
     </div>
     <script>
-        setTimeout(function () {
+    var sec = 5;
+    var cd = document.getElementById('cd');
+    var timer = setInterval(function () {
+        sec--;
+        if (sec <= 0) {
+            clearInterval(timer);
             window.location.replace('boke.html');
-        }, 5000);
-    </script>
+        } else {
+            cd.textContent = sec + ' 秒后自动进入庆庆纸博客…';
+        }
+    }, 1000);
+</script>
 </body>
 </html>
