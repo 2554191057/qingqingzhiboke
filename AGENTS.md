@@ -44,3 +44,4 @@ hsk-cli file-hosting "D:\Download\qingqingzhiboke" --entry-file index.html --res
 - **严禁新建任何 HSK 资源**（用户明确要求）：若复用资源 `1789472958204165095` 更新返回 403（免费资源更新被平台禁用），**停止部署并如实向用户说明，等待用户指示**（可选项：开通正式版 / 转 GitHub Pages），不得擅自创建新资源。
 
 
+
