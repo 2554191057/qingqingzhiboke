@@ -1843,20 +1843,20 @@
       updateThemeIcon(isDark);
     }
     
-    // 初始化
-    // 优先级：用户手动选择 > 时间判断（夜间19-7点/日间） > 系统偏好
-    const saved = localStorage.getItem('theme');
+    // 初始化：按时间自动判断（夜间19-7点 / 其余日间），进入网站时自动切换（与主站方案一致）
     const h = new Date().getHours();
     const isNight = h >= 19 || h < 7;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyDarkMode(saved === 'dark' || (!saved && (isNight || prefersDark)));
+    if (isNight) {
+      html.setAttribute('data-theme', 'dark');
+      themeToggle?.classList.add('dark');
+      updateThemeIcon(true);
+    }
     
     // 切换事件
     themeToggle?.addEventListener('click', () => {
       const isDark = html.getAttribute('data-theme') === 'dark';
       const newIsDark = !isDark;
       applyDarkMode(newIsDark);
-      localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
       // 仅在切换日夜间时显示灵动岛提示
       showToast(newIsDark ? '🌙 已切换夜间模式' : '☀️ 已切换日间模式');
     });
@@ -4294,7 +4294,6 @@ window.addEventListener('load', function() {
 </script>
 </body>
 </html>
-
 
 
 
