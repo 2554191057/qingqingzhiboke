@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="5; url=boke.html">
     <title>庆庆纸博客</title>
     <style>
         body {
@@ -16,17 +17,14 @@
             color: #333;
         }
         .box {
-            width: 320px;
             text-align: center;
-            padding: 40px 34px;
+            padding: 40px 50px;
             background: rgba(255,255,255,0.85);
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            box-sizing: border-box;
         }
-        .box h2 { margin: 0 0 8px; font-size: 1.3rem; }
-        .box .tip { margin: 0 0 6px; color: #888; font-size: 0.9rem; }
-        .box .hint { margin: 14px 0 0; color: #aaa; font-size: 0.82rem; }
+        .box h2 { margin: 0 0 12px; font-size: 1.3rem; }
+        .box p { margin: 0; color: #666; font-size: 0.95rem; }
         .box a { color: #e8704a; text-decoration: none; font-weight: 600; }
         .spinner {
             width: 36px; height: 36px;
@@ -37,358 +35,27 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .puzzle {
-            position: relative;
-            width: 100%;
-            height: 140px;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-top: 14px;
-            background: #ddd;
-            box-shadow: inset 0 1px 4px rgba(0,0,0,0.12);
-        }
-        .puzzle canvas.bg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
-        .puzzle canvas.piece {
-            position: absolute;
-            left: 2px; top: 48px;
-            z-index: 2;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }
-        .refresh-btn {
-            position: absolute;
-            right: 8px; top: 8px;
-            width: 30px; height: 30px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255,255,255,0.92);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-            font-size: 16px;
-            line-height: 1;
-            color: #666;
-            cursor: pointer;
-            z-index: 3;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-        .refresh-btn:active { background: #fff; transform: scale(0.94); }
-        .slider-track {
-            position: relative;
-            height: 46px;
-            background: rgba(0,0,0,0.06);
-            border-radius: 23px;
-            margin-top: 10px;
-            overflow: hidden;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: none;
-        }
-        .slider-fill {
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 0;
-            background: linear-gradient(90deg, #ffb199, #e8704a);
-            border-radius: 23px;
-        }
-        .slider-btn {
-            position: absolute;
-            top: 3px; left: 3px;
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.22);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #e8704a;
-            cursor: grab;
-            z-index: 3;
-        }
-        .slider-btn:active { cursor: grabbing; }
-        .slider-text {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            font-size: 14px;
-            pointer-events: none;
-            z-index: 2;
-        }
-        .slider.success .slider-fill {
-            background: linear-gradient(90deg, #4cd964, #2fbd52);
-        }
-        .slider.success .slider-btn { background: #4cd964; color: #fff; }
-        .slider.success .slider-text { color: #fff; }
-        .puzzle.loading canvas.bg { opacity: 0.4; }
     </style>
 </head>
 <body>
     <div class="box">
         <div class="spinner"></div>
-        <h2>欢迎来到庆庆纸博客</h2>
-        <p class="tip">拖动拼图块到缺口位置完成验证</p>
-        <div class="puzzle" id="puzzle">
-            <canvas class="bg" id="bgCanvas" width="252" height="140"></canvas>
-            <canvas class="piece" id="pieceCanvas" width="44" height="44"></canvas>
-            <button class="refresh-btn" id="refreshBtn" title="换一张">↻</button>
-        </div>
-        <div class="slider" id="slider">
-            <div class="slider-track" id="sliderTrack">
-                <div class="slider-fill" id="sliderFill"></div>
-                <span class="slider-text" id="sliderText">按住滑块，拖动拼图块对齐缺口</span>
-                <div class="slider-btn" id="sliderBtn">→</div>
-            </div>
-        </div>
-        <p class="hint">如果没有自动跳转，请 <a href="boke.html">点击这里</a></p>
+        <h2>正在进入庆庆纸博客…</h2>
+        <p id="cd">5 秒后自动进入…</p>
+        <p>如果没有自动跳转，请 <a href="boke.html">点击这里</a></p>
     </div>
     <script>
-        (function () {
-            var W = 252, H = 140, PIECE = 44, TOL = 6;
-            var bgCanvas = document.getElementById('bgCanvas');
-            var pieceCanvas = document.getElementById('pieceCanvas');
-            var track = document.getElementById('sliderTrack');
-            var btn = document.getElementById('sliderBtn');
-            var fill = document.getElementById('sliderFill');
-            var text = document.getElementById('sliderText');
-            var slider = document.getElementById('slider');
-            var puzzle = document.getElementById('puzzle');
-            var refreshBtn = document.getElementById('refreshBtn');
-            var bctx = bgCanvas.getContext('2d');
-            var pctx = pieceCanvas.getContext('2d');
-
-            var gapX = 0, gapY = Math.round((H - PIECE) / 2);
-            var seed = 1 + Math.floor(Math.random() * 100000);
-            var done = false, pressed = false, startX = 0, loadedImg = null;
-
-            // —— 拼图锯齿路径：上凸齿、下凸齿、左右圆角 ——
-            function jigsawPath(ctx, x, y, s) {
-                var r = s * 0.22, m = s * 0.28;
-                var mid = s / 2;
-                ctx.beginPath();
-                ctx.moveTo(x, y + r);
-                ctx.lineTo(x + mid - m, y + r);
-                ctx.arc(x + mid, y + r, r, Math.PI, 0, true);
-                ctx.lineTo(x + s - r, y + r);
-                ctx.arc(x + s - r, y + r, r, 0, Math.PI / 2, false);
-                ctx.lineTo(x + s - r, y + s - r);
-                ctx.arc(x + s - r, y + s - r, r, Math.PI / 2, 0, false);
-                ctx.lineTo(x + mid + m, y + s - r);
-                ctx.arc(x + mid, y + s - r, r, 0, Math.PI, false);
-                ctx.lineTo(x + r, y + s - r);
-                ctx.arc(x + r, y + s - r, r, Math.PI / 2, Math.PI, false);
-                ctx.lineTo(x + r, y + r);
-                ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 3 / 2, false);
-                ctx.closePath();
+        var sec = 5;
+        var cd = document.getElementById('cd');
+        var timer = setInterval(function () {
+            sec--;
+            if (sec <= 0) {
+                clearInterval(timer);
+                window.location.replace('boke.html');
+            } else {
+                cd.textContent = sec + ' 秒后自动进入庆庆纸博客…';
             }
-
-            // —— 绘制背景（cover 裁切）+ 缺口遮罩 ——
-            function drawBg(img) {
-                bctx.clearRect(0, 0, W, H);
-                var scale = Math.max(W / img.width, H / img.height);
-                var dw = img.width * scale, dh = img.height * scale;
-                bctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
-                // 缺口：半透明遮罩
-                bctx.save();
-                bctx.globalAlpha = 0.55;
-                bctx.fillStyle = '#000';
-                jigsawPath(bctx, gapX, gapY, PIECE);
-                bctx.fill();
-                bctx.restore();
-                // 缺口虚线描边
-                bctx.save();
-                bctx.strokeStyle = 'rgba(255,255,255,0.95)';
-                bctx.lineWidth = 1.5;
-                bctx.setLineDash([4, 3]);
-                jigsawPath(bctx, gapX, gapY, PIECE);
-                bctx.stroke();
-                bctx.restore();
-            }
-
-            // —— 绘制拼图块（背景局部 + 锯齿裁剪）——
-            function drawPiece(img) {
-                pctx.clearRect(0, 0, PIECE, PIECE);
-                pctx.save();
-                jigsawPath(pctx, 0, 0, PIECE);
-                pctx.clip();
-                var scale = Math.max(W / img.width, H / img.height);
-                var dw = img.width * scale, dh = img.height * scale;
-                var ox = (W - dw) / 2, oy = (H - dh) / 2;
-                pctx.drawImage(img, ox + gapX, oy + gapY, PIECE, PIECE, 0, 0, PIECE, PIECE);
-                pctx.restore();
-                pctx.strokeStyle = 'rgba(0,0,0,0.3)';
-                pctx.lineWidth = 1;
-                jigsawPath(pctx, 0, 0, PIECE);
-                pctx.stroke();
-            }
-
-            // —— 兜底背景（图片加载失败时）——
-            function drawFallback() {
-                var hue1 = Math.floor(Math.random() * 360);
-                var hue2 = (hue1 + 60) % 360;
-                var g = bctx.createLinearGradient(0, 0, W, H);
-                g.addColorStop(0, 'hsl(' + hue1 + ',60%,60%)');
-                g.addColorStop(1, 'hsl(' + hue2 + ',60%,48%)');
-                bctx.fillStyle = g;
-                bctx.fillRect(0, 0, W, H);
-                for (var i = 0; i < 8; i++) {
-                    bctx.globalAlpha = 0.12 + Math.random() * 0.2;
-                    bctx.fillStyle = i % 2 ? '#fff' : '#000';
-                    bctx.beginPath();
-                    bctx.arc(Math.random() * W, Math.random() * H, 6 + Math.random() * 18, 0, Math.PI * 2);
-                    bctx.fill();
-                }
-                bctx.globalAlpha = 1;
-                // 缺口遮罩 + 描边
-                bctx.save();
-                bctx.globalAlpha = 0.5;
-                bctx.fillStyle = '#000';
-                jigsawPath(bctx, gapX, gapY, PIECE);
-                bctx.fill();
-                bctx.restore();
-                bctx.save();
-                bctx.strokeStyle = 'rgba(255,255,255,0.95)';
-                bctx.setLineDash([4, 3]);
-                jigsawPath(bctx, gapX, gapY, PIECE);
-                bctx.stroke();
-                bctx.restore();
-                // 拼图块（纯色块 + 齿）
-                pctx.clearRect(0, 0, PIECE, PIECE);
-                pctx.save();
-                jigsawPath(pctx, 0, 0, PIECE);
-                pctx.clip();
-                var pg = pctx.createLinearGradient(0, 0, PIECE, PIECE);
-                pg.addColorStop(0, 'hsl(' + hue1 + ',65%,66%)');
-                pg.addColorStop(1, 'hsl(' + hue2 + ',65%,54%)');
-                pctx.fillStyle = pg;
-                pctx.fillRect(0, 0, PIECE, PIECE);
-                pctx.restore();
-                pctx.strokeStyle = 'rgba(0,0,0,0.3)';
-                jigsawPath(pctx, 0, 0, PIECE);
-                pctx.stroke();
-            }
-
-            // —— 加载随机图片 ——
-            function loadImage() {
-                puzzle.classList.add('loading');
-                var img = new Image();
-                img.onload = function () {
-                    loadedImg = img;
-                    puzzle.classList.remove('loading');
-                    drawBg(img);
-                    drawPiece(img);
-                };
-                img.onerror = function () {
-                    puzzle.classList.remove('loading');
-                    drawFallback();
-                };
-                img.src = 'https://picsum.photos/seed/' + seed + '/' + W + '/' + H;
-            }
-
-            // —— 重新生成验证（换图 + 随机缺口 + 重置）——
-            function refresh() {
-                if (done) return;
-                seed = 1 + Math.floor(Math.random() * 100000);
-                gapX = Math.round(30 + Math.random() * (W - PIECE - 60));
-                reset();
-                loadImage();
-            }
-
-            // —— 滑块 ——
-            var trackW = track.clientWidth;
-            var btnW = 40, pad = 3;
-            var max = trackW - btnW - pad * 2;
-            var pieceMax = W - PIECE - 4;
-
-            function layout() {
-                trackW = track.clientWidth;
-                max = trackW - btnW - pad * 2;
-            }
-
-            function update(x) {
-                var v = Math.max(0, Math.min(max, x));
-                fill.style.width = (v + btnW / 2) + 'px';
-                btn.style.left = (pad + v) + 'px';
-                var px = 2 + (v / max) * pieceMax;
-                pieceCanvas.style.left = px + 'px';
-                return px;
-            }
-
-            function reset() {
-                fill.style.width = '0px';
-                btn.style.left = pad + 'px';
-                pieceCanvas.style.left = '2px';
-            }
-
-            function onStart(e) {
-                if (done) return;
-                var t = e.touches ? e.touches[0] : e;
-                pressed = true;
-                startX = t.clientX - btn.offsetLeft;
-                btn.style.transition = 'none';
-                fill.style.transition = 'none';
-                pieceCanvas.style.transition = 'none';
-            }
-
-            function onMove(e) {
-                if (done || !pressed) return;
-                var t = e.touches ? e.touches[0] : e;
-                var px = update(t.clientX - startX);
-                if (Math.abs(px - gapX) <= TOL) finish();
-            }
-
-            function onEnd() {
-                pressed = false;
-                if (!done) {
-                    btn.style.transition = 'left .3s ease';
-                    fill.style.transition = 'width .3s ease';
-                    pieceCanvas.style.transition = 'left .3s ease';
-                    reset();
-                }
-            }
-
-            function finish() {
-                if (done) return;
-                done = true;
-                btn.style.transition = 'left .15s ease';
-                fill.style.transition = 'width .15s ease';
-                pieceCanvas.style.transition = 'left .15s ease';
-                pieceCanvas.style.left = gapX + 'px';
-                fill.style.width = (gapX / pieceMax * max + btnW / 2) + 'px';
-                btn.style.left = (pad + gapX / pieceMax * max) + 'px';
-                slider.classList.add('success');
-                var sec = 3;
-                text.textContent = '✓ 验证成功，' + sec + ' 秒后自动进入…';
-                var timer = setInterval(function () {
-                    sec--;
-                    if (sec <= 0) {
-                        clearInterval(timer);
-                        window.location.replace('boke.html');
-                    } else {
-                        text.textContent = '✓ 验证成功，' + sec + ' 秒后自动进入…';
-                    }
-                }, 1000);
-            }
-
-            // —— 初始化 ——
-            gapX = Math.round(30 + Math.random() * (W - PIECE - 60));
-            layout();
-            loadImage();
-            refreshBtn.addEventListener('click', refresh);
-            btn.addEventListener('touchstart', onStart, { passive: true });
-            btn.addEventListener('touchmove', onMove, { passive: true });
-            btn.addEventListener('touchend', onEnd);
-            btn.addEventListener('mousedown', onStart);
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseup', onEnd);
-            window.addEventListener('resize', function () {
-                layout();
-                if (!done) reset();
-            });
-        })();
+        }, 1000);
     </script>
 </body>
 </html>
