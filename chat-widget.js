@@ -1,4 +1,4 @@
-/* =============================================
+﻿/* =============================================
    庆庆纸博客 · 全站悬浮访客聊天室（qiguangji ChatRoom 风格 · Twikoo 后端）
    右下角悬浮按钮 → 点击弹出 460px 居中面板；关闭后回到原页面，不跳转。
    引用方式：<script src="chat-widget.js?v=1"></script>（放在 script.js 之后）
@@ -49,6 +49,7 @@
     '.qw-body #twikoo .tk-meta-input{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;}',
     '.qw-body #twikoo .tk-meta-input .el-input{margin:0!important;min-width:0!important;width:100%!important;}',
     '.qw-body #twikoo .tk-meta-input .el-input:nth-child(3){display:none!important;}',
+    '.qw-panel.qw-logged-in .qw-body #twikoo .tk-meta-input{display:none!important;}',
     '.qw-body #twikoo .el-input-group__prepend{display:none!important;}',
     '.qw-body #twikoo .el-input__inner{border:1px solid var(--jp-line)!important;border-radius:7px!important;background:var(--jp-paper)!important;color:var(--jp-ink)!important;font-size:12px!important;padding:8px 11px!important;height:auto!important;box-shadow:none!important;min-width:0!important;flex:1!important;}',
     '.qw-body #twikoo .el-input__inner:focus{outline:1px solid var(--jp-accent)!important;}',
@@ -867,12 +868,15 @@
   }
   function refreshLoginUI() {
     var mask = document.getElementById('qw-login-mask');
+    var panel = document.querySelector('.qw-panel');
     if (!mask) return;
     if (isLoggedIn()) {
       mask.classList.remove('qw-needs-login');
+      if (panel) panel.classList.add('qw-logged-in');
       applyVisitorToTwikoo();
     } else {
       mask.classList.add('qw-needs-login');
+      if (panel) panel.classList.remove('qw-logged-in');
     }
   }
   function openLogin() {
