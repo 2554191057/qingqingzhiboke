@@ -98,7 +98,7 @@
     /* 未登录：底部登录条（qiguangji 风格） */
     '.qw-login-bar{display:none;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;border-top:1px solid var(--jp-line);}',
     '.qw-login-mask.qw-needs-login .qw-login-bar{display:flex;}',
-    '.qw-login-mask.qw-needs-login .tk-submit{display:none!important;}',
+    '.qw-login-mask.qw-needs-login .qw-body #twikoo .tk-submit{display:none!important;}',
     '.qw-login-bar .qw-lb-text h4{margin:0 0 3px;font-size:13px;color:var(--jp-ink);font-weight:700;}',
     '.qw-login-bar .qw-lb-text p{margin:0;font-size:10px;color:var(--jp-muted);}',
     '.qw-login-bar .qw-lb-btn{background:linear-gradient(120deg,#087fae,#4866db);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;}',
