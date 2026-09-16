@@ -43,8 +43,7 @@
     '.qw-body #twikoo{background:transparent!important;display:flex!important;flex-direction:column!important;min-height:0!important;flex:1!important;}',
     '.qw-body #twikoo .tk-comments{order:1!important;flex:1 1 auto!important;min-height:0!important;display:flex!important;flex-direction:column!important;}',
     '.qw-body #twikoo .tk-comments-container{flex:1!important;max-height:none!important;overflow-y:auto!important;padding:10px 0 12px;background:transparent!important;overscroll-behavior:contain;}',
-    '.qw-body #twikoo .tk-submit{order:2!important;flex-shrink:0!important;background:transparent!important;padding:14px 0 0;border-top:1px solid var(--jp-line);display:none!important;}',
-    '.qw-body #twikoo .tk-submit.qw-open{display:block!important;}',
+    '.qw-body #twikoo .tk-submit{order:2!important;flex-shrink:0!important;background:transparent!important;padding:14px 0 0;border-top:1px solid var(--jp-line);display:block!important;}',
     '.qw-body #twikoo .tk-submit .tk-row{background:transparent!important;margin:0!important;}',
     '.qw-body #twikoo .tk-submit .tk-row>.tk-avatar{display:none!important;}',
     '.qw-body #twikoo .tk-submit .tk-col{width:100%!important;padding:0!important;}',
@@ -59,11 +58,13 @@
     '.qw-body #twikoo .tk-input textarea{border:1px solid var(--jp-line)!important;border-radius:7px!important;background:var(--jp-paper)!important;color:var(--jp-ink)!important;font-size:12px!important;padding:9px 11px!important;resize:vertical;max-height:140px;box-shadow:none!important;width:100%!important;}',
     '.qw-body #twikoo .tk-input textarea:focus{outline:1px solid var(--jp-accent)!important;}',
     '.qw-body #twikoo .el-input__count{color:var(--jp-muted)!important;font-size:10px!important;}',
-    '/* 底部"评论"按钮（点击展开输入区） */',
-    '.qw-comment-btn{margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border:1px dashed var(--jp-line);border-radius:10px;background:var(--jp-paper);color:var(--jp-muted);font-size:12px;cursor:pointer;transition:border-color .2s ease,color .2s ease,background .2s ease;}',
-    '.qw-comment-btn:hover{border-color:var(--jp-accent);color:var(--jp-accent);background:var(--jp-glow);}',
-    '.qw-comment-btn svg{width:15px;height:15px;flex-shrink:0;}',
-    '.qw-comment-btn.qw-hide{display:none!important;}',
+    /* 底部输入区：常显聊天框（原"写评论"折叠按钮已移除） */
+    '.qw-comment-btn{display:none!important;}',
+    /* 聊天框布局：昵称/邮箱一行 + 输入框 + 发送（紧凑） */
+    '.qw-body #twikoo .tk-meta-input{grid-template-columns:1fr 1fr;gap:8px;}',
+    '.qw-body #twikoo .tk-input.el-textarea{margin-top:10px!important;}',
+    '.qw-body #twikoo .tk-input textarea{min-height:44px!important;max-height:110px;resize:none!important;border-radius:10px!important;font-size:13px!important;line-height:1.6!important;}',
+    '.qw-body #twikoo .tk-row-actions-start{margin-top:8px!important;}',
     '.qw-body #twikoo .tk-submit-action-icon{color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-submit-action-icon svg{width:15px;height:15px;}',
     '.qw-body #twikoo .tk-row-actions-start .tk-submit-action-icon,.qw-body #twikoo .tk-row-actions-start button{color:var(--jp-muted)!important;}',
@@ -372,6 +373,7 @@
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
       removeOwO();
+      setSubmitPlaceholders();
       moveNickTop();
       moveActionBelow();
       restructureReplies();
@@ -379,6 +381,16 @@
       insertTimeSep();
       markSelf();
     }, 250);
+  }
+  // ===== 输入区占位提示（昵称/邮箱/发言框） =====
+  function setSubmitPlaceholders() {
+    var submit = document.querySelector('.qw-body #twikoo .tk-submit');
+    if (!submit) return;
+    var inners = submit.querySelectorAll('.tk-meta-input .el-input__inner');
+    if (inners.length >= 1 && !inners[0].placeholder) inners[0].placeholder = '昵称';
+    if (inners.length >= 2 && !inners[1].placeholder) inners[1].placeholder = '邮箱';
+    var ta = submit.querySelector('textarea');
+    if (ta && (!ta.placeholder || ta.placeholder === '友善交流，文明发言…')) ta.placeholder = '友善交流，文明发言…';
   }
   // 监听评论列表变化（新增/加载）自动重新标记
   var tcommentEl = document.getElementById('tcomment');
@@ -608,22 +620,6 @@
     openAdmin();
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAdmin(); });
-
-  // 底部"评论"按钮 → 展开 Twikoo 输入区（昵称/邮箱/网址 + 消息框）
-  var commentBtn = document.getElementById('qw-comment-btn');
-  commentBtn.addEventListener('click', function () {
-    if (!backdrop.classList.contains('qw-open')) openChat();
-    var submit = document.querySelector('.qw-body #twikoo .tk-submit');
-    if (!submit) { setTimeout(function () { commentBtn.click(); }, 300); return; }
-    submit.classList.add('qw-open');
-    commentBtn.classList.add('qw-hide');
-    var ta = submit.querySelector('textarea');
-    // 把"必填"占位提示改为 昵称/邮箱
-    var inners = submit.querySelectorAll('.tk-meta-input .el-input__inner');
-    if (inners.length >= 1) inners[0].placeholder = '昵称';
-    if (inners.length >= 2) inners[1].placeholder = '邮箱';
-    if (ta) { ta.placeholder = '友善交流，文明发言…'; setTimeout(function () { ta.focus(); }, 50); }
-  });
 
   // 拦截导航里的"聊天室"链接（fklts.html / chat.html）→ 打开悬浮弹窗，不跳转
   document.addEventListener('click', function (e) {
