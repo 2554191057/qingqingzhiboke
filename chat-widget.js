@@ -498,22 +498,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
 
   // ===== 管理员面板（自绘：登录 → 评论管理 / 删除 / 拉黑邮箱） =====
-  var adminBtn = document.createElement('div'); // 虚拟元素（原按钮已删，保留 classList 兼容）
-  // 连续点左上角图标 10 次触发管理员登录
-  var _headIcon = document.querySelector('.qw-panel > header .qw-head-icon');
-  var _tapCount = 0, _tapTimer = null;
-  if (_headIcon) {
-    _headIcon.style.cursor = 'pointer';
-    _headIcon.addEventListener('click', function () {
-      _tapCount++;
-      clearTimeout(_tapTimer);
-      _tapTimer = setTimeout(function () { _tapCount = 0; }, 1500);
-      if (_tapCount >= 10) {
-        _tapCount = 0;
-        openAdmin();
-      }
-    });
-  }
+  var adminBtn = document.getElementById('qw-admin-trigger');
   var adminBackdrop = document.getElementById('qw-admin-backdrop');
   var adminBody = document.getElementById('qw-admin-body');
   var adminToken = '';
