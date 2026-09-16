@@ -171,7 +171,7 @@
     var inners = submit.querySelectorAll('.tk-meta-input .el-input__inner');
     if (inners.length >= 1) inners[0].placeholder = '昵称';
     if (inners.length >= 2) inners[1].placeholder = '邮箱';
-    if (ta) { setTimeout(function () { ta.focus(); }, 50); }
+    if (ta) { ta.placeholder = '友善交流，文明发言…'; setTimeout(function () { ta.focus(); }, 50); }
   });
 
   // 拦截导航里的"聊天室"链接（fklts.html / chat.html）→ 打开悬浮弹窗，不跳转
