@@ -66,7 +66,20 @@
       let id = localStorage.getItem("modelId");
       if (this.useCDN) {
         if (!this.modelList) await this.loadModelList();
-        const next = ++id >= this.modelList.models.length ? 0 : id;
+        // 找下一个资源可用的模型
+        var next = ++id;
+        var tried = 0;
+        while (tried < this.modelList.models.length) {
+          if (next >= this.modelList.models.length) next = 0;
+          var variants = this.modelList.models[next];
+          if (variants && variants[0]) {
+            try {
+              var r = await fetch(this.cdnPath + 'model/' + variants[0] + '/index.json', { method: 'HEAD' });
+              if (r.ok) break;
+            } catch(e) {}
+          }
+          next++; tried++;
+        }
         this.loadModel(next, 0, this.modelList.messages[next]);
       } else {
         fetch(`${this.apiPath}switch/?id=${id}`)
