@@ -95,12 +95,14 @@
     '.qw-login-panel input{width:100%;box-sizing:border-box;border:1px solid var(--jp-line);background:var(--jp-paper);color:var(--jp-ink);border-radius:8px;padding:9px 11px;font-size:12px;margin-bottom:9px;outline:none;}',
     '.qw-login-panel input:focus{border-color:var(--jp-accent);}',
     '.qw-login-panel button{width:100%;padding:10px;border:none;border-radius:8px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:12px;font-weight:600;cursor:pointer;}',
-    /* 未登录遮罩（盖在输入区上方） */
-    '.qw-login-mask{position:relative;}',
-    '.qw-login-mask .qw-mask-overlay{display:none;position:absolute;left:0;right:0;top:0;bottom:0;z-index:10;background:rgba(27,31,34,.88);backdrop-filter:blur(3px);border-radius:10px;align-items:center;justify-content:center;flex-direction:column;gap:8px;cursor:pointer;}',
-    '.qw-login-mask.qw-needs-login .qw-mask-overlay{display:flex;}',
-    '.qw-mask-overlay .qw-mask-icon{font-size:26px;}',
-    '.qw-mask-overlay .qw-mask-text{font-size:12px;color:var(--jp-accent);font-weight:600;}',
+    /* 未登录：底部登录条（qiguangji 风格） */
+    '.qw-login-bar{display:none;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;border-top:1px solid var(--jp-line);}',
+    '.qw-login-mask.qw-needs-login .qw-login-bar{display:flex;}',
+    '.qw-login-mask.qw-needs-login .tk-submit{display:none!important;}',
+    '.qw-login-bar .qw-lb-text h4{margin:0 0 3px;font-size:13px;color:var(--jp-ink);font-weight:700;}',
+    '.qw-login-bar .qw-lb-text p{margin:0;font-size:10px;color:var(--jp-muted);}',
+    '.qw-login-bar .qw-lb-btn{background:linear-gradient(120deg,#087fae,#4866db);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;}',
+    '.qw-login-bar .qw-lb-btn:hover{opacity:.92;}',
     /* 登录门：未填邮箱昵称时遮罩输入区 */
     '.qw-login-mask{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(15,20,28,.78);backdrop-filter:blur(8px);}',
     '.qw-login-card{width:320px;max-width:88%;background:var(--jp-surface,#1e2530);border:1px solid var(--jp-line,#2a3444);border-radius:18px;padding:24px 22px;box-shadow:0 12px 40px rgba(0,0,0,.4);}',
@@ -239,7 +241,8 @@
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
-    '<div class="qw-login-mask" id="qw-login-mask"><div class="qw-mask-overlay" id="qw-mask-overlay"><div class="qw-mask-icon">🔒</div><div class="qw-mask-text">点击登录后发言</div></div>' +
+    '<div class="qw-login-mask" id="qw-login-mask">' +
+    '<div class="qw-login-bar"><div class="qw-lb-text"><h4>身份验证</h4><p>昵称和头像使用你的邮箱公开资料</p></div><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div>' +
     '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div></div>' +
     '</div></div>' +
     /* 访客登录弹窗 */
@@ -560,8 +563,8 @@
       openLogin();
     }
   });
-  var maskOverlay = document.getElementById('qw-mask-overlay');
-  if (maskOverlay) maskOverlay.addEventListener('click', openLogin);
+  var loginBarBtn = document.getElementById('qw-login-bar-btn');
+  if (loginBarBtn) loginBarBtn.addEventListener('click', openLogin);
   var loginSubmit = document.getElementById('qw-login-submit');
   if (loginSubmit) loginSubmit.addEventListener('click', doLogin);
   var loginClose = document.querySelector('#qw-login-backdrop .qw-login-panel');
