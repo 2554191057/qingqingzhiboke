@@ -544,7 +544,9 @@
     adminBackdrop.classList.remove('qw-open');
     if (!backdrop.classList.contains('qw-open')) document.body.style.overflow = '';
   }
-  adminBackdrop.addEventListener('click', function (e) { if (e.target === adminBackdrop) closeAdmin(); });
+  adminBackdrop.addEventListener('click', function () { closeAdmin(); });
+  var _adminPanel = adminBackdrop.querySelector('.qw-admin-panel');
+  if (_adminPanel) _adminPanel.addEventListener('click', function (e) { e.stopPropagation(); });
   adminBackdrop.querySelector('[data-qw-admin-close]').addEventListener('click', closeAdmin);
 
   function renderLoginView() {
