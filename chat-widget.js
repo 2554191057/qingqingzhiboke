@@ -229,7 +229,6 @@
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>' +
     '<div><h2 id="qw-title">访客聊天室</h2><p><span class="qw-dot"></span>实时同步 · Powered by Twikoo</p></div>' +
-    '<button id="qw-login-btn" class="qw-login-btn" aria-label="登录" title="登录">登录</button>' +
     '<button id="qw-admin-btn" class="qw-admin-btn" aria-label="管理员" title="管理员登录"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
@@ -488,14 +487,6 @@
     _origOpen.apply(this, arguments);
     setTimeout(refreshLoginUI, 300);
   };
-  var loginBtn = document.getElementById('qw-login-btn');
-  if (loginBtn) loginBtn.addEventListener('click', function () {
-    if (isLoggedIn()) {
-      if (confirm('退出当前账号？')) logout();
-    } else {
-      openLogin();
-    }
-  });
   var loginBarBtn = document.getElementById('qw-login-bar-btn');
   if (loginBarBtn) loginBarBtn.addEventListener('click', openLogin);
   var loginSubmit = document.getElementById('qw-login-submit');
@@ -875,19 +866,12 @@
     if (inputs[1]) setNativeValue(inputs[1], v.email);
   }
   function refreshLoginUI() {
-    var btn = document.getElementById('qw-login-btn');
     var mask = document.getElementById('qw-login-mask');
-    if (!btn || !mask) return;
+    if (!mask) return;
     if (isLoggedIn()) {
-      btn.textContent = getVisitor().nick;
-      btn.classList.add('qw-logged-in');
-      btn.title = '退出登录';
       mask.classList.remove('qw-needs-login');
       applyVisitorToTwikoo();
     } else {
-      btn.textContent = '登录';
-      btn.classList.remove('qw-logged-in');
-      btn.title = '登录后发言';
       mask.classList.add('qw-needs-login');
     }
   }
