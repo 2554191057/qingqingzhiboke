@@ -79,17 +79,6 @@
       localStorage.setItem("modelId", id);
       localStorage.setItem("modelTexturesId", tid);
       showMessage(msg, 4000, 10);
-      // 销毁旧 canvas，避免 live2d 上下文残留导致新模型不渲染
-      var container = document.getElementById('live2d');
-      if (container) {
-        container.innerHTML = '';
-        var cv = document.createElement('canvas');
-        cv.id = 'live2d-canvas';
-        cv.style.width = '100%';
-        cv.style.height = '100%';
-        cv.style.display = 'block';
-        container.appendChild(cv);
-      }
       if (this.useCDN) {
         if (!this.modelList) await this.loadModelList();
         const variants = this.modelList.models[id] || this.modelList.models[20] || this.modelList.models[0];
