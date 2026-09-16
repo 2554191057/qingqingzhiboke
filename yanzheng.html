@@ -12,8 +12,12 @@
             align-items: center;
             justify-content: center;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            background: #edf2fa;
             color: #333;
+            transition: background 0.45s ease;
+        }
+        [data-theme="dark"] body {
+            background: #06111f !important;
         }
         .box {
             width: 380px;
@@ -203,6 +207,13 @@
         <p class="hint" id="hintLink" style="display:none">如果没有自动跳转，请 <a href="boke.html">点击这里</a></p>
     </div>
     <script>
+        // 主题初始化：与主站一致，夜间(19-7点)自动夜间，其余日间
+        (function () {
+            var h = new Date().getHours();
+            if (h >= 19 || h < 7) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
         (function () {
             var W = 310, H = 155, S = 42, TOL = 10;
             var bgCanvas = document.getElementById('bgCanvas');
