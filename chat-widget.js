@@ -473,6 +473,15 @@
     mo.observe(tcommentEl, { childList: true, subtree: true });
   }
 
+  function openChat() {
+    backdrop.classList.add('qw-open');
+    document.body.style.overflow = 'hidden';
+    loadAssets(function () {
+      initTwikoo();
+      setTimeout(refreshLoginUI, 400);
+    });
+  }
+
   function closeChat() {
     backdrop.classList.remove('qw-open');
     document.body.style.overflow = '';
