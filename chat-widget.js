@@ -70,7 +70,7 @@
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
     /* ===== 聊天气泡布局：自己右侧、别人左侧 ===== */
-    '.qw-body #twikoo .tk-comment{display:flex!important;align-items:flex-start!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
+    '.qw-body #twikoo .tk-comment{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
     '.qw-body #twikoo .tk-comment.tk-self{flex-direction:row-reverse!important;}',
     '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;border-radius:50%!important;overflow:hidden!important;flex-shrink:0;margin:0!important;background:var(--jp-glow);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--jp-accent);}',
     '.qw-body #twikoo .tk-comment .tk-avatar img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important;}',
@@ -81,16 +81,18 @@
     '.qw-body #twikoo .tk-meta{display:flex;align-items:baseline;gap:10px;font-size:10px!important;color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
     '.qw-body #twikoo .tk-time time{font-size:10px!important;color:var(--jp-muted)!important;}',
-    /* ===== 昵称移到头像上方（占整行） ===== */
-    '.qw-body #twikoo .tk-comment{flex-wrap:wrap!important;}',
-    '.qw-body #twikoo .tk-comment .tk-nick{display:block!important;width:100%!important;margin:0 0 2px!important;padding:0 4px!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-nick{text-align:right!important;}',
+    /* ===== 昵称移到气泡左上方 ===== */
+    '.qw-body #twikoo .tk-comment{flex-wrap:nowrap!important;}',
+    '.qw-body #twikoo .tk-comment .tk-nick{display:block!important;margin:0 0 3px!important;padding:0 4px!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-nick{text-align:right!important;}',
     '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
     /* 昵称/操作移走后，头部行只余隐藏时间，直接隐藏 */
     '.qw-body #twikoo .tk-comment .tk-row{display:none!important;}',
-    /* ===== 气泡：横向长条（宽扁），内容多才换行向下 ===== */
-    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:12px 12px 12px 4px!important;padding:7px 12px!important;font-size:12px!important;line-height:1.55!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;width:auto!important;min-width:72%!important;max-width:100%!important;}',
+    /* ===== 气泡：自适应宽度 + 小尾巴角标，与头像平齐 ===== */
+    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:12px 12px 12px 4px!important;padding:7px 12px!important;font-size:12px!important;line-height:1.55!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;width:fit-content!important;max-width:100%!important;min-width:0!important;position:relative!important;}',
+    '.qw-body #twikoo .tk-content:before{content:""!important;position:absolute!important;top:12px!important;left:-6px!important;border:6px solid transparent!important;border-left-width:0!important;border-right-color:var(--jp-surface)!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:12px 12px 4px 12px!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content:before{left:auto!important;right:-6px!important;border-right-width:0!important;border-left-width:6px!important;border-right-color:transparent!important;border-left-color:rgba(16,147,195,.16)!important;}',
     /* ===== 操作按钮：移到气泡下方横排（常显长条） ===== */
     '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:1!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-action{justify-content:flex-end!important;}',
@@ -252,14 +254,14 @@
       }
     });
   }
-  // ===== 把昵称移到头像上方（整行） =====
+  // ===== 把昵称移到气泡左上方（.tk-main 开头，头像右侧第一行） =====
   function moveNickTop() {
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
       var nick = c.querySelector('.tk-nick');
-      var avatar = c.querySelector(':scope > .tk-avatar');
-      if (!nick || !avatar) return;
-      if (nick.parentNode === c) return; // 已移动
-      c.insertBefore(nick, avatar);
+      var main = c.querySelector(':scope > .tk-main');
+      if (!nick || !main) return;
+      if (nick.parentNode === main) return; // 已移动
+      main.insertBefore(nick, main.firstChild);
     });
   }
   // ===== 聊天气泡：识别"自己"的消息（对比 localStorage 昵称）→ 右侧 =====
