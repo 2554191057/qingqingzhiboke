@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -37,7 +37,33 @@
         }
         .box h2 { margin: 0 0 8px; font-size: 1.3rem; }
         .box .tip { margin: 0 0 20px; color: #888; font-size: 0.9rem; }
-        .turnstile-wrap { display: flex; justify-content: center; }
+        .turnstile-wrap { display: flex; justify-content: center; min-height: 65px; align-items: center; }
+        .fallback-btn {
+            display: none;
+            margin: 10px auto 0;
+            padding: 12px 36px;
+            background: linear-gradient(120deg,#087fae,#4866db);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .mirrors {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+            font-size: 11px;
+            color: #999;
+        }
+        .mirrors a {
+            display: inline-block;
+            margin: 4px 6px 0;
+            color: #087fae;
+            text-decoration: none;
+        }
+        .mirrors a:hover { text-decoration: underline; }
     </style>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
@@ -48,6 +74,13 @@
         <p class="tip">完成验证后自动进入</p>
         <div class="turnstile-wrap">
             <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess"></div>
+        </div>
+        <button class="fallback-btn" id="fallbackBtn" onclick="directEnter()">直接进入</button>
+        <div class="mirrors">
+            其他入口：
+            <a href="https://qqzttkx.ficp.fun/" target="_blank">花生壳</a>
+            <a href="https://qqzttkx.eu.cc/" target="_blank">Cloudflare</a>
+            <a href="https://2554191057.github.io/qingqingzhiboke/" target="_blank">GitHub</a>
         </div>
     </div>
     <script src="js/sakura/config.js"></script>
@@ -62,6 +95,18 @@
         var back = new URLSearchParams(location.search).get('back') || 'boke.html';
         setTimeout(function(){ location.href = back; }, 500);
     }
+    function directEnter() {
+        sessionStorage.setItem('auth_ok', '1');
+        var back = new URLSearchParams(location.search).get('back') || 'boke.html';
+        location.href = back;
+    }
+    // Turnstile 加载失败（5秒内未出现）显示直接进入按钮
+    setTimeout(function(){
+        var widget = document.querySelector('.cf-turnstile');
+        if (widget && !widget.querySelector('iframe')) {
+            document.getElementById('fallbackBtn').style.display = 'block';
+        }
+    }, 5000);
     </script>
 </body>
 </html>
