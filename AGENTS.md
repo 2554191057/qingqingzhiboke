@@ -30,7 +30,7 @@
 ## 在线部署（每次修改后必须执行）
 **用户固定要求（2026-09-15 确认）：部署链接一律为 `https://qqzttkx.ficp.fun/`。免费档资源二次更新返回 403（update function is disabled），故每次部署=新建资源 + 花生壳控制台删旧绑主域名（用户已接受该方案）。**
 
-- 公网入口为 `yanzheng.html`（图形验证码，验证通过跳 boke.html；背景已对齐主站日间 #edf2fa / 夜间 #06111f 按时间自动切换）；主域名 `https://qqzttkx.ficp.fun/` 当前绑定资源 `v0uwgo`（resource_id 1789551196548961937；临时域名 https://v0uwgo.gicp.fun，已线上验证含看板娘集成、栖光集日间样式与顶栏、全站悬浮访客聊天室）。注意：来源不明的资源 `2kqihw` 于 2026-09-16 改名部署操作中被误删（无绑定域名、非当前资源，无影响）。
+- 公网入口为 `yanzheng.html`（图形验证码，验证通过跳 boke.html；背景已对齐主站日间 #edf2fa / 夜间 #06111f 按时间自动切换）；主域名 `https://qqzttkx.ficp.fun/` 当前绑定资源 `jns0r2`（resource_id 1789551496350318014；临时域名 https://jns0r2.gicp.fun，已线上验证含看板娘集成、栖光集日间样式与顶栏、全站悬浮访客聊天室）。注意：来源不明的资源 `2kqihw` 于 2026-09-16 改名部署操作中被误删（无绑定域名、非当前资源，无影响）。
 - 页面：boke（首页）/ wenzhang（文章）/ wangpan（资源）/ fklts（访客聊天室独立页，Twikoo path 仍为 'chat' 保证旧评论不丢；可直接访问）/ shengri（生日）/ yanzheng（验证入口）。
 - **全站悬浮访客聊天室（2026-09-16 改造，用户要求"悬浮在页面上不跳转"）**：`chat-widget.js`（新文件）自包含注入 CSS+HTML+Twikoo 资源，实现 qiguangji ChatRoom 形态——右下角悬浮按钮 `.qw-launcher`（毛玻璃、accent 边框、绿点）→ 点击打开 `.qw-backdrop` 遮罩（blur）+ `.qw-panel` 460px 居中面板（--jp-surface、圆角 18px、--jp-glow 辉光），关闭走 X/遮罩/Esc，不跳转回原页面；已接入 boke/wenzhang/wangpan/shengri（script.js 或 site-config.js 之后一行引用）；导航里指向 fklts.html/chat.html 的链接被拦截为打开弹窗；Twikoo init 首次打开时懒加载（envId=Netlify 端点、el:'#tcomment'、path:'chat'）；色板 --jp-* 由 chat-widget.js 注入，日夜跟随页面 data-theme。fklts.html 保留为独立页（整页 qiguangji 布局），直接访问可用。
 
@@ -40,7 +40,7 @@
 - 部署源：本地 `D:\Download\twikoo-netlify`（git clone 自 github.com/twikoojs/twikoo-netlify，netlify/functions/twikoo.js 依赖 twikoo-netlify:latest；本地 `npm install` 装好 node_modules）。重部署：`netlify login`（CLI 已授权）→ `netlify deploy --prod --dir . --functions netlify/functions`。
 - 前端：fklts.html（原 chat.html）引入 `https://registry.npmmirror.com/twikoo/1.7.24/files/dist/twikoo.all.min.(js|css)`，`twikoo.init({envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN'})`（无 region）。**必须传 `el: '#tcomment'`：Twikoo 1.7.24 前端无 el 参数时静默不渲染（2026-09-16 实测踩坑，commit 6f1be7e）。**
 - 历史（勿复用 envId）：原 CloudBase 免费体验版 `qqzchat-d4gzkl19e2eab7a75`（因免费版无法配置 Web 安全域名而弃用，环境仍在线到期 2027-03-16）。
-- 资源链（每代删旧绑新）：…→ kfibxa(1789526813930880719，已删) → prjgi7(1789533091330468453，已删) → qyizjt(1789542275151980223，已删) → qxam0b(1789543501665508287，已删) → ewro0s(1789545586308913470，误删) → dqlwk6(1789545803195246821，已删) → 6xakqh(1789547319089375540，已删) → 5rp7l7(resource_id 未录，已删) → 85rw4s(resource_id 未录，已删) → w52pl5(1789550401975329912，已删) → la58ao(1789550839303866721，已删) → **v0uwgo(1789551196548961937，当前)**。控制台"分配自定义域名"弹窗：选闲置域名下拉选 qqzttkx.ficp.fun → 自动绑定生效（可用 bu.select 或 JS 设 select.value+dispatch change；若 JS 查询 selVal 显示 none 但弹窗已变"已生效"即成功；点"添加"有时需 JS 精确 dispatch pointer 事件链到行内 <a>）。
+- 资源链（每代删旧绑新）：…→ kfibxa(1789526813930880719，已删) → prjgi7(1789533091330468453，已删) → qyizjt(1789542275151980223，已删) → qxam0b(1789543501665508287，已删) → ewro0s(1789545586308913470，误删) → dqlwk6(1789545803195246821，已删) → 6xakqh(1789547319089375540，已删) → 5rp7l7(resource_id 未录，已删) → 85rw4s(resource_id 未录，已删) → w52pl5(1789550401975329912，已删) → la58ao(1789550839303866721，已删) → v0uwgo(1789551196548961937，已删) → **jns0r2(1789551496350318014，当前)**。控制台"分配自定义域名"弹窗：选闲置域名下拉选 qqzttkx.ficp.fun → 自动绑定生效（可用 bu.select 或 JS 设 select.value+dispatch change；若 JS 查询 selVal 显示 none 但弹窗已变"已生效"即成功；点"添加"有时需 JS 精确 dispatch pointer 事件链到行内 <a>）。
 
 **每次 git 提交后必须同步执行一次在线部署（新建资源）：**
 
