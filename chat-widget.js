@@ -81,6 +81,16 @@
     '.qw-body #twikoo .tk-meta{display:flex;align-items:baseline;gap:10px;font-size:10px!important;color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
     '.qw-body #twikoo .tk-time time{font-size:10px!important;color:var(--jp-muted)!important;}',
+    /* ===== 昵称移到头像上方（占整行） ===== */
+    '.qw-body #twikoo .tk-comment{flex-wrap:wrap!important;}',
+    '.qw-body #twikoo .tk-comment .tk-nick{display:block!important;width:100%!important;margin:0 0 2px!important;padding:0 4px!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-nick{text-align:right!important;}',
+    '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
+    /* 昵称/操作移走后，头部行只余隐藏时间，直接隐藏 */
+    '.qw-body #twikoo .tk-comment .tk-row{display:none!important;}',
+    /* ===== 气泡：横向长条（宽扁），内容多才换行向下 ===== */
+    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:12px 12px 12px 4px!important;padding:7px 12px!important;font-size:12px!important;line-height:1.55!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;width:auto!important;min-width:72%!important;max-width:100%!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:12px 12px 4px 12px!important;}',
     /* ===== 操作按钮：移到气泡下方横排（常显长条） ===== */
     '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:1!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-action{justify-content:flex-end!important;}',
@@ -88,8 +98,6 @@
     '.qw-body #twikoo .tk-action .tk-action-link:hover{color:var(--jp-accent)!important;}',
     '.qw-body #twikoo .tk-action-icon svg{width:13px!important;height:13px!important;}',
     '.qw-body #twikoo .tk-action-count{font-size:10px!important;}',
-    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:16px 16px 16px 4px!important;padding:10px 14px!important;font-size:14px!important;line-height:1.7!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;width:fit-content!important;max-width:100%!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:16px 16px 4px 16px!important;}',
     '.qw-body #twikoo .tk-content p{color:var(--jp-ink)!important;margin:0!important;}',
     '.qw-body #twikoo .tk-content a{color:var(--jp-accent)!important;}',
     /* ===== 微信聊天流：隐藏评论区元素（统计/排序/设备/footer） ===== */
@@ -98,15 +106,10 @@
     /* 时间用居中时间条显示（微信式），隐藏每条小时间 */
     '.qw-body #twikoo .tk-time{display:none!important;}',
     '.qw-body #twikoo .qw-time-sep{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:10px 0 6px!important;opacity:.8!important;letter-spacing:.5px!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-row .tk-nick{display:none!important;}',
     /* 气泡（紧凑） */
-    '.qw-body #twikoo .tk-content{border-radius:12px 12px 12px 4px!important;padding:6px 10px!important;font-size:12px!important;line-height:1.55!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{border-radius:12px 12px 4px 12px!important;}',
     '.qw-body #twikoo .tk-comment{margin-bottom:7px!important;}',
     '.qw-body #twikoo .tk-comment .tk-avatar{width:28px!important;height:28px!important;font-size:13px!important;}',
     '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 38px)!important;}',
-    '.qw-body #twikoo .tk-comment .tk-row{margin:0 0 2px!important;gap:6px!important;}',
-    '.qw-body #twikoo .tk-nick strong{font-size:11px!important;color:var(--jp-muted)!important;font-weight:600!important;}',
     /* ===== QQ式引用回复：气泡内引用栏（细淡灰条） ===== */
     '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.08)!important;border-left:2px solid var(--jp-line)!important;border-radius:3px!important;padding:3px 8px!important;font-size:11px!important;line-height:1.5!important;color:var(--jp-muted)!important;margin:0 0 5px!important;display:-webkit-box!important;-webkit-line-clamp:1!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;}',
     '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{display:none!important;}',
@@ -249,6 +252,16 @@
       }
     });
   }
+  // ===== 把昵称移到头像上方（整行） =====
+  function moveNickTop() {
+    document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
+      var nick = c.querySelector('.tk-nick');
+      var avatar = c.querySelector(':scope > .tk-avatar');
+      if (!nick || !avatar) return;
+      if (nick.parentNode === c) return; // 已移动
+      c.insertBefore(nick, avatar);
+    });
+  }
   // ===== 聊天气泡：识别"自己"的消息（对比 localStorage 昵称）→ 右侧 =====
   function markSelf() {
     var info = {};
@@ -357,6 +370,7 @@
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
       removeOwO();
+      moveNickTop();
       moveActionBelow();
       restructureReplies();
       sortComments();
