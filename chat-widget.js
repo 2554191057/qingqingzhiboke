@@ -70,10 +70,8 @@
     '.qw-body #twikoo .tk-row-actions-start .tk-submit-action-icon,.qw-body #twikoo .tk-row-actions-start button{color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
-    /* 微信风回复预览条（点回复后输入框上方显示"回复 XX：..."） */
-    '.qw-body #twikoo [class*=comment-parent]{display:flex!important;align-items:center;gap:6px;background:var(--jp-paper)!important;border:1px solid var(--jp-line)!important;border-radius:8px!important;padding:6px 10px!important;margin-bottom:8px!important;font-size:11px!important;color:var(--jp-muted)!important;}',
-    '.qw-body #twikoo [class*=comment-parent] [class*=nick]{color:var(--jp-accent)!important;font-weight:600;}',
-    '.qw-body #twikoo [class*=comment-parent] [class*=cancel],.qw-body #twikoo [class*=comment-parent] button{cursor:pointer;color:var(--jp-muted)!important;margin-left:auto;padding:0 4px!important;border:none!important;background:transparent!important;font-size:14px!important;line-height:1;}',
+    /* Twikoo 原生回复提示条隐藏（用自绘 .qw-reply-bar 替代） */
+    '.qw-body #twikoo [class*=comment-parent]{display:none!important;}',
     /* 微信风：发送按钮与输入框同行右侧 */
     '.qw-body #twikoo .tk-row-actions-start{display:flex!important;justify-content:flex-end!important;margin-top:6px!important;}',
     /* 自绘微信风回复预览条 */
@@ -154,7 +152,7 @@
     '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;font-size:17px!important;}',
     '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 48px)!important;}',
     /* ===== QQ式引用回复：气泡内引用栏（细淡灰条） ===== */
-    '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.08)!important;border-left:2px solid var(--jp-line)!important;border-radius:3px!important;padding:3px 8px!important;font-size:11px!important;line-height:1.5!important;color:var(--jp-muted)!important;margin:0 0 5px!important;display:-webkit-box!important;-webkit-line-clamp:1!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;}',
+    '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.1)!important;border-left:3px solid var(--jp-accent)!important;border-radius:4px!important;padding:4px 9px!important;font-size:11px!important;line-height:1.5!important;color:var(--jp-muted)!important;margin:0 0 5px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;opacity:.85;}',
     '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{display:none!important;}',
     '.qw-body #twikoo .tk-expand-wrap,.qw-body #twikoo .tk-expand{display:none!important;}',
     '.qw-body #twikoo .tk-footer{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:12px 0 0!important;background:transparent!important;}',
@@ -737,10 +735,18 @@
     var isReply = links.length > 2 && btn === links[2];
     if ((isLike || isDislike) && !isLoggedIn()) { openLogin(); return; } // 赞踩需先登录
     if (isReply) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
       var nickEl = comment.querySelector('.tk-nick');
       var nick = nickEl ? nickEl.textContent.trim() : '';
       var contentEl = comment.querySelector('.tk-content, .tk-row-content');
-      var content = contentEl ? contentEl.textContent.trim().slice(0, 40) : '';
+      var content = contentEl ? contentEl.textContent.trim().slice(0, 60) : '';
+      // 手动设置 Twikoo 内部 parentComment
+      try {
+        var vm = document.querySelector('#twikoo').__vue__;
+        if (vm) { vm.parentComment = comment; }
+      } catch (eSet) {}
       showReplyBar(nick, content);
       return;
     }
@@ -748,7 +754,7 @@
     function block(ev) {
       ev.preventDefault();
       ev.stopPropagation();
-      if (ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
     }
     function saveSets() {
       try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
@@ -840,6 +846,16 @@
     submit.insertBefore(bar, input);
     input && input.querySelector('textarea') && input.querySelector('textarea').focus();
   }
+  function clearReplyBar() {
+    var bar = document.querySelector('.qw-reply-bar');
+    if (bar) bar.remove();
+    try { var vm = document.querySelector('#twikoo').__vue__; if (vm) vm.parentComment = null; } catch(e){}
+  }
+  // 点发送后自动清除回复条
+  document.addEventListener('click', function(e) {
+    var sendBtn = e.target && e.target.closest ? e.target.closest('.qw-body .tk-send') : null;
+    if (sendBtn) setTimeout(clearReplyBar, 500);
+  }, true);
 
   // ===== 访客登录（邮箱+昵称，localStorage 记住） =====
   var QW_NICK = 'qw_visitor_nick';
