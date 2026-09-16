@@ -239,9 +239,10 @@
     /* 访客登录弹窗 */
     '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
     '<div class="qw-login-panel">' +
-    '<h3>登录发言</h3><p>填昵称和邮箱即可加入聊天，下次自动登录</p>' +
+    '<h3>登录发言</h3><p>设置昵称、邮箱和密码，多设备可同步登录</p>' +
     '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20">' +
     '<input type="email" id="qw-login-email" placeholder="邮箱（仅用于身份识别，不公开）">' +
+    '<input type="password" id="qw-login-pwd" placeholder="密码（多设备同步登录用）">' +
     '<button id="qw-login-submit">登 录</button>' +
     '</div></div>' +
     /* 自绘管理员面板 */
@@ -464,18 +465,50 @@
     mo.observe(tcommentEl, { childList: true, subtree: true });
   }
 
+  function syncLikesByEmail() {
+    var v = getVisitor();
+    if (!v.email) return;
+    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ event: 'QW_LIKES_BY_EMAIL', email: v.email })
+    }).then(function(r){return r.json();}).then(function(r){
+      if (r && r.code === 0 && Array.isArray(r.data)) {
+        r.data.forEach(function(id){ likedSet[id] = 1; });
+        try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch(e){}
+        markLiked();
+      }
+    }).catch(function(){});
+  }
+  var _refreshTimer = null;
+  function refreshComments() {
+    try {
+      var vm = document.querySelector('#twikoo').__vue__;
+      if (vm && vm.getCommentsList) vm.getCommentsList();
+      else if (window.twikoo) window.twikoo.getCommentsList({ reset: true });
+    } catch(e) {}
+  }
   function openChat() {
     backdrop.classList.add('qw-open');
     document.body.style.overflow = 'hidden';
     loadAssets(function () {
       initTwikoo();
-      setTimeout(refreshLoginUI, 400);
+      setTimeout(function(){
+        refreshLoginUI();
+        syncLikesByEmail();
+        refreshComments();
+      }, 400);
     });
+    // 每15秒自动刷新新消息
+    if (_refreshTimer) clearInterval(_refreshTimer);
+    _refreshTimer = setInterval(function(){
+      if (backdrop.classList.contains('qw-open')) refreshComments();
+    }, 15000);
   }
 
   function closeChat() {
     backdrop.classList.remove('qw-open');
     document.body.style.overflow = '';
+    if (_refreshTimer) { clearInterval(_refreshTimer); _refreshTimer = null; }
   }
 
   launcher.addEventListener('click', openChat);
@@ -901,6 +934,8 @@
     var v = getVisitor();
     document.getElementById('qw-login-nick').value = v.nick;
     document.getElementById('qw-login-email').value = v.email;
+    var pwdEl = document.getElementById('qw-login-pwd');
+    if (pwdEl) pwdEl.value = localStorage.getItem('qw_user_pwd') || '';
     bd.classList.add('qw-open');
     setTimeout(function(){ document.getElementById('qw-login-nick').focus(); }, 100);
   }
@@ -910,21 +945,46 @@
   function doLogin() {
     var nick = document.getElementById('qw-login-nick').value.trim();
     var email = document.getElementById('qw-login-email').value.trim();
+    var pwd = (document.getElementById('qw-login-pwd') || {}).value || '';
     if (!nick) { document.getElementById('qw-login-nick').focus(); return; }
     if (!email || email.indexOf('@') < 0) { document.getElementById('qw-login-email').focus(); return; }
-    try {
-      localStorage.setItem(QW_NICK, nick);
-      localStorage.setItem(QW_EMAIL, email);
-    } catch (e) {}
-    closeLogin();
-    refreshLoginUI();
-    alert('欢迎，' + nick);
+    if (!pwd) { if (document.getElementById('qw-login-pwd')) document.getElementById('qw-login-pwd').focus(); return; }
+    var btn = document.getElementById('qw-login-submit');
+    if (btn) btn.disabled = true;
+    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ event: 'QW_USER_AUTH', nick: nick, email: email, password: pwd })
+    }).then(function(r){return r.json();}).then(function(r){
+      if (btn) btn.disabled = false;
+      if (r.code !== 0) { alert(r.message || '登录失败'); return; }
+      try {
+        localStorage.setItem(QW_NICK, nick);
+        localStorage.setItem(QW_EMAIL, email);
+        localStorage.setItem('qw_user_pwd', pwd);
+      } catch (e) {}
+      closeLogin();
+      refreshLoginUI();
+      syncLikesByEmail();
+    }).catch(function(){
+      if (btn) btn.disabled = false;
+      // 网络异常时仍允许本地登录
+      try { localStorage.setItem(QW_NICK, nick); localStorage.setItem(QW_EMAIL, email); } catch (e) {}
+      closeLogin(); refreshLoginUI();
+    });
   }
   function logout() {
     try { localStorage.removeItem(QW_NICK); localStorage.removeItem(QW_EMAIL); } catch (e) {}
     refreshLoginUI();
   }
 
+  function recordLikeSideChannel(commentId) {
+    var v = getVisitor();
+    if (!v.email || !commentId) return;
+    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ event: 'COMMENT_LIKE', commentId: commentId, email: v.email })
+    }).catch(function(){});
+  }
   function markLiked() {
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
       var id = c.id || '';
