@@ -1,0 +1,8 @@
+﻿{
+  "name": "twikoo-netlify-deploy",
+  "private": true,
+  "dependencies": {
+    "twikoo-netlify": "1.7.24"
+  }
+}
+

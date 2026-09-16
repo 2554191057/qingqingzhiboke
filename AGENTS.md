@@ -30,7 +30,7 @@
 ## 在线部署（每次修改后必须执行）
 **用户固定要求（2026-09-15 确认）：部署链接一律为 `https://qqzttkx.ficp.fun/`。免费档资源二次更新返回 403（update function is disabled），故每次部署=新建资源 + 花生壳控制台删旧绑主域名（用户已接受该方案）。**
 
-- 公网入口为 `yanzheng.html`（图形验证码，验证通过跳 boke.html；背景已对齐主站日间 #edf2fa / 夜间 #06111f 按时间自动切换）；主域名 `https://qqzttkx.ficp.fun/` 当前绑定资源 `1789526813930880719`（临时域名 https://kfibxa.gicp.fun，已线上验证含看板娘集成、栖光集日间样式与顶栏、访客聊天室 chat.html）。
+- 公网入口为 `yanzheng.html`（图形验证码，验证通过跳 boke.html；背景已对齐主站日间 #edf2fa / 夜间 #06111f 按时间自动切换）；主域名 `https://qqzttkx.ficp.fun/` 当前绑定资源 `1789533091330468453`（临时域名 https://prjgi7.gicp.fun，已线上验证含看板娘集成、栖光集日间样式与顶栏、访客聊天室 chat.html 已接 Twikoo）。
 - 页面：boke（首页）/ wenzhang（文章）/ wangpan（资源）/ chat（访客聊天室，已接入 Twikoo 跨访客留言，后端=腾讯云 CloudBase 免费体验版）/ shengri（生日）/ yanzheng（验证入口）。
 
 ## 访客聊天室（Twikoo + CloudBase，2026-09-16 接入）
@@ -39,7 +39,7 @@
 - 控制台已配置：身份认证→登录方式→允许匿名登入（开）；云函数→权限控制→`{"*": {"invoke": true}}`（允许所有用户调用，含匿名）。
 - 前端：chat.html 引入 `https://registry.npmmirror.com/twikoo/1.7.24/files/dist/twikoo.all.min.(js|css)`，`twikoo.init({envId: 'qqzchat-d4gzkl19e2eab7a75', region: 'ap-shanghai', path: 'chat'})`。
 - 验证：部署后打开 https://qqzttkx.ficp.fun/chat.html 应能加载评论框并留言；控制台云函数"日志"可见调用记录。
-- 旧资源链（每代删旧绑新）：…→ rz6zho(1789525694603483922，已删) → 2kchoo(1789526241345138590，已删) → kfibxa(1789526813930880719，当前)。
+- 旧资源链（每代删旧绑新）：…→ rz6zho(1789525694603483922，已删) → 2kchoo(1789526241345138590，已删) → kfibxa(1789526813930880719，已删) → prjgi7(1789533091330468453，当前)。
 
 **每次 git 提交后必须同步执行一次在线部署（新建资源）：**
 
