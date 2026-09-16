@@ -66,20 +66,7 @@
       let id = localStorage.getItem("modelId");
       if (this.useCDN) {
         if (!this.modelList) await this.loadModelList();
-        // 找下一个资源可用的模型
-        var next = ++id;
-        var tried = 0;
-        while (tried < this.modelList.models.length) {
-          if (next >= this.modelList.models.length) next = 0;
-          var variants = this.modelList.models[next];
-          if (variants && variants[0]) {
-            try {
-              var r = await fetch(this.cdnPath + 'model/' + variants[0] + '/index.json'); 
-              if (r.ok) break;
-            } catch(e) {}
-          }
-          next++; tried++;
-        }
+        const next = ++id >= this.modelList.models.length ? 0 : id;
         this.loadModel(next, 0, this.modelList.messages[next]);
       } else {
         fetch(`${this.apiPath}switch/?id=${id}`)
@@ -92,6 +79,17 @@
       localStorage.setItem("modelId", id);
       localStorage.setItem("modelTexturesId", tid);
       showMessage(msg, 4000, 10);
+      // 销毁旧 canvas，避免 live2d 上下文残留导致新模型不渲染
+      var container = document.getElementById('live2d');
+      if (container) {
+        container.innerHTML = '';
+        var cv = document.createElement('canvas');
+        cv.id = 'live2d-canvas';
+        cv.style.width = '100%';
+        cv.style.height = '100%';
+        cv.style.display = 'block';
+        container.appendChild(cv);
+      }
       if (this.useCDN) {
         if (!this.modelList) await this.loadModelList();
         const variants = this.modelList.models[id] || this.modelList.models[20] || this.modelList.models[0];
