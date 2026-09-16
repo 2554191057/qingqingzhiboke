@@ -38,19 +38,27 @@
     '.qw-body #twikoo{background:transparent!important;display:flex!important;flex-direction:column!important;min-height:0!important;flex:1!important;}',
     '.qw-body #twikoo .tk-comments{order:1!important;flex:1 1 auto!important;min-height:0!important;display:flex!important;flex-direction:column!important;}',
     '.qw-body #twikoo .tk-comments-container{flex:1!important;max-height:none!important;overflow-y:auto!important;padding:10px 0 12px;background:transparent!important;overscroll-behavior:contain;}',
-    '.qw-body #twikoo .tk-submit{order:2!important;flex-shrink:0!important;background:transparent!important;padding:14px 0 0;border-top:1px solid var(--jp-line);}',
+    '.qw-body #twikoo .tk-submit{order:2!important;flex-shrink:0!important;background:transparent!important;padding:14px 0 0;border-top:1px solid var(--jp-line);display:none!important;}',
+    '.qw-body #twikoo .tk-submit.qw-open{display:block!important;}',
     '.qw-body #twikoo .tk-submit .tk-row{background:transparent!important;margin:0!important;}',
     '.qw-body #twikoo .tk-submit .tk-row>.tk-avatar{display:none!important;}',
     '.qw-body #twikoo .tk-submit .tk-col{width:100%!important;padding:0!important;}',
     '.qw-body #twikoo .tk-meta-input{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;}',
-    '.qw-body #twikoo .tk-meta-input .el-input{margin:0!important;}',
-    '.qw-body #twikoo .el-input-group__prepend{background:transparent!important;border:none!important;color:var(--jp-muted)!important;font-size:10px!important;padding:0 8px 0 2px!important;box-shadow:none!important;}',
-    '.qw-body #twikoo .el-input__inner{border:1px solid var(--jp-line)!important;border-radius:7px!important;background:var(--jp-paper)!important;color:var(--jp-ink)!important;font-size:12px!important;padding:8px 11px!important;height:auto!important;box-shadow:none!important;}',
+    '.qw-body #twikoo .tk-meta-input .el-input{margin:0!important;min-width:0!important;}',
+    '.qw-body #twikoo .tk-meta-input .el-input:nth-child(3){grid-column:1 / -1;}',
+    '.qw-body #twikoo .el-input-group__prepend{background:transparent!important;border:none!important;color:var(--jp-muted)!important;font-size:10px!important;padding:0 8px 0 2px!important;box-shadow:none!important;white-space:nowrap;}',
+    '.qw-body #twikoo .el-input__inner{border:1px solid var(--jp-line)!important;border-radius:7px!important;background:var(--jp-paper)!important;color:var(--jp-ink)!important;font-size:12px!important;padding:8px 11px!important;height:auto!important;box-shadow:none!important;min-width:0!important;flex:1!important;}',
     '.qw-body #twikoo .el-input__inner:focus{outline:1px solid var(--jp-accent)!important;}',
+    '.qw-body #twikoo .el-input-group{display:flex!important;align-items:center!important;}',
     '.qw-body #twikoo .tk-input.el-textarea{margin-top:10px!important;}',
-    '.qw-body #twikoo .tk-input textarea{border:1px solid var(--jp-line)!important;border-radius:7px!important;background:var(--jp-paper)!important;color:var(--jp-ink)!important;font-size:12px!important;padding:9px 11px!important;resize:vertical;max-height:140px;box-shadow:none!important;}',
+    '.qw-body #twikoo .tk-input textarea{border:1px solid var(--jp-line)!important;border-radius:7px!important;background:var(--jp-paper)!important;color:var(--jp-ink)!important;font-size:12px!important;padding:9px 11px!important;resize:vertical;max-height:140px;box-shadow:none!important;width:100%!important;}',
     '.qw-body #twikoo .tk-input textarea:focus{outline:1px solid var(--jp-accent)!important;}',
     '.qw-body #twikoo .el-input__count{color:var(--jp-muted)!important;font-size:10px!important;}',
+    '/* 底部"评论"按钮（点击展开输入区） */',
+    '.qw-comment-btn{margin-top:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border:1px dashed var(--jp-line);border-radius:10px;background:var(--jp-paper);color:var(--jp-muted);font-size:12px;cursor:pointer;transition:border-color .2s ease,color .2s ease,background .2s ease;}',
+    '.qw-comment-btn:hover{border-color:var(--jp-accent);color:var(--jp-accent);background:var(--jp-glow);}',
+    '.qw-comment-btn svg{width:15px;height:15px;flex-shrink:0;}',
+    '.qw-comment-btn.qw-hide{display:none!important;}',
     '.qw-body #twikoo .tk-submit-action-icon{color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-submit-action-icon svg{width:15px;height:15px;}',
     '.qw-body #twikoo .tk-row-actions-start .tk-submit-action-icon,.qw-body #twikoo .tk-row-actions-start button{color:var(--jp-muted)!important;}',
@@ -92,7 +100,7 @@
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，填写昵称后即可参与交流。</p>' +
-    '<div class="qw-body"><div id="tcomment"></div></div>' +
+    '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div>' +
     '</div></div>';
 
   var style = document.createElement('style');
@@ -149,6 +157,18 @@
   closeBtn.addEventListener('click', closeChat);
   backdrop.addEventListener('click', function (e) { if (e.target === backdrop) closeChat(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
+
+  // 底部"评论"按钮 → 展开 Twikoo 输入区（昵称/邮箱/网址 + 消息框）
+  var commentBtn = document.getElementById('qw-comment-btn');
+  commentBtn.addEventListener('click', function () {
+    if (!backdrop.classList.contains('qw-open')) openChat();
+    var submit = document.querySelector('.qw-body #twikoo .tk-submit');
+    if (!submit) { setTimeout(function () { commentBtn.click(); }, 300); return; }
+    submit.classList.add('qw-open');
+    commentBtn.classList.add('qw-hide');
+    var ta = submit.querySelector('textarea');
+    if (ta) { setTimeout(function () { ta.focus(); }, 50); }
+  });
 
   // 拦截导航里的"聊天室"链接（fklts.html / chat.html）→ 打开悬浮弹窗，不跳转
   document.addEventListener('click', function (e) {
