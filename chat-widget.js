@@ -280,11 +280,13 @@
     '</div></div>' +
     '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
     '<div class="qw-login-panel">' +
-    '<h3>登录发言</h3><p>设置昵称、邮箱和密码，多设备可同步登录</p>' +
-    '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20">' +
-    '<input type="email" id="qw-login-email" placeholder="邮箱（仅用于身份识别，不公开）">' +
-    '<input type="password" id="qw-login-pwd" placeholder="密码（多设备同步登录用）">' +
+    '<h3 id="qw-login-title">登录发言</h3><p id="qw-login-sub">已有账号？输入邮箱和密码登录</p>' +
+    '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20" style="display:none">' +
+    '<input type="email" id="qw-login-email" placeholder="邮箱">' +
+    '<input type="password" id="qw-login-pwd" placeholder="密码">' +
     '<button id="qw-login-submit">登 录</button>' +
+    '<p id="qw-login-toggle" style="text-align:center;margin:12px 0 0;font-size:11px;color:var(--jp-accent);cursor:pointer;">没有账号？点击注册</p>' +
+    '<p id="qw-login-msg" style="text-align:center;margin:8px 0 0;font-size:11px;color:#e74c3c;min-height:14px;"></p>' +
     '</div></div>' +
     /* 自绘管理员面板 */
     '<div id="qw-admin-backdrop" class="qw-admin-backdrop">' +
@@ -568,7 +570,10 @@
   if (loginSubmit) loginSubmit.addEventListener('click', doLogin);
   var loginClose = document.querySelector('#qw-login-backdrop .qw-login-panel');
   if (loginClose) loginClose.addEventListener('click', function (e) { e.stopPropagation(); });
-  document.getElementById('qw-login-backdrop').addEventListener('click', closeLogin);
+  document.getElementById('qw-login-backdrop').addEventListener('click', function(e){ if(e.target.id==='qw-login-backdrop') closeLogin(); });
+  document.getElementById('qw-login-toggle').addEventListener('click', function(){
+    setLoginMode(loginMode === 'login' ? 'register' : 'login');
+  });
   closeBtn.addEventListener('click', closeChat);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
   // 仅 X 按钮和 Esc 关闭，不响应遮罩点击
@@ -1060,16 +1065,40 @@
       if (panel) panel.classList.remove('qw-logged-in');
     }
   }
+  var loginMode = 'login'; // 'login' or 'register'
+  function setLoginMode(mode) {
+    loginMode = mode;
+    var nickEl = document.getElementById('qw-login-nick');
+    var titleEl = document.getElementById('qw-login-title');
+    var subEl = document.getElementById('qw-login-sub');
+    var btnEl = document.getElementById('qw-login-submit');
+    var toggleEl = document.getElementById('qw-login-toggle');
+    if (mode === 'register') {
+      nickEl.style.display = '';
+      titleEl.textContent = '注册账号';
+      subEl.textContent = '设置昵称、邮箱和密码';
+      btnEl.textContent = '注 册';
+      toggleEl.textContent = '已有账号？点击登录';
+    } else {
+      nickEl.style.display = 'none';
+      titleEl.textContent = '登录发言';
+      subEl.textContent = '输入邮箱和密码登录';
+      btnEl.textContent = '登 录';
+      toggleEl.textContent = '没有账号？点击注册';
+    }
+    document.getElementById('qw-login-msg').textContent = '';
+  }
   function openLogin() {
     var bd = document.getElementById('qw-login-backdrop');
     if (!bd) return;
     var v = getVisitor();
-    document.getElementById('qw-login-nick').value = v.nick;
-    document.getElementById('qw-login-email').value = v.email;
+    setLoginMode('login');
+    document.getElementById('qw-login-nick').value = '';
+    document.getElementById('qw-login-email').value = v.email || '';
     var pwdEl = document.getElementById('qw-login-pwd');
     if (pwdEl) pwdEl.value = localStorage.getItem('qw_user_pwd') || '';
     bd.classList.add('qw-open');
-    setTimeout(function(){ document.getElementById('qw-login-nick').focus(); }, 100);
+    setTimeout(function(){ document.getElementById('qw-login-email').focus(); }, 100);
   }
   function closeLogin() {
     document.getElementById('qw-login-backdrop').classList.remove('qw-open');
@@ -1077,20 +1106,23 @@
   function doLogin() {
     var nick = document.getElementById('qw-login-nick').value.trim();
     var email = document.getElementById('qw-login-email').value.trim();
-    var pwd = (document.getElementById('qw-login-pwd') || {}).value || '';
-    if (!nick) { document.getElementById('qw-login-nick').focus(); return; }
-    if (!email || email.indexOf('@') < 0) { document.getElementById('qw-login-email').focus(); return; }
-    if (!pwd) { if (document.getElementById('qw-login-pwd')) document.getElementById('qw-login-pwd').focus(); return; }
+    var pwd = document.getElementById('qw-login-pwd').value || '';
+    var msgEl = document.getElementById('qw-login-msg');
+    if (loginMode === 'register' && !nick) { msgEl.textContent = '请输入昵称'; return; }
+    if (!email || email.indexOf('@') < 0) { msgEl.textContent = '请输入有效邮箱'; return; }
+    if (!pwd) { msgEl.textContent = '请输入密码'; return; }
     var btn = document.getElementById('qw-login-submit');
     if (btn) btn.disabled = true;
+    var bodyData = { event: 'QW_USER_AUTH', email: email, password: pwd };
+    if (loginMode === 'register') bodyData.nick = nick;
     fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ event: 'QW_USER_AUTH', nick: nick, email: email, password: pwd })
+      body: JSON.stringify(bodyData)
     }).then(function(r){return r.json();}).then(function(r){
       if (btn) btn.disabled = false;
-      if (r.code !== 0) { alert(r.message || '登录失败'); return; }
+      if (r.code !== 0) { msgEl.textContent = r.message || '操作失败'; return; }
       try {
-        localStorage.setItem(QW_NICK, nick);
+        localStorage.setItem(QW_NICK, r.data.nick);
         localStorage.setItem(QW_EMAIL, email);
         localStorage.setItem('qw_user_pwd', pwd);
       } catch (e) {}
@@ -1099,9 +1131,7 @@
       syncLikesByEmail();
     }).catch(function(){
       if (btn) btn.disabled = false;
-      // 网络异常时仍允许本地登录
-      try { localStorage.setItem(QW_NICK, nick); localStorage.setItem(QW_EMAIL, email); } catch (e) {}
-      closeLogin(); refreshLoginUI();
+      msgEl.textContent = '网络错误，请重试';
     });
   }
   function logout() {
