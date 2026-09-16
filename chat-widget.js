@@ -80,10 +80,23 @@
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-row>.tk-action{margin-left:0!important;margin-right:auto!important;}',
     '.qw-body #twikoo .tk-action .tk-action-link{color:var(--jp-muted)!important;font-size:10px!important;padding:0!important;}',
     '.qw-body #twikoo .tk-action-icon svg{width:12px!important;height:12px!important;}',
-    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:14px 14px 14px 4px!important;padding:9px 13px!important;font-size:13px!important;line-height:1.7!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:14px 14px 4px 14px!important;}',
+    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:16px 16px 16px 4px!important;padding:10px 14px!important;font-size:14px!important;line-height:1.7!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;width:fit-content!important;max-width:100%!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:16px 16px 4px 16px!important;}',
     '.qw-body #twikoo .tk-content p{color:var(--jp-ink)!important;margin:0!important;}',
     '.qw-body #twikoo .tk-content a{color:var(--jp-accent)!important;}',
+    /* ===== 微信聊天流：隐藏评论区元素（统计/排序/设备/footer） ===== */
+    '.qw-body #twikoo .tk-comments-title,.qw-body #twikoo .tk-action-bar,.qw-body #twikoo .tk-comments-switch,.qw-body #twikoo .tk-extra,.qw-body #twikoo .tk-extras,.qw-body #twikoo .tk-footer{display:none!important;}',
+    '.qw-body #twikoo .tk-comments-container{padding-top:6px!important;}',
+    /* 操作按钮：悬停/聚焦才显示（微信式） */
+    '.qw-body #twikoo .tk-action{opacity:0!important;transition:opacity .18s ease!important;}',
+    '.qw-body #twikoo .tk-comment:hover .tk-action,.qw-body #twikoo .tk-action:focus-within{opacity:1!important;}',
+    /* 时间隐藏；自己消息隐藏昵称（微信私聊感） */
+    '.qw-body #twikoo .tk-time{display:none!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-row .tk-nick{display:none!important;}',
+    /* 气泡更圆更大（微信 16px 圆角） */
+    '.qw-body #twikoo .tk-content{border-radius:16px 16px 16px 4px!important;padding:10px 14px!important;font-size:14px!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{border-radius:16px 16px 4px 16px!important;}',
+    '.qw-body #twikoo .tk-comment{margin-bottom:12px!important;}',
     /* ===== 回复 = 微信式引用块（灰底小卡片，非嵌套评论列表） ===== */
     '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{margin:6px 0 0!important;padding:0!important;width:100%!important;align-self:stretch!important;display:block!important;}',
     '.qw-body #twikoo .tk-expand-wrap,.qw-body #twikoo .tk-expand{display:none!important;}',
