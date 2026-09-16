@@ -543,7 +543,7 @@
     if (_refreshTimer) clearInterval(_refreshTimer);
     _refreshTimer = setInterval(function(){
       if (backdrop.classList.contains('qw-open')) refreshComments();
-    }, 15000);
+    }, 5000);
   }
 
   function closeChat() {
