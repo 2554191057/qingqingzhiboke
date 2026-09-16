@@ -733,7 +733,7 @@
   adminBtn.addEventListener('click', function () {
     openAdmin();
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAdmin(); });
+  // 管理员面板只能点 X 关闭（不响应 Esc 和遮罩点击）
 
   // 赞/踩操作：赞与踩互斥自动切换（已赞点踩=取消赞变踩，反之亦然）；再点同一个=取消；持久高亮
   document.addEventListener('click', function (e) {
