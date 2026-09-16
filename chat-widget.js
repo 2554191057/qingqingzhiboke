@@ -30,6 +30,11 @@
     '.qw-panel header p .qw-dot{width:6px;height:6px;border-radius:50%;background:#3ecf6a;box-shadow:0 0 6px rgba(62,207,106,.7);}',
     '.qw-close{margin-left:auto;padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
     '.qw-close:hover{background:var(--jp-glow);color:var(--jp-ink);}',
+    '.qw-admin-btn{margin-left:auto;padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
+    '.qw-admin-btn:hover{background:var(--jp-glow);color:var(--jp-ink);}',
+    '.qw-admin-btn.qw-admin-on{color:#e8a33d;}',
+    '.qw-close{margin-left:0;padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
+    '.qw-close:hover{background:var(--jp-glow);color:var(--jp-ink);}',
     '.qw-notice{font-size:10px;color:var(--jp-muted);padding:12px 20px;background:var(--jp-glow);}',
     '.qw-body{padding:0 20px 18px;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;}',
     '/* ===== Twikoo → qiguangji 覆盖 ===== */',
@@ -90,22 +95,71 @@
     /* 操作按钮：悬停/聚焦才显示（微信式） */
     '.qw-body #twikoo .tk-action{opacity:0!important;transition:opacity .18s ease!important;}',
     '.qw-body #twikoo .tk-comment:hover .tk-action,.qw-body #twikoo .tk-action:focus-within{opacity:1!important;}',
-    /* 时间隐藏；自己消息隐藏昵称（微信私聊感） */
+    /* 时间用居中时间条显示（微信式），隐藏每条小时间 */
     '.qw-body #twikoo .tk-time{display:none!important;}',
+    '.qw-body #twikoo .qw-time-sep{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:10px 0 6px!important;opacity:.8!important;letter-spacing:.5px!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-row .tk-nick{display:none!important;}',
-    /* 气泡更圆更大（微信 16px 圆角） */
-    '.qw-body #twikoo .tk-content{border-radius:14px 14px 14px 4px!important;padding:8px 12px!important;font-size:13px!important;line-height:1.65!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{border-radius:14px 14px 4px 14px!important;}',
-    '.qw-body #twikoo .tk-comment{margin-bottom:10px!important;}',
-    '.qw-body #twikoo .tk-comment .tk-avatar{width:34px!important;height:34px!important;font-size:16px!important;}',
-    '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 44px)!important;}',
+    /* 气泡（紧凑） */
+    '.qw-body #twikoo .tk-content{border-radius:12px 12px 12px 4px!important;padding:6px 10px!important;font-size:12px!important;line-height:1.55!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{border-radius:12px 12px 4px 12px!important;}',
+    '.qw-body #twikoo .tk-comment{margin-bottom:7px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-avatar{width:28px!important;height:28px!important;font-size:13px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 38px)!important;}',
+    '.qw-body #twikoo .tk-comment .tk-row{margin:0 0 2px!important;gap:6px!important;}',
+    '.qw-body #twikoo .tk-nick strong{font-size:11px!important;color:var(--jp-muted)!important;font-weight:600!important;}',
     /* ===== QQ式引用回复：气泡内引用栏（细淡灰条） ===== */
     '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.08)!important;border-left:2px solid var(--jp-line)!important;border-radius:3px!important;padding:3px 8px!important;font-size:11px!important;line-height:1.5!important;color:var(--jp-muted)!important;margin:0 0 5px!important;display:-webkit-box!important;-webkit-line-clamp:1!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;}',
     '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{display:none!important;}',
     '.qw-body #twikoo .tk-expand-wrap,.qw-body #twikoo .tk-expand{display:none!important;}',
     '.qw-body #twikoo .tk-footer{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:12px 0 0!important;background:transparent!important;}',
     '.qw-body #twikoo .tk-footer a,.qw-body #twikoo .tk-footer .tk-action-link{color:var(--jp-muted)!important;}',
+    /* Twikoo 管理抽屉（隐藏，改用自绘管理面板） */
     '.qw-body #twikoo .tk-admin-container{display:none!important;}',
+    /* ===== 自绘管理员面板（毛玻璃 · 日夜自适应） ===== */
+    '.qw-admin-backdrop{position:fixed;inset:0;z-index:130;background:rgba(1,6,17,.68);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;}',
+    '.qw-admin-backdrop.qw-open{display:flex;animation:qwFade .25s ease;}',
+    '.qw-admin-panel{width:min(560px,100%);max-height:calc(100dvh - 40px);display:flex;flex-direction:column;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;box-shadow:0 28px 100px rgba(0,0,0,.45),0 0 40px var(--jp-glow);overflow:hidden;color:var(--jp-ink);animation:qwPop .3s cubic-bezier(.16,1,.3,1);}',
+    '.qw-admin-panel>header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--jp-line);background:linear-gradient(110deg,var(--jp-glow),transparent);}',
+    '.qw-admin-panel h2{margin:0;font-weight:650;font-size:17px;color:var(--jp-ink);}',
+    '.qw-admin-panel header p{margin:4px 0 0;font-size:10px;color:var(--jp-muted);}',
+    '.qw-admin-body{padding:18px 20px 20px;overflow-y:auto;flex:1;min-height:0;}',
+    '.qw-admin-form{max-width:320px;margin:40px auto;text-align:center;}',
+    '.qw-admin-form .qw-lock{width:58px;height:58px;margin:0 auto 14px;border-radius:50%;background:var(--jp-glow);color:var(--jp-accent);display:flex;align-items:center;justify-content:center;}',
+    '.qw-admin-form h3{margin:0 0 6px;font-size:17px;color:var(--jp-ink);}',
+    '.qw-admin-form .qw-sub{font-size:11px;color:var(--jp-muted);margin:0 0 18px;}',
+    '.qw-admin-form input{width:100%;box-sizing:border-box;border:1px solid var(--jp-line);border-radius:9px;background:var(--jp-paper);color:var(--jp-ink);font-size:13px;padding:11px 14px;outline:none;transition:border-color .2s ease,box-shadow .2s ease;}',
+    '.qw-admin-form input:focus{border-color:var(--jp-accent);box-shadow:0 0 0 3px var(--jp-glow);}',
+    '.qw-admin-form button.qw-login{width:100%;margin-top:12px;padding:11px;border:none;border-radius:9px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s ease,transform .2s ease;}',
+    '.qw-admin-form button.qw-login:hover{opacity:.9;transform:translateY(-1px);}',
+    '.qw-admin-form button.qw-login:disabled{opacity:.55;cursor:not-allowed;}',
+    '.qw-admin-err{font-size:11px;color:#e05b5b;margin-top:10px;min-height:15px;}',
+    '.qw-admin-stats{display:flex;gap:10px;margin-bottom:14px;}',
+    '.qw-admin-stats div{flex:1;text-align:center;padding:12px 8px;border:1px solid var(--jp-line);border-radius:10px;background:var(--jp-paper);}',
+    '.qw-admin-stats b{display:block;font-size:20px;color:var(--jp-accent);}',
+    '.qw-admin-stats span{font-size:10px;color:var(--jp-muted);}',
+    '.qw-admin-list{display:flex;flex-direction:column;gap:9px;}',
+    '.qw-admin-item{border:1px solid var(--jp-line);border-radius:11px;background:var(--jp-paper);padding:10px 12px;font-size:11px;}',
+    '.qw-admin-item .qw-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}',
+    '.qw-admin-item .qw-nick{font-weight:700;color:var(--jp-ink);font-size:12px;}',
+    '.qw-admin-item .qw-mail{color:var(--jp-accent);word-break:break-all;}',
+    '.qw-admin-item .qw-ip{color:var(--jp-muted);}',
+    '.qw-admin-item .qw-tm{color:var(--jp-muted);margin-left:auto;font-size:10px;}',
+    '.qw-admin-item .qw-cmt{color:var(--jp-ink);margin:7px 0;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;}',
+    '.qw-admin-item .qw-ops{display:flex;gap:7px;justify-content:flex-end;}',
+    '.qw-admin-item .qw-ops button{border:1px solid var(--jp-line);background:var(--jp-surface);color:var(--jp-muted);font-size:10px;padding:5px 10px;border-radius:7px;cursor:pointer;transition:all .2s ease;}',
+    '.qw-admin-item .qw-ops button.qw-del:hover{border-color:#e05b5b;color:#e05b5b;background:rgba(224,91,91,.08);}',
+    '.qw-admin-item .qw-ops button.qw-blk:hover{border-color:#e8a33d;color:#e8a33d;background:rgba(232,163,61,.08);}',
+    '.qw-admin-blocks{margin-top:16px;border-top:1px dashed var(--jp-line);padding-top:13px;}',
+    '.qw-admin-blocks h4{font-size:12px;color:var(--jp-muted);margin:0 0 9px;font-weight:600;}',
+    '.qw-admin-blocks .qw-blk-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--jp-line);font-size:11px;}',
+    '.qw-admin-blocks .qw-blk-item span{color:var(--jp-accent);word-break:break-all;flex:1;}',
+    '.qw-admin-blocks .qw-blk-item button{border:none;background:none;color:var(--jp-muted);font-size:10px;cursor:pointer;text-decoration:underline;padding:2px 6px;}',
+    '.qw-admin-blocks .qw-blk-item button:hover{color:#e05b5b;}',
+    '.qw-admin-empty{text-align:center;color:var(--jp-muted);font-size:12px;padding:30px 0;}',
+    '.qw-admin-logout{margin:16px auto 0;display:block;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;text-decoration:underline;padding:6px 12px;}',
+    '.qw-admin-logout:hover{color:#e05b5b;}',
+    '.qw-admin-loading{text-align:center;color:var(--jp-muted);font-size:12px;padding:26px 0;}',
+    '@media(max-width:640px){.qw-admin-panel{max-height:calc(100dvh - 24px);border-radius:16px;}.qw-admin-body{padding:14px 15px 16px;}}',
     '@media(max-width:640px){.qw-launcher{right:14px;bottom:16px;padding:11px 14px;}.qw-backdrop{padding:12px;}.qw-panel{max-height:calc(100dvh - 24px);border-radius:16px;}.qw-panel>header{padding:15px 16px;}.qw-body{padding:0 15px 14px;}.qw-notice{padding:10px 16px;font-size:9px;}.qw-body #twikoo .tk-comment .tk-avatar{width:32px!important;height:32px!important;}.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 42px)!important;}.qw-body #twikoo .tk-children{margin-left:42px!important;}}',
     '@media(prefers-reduced-motion:reduce){.qw-launcher,.qw-backdrop,.qw-panel{animation:none!important;transition:none!important}}'
   ].join('\n');
@@ -119,10 +173,21 @@
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>' +
     '<div><h2 id="qw-title">访客聊天室</h2><p><span class="qw-dot"></span>实时同步 · Powered by Twikoo</p></div>' +
+    '<button id="qw-admin-btn" class="qw-admin-btn" aria-label="管理员" title="管理员登录"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，填写昵称后即可参与交流。</p>' +
     '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div>' +
+    '</div></div>' +
+    /* 自绘管理员面板 */
+    '<div id="qw-admin-backdrop" class="qw-admin-backdrop">' +
+    '<div class="qw-admin-panel" role="dialog" aria-modal="true" aria-labelledby="qw-admin-title">' +
+    '<header>' +
+    '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>' +
+    '<div><h2 id="qw-admin-title">评论管理</h2><p>管理员 · 删除评论 / 拉黑邮箱</p></div>' +
+    '<button class="qw-close" data-qw-admin-close aria-label="关闭" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+    '</header>' +
+    '<div class="qw-admin-body" id="qw-admin-body"></div>' +
     '</div></div>';
 
   var style = document.createElement('style');
@@ -216,11 +281,67 @@
       replies.style.display = 'none';
     }
   }
+  // ===== 消息时间正序（早发言在上）+ 具体时间显示 =====
+  function getMsgTime(c) {
+    var t = c.querySelector('.tk-time time');
+    if (t) {
+      var ts = t.getAttribute('datetime') || t.getAttribute('title') || t.textContent;
+      var v = Date.parse(ts);
+      if (!isNaN(v)) return v;
+    }
+    return 0;
+  }
+  function sortComments() {
+    var container = document.querySelector('.qw-body #twikoo .tk-comments-container');
+    if (!container) return;
+    var comments = Array.prototype.slice.call(container.querySelectorAll(':scope > .tk-comment'));
+    comments.sort(function (a, b) { return getMsgTime(a) - getMsgTime(b); });
+    for (var i = 0; i < comments.length; i++) container.appendChild(comments[i]);
+  }
+  // ===== 居中时间条（微信式）：相邻消息间隔超过 5 分钟时插入 =====
+  function insertTimeSep() {
+    var container = document.querySelector('.qw-body #twikoo .tk-comments-container');
+    if (!container) return;
+    container.querySelectorAll('.qw-time-sep').forEach(function (s) { s.remove(); });
+    var comments = Array.prototype.slice.call(container.querySelectorAll(':scope > .tk-comment'));
+    var lastTs = 0;
+    for (var i = 0; i < comments.length; i++) {
+      var ts = getMsgTime(comments[i]);
+      if (lastTs === 0 || ts - lastTs > 5 * 60 * 1000) {
+        var d = new Date(ts);
+        var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+        var label = pad(d.getHours()) + ':' + pad(d.getMinutes());
+        if (d.getDate() !== new Date().getDate() || d.getMonth() !== new Date().getMonth()) {
+          label = pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + label;
+        }
+        var sep = document.createElement('div');
+        sep.className = 'qw-time-sep';
+        sep.textContent = label;
+        container.insertBefore(sep, comments[i]);
+      }
+      lastTs = ts;
+    }
+  }
+  function fixTimeText() {
+    var now = new Date();
+    document.querySelectorAll('.qw-body #twikoo .tk-time time').forEach(function (t) {
+      var ts = t.getAttribute('datetime') || t.getAttribute('title');
+      if (!ts) return;
+      var d = new Date(ts);
+      if (isNaN(d.getTime())) return;
+      var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+      var s = pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+      if (d.getFullYear() !== now.getFullYear()) s = d.getFullYear() + '-' + s;
+      t.textContent = s;
+    });
+  }
   var markTimer = null;
   function scheduleMark() {
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
       restructureReplies();
+      sortComments();
+      insertTimeSep();
       markSelf();
     }, 250);
   }
@@ -245,6 +366,209 @@
   closeBtn.addEventListener('click', closeChat);
   backdrop.addEventListener('click', function (e) { if (e.target === backdrop) closeChat(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
+
+  // ===== 管理员面板（自绘：登录 → 评论管理 / 删除 / 拉黑邮箱） =====
+  var adminBtn = document.getElementById('qw-admin-btn');
+  var adminBackdrop = document.getElementById('qw-admin-backdrop');
+  var adminBody = document.getElementById('qw-admin-body');
+  var adminToken = '';
+  var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
+
+  function adminPost(data) {
+    return fetch(TWIKOO_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) { return r.json(); });
+  }
+
+  function openAdmin() {
+    adminBackdrop.classList.add('qw-open');
+    document.body.style.overflow = 'hidden';
+    adminToken = '';
+    try { adminToken = localStorage.getItem('qw_admin_token') || ''; } catch (e) {}
+    if (adminToken) {
+      adminBtn.classList.add('qw-admin-on');
+      renderManageView();
+    } else {
+      adminBtn.classList.remove('qw-admin-on');
+      renderLoginView();
+    }
+  }
+  function closeAdmin() {
+    adminBackdrop.classList.remove('qw-open');
+    if (!backdrop.classList.contains('qw-open')) document.body.style.overflow = '';
+  }
+  adminBackdrop.addEventListener('click', function (e) { if (e.target === adminBackdrop) closeAdmin(); });
+  adminBackdrop.querySelector('[data-qw-admin-close]').addEventListener('click', closeAdmin);
+
+  function renderLoginView() {
+    adminBody.innerHTML =
+      '<div class="qw-admin-form">' +
+      '<div class="qw-lock"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>' +
+      '<h3>管理员登录</h3>' +
+      '<p class="qw-sub">登录后可删除访客评论、查看邮箱并拉黑</p>' +
+      '<input id="qw-admin-pwd" type="password" placeholder="请输入管理密码" autocomplete="off">' +
+      '<button class="qw-login" id="qw-admin-login-btn">登 录</button>' +
+      '<div class="qw-admin-err" id="qw-admin-err"></div>' +
+      '</div>';
+    var input = document.getElementById('qw-admin-pwd');
+    var btn = document.getElementById('qw-admin-login-btn');
+    input.focus();
+    var doLogin = function () {
+      var pwd = input.value.trim();
+      if (!pwd) { document.getElementById('qw-admin-err').textContent = '请输入管理密码'; return; }
+      btn.disabled = true; btn.textContent = '登录中…';
+      adminPost({ event: 'LOGIN', password: pwd }).then(function (res) {
+        if (res && res.code === 0) {
+          try { localStorage.setItem('qw_admin_token', pwd); } catch (e) {}
+          adminToken = pwd;
+          adminBtn.classList.add('qw-admin-on');
+          renderManageView();
+        } else {
+          document.getElementById('qw-admin-err').textContent = (res && res.message) || '登录失败';
+          btn.disabled = false; btn.textContent = '登 录';
+        }
+      }).catch(function () {
+        document.getElementById('qw-admin-err').textContent = '网络异常，请重试';
+        btn.disabled = false; btn.textContent = '登 录';
+      });
+    };
+    btn.addEventListener('click', doLogin);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+  }
+
+  function fmtTime(ts) {
+    if (!ts) return '';
+    var d = new Date(Number(ts));
+    if (isNaN(d.getTime())) return '';
+    var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+    var s = pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    if (d.getFullYear() !== new Date().getFullYear()) s = d.getFullYear() + '-' + s;
+    return s;
+  }
+
+  function renderManageView() {
+    adminBody.innerHTML = '<div class="qw-admin-loading">加载评论数据…</div>';
+    var blocks = [];
+    adminPost({ event: 'QW_BLOCK_LIST', accessToken: adminToken }).then(function (r) {
+      if (r && r.code === 0) blocks = r.data || [];
+      return adminPost({ event: 'COMMENT_GET_FOR_ADMIN', accessToken: adminToken, per: 50, page: 1 });
+    }).then(function (r1) {
+      if (!r1 || r1.code !== 0) {
+        adminBody.innerHTML = '<div class="qw-admin-loading">' + ((r1 && r1.message) || '登录已失效，请重新登录') + '</div>';
+        if (r1 && r1.code !== 0) { try { localStorage.removeItem('qw_admin_token'); } catch (e) {} adminBtn.classList.remove('qw-admin-on'); }
+        return;
+      }
+      var all = (r1.data || []).slice();
+      var count = r1.count || all.length;
+      var pages = Math.ceil(count / 50);
+      var seq = Promise.resolve();
+      for (var p = 2; p <= pages; p++) {
+        seq = seq.then(function (pg) {
+          return adminPost({ event: 'COMMENT_GET_FOR_ADMIN', accessToken: adminToken, per: 50, page: pg }).then(function (r) {
+            if (r && r.code === 0) all = all.concat(r.data || []);
+          });
+        }.bind(null, p));
+      }
+      seq.then(function () { renderManageList(all, blocks); });
+    }).catch(function () {
+      adminBody.innerHTML = '<div class="qw-admin-loading">网络异常，加载失败</div>';
+    });
+  }
+
+  function renderManageList(comments, blocks) {
+    var root = comments.filter(function (c) { return !c.rid; });
+    var html = '';
+    html += '<div class="qw-admin-stats">' +
+      '<div><b>' + (comments.length || 0) + '</b><span>全部评论</span></div>' +
+      '<div><b>' + (root.length || 0) + '</b><span>根评论</span></div>' +
+      '<div><b>' + (blocks.length || 0) + '</b><span>已拉黑邮箱</span></div>' +
+      '</div>';
+    html += '<div class="qw-admin-list">';
+    if (!comments.length) {
+      html += '<div class="qw-admin-empty">暂无评论</div>';
+    } else {
+      for (var i = 0; i < comments.length; i++) {
+        var c = comments[i];
+        html += '<div class="qw-admin-item" data-id="' + c._id + '">' +
+          '<div class="qw-hd"><span class="qw-nick">' + escHtml(c.nick || '匿名') + '</span>' +
+          (c.mail ? '<span class="qw-mail">' + escHtml(c.mail) + '</span>' : '') +
+          (c.ip ? '<span class="qw-ip">' + escHtml(c.ip) + '</span>' : '') +
+          '<span class="qw-tm">' + fmtTime(c.created) + '</span></div>' +
+          '<div class="qw-cmt">' + escHtml(stripHtml(c.comment)) + '</div>' +
+          '<div class="qw-ops">' +
+          '<button class="qw-del" data-act="del" data-id="' + c._id + '">删除</button>' +
+          (c.mail ? '<button class="qw-blk" data-act="blk" data-mail="' + escAttr(c.mail) + '">拉黑邮箱</button>' : '') +
+          '</div></div>';
+      }
+    }
+    html += '</div>';
+    html += '<div class="qw-admin-blocks"><h4>已拉黑邮箱（拉黑后无法发言）</h4>';
+    if (!blocks.length) {
+      html += '<div class="qw-admin-empty" style="padding:10px 0">暂无拉黑</div>';
+    } else {
+      for (var b = 0; b < blocks.length; b++) {
+        html += '<div class="qw-blk-item"><span>' + escHtml(blocks[b]) + '</span><button data-act="unblk" data-mail="' + escAttr(blocks[b]) + '">解除</button></div>';
+      }
+    }
+    html += '</div>';
+    html += '<button class="qw-admin-logout" data-act="logout">退出登录</button>';
+    adminBody.innerHTML = html;
+
+    adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-admin-blocks button, .qw-admin-logout').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var act = btn.getAttribute('data-act');
+        if (act === 'del') {
+          var id = btn.getAttribute('data-id');
+          if (confirm('确定删除这条评论吗？')) {
+            adminPost({ event: 'COMMENT_DELETE_FOR_ADMIN', accessToken: adminToken, id: id }).then(function (r) {
+              if (r && r.code === 0) renderManageView();
+              else alert((r && r.message) || '删除失败');
+            });
+          }
+        } else if (act === 'blk') {
+          var mail = btn.getAttribute('data-mail');
+          if (confirm('确定拉黑邮箱 ' + mail + ' 吗？拉黑后将无法发言。')) {
+            adminPost({ event: 'QW_BLOCK_ADD', accessToken: adminToken, mail: mail }).then(function (r) {
+              if (r && r.code === 0) renderManageView();
+              else alert((r && r.message) || '拉黑失败');
+            });
+          }
+        } else if (act === 'unblk') {
+          var umail = btn.getAttribute('data-mail');
+          if (confirm('确定解除拉黑 ' + umail + ' 吗？')) {
+            adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: umail }).then(function (r) {
+              if (r && r.code === 0) renderManageView();
+              else alert((r && r.message) || '操作失败');
+            });
+          }
+        } else if (act === 'logout') {
+          try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
+          adminToken = '';
+          adminBtn.classList.remove('qw-admin-on');
+          renderLoginView();
+        }
+      });
+    });
+  }
+
+  function escHtml(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function stripHtml(html) {
+    var d = document.createElement('div');
+    d.innerHTML = html || '';
+    return d.textContent || '';
+  }
+  function escAttr(s) {
+    return escHtml(s).replace(/'/g, '&#39;');
+  }
+
+  adminBtn.addEventListener('click', function () {
+    openAdmin();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAdmin(); });
 
   // 底部"评论"按钮 → 展开 Twikoo 输入区（昵称/邮箱/网址 + 消息框）
   var commentBtn = document.getElementById('qw-comment-btn');
