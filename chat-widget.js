@@ -387,8 +387,8 @@
     var submit = document.querySelector('.qw-body #twikoo .tk-submit');
     if (!submit) return;
     var inners = submit.querySelectorAll('.tk-meta-input .el-input__inner');
-    if (inners.length >= 1 && !inners[0].placeholder) inners[0].placeholder = '昵称';
-    if (inners.length >= 2 && !inners[1].placeholder) inners[1].placeholder = '邮箱';
+    if (inners.length >= 1) inners[0].placeholder = '昵称';
+    if (inners.length >= 2) inners[1].placeholder = '邮箱';
     var ta = submit.querySelector('textarea');
     if (ta && (!ta.placeholder || ta.placeholder === '友善交流，文明发言…')) ta.placeholder = '友善交流，文明发言…';
   }
