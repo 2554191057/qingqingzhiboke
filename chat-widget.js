@@ -230,6 +230,19 @@
     '.qw-admin-blocks .qw-blk-item button{border:none;background:none;color:var(--jp-muted);font-size:10px;cursor:pointer;text-decoration:underline;padding:2px 6px;}',
     '.qw-admin-blocks .qw-blk-item button:hover{color:#e05b5b;}',
     '.qw-admin-empty{text-align:center;color:var(--jp-muted);font-size:12px;padding:30px 0;}',
+    '.qw-mgmt-section{margin-top:16px;border-top:1px dashed var(--jp-line);padding-top:13px;}',
+    '.qw-mgmt-section h4{font-size:12px;color:var(--jp-muted);margin:0 0 9px;font-weight:600;}',
+    '.qw-mgmt-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--jp-line);font-size:11px;}',
+    '.qw-mgmt-item span{color:var(--jp-accent);word-break:break-all;flex:1;}',
+    '.qw-mgmt-item button{border:none;background:none;color:var(--jp-muted);font-size:10px;cursor:pointer;text-decoration:underline;padding:2px 6px;}',
+    '.qw-mgmt-item button:hover{color:#e05b5b;}',
+    '.qw-mgmt-input-row{display:flex;gap:6px;margin:8px 0;}',
+    '.qw-mgmt-input-row input{flex:1;border:1px solid var(--jp-line);border-radius:7px;background:var(--jp-paper);color:var(--jp-ink);padding:7px 10px;font-size:11px;outline:none;}',
+    '.qw-mgmt-input-row input:focus{border-color:var(--jp-accent);}',
+    '.qw-mgmt-input-row button{border:none;border-radius:7px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;}',
+    '.qw-mgmt-input-row .qw-add-blk{background:#e05b5b;color:#fff;}',
+    '.qw-mgmt-input-row .qw-add-wl{background:linear-gradient(120deg,#087fae,#4866db);color:#fff;}',
+    '.qw-admin-badge{display:inline-block;font-size:9px;background:linear-gradient(120deg,#f59e0b,#ef4444);color:#fff;padding:1px 5px;border-radius:4px;margin-left:4px;vertical-align:middle;font-weight:600;}',
     '.qw-admin-logout{margin:16px auto 0;display:block;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;text-decoration:underline;padding:6px 12px;}',
     '.qw-admin-logout:hover{color:#e05b5b;}',
     '.qw-admin-loading{text-align:center;color:var(--jp-muted);font-size:12px;padding:26px 0;}',
@@ -377,6 +390,37 @@
     });
   }
   // ===== 聊天气泡：识别"自己"的消息（对比 localStorage 昵称）→ 右侧 =====
+  var wlEmailSet = {};
+  function loadWhitelist() {
+    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ event:'QW_ADMIN_CHECK_WHITELIST', email: (function(){try{return localStorage.getItem('qw_visitor_email')||'';}catch(e){return '';}})() })
+    }).then(function(r){return r.json();}).then(function(r){
+      if (r && r.code === 0 && r.data.whitelisted) {
+        var v = getVisitor();
+        if (v.email) wlEmailSet[v.email] = 1;
+        addWlBadges();
+      }
+    }).catch(function(){});
+  }
+  function addWlBadges() {
+    var list = document.querySelectorAll('.qw-body #twikoo .tk-comment');
+    for (var i = 0; i < list.length; i++) {
+      var cc = list[i];
+      var nickEl = cc.querySelector('.tk-nick');
+      if (!nickEl) continue;
+      var cMail = '';
+      try {
+        var vue = cc.__vue__;
+        if (vue && vue.comment) cMail = (vue.comment.mail || '').trim().toLowerCase();
+      } catch(e) {}
+      if (cMail && wlEmailSet[cMail] && !nickEl.querySelector('.qw-admin-badge')) {
+        var badge = document.createElement('span');
+        badge.className = 'qw-admin-badge';
+        badge.textContent = '管理员';
+        nickEl.appendChild(badge);
+      }
+    }
+  }
   function markSelf() {
     var info = {};
     try { info = JSON.parse(localStorage.getItem('twikoo') || '{}'); } catch (e) {}
@@ -523,6 +567,7 @@
   if (tcommentEl && window.MutationObserver) {
     var mo = new MutationObserver(function () { scheduleMark(); });
     mo.observe(tcommentEl, { childList: true, subtree: true });
+  loadWhitelist();
   }
 
   function syncLikesByEmail() {
@@ -726,7 +771,7 @@
           });
         }.bind(null, p));
       }
-      seq.then(function () { renderManageList(all, blocks, likeMap); });
+      seq.then(function () { renderManageList(all, blocks, wlist, likeMap); });
     }).catch(function () {
       adminBody.innerHTML = '<div class="qw-admin-loading">网络异常，加载失败</div>';
     });
@@ -741,13 +786,12 @@
       (ips.length ? ' · ' + escHtml(ips.join('、')) : '') + '</div>';
   }
 
-  function renderManageList(comments, blocks, likeMap) {
-    var root = comments.filter(function (c) { return !c.rid; });
+  function renderManageList(comments, blocks, wlist, likeMap) {
     var html = '';
     html += '<div class="qw-admin-stats">' +
       '<div><b>' + (comments.length || 0) + '</b><span>全部评论</span></div>' +
-      '<div><b>' + (root.length || 0) + '</b><span>根评论</span></div>' +
-      '<div><b>' + (blocks.length || 0) + '</b><span>已拉黑邮箱</span></div>' +
+      '<div><b>' + (blocks.length || 0) + '</b><span>黑名单</span></div>' +
+      '<div><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
       '</div>';
     html += '<div class="qw-admin-list">';
     if (!comments.length) {
@@ -764,24 +808,34 @@
           likeInfoHtml(c, likeMap) +
           (adminReadOnly ? '' : '<div class="qw-ops">' +
           '<button class="qw-del" data-act="del" data-id="' + c._id + '">删除</button>' +
-          (c.mail ? '<button class="qw-blk" data-act="blk" data-mail="' + escAttr(c.mail) + '">拉黑邮箱</button>' : '') +
+          (c.mail ? '<button class="qw-blk" data-act="blk" data-mail="' + escAttr(c.mail) + '">拉黑</button>' : '') +
           '</div>') +
           '</div>';
       }
     }
     html += '</div>';
     if (!adminReadOnly) {
-      html += '<div class="qw-admin-blocks"><h4>已拉黑邮箱（拉黑后无法发言）</h4>';
+      html += '<div class="qw-mgmt-section"><h4>黑名单（拉黑后无法发言）</h4>';
       if (!blocks.length) {
-        html += '<div class="qw-admin-empty" style="padding:10px 0">暂无拉黑</div>';
+        html += '<div class="qw-admin-empty" style="padding:10px 0">暂无黑名单</div>';
       } else {
         for (var b = 0; b < blocks.length; b++) {
           var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
           var bkLabel = bk.mail + (bk.ip ? '（IP ' + bk.ip + '）' : '');
-          html += '<div class="qw-blk-item"><span>' + escHtml(bkLabel) + '</span><button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
+          html += '<div class="qw-mgmt-item"><span>' + escHtml(bkLabel) + '</span><button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
         }
       }
-      html += '</div>';
+      html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-blk-input" placeholder="输入邮箱或昵称进行拉黑"><button class="qw-add-blk" data-act="add-blk">拉黑</button></div></div>';
+      html += '<div class="qw-mgmt-section"><h4>白名单（显示管理员头衔）</h4>';
+      if (!wlist.length) {
+        html += '<div class="qw-admin-empty" style="padding:10px 0">暂无白名单</div>';
+      } else {
+        for (var w = 0; w < wlist.length; w++) {
+          var wl = typeof wlist[w] === 'string' ? { email: wlist[w] } : (wlist[w] || {});
+          html += '<div class="qw-mgmt-item"><span>' + escHtml(wl.email || '') + '</span><button data-act="unwl" data-email="' + escAttr(wl.email || '') + '">移除</button></div>';
+        }
+      }
+      html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-wl-input" placeholder="输入邮箱或昵称加入白名单"><button class="qw-add-wl" data-act="add-wl">添加</button></div></div>';
       html += '<button class="qw-admin-logout" data-act="logout">退出登录</button>';
     } else {
       html += '<div style="text-align:center;padding:16px 0 4px;font-size:11px;color:var(--jp-muted);">只读模式 · 可浏览，操作需验证密码</div>';
@@ -789,7 +843,7 @@
     }
     adminBody.innerHTML = html;
 
-    adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-admin-blocks button, .qw-admin-logout').forEach(function (btn) {
+    adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-mgmt-item button, .qw-admin-logout, .qw-mgmt-input-row button').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var act = btn.getAttribute('data-act');
         if (act === 'del') {
@@ -802,22 +856,38 @@
           }
         } else if (act === 'blk') {
           var mail = btn.getAttribute('data-mail');
-          if (confirm('确定拉黑 ' + mail + ' 吗？\n将删除该邮箱的全部历史评论，并同步拦截其登录 IP（换邮箱也无法发言）。')) {
+          if (confirm('确定拉黑 ' + mail + ' 吗？')) {
             adminPost({ event: 'QW_BLOCK_ADD', accessToken: adminToken, mail: mail }).then(function (r) {
-              if (r && r.code === 0) {
-                alert((r.message) || '已拉黑');
-                renderManageView();
-              } else alert((r && r.message) || '拉黑失败');
+              if (r && r.code === 0) renderManageView();
+              else alert((r && r.message) || '拉黑失败');
             });
           }
         } else if (act === 'unblk') {
           var umail = btn.getAttribute('data-mail');
-          if (confirm('确定解除拉黑 ' + umail + ' 吗？')) {
-            adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: umail }).then(function (r) {
-              if (r && r.code === 0) renderManageView();
-              else alert((r && r.message) || '操作失败');
-            });
-          }
+          adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: umail }).then(function (r) {
+            if (r && r.code === 0) renderManageView();
+            else alert((r && r.message) || '操作失败');
+          });
+        } else if (act === 'add-blk') {
+          var blkVal = ((document.getElementById('qw-blk-input') || {}).value || '').trim();
+          if (!blkVal) { alert('请输入邮箱或昵称'); return; }
+          adminPost({ event: 'QW_BLOCK_ADD', accessToken: adminToken, mail: blkVal }).then(function (r) {
+            if (r && r.code === 0) renderManageView();
+            else alert((r && r.message) || '操作失败');
+          });
+        } else if (act === 'add-wl') {
+          var wlVal = ((document.getElementById('qw-wl-input') || {}).value || '').trim();
+          if (!wlVal) { alert('请输入邮箱或昵称'); return; }
+          adminPost({ event: 'QW_ADMIN_WHITELIST_ADD', accessToken: adminToken, email: wlVal }).then(function (r) {
+            if (r && r.code === 0) renderManageView();
+            else alert((r && r.message) || '操作失败');
+          });
+        } else if (act === 'unwl') {
+          var uwl = btn.getAttribute('data-email');
+          adminPost({ event: 'QW_ADMIN_WHITELIST_DELETE', accessToken: adminToken, email: uwl }).then(function (r) {
+            if (r && r.code === 0) renderManageView();
+            else alert((r && r.message) || '操作失败');
+          });
         } else if (act === 'logout') {
           if (act === 'verify-pwd') {
             adminReadOnly = false;
