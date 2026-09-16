@@ -28,20 +28,21 @@
 - 本仓库的 git 提交身份（local 级 user.name / user.email）已配置，请勿改动。
 
 ## 在线部署（每次修改后必须执行）
-**用户固定要求（2026-09-15 确认）：部署链接一律为 `https://qqzttkx.ficp.fun/`，严禁新建 HSK 资源。**
+**用户固定要求（2026-09-15 确认）：部署链接一律为 `https://qqzttkx.ficp.fun/`。免费档资源二次更新返回 403（update function is disabled），故每次部署=新建资源 + 花生壳控制台删旧绑主域名（用户已接受该方案）。**
 
-- 公网域名 `https://qqzttkx.ficp.fun/` 已由用户在花生壳后台绑定到资源 `1789472958204165095`（已重绑，当前域名即最新内容，已验证 style v=266 / script v=73）。
-- 旧资源 `1787743956892235141` / `1789471342039255230` / `1789471753168216449` / `1789472499149792180` 均已被平台禁用更新（403 update function is disabled），不得再用于部署。
+- 公网入口为 `yanzheng.html`（图形验证码，验证通过跳 boke.html）；主域名 `https://qqzttkx.ficp.fun/` 当前绑定资源 `1789523619728216743`（临时域名 https://ms68es.gicp.fun，已线上验证含看板娘集成）。
+- 旧资源链（每代删旧绑新）：…→ i90qoy(1789521843807971403) → fasjcm(1789522511554757033，已删) → ms68es(1789523619728216743，当前)。
 
-**每次修改 index.html / style.css / script.js（或任意网站文件）并 git 提交后，必须同步执行一次在线部署：**
+**每次 git 提交后必须同步执行一次在线部署（新建资源）：**
 
 ```bash
-hsk-cli file-hosting "D:\Download\qingqingzhiboke" --entry-file index.html --resource-id 1789472958204165095 --format json
+hsk-cli file-hosting "D:\Download\qingqingzhiboke" --entry-file yanzheng.html --format json
 ```
 
+- 返回 `data.resource_id` 与 `data.public_url`（临时域名）。随后在花生壳控制台（console-hsk-ng.oray.com → 静态托管应用）删除旧资源并给新资源绑定主域名 `qqzttkx.ficp.fun`（bu 自动化序列：点行内"删除资源"→弹窗"确定"→刷新→点新资源行"添加"→select 选 qqzttkx.ficp.fun 不含 qqzttkxpd → dispatch change，弹窗显示"已生效"即成功）。
 - hsk-cli 已全局安装（@aweray/hsk-cli，当前版本 0.7.13），API Key 已保存在 `~/.hsk/api_key.json`（file_hosting 场景），无需重复配置；找不到 `hsk-cli` 命令时先 `npm install -g @aweray/hsk-cli` 并 `hsk-cli update`。业务命令前须先跑 `hsk-cli context wizard --format json` 建立画像（见 https://hsk.oray.com/doc/cli-setup.md）。
-- 部署成功后用 `curl https://qqzttkx.ficp.fun/` 验证线上版本（index.html 里的 style.css/script.js 版本号）与本地一致。
-- **严禁新建任何 HSK 资源**（用户明确要求）：若复用资源 `1789472958204165095` 更新返回 403（免费资源更新被平台禁用），**停止部署并如实向用户说明，等待用户指示**（可选项：开通正式版 / 转 GitHub Pages），不得擅自创建新资源。
+- 部署成功后用 `curl https://qqzttkx.ficp.fun/yanzheng.html` 和 `curl https://qqzttkx.ficp.fun/boke.html` 验证线上内容与本地一致（boke.html 应含"看板娘"集成标记）。
+- 每次部署完成后更新本文件"当前绑定资源"为新 resource_id，并提交推送。
 
 
 
