@@ -859,7 +859,7 @@
   }
   function openSettings() {
     var v = getVisitor();
-    document.getElementById('qw-set-nick').value = v.nick || '';
+    document.getElementById('qw-set-nick').value = '';
     document.getElementById('qw-set-old-pwd').value = '';
     document.getElementById('qw-set-new-pwd1').value = '';
     document.getElementById('qw-set-new-pwd2').value = '';
