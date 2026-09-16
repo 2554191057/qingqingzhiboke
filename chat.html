@@ -144,11 +144,14 @@
             }
             init();
             themeToggle.addEventListener('click', toggle);
-            // 导航下拉
+            // 导航下拉（open 类加在父容器 .nav-dropdown 上，与 style.css 的 .nav-dropdown.open .nav-dropdown-menu 规则匹配）
+            var navDrop = document.getElementById('navDropdown');
             var dd = document.getElementById('navDropdownToggle');
-            var menu = document.getElementById('navDropdownMenu');
-            dd.addEventListener('click', function (e) { e.stopPropagation(); menu.classList.toggle('open'); });
-            document.addEventListener('click', function () { menu.classList.remove('open'); });
+            dd.addEventListener('click', function (e) { e.stopPropagation(); navDrop.classList.toggle('open'); });
+            document.addEventListener('click', function (e) { if (!navDrop.contains(e.target)) navDrop.classList.remove('open'); });
+            navDrop.querySelectorAll('.nav-dropdown-item').forEach(function (item) {
+                item.addEventListener('click', function () { navDrop.classList.remove('open'); });
+            });
             // 顶栏滚动阴影
             var nav = document.getElementById('navbar');
             window.addEventListener('scroll', function () { nav.classList.toggle('scrolled', window.scrollY > 20); });
