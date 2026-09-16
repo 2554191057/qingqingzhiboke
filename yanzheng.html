@@ -90,15 +90,32 @@
     <script src="js/sakura/renderer.js"></script>
     <script src="js/sakura/bootstrap.js"></script>
     <script>
+    var CDN_ORDER = [
+        'https://qqzttkx.eu.cc/boke.html',
+        'https://qqzttkx.ficp.fun/boke.html',
+        'https://2554191057.github.io/qingqingzhiboke/boke.html'
+    ];
+    function gotoBestMirror() {
+        var back = new URLSearchParams(location.search).get('back');
+        if (back && /^https?:/i.test(back)) { location.href = back; return; }
+        var i = 0;
+        function tryNext() {
+            if (i >= CDN_ORDER.length) { location.href = 'boke.html'; return; }
+            var url = CDN_ORDER[i++];
+            fetch(url, {mode: 'no-cors', cache: 'no-store'})
+                .then(function(){ location.href = url; })
+                .catch(function(){ tryNext(); });
+            setTimeout(tryNext, 4000); // 4秒超时换下一个
+        }
+        tryNext();
+    }
     function onTurnstileSuccess(token) {
         sessionStorage.setItem('auth_ok', '1');
-        var back = new URLSearchParams(location.search).get('back') || 'boke.html';
-        setTimeout(function(){ location.href = back; }, 500);
+        setTimeout(gotoBestMirror, 500);
     }
     function directEnter() {
         sessionStorage.setItem('auth_ok', '1');
-        var back = new URLSearchParams(location.search).get('back') || 'boke.html';
-        location.href = back;
+        gotoBestMirror();
     }
     // Turnstile 加载失败（5秒内未出现）显示直接进入按钮
     setTimeout(function(){
