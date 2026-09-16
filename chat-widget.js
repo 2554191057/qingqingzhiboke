@@ -46,7 +46,7 @@
     '.qw-body #twikoo .tk-meta-input{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;}',
     '.qw-body #twikoo .tk-meta-input .el-input{margin:0!important;min-width:0!important;width:100%!important;}',
     '.qw-body #twikoo .tk-meta-input .el-input:nth-child(3){display:none!important;}',
-    '.qw-body #twikoo .el-input-group__prepend{background:transparent!important;border:none!important;color:var(--jp-muted)!important;font-size:10px!important;padding:0 8px 0 2px!important;box-shadow:none!important;white-space:nowrap;}',
+    '.qw-body #twikoo .el-input-group__prepend{display:none!important;}',
     '.qw-body #twikoo .el-input__inner{border:1px solid var(--jp-line)!important;border-radius:7px!important;background:var(--jp-paper)!important;color:var(--jp-ink)!important;font-size:12px!important;padding:8px 11px!important;height:auto!important;box-shadow:none!important;min-width:0!important;flex:1!important;}',
     '.qw-body #twikoo .el-input__inner:focus{outline:1px solid var(--jp-accent)!important;}',
     '.qw-body #twikoo .el-input-group{display:flex!important;align-items:center!important;}',
@@ -167,6 +167,10 @@
     submit.classList.add('qw-open');
     commentBtn.classList.add('qw-hide');
     var ta = submit.querySelector('textarea');
+    // 把"必填"占位提示改为 昵称/邮箱
+    var inners = submit.querySelectorAll('.tk-meta-input .el-input__inner');
+    if (inners.length >= 1) inners[0].placeholder = '昵称';
+    if (inners.length >= 2) inners[1].placeholder = '邮箱';
     if (ta) { setTimeout(function () { ta.focus(); }, 50); }
   });
 

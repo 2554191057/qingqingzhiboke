@@ -121,12 +121,7 @@
         #twikoo .tk-meta-input .el-input { margin: 0 !important; min-width: 0 !important; width: 100% !important; }
         #twikoo .tk-meta-input .el-input:nth-child(3) { display: none !important; }
         #twikoo .el-input-group { display: flex !important; align-items: center !important; }
-        #twikoo .el-input-group__prepend {
-            background: transparent !important; border: none !important;
-            color: var(--jp-muted) !important; font-size: 10px !important;
-            padding: 0 8px 0 2px !important; box-shadow: none !important;
-            white-space: nowrap;
-        }
+        #twikoo .el-input-group__prepend { display: none !important; }
         #twikoo .el-input__inner {
             border: 1px solid var(--jp-line) !important;
             border-radius: 7px !important;
@@ -344,6 +339,10 @@
                 if (!sub) { setTimeout(function () { commentBtn.click(); }, 300); return; }
                 sub.classList.add('qw-open');
                 commentBtn.classList.add('qw-hide');
+                // 把"必填"占位提示改为 昵称/邮箱
+                var inners = sub.querySelectorAll('.tk-meta-input .el-input__inner');
+                if (inners.length >= 1) inners[0].placeholder = '昵称';
+                if (inners.length >= 2) inners[1].placeholder = '邮箱';
                 var ta = sub.querySelector('textarea');
                 if (ta) { setTimeout(function () { ta.focus(); }, 50); }
             });
