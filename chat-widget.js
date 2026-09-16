@@ -593,17 +593,38 @@
     }).then(function (r) { return r.json(); });
   }
 
+  var adminReadOnly = false;
   function openAdmin() {
     adminBackdrop.classList.add('qw-open');
     document.body.style.overflow = 'hidden';
     adminToken = '';
+    adminReadOnly = false;
     try { adminToken = localStorage.getItem('qw_admin_token') || ''; } catch (e) {}
     if (adminToken) {
       adminBtn.classList.add('qw-admin-on');
       renderManageView();
     } else {
-      adminBtn.classList.remove('qw-admin-on');
-      renderLoginView();
+      // Check if current user is whitelisted
+      var v = getVisitor();
+      if (v.email) {
+        adminBody.innerHTML = '<div class="qw-admin-loading">检查权限…</div>';
+        adminBackdrop.classList.add('qw-open');
+        fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ event:'QW_ADMIN_CHECK_WHITELIST', email: v.email })
+        }).then(function(r){return r.json();}).then(function(r){
+          if (r && r.code === 0 && r.data.whitelisted) {
+            adminReadOnly = true;
+            adminBtn.classList.add('qw-admin-on');
+            renderManageView();
+          } else {
+            adminBtn.classList.remove('qw-admin-on');
+            renderLoginView();
+          }
+        }).catch(function(){ renderLoginView(); });
+      } else {
+        adminBtn.classList.remove('qw-admin-on');
+        renderLoginView();
+      }
     }
   }
   function closeAdmin() {
@@ -724,25 +745,31 @@
           '<span class="qw-tm">' + fmtTime(c.created) + '</span></div>' +
           '<div class="qw-cmt">' + escHtml(stripHtml(c.comment)) + '</div>' +
           likeInfoHtml(c, likeMap) +
-          '<div class="qw-ops">' +
+          (adminReadOnly ? '' : '<div class="qw-ops">' +
           '<button class="qw-del" data-act="del" data-id="' + c._id + '">删除</button>' +
           (c.mail ? '<button class="qw-blk" data-act="blk" data-mail="' + escAttr(c.mail) + '">拉黑邮箱</button>' : '') +
-          '</div></div>';
+          '</div>') +
+          '</div>';
       }
     }
     html += '</div>';
-    html += '<div class="qw-admin-blocks"><h4>已拉黑邮箱（拉黑后无法发言）</h4>';
-    if (!blocks.length) {
-      html += '<div class="qw-admin-empty" style="padding:10px 0">暂无拉黑</div>';
+    if (!adminReadOnly) {
+      html += '<div class="qw-admin-blocks"><h4>已拉黑邮箱（拉黑后无法发言）</h4>';
+      if (!blocks.length) {
+        html += '<div class="qw-admin-empty" style="padding:10px 0">暂无拉黑</div>';
+      } else {
+        for (var b = 0; b < blocks.length; b++) {
+          var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
+          var bkLabel = bk.mail + (bk.ip ? '（IP ' + bk.ip + '）' : '');
+          html += '<div class="qw-blk-item"><span>' + escHtml(bkLabel) + '</span><button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
+        }
+      }
+      html += '</div>';
+      html += '<button class="qw-admin-logout" data-act="logout">退出登录</button>';
     } else {
-      for (var b = 0; b < blocks.length; b++) {
-        var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
-        var bkLabel = bk.mail + (bk.ip ? '（IP ' + bk.ip + '）' : '');
-        html += '<div class="qw-blk-item"><span>' + escHtml(bkLabel) + '</span><button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
-      }
+      html += '<div style="text-align:center;padding:16px 0 4px;font-size:11px;color:var(--jp-muted);">只读模式 · 可浏览，操作需验证密码</div>';
+      html += '<button class="qw-admin-logout" data-act="verify-pwd" style="color:var(--jp-accent);text-decoration:none;border:1px solid var(--jp-line);border-radius:8px;">输入管理密码进行操作</button>';
     }
-    html += '</div>';
-    html += '<button class="qw-admin-logout" data-act="logout">退出登录</button>';
     adminBody.innerHTML = html;
 
     adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-admin-blocks button, .qw-admin-logout').forEach(function (btn) {
@@ -775,6 +802,11 @@
             });
           }
         } else if (act === 'logout') {
+          if (act === 'verify-pwd') {
+            adminReadOnly = false;
+            renderLoginView();
+            return;
+          }
           try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
           adminToken = '';
           adminBtn.classList.remove('qw-admin-on');
@@ -1109,7 +1141,7 @@
     var pwd = document.getElementById('qw-login-pwd').value || '';
     var msgEl = document.getElementById('qw-login-msg');
     if (loginMode === 'register' && !nick) { msgEl.textContent = '请输入昵称'; return; }
-    if (!email || email.indexOf('@') < 0) { msgEl.textContent = '请输入有效邮箱'; return; }
+    if (!email) { msgEl.textContent = '请输入邮箱或昵称'; return; } if (loginMode === 'register' && email.indexOf('@') < 0) { msgEl.textContent = '请输入有效邮箱'; return; }
     if (!pwd) { msgEl.textContent = '请输入密码'; return; }
     var btn = document.getElementById('qw-login-submit');
     if (btn) btn.disabled = true;
