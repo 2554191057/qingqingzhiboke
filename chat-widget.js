@@ -94,8 +94,10 @@
     '.qw-body #twikoo .tk-content:before{content:""!important;position:absolute!important;top:12px!important;left:-6px!important;border:6px solid transparent!important;border-left-width:0!important;border-right-color:var(--jp-surface)!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:12px 12px 4px 12px!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content:before{left:auto!important;right:-6px!important;border-right-width:0!important;border-left-width:6px!important;border-right-color:transparent!important;border-left-color:rgba(16,147,195,.16)!important;}',
-    /* ===== 操作按钮：移到气泡下方横排（常显长条） ===== */
-    '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:1!important;}',
+    /* ===== 操作按钮：悬停消息才浮现（聊天室感，默认不打扰；触屏常显） ===== */
+    '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:0!important;transition:opacity .18s ease!important;}',
+    '.qw-body #twikoo .tk-comment:hover .tk-action,.qw-body #twikoo .tk-action:focus-within{opacity:1!important;}',
+    '@media(hover:none){.qw-body #twikoo .tk-action{opacity:1!important;}}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-action{justify-content:flex-end!important;}',
     '.qw-body #twikoo .tk-action .tk-action-link{color:var(--jp-muted)!important;font-size:11px!important;padding:0!important;display:inline-flex!important;align-items:center!important;gap:3px!important;transition:color .15s ease!important;}',
     '.qw-body #twikoo .tk-action .tk-action-link:hover{color:var(--jp-accent)!important;}',
