@@ -23,7 +23,7 @@
         /* ===== 聊天室主区 ===== */
         body { background: #edf2fa !important; }
         [data-theme="dark"] body { background: #06111f !important; }
-        .chat-page { max-width: 820px; margin: 96px auto 48px; padding: 0 16px; }
+        .chat-page { max-width: 860px; margin: 96px auto 48px; padding: 0 16px; }
         .chat-card {
             background: rgba(255, 255, 255, 0.94);
             border: 1px solid #cedaed;
@@ -57,64 +57,19 @@
         [data-theme="dark"] .chat-head .sub { color: #8fa3c3; }
 
         .chat-body { padding: 20px 24px; }
-        .chat-msgs {
-            height: 380px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 10px;
-            padding: 12px; margin-bottom: 16px;
-            background: rgba(237, 242, 250, 0.55);
-            border: 1px solid #e3ebf7; border-radius: 12px;
-            scroll-behavior: smooth;
-        }
-        [data-theme="dark"] .chat-msgs { background: rgba(6, 17, 31, 0.45); border-color: rgba(255, 255, 255, 0.06); }
-        .chat-msg { display: flex; flex-direction: column; max-width: 78%; }
-        .chat-msg.mine { align-self: flex-end; align-items: flex-end; }
-        .chat-msg .bubble {
-            padding: 9px 14px; border-radius: 14px;
-            font-size: 0.93rem; line-height: 1.5; word-break: break-word;
-            background: #fff; border: 1px solid #e3ebf7; color: #182641;
-            box-shadow: 0 2px 8px rgba(24, 38, 65, 0.05);
-        }
-        [data-theme="dark"] .chat-msg .bubble { background: rgba(30, 41, 59, 0.9); border-color: rgba(255, 255, 255, 0.08); color: #e8f1fb; }
-        .chat-msg.mine .bubble {
-            background: linear-gradient(110deg, #097fae, #4866db);
-            border-color: transparent; color: #fff;
-            border-bottom-right-radius: 4px;
-        }
-        .chat-msg .meta { font-size: 0.75rem; color: #8a98b8; margin: 3px 6px 0; }
-        [data-theme="dark"] .chat-msg .meta { color: #6d7f9e; }
-
-        .chat-input-row { display: flex; gap: 10px; }
-        .chat-input-row .who {
-            width: 108px; flex: none;
-            padding: 10px 12px; border-radius: 10px;
-            border: 1px solid #cedaed; background: #fff; color: #182641;
-            font-size: 0.9rem; outline: none;
-        }
-        [data-theme="dark"] .chat-input-row .who { background: rgba(30, 41, 59, 0.9); border-color: rgba(255, 255, 255, 0.12); color: #e8f1fb; }
-        .chat-input-row .txt {
-            flex: 1; padding: 10px 14px; border-radius: 10px;
-            border: 1px solid #cedaed; background: #fff; color: #182641;
-            font-size: 0.9rem; outline: none;
-        }
-        [data-theme="dark"] .chat-input-row .txt { background: rgba(30, 41, 59, 0.9); border-color: rgba(255, 255, 255, 0.12); color: #e8f1fb; }
-        .chat-input-row .send {
-            flex: none; padding: 10px 22px; border: none; border-radius: 10px;
-            background: linear-gradient(110deg, #097fae, #4866db); color: #fff;
-            font-size: 0.92rem; cursor: pointer;
-            box-shadow: 0 4px 14px rgba(16, 147, 195, 0.25);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .chat-input-row .send:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(16, 147, 195, 0.35); }
-        .chat-input-row .send:active { transform: translateY(0); }
+        /* Twikoo 样式适配（日间/夜间） */
+        .chat-body #tcomment { --twikoo-bg: transparent; }
+        .chat-body #tcomment .tk-comments-container, .chat-body #tcomment .tk-submit { background: transparent; }
+        [data-theme="dark"] .chat-body #tcomment { --twikoo-theme-bg: #1e293b; }
+        [data-theme="dark"] .chat-body #tcomment .tk-input .tk-column-1, [data-theme="dark"] .chat-body #tcomment .tk-input .tk-column-2 { background: rgba(30, 41, 59, 0.9) !important; }
+        [data-theme="dark"] .chat-body #tcomment .tk-input input, [data-theme="dark"] .chat-body #tcomment .tk-input textarea { color: #e8f1fb !important; }
+        [data-theme="dark"] .chat-body #tcomment .tk-comments-container .tk-comment, [data-theme="dark"] .chat-body #tcomment .tk-action { color: #c6d3ea !important; }
+        [data-theme="dark"] .chat-body #tcomment .tk-submit-action-icon { filter: invert(1); }
+        [data-theme="dark"] .chat-body #tcomment .tk-content p { color: #e8f1fb !important; }
         .chat-tip { margin: 14px 0 0; font-size: 0.78rem; color: #8a98b8; text-align: center; }
         [data-theme="dark"] .chat-tip { color: #6d7f9e; }
-        .chat-empty { text-align: center; color: #8a98b8; font-size: 0.9rem; padding: 60px 0; }
-        [data-theme="dark"] .chat-empty { color: #6d7f9e; }
-        .chat-empty i { font-size: 2.2rem; display: block; margin-bottom: 10px; color: rgba(16, 147, 195, 0.4); }
         @media (max-width: 640px) {
-            .chat-input-row { flex-wrap: wrap; }
-            .chat-input-row .who { width: 100%; }
-            .chat-msg { max-width: 92%; }
+            .chat-body { padding: 14px; }
         }
     </style>
 </head>
@@ -159,16 +114,15 @@
                 </div>
             </div>
             <div class="chat-body">
-                <div class="chat-msgs" id="chatMsgs"></div>
-                <div class="chat-input-row">
-                    <input class="who" id="whoInput" maxlength="12" placeholder="你的昵称">
-                    <input class="txt" id="msgInput" maxlength="200" placeholder="说点什么吧…">
-                    <button class="send" id="sendBtn"><i class="fa-solid fa-paper-plane"></i> 发送</button>
-                </div>
-                <p class="chat-tip" id="chatTip"></p>
+                <div id="tcomment"></div>
+                <p class="chat-tip" id="chatTip">基于腾讯云 CloudBase + Twikoo 的访客留言，全站访客可见。</p>
             </div>
         </div>
     </main>
+
+    <!-- Twikoo 评论组件 -->
+    <link rel="stylesheet" href="https://registry.npmmirror.com/twikoo/1.7.24/files/dist/twikoo.all.min.css">
+    <script src="https://registry.npmmirror.com/twikoo/1.7.24/files/dist/twikoo.all.min.js"></script>
 
     <script>
         // ===== 主题：初始化（19-7 自动夜间）+ 切换 =====
@@ -200,59 +154,19 @@
             window.addEventListener('scroll', function () { nav.classList.toggle('scrolled', window.scrollY > 20); });
         })();
 
-        // ===== 聊天室（当前为本地留言板：本机可见） =====
+        // ===== Twikoo 聊天室（跨访客可见） =====
         (function () {
-            var KEY = 'qqz_chat_msgs';
-            var msgsEl = document.getElementById('chatMsgs');
-            var whoEl = document.getElementById('whoInput');
-            var msgEl = document.getElementById('msgInput');
-            var sendBtn = document.getElementById('sendBtn');
-            var tipEl = document.getElementById('chatTip');
-            var who = localStorage.getItem('qqz_chat_who') || '游客';
-
-            whoEl.value = who;
-            var msgs = [];
-            try { msgs = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { msgs = []; }
-            if (!Array.isArray(msgs)) msgs = [];
-
-            function esc(s) {
-                return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-            }
-            function fmt(t) {
-                var d = new Date(t);
-                function p(n) { return (n < 10 ? '0' : '') + n; }
-                return p(d.getHours()) + ':' + p(d.getMinutes());
-            }
-            function render() {
-                msgsEl.innerHTML = '';
-                if (!msgs.length) {
-                    msgsEl.innerHTML = '<div class="chat-empty"><i class="fa-regular fa-comment-dots"></i>还没有消息，来抢沙发～</div>';
-                    return;
-                }
-                msgs.forEach(function (m) {
-                    var mine = m.who === who;
-                    var div = document.createElement('div');
-                    div.className = 'chat-msg' + (mine ? ' mine' : '');
-                    div.innerHTML = '<div class="bubble">' + esc(m.text) + '</div><div class="meta">' + esc(m.who) + ' · ' + fmt(m.t) + '</div>';
-                    msgsEl.appendChild(div);
+            function loadTwikoo() {
+                if (!window.twikoo) { setTimeout(loadTwikoo, 300); return; }
+                twikoo.init({
+                    envId: 'qqzchat-d4gzkl19e2eab7a75',
+                    region: 'ap-shanghai',
+                    path: 'chat',
+                    lang: 'zh-CN',
+                    onCommentLoaded: function () {}
                 });
-                msgsEl.scrollTop = msgsEl.scrollHeight;
             }
-            function send() {
-                var text = msgEl.value.trim();
-                if (!text) return;
-                who = (whoEl.value.trim() || '游客').slice(0, 12);
-                localStorage.setItem('qqz_chat_who', who);
-                msgs.push({ who: who, text: text, t: Date.now() });
-                if (msgs.length > 200) msgs = msgs.slice(-200);
-                try { localStorage.setItem(KEY, JSON.stringify(msgs)); } catch (e) {}
-                msgEl.value = '';
-                render();
-            }
-            sendBtn.addEventListener('click', send);
-            msgEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
-            render();
-            tipEl.textContent = '当前为本地留言板（仅本机可见）；接入兔小巢/Giscus 后全站访客可见。';
+            loadTwikoo();
         })();
     </script>
 </body>
