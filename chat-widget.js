@@ -384,16 +384,12 @@
   function scheduleMark() {
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
-      removeOwO();
-      removeSubmitExtras();
-      setSubmitPlaceholders();
-      moveNickTop();
-      moveActionBelow();
-      restructureReplies();
-      sortComments();
-      insertTimeSep();
-      markLiked();
-      markSelf();
+      // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
+      var steps = [removeOwO, removeSubmitExtras, setSubmitPlaceholders, moveNickTop,
+        moveActionBelow, restructureReplies, sortComments, insertTimeSep, markSelf];
+      try { markLiked(); } catch (e0) {}
+      steps.forEach(function (fn) { try { fn(); } catch (err) {} });
+      try { markLiked(); } catch (e1) {}
     }, 250);
   }
   // ===== 输入区占位提示（昵称/邮箱/发言框） =====
@@ -651,36 +647,61 @@
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAdmin(); });
 
-  // 拦截导航里的"聊天室"链接（fklts.html / chat.html）→ 打开悬浮弹窗，不跳转
+  // 赞/踩操作：赞与踩互斥自动切换（已赞点踩=取消赞变踩，反之亦然）；再点同一个=取消；持久高亮
   document.addEventListener('click', function (e) {
+    if (qwProgrammatic) return; // 编程触发：只交给 Twikoo 处理，不再改本地状态
     var btn = e.target && e.target.closest ? e.target.closest('.qw-body #twikoo .tk-comment .tk-action-link') : null;
     if (!btn) return;
     var comment = btn.closest('.tk-comment');
     var id = comment && comment.id ? comment.id : '';
     if (!id) return;
     var links = comment.querySelectorAll('.tk-action-link');
-    var isLike = links.length && btn === links[0];
-    var isDislike = links.length > 1 && btn === links[1];
+    var likeBtn = links[0];
+    var dislikeBtn = links[1];
+    var isLike = links.length && btn === likeBtn;
+    var isDislike = links.length > 1 && btn === dislikeBtn;
     if (!isLike && !isDislike) return; // 回复按钮不受限
     function block(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       if (ev.stopImmediatePropagation) ev.stopImmediatePropagation();
     }
-    // 互斥：赞/踩只能二选一
-    if (isLike && dislikedSet[id]) { block(e); qwTip('您已点踩，赞和踩只能二选一'); return; }
-    if (isDislike && likedSet[id]) { block(e); qwTip('您已点赞，赞和踩只能二选一'); return; }
-    if (isLike) {
-      if (likedSet[id]) { block(e); qwTip('您已点过赞'); return; }
-      likedSet[id] = 1;
+    function saveSets() {
       try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
-      btn.classList.add('qw-liked');
-    } else if (isDislike) {
-      if (dislikedSet[id]) { block(e); qwTip('您已点过踩'); return; }
-      dislikedSet[id] = 1;
       try { localStorage.setItem(DK, JSON.stringify(dislikedSet)); } catch (e2) {}
-      btn.classList.add('qw-disliked');
     }
+    // 互斥：已赞时点踩 / 已踩时点赞 = 静默拦截（不提示）；再点同一个 = 取消
+    if (isLike && dislikedSet[id]) { block(e); return; }
+    if (isDislike && likedSet[id]) { block(e); return; }
+    if (isLike) {
+      if (likedSet[id]) {
+        // 已赞再点 = 取消赞（放行给 Twikoo toggle）
+        delete likedSet[id];
+        likeBtn.classList.remove('qw-liked');
+        saveSets();
+        return;
+      }
+      likedSet[id] = 1;
+      likeBtn.classList.add('qw-liked');
+      saveSets();
+    } else if (isDislike) {
+      if (dislikedSet[id]) {
+        // 已踩再点 = 取消踩
+        delete dislikedSet[id];
+        dislikeBtn.classList.remove('qw-disliked');
+        saveSets();
+        return;
+      }
+      dislikedSet[id] = 1;
+      dislikeBtn.classList.add('qw-disliked');
+      saveSets();
+    }
+  }, true);
+
+  // 拦截导航里的"聊天室"链接（fklts.html / chat.html）→ 打开悬浮弹窗，不跳转
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href$="fklts.html"], a[href$="chat.html"]') : null;
+    if (a) { e.preventDefault(); openChat(); }
   }, true);
 
   // ===== 点赞防刷：同一浏览器只能点一次赞（跨窗口共享 localStorage） =====
@@ -714,39 +735,6 @@
   var DK = 'qw_disliked_v1';
   var dislikedSet = {};
   try { dislikedSet = JSON.parse(localStorage.getItem(DK) || '{}'); } catch (e) { dislikedSet = {}; }
-  var tipTimer = null;
-  function qwTip(msg) {
-    var tip = document.getElementById('qw-tip');
-    if (!tip) {
-      tip = document.createElement('div');
-      tip.id = 'qw-tip';
-      tip.style.cssText = 'position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:9999;background:rgba(18,28,46,.94);color:#fff;font-size:12px;padding:8px 16px;border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.35);pointer-events:none;opacity:0;transition:opacity .25s;';
-      document.body.appendChild(tip);
-    }
-    tip.textContent = msg;
-    tip.style.opacity = '1';
-    clearTimeout(tipTimer);
-    tipTimer = setTimeout(function () { tip.style.opacity = '0'; }, 1600);
-  }
-  document.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest ? e.target.closest('.qw-body #twikoo .tk-comment .tk-action-link') : null;
-    if (!btn) return;
-    var comment = btn.closest('.tk-comment');
-    var id = comment && comment.id ? comment.id : '';
-    if (!id) return;
-    // 仅拦截"点赞"（该评论的第一个操作按钮），踩/回复不受限
-    if (btn !== comment.querySelector('.tk-action-link')) return;
-    if (likedSet[id]) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-      qwTip('您已点过赞');
-    } else {
-      likedSet[id] = 1;
-      try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
-      btn.classList.add('qw-liked');
-    }
-  }, true);
 
   // 外部可调用
   window.openChatRoom = openChat;
