@@ -1,4 +1,4 @@
-﻿/* =============================================
+/* =============================================
    庆庆纸博客 · 交互脚本
    ============================================= */
 (function () {
@@ -2504,15 +2504,46 @@
       }, 300);
     }, { passive: true });
 
-    // 顺序展示网易云热评（从上往下）+ 切换功能
+        // 顺序展示网易云热评（从上往下）+ 逐字打字机效果（仿栖光集 DAILY SIGNAL）
     let lastCommentIndex = -1;
-    
+    let typingTimer = null;
+
+    function typeComment(textEl, songEl, text, song) {
+      // 中断上一次打字
+      if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+      textEl.classList.add('typing');
+      textEl.textContent = '';
+      if (songEl) { songEl.style.display = 'none'; }
+      let i = 0;
+      (function step() {
+        if (i < text.length) {
+          textEl.textContent = text.slice(0, i + 1);
+          i++;
+          typingTimer = setTimeout(step, 65);
+        } else {
+          typingTimer = null;
+          textEl.classList.remove('typing');
+          if (song && songEl) {
+            songEl.textContent = '-- ' + song;
+            songEl.style.display = '';
+            songEl.style.opacity = '0';
+            songEl.style.transform = 'translateY(3px)';
+            requestAnimationFrame(function() {
+              songEl.style.transition = 'opacity .4s ease, transform .4s ease';
+              songEl.style.opacity = '';
+              songEl.style.transform = '';
+            });
+          }
+        }
+      })();
+    }
+
     function showRandomComment() {
       const el = $('#heroHotComment');
       const textEl = el ? el.querySelector('.hot-comment-text') : null;
       const songEl = el ? el.querySelector('.hot-comment-song') : null;
       if (!el || !textEl || !HOT_COMMENTS.length) return;
-      
+
       // 从上往下顺序选择：取下一条，到末尾后回到第一条
       let newIndex;
       if (HOT_COMMENTS.length <= 1) {
@@ -2521,31 +2552,14 @@
         newIndex = (lastCommentIndex + 1) % HOT_COMMENTS.length;
       }
       lastCommentIndex = newIndex;
-      
+
       const item = HOT_COMMENTS[newIndex];
       // 将句号替换为英文句号
       let commentText = item.c.replace(/。/g, '.');
-      
-      // 添加淡出动画
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(6px)';
-      
-      setTimeout(() => {
-        textEl.textContent = commentText;
-        if (item.a) {
-          songEl.textContent = `— ${item.a}`;
-          songEl.style.display = '';
-        } else {
-          songEl.style.display = 'none';
-        }
-        el.style.display = '';
-        
-        // 添加淡入动画
-        el.style.opacity = '';
-        el.style.transform = '';
-      }, 200);
+
+      typeComment(textEl, songEl, commentText, item.a || '');
     }
-    
+
     showRandomComment();
     
     // 绑定切换按钮事件
