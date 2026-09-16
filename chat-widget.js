@@ -225,7 +225,16 @@
         el: '#tcomment',
         path: 'chat',
         lang: 'zh-CN',
-        onCommentLoaded: function () { scheduleMark(); }
+        onCommentLoaded: function () { scheduleMark(); },
+        onError: function (err) {
+          // 发言被后端拒绝（如已被拉黑）时明确提示
+          try {
+            var msg = (err && (err.message || err.msg)) || '';
+            if (err && err.code === 403) {
+              alert('发言失败：' + msg);
+            }
+          } catch (e) {}
+        }
       });
     } catch (e) { twikooInited = false; }
   }
@@ -509,7 +518,9 @@
       html += '<div class="qw-admin-empty" style="padding:10px 0">暂无拉黑</div>';
     } else {
       for (var b = 0; b < blocks.length; b++) {
-        html += '<div class="qw-blk-item"><span>' + escHtml(blocks[b]) + '</span><button data-act="unblk" data-mail="' + escAttr(blocks[b]) + '">解除</button></div>';
+        var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
+        var bkLabel = bk.mail + (bk.ip ? '（IP ' + bk.ip + '）' : '');
+        html += '<div class="qw-blk-item"><span>' + escHtml(bkLabel) + '</span><button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
       }
     }
     html += '</div>';
@@ -529,10 +540,12 @@
           }
         } else if (act === 'blk') {
           var mail = btn.getAttribute('data-mail');
-          if (confirm('确定拉黑邮箱 ' + mail + ' 吗？拉黑后将无法发言。')) {
+          if (confirm('确定拉黑 ' + mail + ' 吗？\n将删除该邮箱的全部历史评论，并同步拦截其登录 IP（换邮箱也无法发言）。')) {
             adminPost({ event: 'QW_BLOCK_ADD', accessToken: adminToken, mail: mail }).then(function (r) {
-              if (r && r.code === 0) renderManageView();
-              else alert((r && r.message) || '拉黑失败');
+              if (r && r.code === 0) {
+                alert((r.message) || '已拉黑');
+                renderManageView();
+              } else alert((r && r.message) || '拉黑失败');
             });
           }
         } else if (act === 'unblk') {
