@@ -8,6 +8,28 @@
     <link rel="stylesheet" href="style.css?v=266">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
     <style>
+        /* ===== qiguangji 主题色板（日间/夜间） ===== */
+        :root {
+            --jp-paper: #edf2fa;
+            --jp-surface: rgba(255, 255, 255, .94);
+            --jp-ink: #182641;
+            --jp-muted: #62728e;
+            --jp-line: #cedaed;
+            --jp-accent: #087fa8;
+            --jp-blue: #4c67eb;
+            --jp-glow: rgba(16, 147, 195, .14);
+        }
+        [data-theme="dark"] {
+            --jp-paper: #080e1c;
+            --jp-surface: rgba(15, 24, 43, .96);
+            --jp-ink: #e5edff;
+            --jp-muted: #8a9dbd;
+            --jp-line: #23324f;
+            --jp-accent: #50d3f6;
+            --jp-blue: #8291ff;
+            --jp-glow: rgba(63, 199, 249, .12);
+        }
+
         /* 顶栏对齐主站：日间白毛玻璃 / 夜间深蓝毛玻璃 */
         .navbar { background: rgba(255, 255, 255, 0.94) !important; background-image: none !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important; border-bottom: 1px solid rgba(206, 218, 237, 0.80) !important; box-shadow: 0 4px 20px rgba(24, 38, 65, 0.06) !important; }
         [data-theme="dark"] .navbar { background: rgba(13, 30, 48, 0.66) !important; border-bottom-color: rgba(255, 255, 255, 0.08) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important; }
@@ -20,56 +42,179 @@
         .theme-toggle { background: rgba(255, 255, 255, 0.9) !important; border: 1px solid #cedaed !important; }
         [data-theme="dark"] .theme-toggle { background: rgba(13, 30, 48, 0.8) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; }
 
-        /* ===== 聊天室主区 ===== */
-        body { background: #edf2fa !important; }
-        [data-theme="dark"] body { background: #06111f !important; }
-        .chat-page { max-width: 860px; margin: 96px auto 48px; padding: 0 16px; }
+        /* ===== 聊天室主区（qiguangji ChatRoom 布局） ===== */
+        body { background: var(--jp-paper) !important; }
+        [data-theme="dark"] body { background: var(--jp-paper) !important; }
+        .chat-page { display: flex; justify-content: center; margin: 84px auto 48px; padding: 0 16px; }
         .chat-card {
-            background: rgba(255, 255, 255, 0.94);
-            border: 1px solid #cedaed;
+            width: 460px; max-width: 100%;
+            display: flex; flex-direction: column;
+            background: var(--jp-surface);
+            border: 1px solid var(--jp-line);
             border-radius: 18px;
-            box-shadow: 0 12px 40px rgba(24, 38, 65, 0.08), 0 0 30px rgba(16, 147, 195, 0.08);
+            box-shadow: 0 28px 100px rgba(0, 0, 0, 0.28), 0 0 40px var(--jp-glow);
             overflow: hidden;
+            color: var(--jp-ink);
             transition: background 0.45s ease, border-color 0.45s ease;
         }
-        [data-theme="dark"] .chat-card {
-            background: rgba(30, 41, 59, 0.60);
-            border: 1px solid rgba(255, 255, 255, 0.10);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-        }
         .chat-head {
-            display: flex; align-items: center; gap: 12px;
-            padding: 20px 24px;
-            border-bottom: 1px solid #cedaed;
-            background: linear-gradient(110deg, rgba(8, 127, 168, 0.08), rgba(72, 102, 219, 0.10));
+            display: flex; align-items: center; gap: 13px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--jp-line);
+            background: linear-gradient(110deg, var(--jp-glow), transparent);
         }
-        [data-theme="dark"] .chat-head { border-bottom-color: rgba(255, 255, 255, 0.08); background: rgba(8, 127, 168, 0.10); }
         .chat-head .chat-icon {
-            width: 44px; height: 44px; border-radius: 12px;
-            background: linear-gradient(110deg, #097fae, #4866db);
+            padding: 10px;
+            background: var(--jp-glow);
+            border-radius: 11px;
+            color: var(--jp-accent);
+            font-size: 17px;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 20px;
-            box-shadow: 0 4px 14px rgba(16, 147, 195, 0.30);
         }
-        .chat-head h1 { margin: 0; font-size: 1.35rem; color: #182641; }
-        [data-theme="dark"] .chat-head h1 { color: #e8f1fb; }
-        .chat-head .sub { margin: 2px 0 0; font-size: 0.85rem; color: #62728e; }
-        [data-theme="dark"] .chat-head .sub { color: #8fa3c3; }
+        .chat-head h1 { margin: 0; font-size: 18px; font-weight: 650; color: var(--jp-ink); }
+        [data-theme="dark"] .chat-head h1 { color: var(--jp-ink); }
+        .chat-head .sub { display: flex; align-items: center; gap: 5px; margin: 5px 0 0; font-size: 10px; color: var(--jp-muted); }
+        .chat-head .sub .dot { width: 6px; height: 6px; border-radius: 50%; background: #3ecf6a; box-shadow: 0 0 6px rgba(62, 207, 106, 0.7); }
+        .chat-head .chat-close {
+            margin-left: auto; padding: 8px;
+            color: var(--jp-muted); font-size: 15px;
+            cursor: pointer; border-radius: 8px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .chat-head .chat-close:hover { background: var(--jp-glow); color: var(--jp-ink); }
+        .chat-notice {
+            font-size: 10px; color: var(--jp-muted);
+            padding: 12px 20px;
+            background: var(--jp-glow);
+            border-bottom: 1px solid transparent;
+        }
+        [data-theme="dark"] .chat-notice { border-bottom-color: var(--jp-line); }
+        .chat-body { padding: 0 20px 18px; }
+        .chat-tip { margin: 14px 0 0; font-size: 10px; color: var(--jp-muted); text-align: center; }
 
-        .chat-body { padding: 20px 24px; }
-        /* Twikoo 样式适配（日间/夜间） */
-        .chat-body #tcomment { --twikoo-bg: transparent; }
-        .chat-body #tcomment .tk-comments-container, .chat-body #tcomment .tk-submit { background: transparent; }
-        [data-theme="dark"] .chat-body #tcomment { --twikoo-theme-bg: #1e293b; }
-        [data-theme="dark"] .chat-body #tcomment .tk-input .tk-column-1, [data-theme="dark"] .chat-body #tcomment .tk-input .tk-column-2 { background: rgba(30, 41, 59, 0.9) !important; }
-        [data-theme="dark"] .chat-body #tcomment .tk-input input, [data-theme="dark"] .chat-body #tcomment .tk-input textarea { color: #e8f1fb !important; }
-        [data-theme="dark"] .chat-body #tcomment .tk-comments-container .tk-comment, [data-theme="dark"] .chat-body #tcomment .tk-action { color: #c6d3ea !important; }
-        [data-theme="dark"] .chat-body #tcomment .tk-submit-action-icon { filter: invert(1); }
-        [data-theme="dark"] .chat-body #tcomment .tk-content p { color: #e8f1fb !important; }
-        .chat-tip { margin: 14px 0 0; font-size: 0.78rem; color: #8a98b8; text-align: center; }
-        [data-theme="dark"] .chat-tip { color: #6d7f9e; }
+        /* ===== Twikoo → qiguangji 覆盖（核心） ===== */
+        #tcomment { --twikoo-bg: transparent; --twikoo-theme-bg: transparent; --twikoo-theme: transparent; }
+        #twikoo { background: transparent !important; }
+        #twikoo .tk-comments { background: transparent !important; }
+        #twikoo .tk-comments-container {
+            max-height: 300px; overflow-y: auto;
+            padding: 10px 0 12px;
+            background: transparent !important;
+            overscroll-behavior: contain;
+        }
+        #twikoo .tk-comments-container::-webkit-scrollbar { width: 5px; }
+        #twikoo .tk-comments-container::-webkit-scrollbar-thumb { background: var(--jp-line); border-radius: 3px; }
+
+        /* 输入表单 */
+        #twikoo .tk-submit { background: transparent !important; padding: 14px 0 0; border-top: 1px solid var(--jp-line); }
+        #twikoo .tk-submit .tk-row { background: transparent !important; margin: 0 !important; }
+        #twikoo .tk-submit .tk-row > .tk-avatar { display: none !important; }
+        #twikoo .tk-submit .tk-col { width: 100% !important; padding: 0 !important; }
+        #twikoo .tk-meta-input { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; }
+        #twikoo .tk-meta-input .el-input { margin: 0 !important; }
+        #twikoo .el-input-group__prepend {
+            background: transparent !important; border: none !important;
+            color: var(--jp-muted) !important; font-size: 10px !important;
+            padding: 0 8px 0 2px !important; box-shadow: none !important;
+        }
+        #twikoo .el-input__inner {
+            border: 1px solid var(--jp-line) !important;
+            border-radius: 7px !important;
+            background: var(--jp-paper) !important;
+            color: var(--jp-ink) !important;
+            font-size: 12px !important;
+            padding: 8px 11px !important;
+            height: auto !important;
+            box-shadow: none !important;
+        }
+        #twikoo .el-input__inner:focus { outline: 1px solid var(--jp-accent) !important; }
+        #twikoo .tk-input.el-textarea { margin-top: 10px !important; }
+        #twikoo .tk-input textarea {
+            border: 1px solid var(--jp-line) !important;
+            border-radius: 7px !important;
+            background: var(--jp-paper) !important;
+            color: var(--jp-ink) !important;
+            font-size: 12px !important;
+            padding: 9px 11px !important;
+            resize: vertical; max-height: 140px;
+            box-shadow: none !important;
+        }
+        #twikoo .tk-input textarea:focus { outline: 1px solid var(--jp-accent) !important; }
+        #twikoo .el-input__count { color: var(--jp-muted) !important; font-size: 10px !important; }
+        /* 表情等操作 */
+        #twikoo .tk-submit-action-icon { color: var(--jp-muted) !important; }
+        #twikoo .tk-submit-action-icon svg { width: 15px; height: 15px; }
+        [data-theme="dark"] #twikoo .tk-submit-action-icon { filter: none !important; }
+        #twikoo .tk-row-actions-start .tk-submit-action-icon, #twikoo .tk-row-actions-start button { color: var(--jp-muted) !important; }
+        /* 发送按钮 */
+        #twikoo .tk-send {
+            background: linear-gradient(120deg, #087fae, #4866db) !important;
+            color: #fff !important;
+            border-radius: 7px !important;
+            font-size: 11px !important;
+            padding: 10px 14px !important;
+            display: flex; align-items: center; gap: 7px;
+            border: none !important;
+        }
+        [data-theme="dark"] #twikoo .tk-send { background: linear-gradient(120deg, #087fae, #4866db) !important; }
+        #twikoo .tk-send:disabled { opacity: .45 !important; cursor: not-allowed !important; }
+
+        /* 评论消息（qiguangji 气泡） */
+        #twikoo .tk-comment {
+            display: flex !important; align-items: flex-start !important;
+            gap: 10px !important; margin-bottom: 18px !important;
+            padding: 0 !important;
+        }
+        #twikoo .tk-comment .tk-avatar {
+            width: 29px !important; height: 29px !important;
+            border-radius: 8px !important; overflow: hidden !important;
+            flex-shrink: 0; margin: 0 !important;
+        }
+        #twikoo .tk-comment .tk-avatar img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+        #twikoo .tk-comment .tk-main { min-width: 0 !important; max-width: calc(100% - 40px) !important; padding: 0 !important; }
+        #twikoo .tk-comment .tk-row { display: block !important; margin: 0 0 7px !important; }
+        #twikoo .tk-meta { display: flex; align-items: center; gap: 12px; font-size: 10px !important; color: var(--jp-muted) !important; }
+        #twikoo .tk-nick strong { color: var(--jp-accent) !important; font-weight: 650 !important; font-size: 11px !important; }
+        #twikoo .tk-time time { font-size: 9px !important; color: var(--jp-muted) !important; }
+        #twikoo .tk-action { margin-left: auto !important; display: flex !important; gap: 8px !important; }
+        #twikoo .tk-action .tk-action-link { color: var(--jp-muted) !important; font-size: 9px !important; padding: 0 !important; }
+        #twikoo .tk-action-icon svg { width: 11px !important; height: 11px !important; }
+        #twikoo .tk-content {
+            white-space: pre-wrap; overflow-wrap: anywhere;
+            padding: 10px 12px !important;
+            background: var(--jp-glow) !important;
+            border: 1px solid var(--jp-line) !important;
+            border-radius: 0 10px 10px 10px !important;
+            font-size: 12px !important; line-height: 1.7 !important;
+            margin: 0 !important;
+        }
+        #twikoo .tk-content p { color: var(--jp-ink) !important; margin: 0 !important; }
+        #twikoo .tk-content a { color: var(--jp-accent) !important; }
+        /* 子评论缩进 */
+        #twikoo .tk-children { margin-left: 39px !important; padding-left: 0 !important; }
+        #twikoo .tk-children .tk-comment { margin-bottom: 12px !important; }
+        #twikoo .tk-children .tk-content { font-size: 11px !important; }
+
+        /* 空状态 */
+        #twikoo .tk-comments-container .tk-no-comment, #twikoo .tk-empty {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 150px; gap: 10px;
+            color: var(--jp-muted) !important; font-size: 12px !important;
+            text-align: center;
+        }
+
+        /* footer / 管理 */
+        #twikoo .tk-footer { text-align: center !important; font-size: 10px !important; color: var(--jp-muted) !important; padding: 12px 0 0 !important; background: transparent !important; }
+        #twikoo .tk-footer a, #twikoo .tk-footer .tk-action-link { color: var(--jp-muted) !important; }
+        #twikoo .tk-admin-container { display: none !important; }
+
         @media (max-width: 640px) {
-            .chat-body { padding: 14px; }
+            .chat-page { margin-top: 76px; }
+            .chat-card { border-radius: 16px; }
+            .chat-head { padding: 15px 16px; }
+            .chat-body { padding: 0 15px 14px; }
+            .chat-notice { padding: 10px 16px; font-size: 9px; }
+            #twikoo .tk-comments-container { max-height: 260px; }
         }
     </style>
 </head>
@@ -103,19 +248,21 @@
         </div>
     </header>
 
-    <!-- ========== 聊天室主区 ========== -->
+    <!-- ========== 聊天室主区（qiguangji ChatRoom 风格） ========== -->
     <main class="chat-page">
         <div class="chat-card">
             <div class="chat-head">
                 <div class="chat-icon"><i class="fa-solid fa-comments"></i></div>
                 <div>
                     <h1>访客聊天室</h1>
-                    <p class="sub">欢迎来聊～文明发言，友善交流</p>
+                    <p class="sub"><span class="dot"></span>实时同步 · Powered by Twikoo</p>
                 </div>
+                <a href="boke.html" class="chat-close" aria-label="关闭聊天室返回首页" title="关闭"><i class="fa-solid fa-xmark"></i></a>
             </div>
+            <p class="chat-notice">庆庆纸博客公共频道 · 可自由浏览，填写昵称后即可参与交流。</p>
             <div class="chat-body">
                 <div id="tcomment"></div>
-                <p class="chat-tip" id="chatTip">基于腾讯云 CloudBase + Twikoo 的访客留言，全站访客可见。</p>
+                <p class="chat-tip" id="chatTip">Powered by Twikoo · 全站访客可见，文明发言。</p>
             </div>
         </div>
     </main>
