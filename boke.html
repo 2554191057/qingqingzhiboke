@@ -583,6 +583,14 @@ if (!sessionStorage.getItem('auth_ok')) {
 <script src="script.js?v=74"></script>
 <script src="chat-widget.js?v=63"></script>
 <script>
+// ?chat=1 自动打开聊天室（从 fklts.html 跳来）
+window.addEventListener('load', function() {
+  if (location.search.indexOf('chat=1') !== -1) {
+    setTimeout(function(){ if (window.openChatRoom) window.openChatRoom(); }, 500);
+  }
+});
+</script>
+<script>
 window.addEventListener('load', function() {
     document.querySelectorAll('.about-icon').forEach(function(icon) {
         icon.style.marginBottom = '0px';
