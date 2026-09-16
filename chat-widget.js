@@ -229,7 +229,7 @@
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>' +
     '<div><h2 id="qw-title">访客聊天室</h2><p><span class="qw-dot"></span>实时同步 · Powered by Twikoo</p></div>' +
-    '<button id="qw-admin-btn" class="qw-admin-btn" aria-label="管理员" title="管理员登录"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
+
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
@@ -499,7 +499,22 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
 
   // ===== 管理员面板（自绘：登录 → 评论管理 / 删除 / 拉黑邮箱） =====
-  var adminBtn = document.getElementById('qw-admin-btn');
+  var adminBtn = document.createElement('div'); // 虚拟元素（原按钮已删，保留 classList 兼容）
+  // 连续点左上角图标 10 次触发管理员登录
+  var _headIcon = document.querySelector('.qw-panel > header .qw-head-icon');
+  var _tapCount = 0, _tapTimer = null;
+  if (_headIcon) {
+    _headIcon.style.cursor = 'pointer';
+    _headIcon.addEventListener('click', function () {
+      _tapCount++;
+      clearTimeout(_tapTimer);
+      _tapTimer = setTimeout(function () { _tapCount = 0; }, 1500);
+      if (_tapCount >= 10) {
+        _tapCount = 0;
+        openAdmin();
+      }
+    });
+  }
   var adminBackdrop = document.getElementById('qw-admin-backdrop');
   var adminBody = document.getElementById('qw-admin-body');
   var adminToken = '';
