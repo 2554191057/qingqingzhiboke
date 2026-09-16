@@ -99,6 +99,8 @@
     /* 已点赞高亮（本地记录，服务端 liked 状态不可用） */
     '.qw-body #twikoo .tk-action-link.qw-liked{color:var(--jp-accent)!important;font-weight:600!important;}',
     '.qw-body #twikoo .tk-action-link.qw-liked .tk-action-icon{transform:scale(1.08);}',
+    '.qw-body #twikoo .tk-action-link.qw-disliked{color:#e74c3c!important;font-weight:600!important;}',
+    '.qw-body #twikoo .tk-action-link.qw-disliked .tk-action-icon{transform:scale(1.08);}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-action{justify-content:flex-end!important;}',
     '.qw-body #twikoo .tk-action .tk-action-link{color:var(--jp-muted)!important;font-size:11px!important;padding:0!important;display:inline-flex!important;align-items:center!important;gap:3px!important;transition:color .15s ease!important;}',
     '.qw-body #twikoo .tk-action .tk-action-link:hover{color:var(--jp-accent)!important;}',
@@ -634,8 +636,34 @@
 
   // 拦截导航里的"聊天室"链接（fklts.html / chat.html）→ 打开悬浮弹窗，不跳转
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href$="fklts.html"], a[href$="chat.html"]') : null;
-    if (a) { e.preventDefault(); openChat(); }
+    var btn = e.target && e.target.closest ? e.target.closest('.qw-body #twikoo .tk-comment .tk-action-link') : null;
+    if (!btn) return;
+    var comment = btn.closest('.tk-comment');
+    var id = comment && comment.id ? comment.id : '';
+    if (!id) return;
+    var links = comment.querySelectorAll('.tk-action-link');
+    var isLike = links.length && btn === links[0];
+    var isDislike = links.length > 1 && btn === links[1];
+    if (!isLike && !isDislike) return; // 回复按钮不受限
+    function block(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      if (ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+    }
+    // 互斥：赞/踩只能二选一
+    if (isLike && dislikedSet[id]) { block(e); qwTip('您已点踩，赞和踩只能二选一'); return; }
+    if (isDislike && likedSet[id]) { block(e); qwTip('您已点赞，赞和踩只能二选一'); return; }
+    if (isLike) {
+      if (likedSet[id]) { block(e); qwTip('您已点过赞'); return; }
+      likedSet[id] = 1;
+      try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
+      btn.classList.add('qw-liked');
+    } else if (isDislike) {
+      if (dislikedSet[id]) { block(e); qwTip('您已点过踩'); return; }
+      dislikedSet[id] = 1;
+      try { localStorage.setItem(DK, JSON.stringify(dislikedSet)); } catch (e2) {}
+      btn.classList.add('qw-disliked');
+    }
   }, true);
 
   // ===== 点赞防刷：同一浏览器只能点一次赞（跨窗口共享 localStorage） =====
@@ -647,16 +675,28 @@
   function markLiked() {
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
       var id = c.id || '';
-      var link = c.querySelector('.tk-action-link');
-      if (!link) return;
+      var links = c.querySelectorAll('.tk-action-link');
+      if (!links.length) return;
+      var likeBtn = links[0];
+      var dislikeBtn = links[1] || null;
       if (likedSet[id]) {
-        link.classList.add('qw-liked');
+        likeBtn.classList.add('qw-liked');
       } else {
-        link.classList.remove('qw-liked');
+        likeBtn.classList.remove('qw-liked');
+      }
+      if (dislikeBtn) {
+        if (dislikedSet[id]) {
+          dislikeBtn.classList.add('qw-disliked');
+        } else {
+          dislikeBtn.classList.remove('qw-disliked');
+        }
       }
     });
   }
 
+  var DK = 'qw_disliked_v1';
+  var dislikedSet = {};
+  try { dislikedSet = JSON.parse(localStorage.getItem(DK) || '{}'); } catch (e) { dislikedSet = {}; }
   var tipTimer = null;
   function qwTip(msg) {
     var tip = document.getElementById('qw-tip');
