@@ -242,6 +242,12 @@
       el.remove();
     });
   }
+  // ===== 移除 M+（Markdown 按钮）和"预览"按钮（用不到直接删掉 DOM） =====
+  function removeSubmitExtras() {
+    document.querySelectorAll('.qw-body #twikoo .tk-submit-action-icon.__markdown, .qw-body #twikoo .tk-preview').forEach(function (el) {
+      el.remove();
+    });
+  }
   // ===== 把点赞/回复等操作按钮从头部行移到气泡下方横排 =====
   function moveActionBelow() {
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
@@ -373,6 +379,7 @@
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
       removeOwO();
+      removeSubmitExtras();
       setSubmitPlaceholders();
       moveNickTop();
       moveActionBelow();
