@@ -64,27 +64,43 @@
     '.qw-body #twikoo .tk-row-actions-start .tk-submit-action-icon,.qw-body #twikoo .tk-row-actions-start button{color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
-    '.qw-body #twikoo .tk-comment{display:flex!important;align-items:flex-start!important;gap:12px!important;margin-bottom:22px!important;padding:0!important;}',
-    '.qw-body #twikoo .tk-comment .tk-avatar{width:50px!important;height:50px!important;border-radius:50%!important;overflow:hidden!important;flex-shrink:0;margin:0!important;background:var(--jp-glow);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--jp-accent);}',
+    /* ===== 聊天气泡布局：自己右侧、别人左侧 ===== */
+    '.qw-body #twikoo .tk-comment{display:flex!important;align-items:flex-start!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self{flex-direction:row-reverse!important;}',
+    '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;border-radius:50%!important;overflow:hidden!important;flex-shrink:0;margin:0!important;background:var(--jp-glow);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--jp-accent);}',
     '.qw-body #twikoo .tk-comment .tk-avatar img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important;}',
-    '.qw-body #twikoo .tk-comment .tk-main{min-width:0!important;max-width:calc(100% - 62px)!important;padding:0!important;}',
-    '.qw-body #twikoo .tk-comment .tk-row{display:block!important;margin:0 0 6px!important;}',
-    '.qw-body #twikoo .tk-meta{display:flex;align-items:baseline;gap:12px;font-size:10px!important;color:var(--jp-muted)!important;}',
-    '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:13px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-main{min-width:0!important;max-width:calc(100% - 48px)!important;padding:0!important;display:flex!important;flex-direction:column!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main{align-items:flex-end!important;}',
+    '.qw-body #twikoo .tk-comment .tk-row{display:flex!important;align-items:center!important;gap:8px!important;margin:0 0 4px!important;padding:0 4px!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-row{flex-direction:row-reverse!important;}',
+    '.qw-body #twikoo .tk-meta{display:flex;align-items:baseline;gap:10px;font-size:10px!important;color:var(--jp-muted)!important;}',
+    '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
     '.qw-body #twikoo .tk-time time{font-size:10px!important;color:var(--jp-muted)!important;}',
-    '.qw-body #twikoo .tk-action{margin-left:auto!important;display:flex!important;gap:10px!important;align-items:center!important;}',
+    '.qw-body #twikoo .tk-action{margin-left:auto!important;display:flex!important;gap:8px!important;align-items:center!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-row>.tk-action{margin-left:0!important;margin-right:auto!important;}',
     '.qw-body #twikoo .tk-action .tk-action-link{color:var(--jp-muted)!important;font-size:10px!important;padding:0!important;}',
     '.qw-body #twikoo .tk-action-icon svg{width:12px!important;height:12px!important;}',
-    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;padding:2px 0!important;background:transparent!important;border:none!important;border-radius:0!important;font-size:13px!important;line-height:1.75!important;margin:0!important;}',
+    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:14px 14px 14px 4px!important;padding:9px 13px!important;font-size:13px!important;line-height:1.7!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:14px 14px 4px 14px!important;}',
     '.qw-body #twikoo .tk-content p{color:var(--jp-ink)!important;margin:0!important;}',
     '.qw-body #twikoo .tk-content a{color:var(--jp-accent)!important;}',
-    '.qw-body #twikoo .tk-children{margin-left:62px!important;padding-left:0!important;}',
-    '.qw-body #twikoo .tk-children .tk-comment{margin-bottom:12px!important;}',
-    '.qw-body #twikoo .tk-children .tk-content{font-size:11px!important;}',
+    /* ===== 回复 = 微信式引用块（灰底小卡片，非嵌套评论列表） ===== */
+    '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{margin:6px 0 0!important;padding:0!important;width:100%!important;align-self:stretch!important;display:block!important;}',
+    '.qw-body #twikoo .tk-expand-wrap,.qw-body #twikoo .tk-expand{display:none!important;}',
+    '.qw-body #twikoo .tk-replies .tk-comment,.qw-body #twikoo .tk-children .tk-comment{display:block!important;background:rgba(128,142,168,.10)!important;border:1px solid var(--jp-line)!important;border-radius:9px!important;padding:7px 10px!important;margin:4px 0 0!important;}',
+    '.qw-body #twikoo .tk-replies .tk-avatar,.qw-body #twikoo .tk-children .tk-avatar{display:none!important;}',
+    '.qw-body #twikoo .tk-replies .tk-main,.qw-body #twikoo .tk-children .tk-main{max-width:100%!important;width:100%!important;display:block!important;}',
+    '.qw-body #twikoo .tk-replies .tk-row,.qw-body #twikoo .tk-children .tk-row{display:flex!important;flex-direction:row!important;margin:0 0 2px!important;padding:0!important;gap:6px!important;}',
+    '.qw-body #twikoo .tk-replies .tk-meta,.qw-body #twikoo .tk-children .tk-meta{font-size:10px!important;}',
+    '.qw-body #twikoo .tk-replies .tk-nick strong,.qw-body #twikoo .tk-children .tk-nick strong{font-size:11px!important;color:var(--jp-accent)!important;}',
+    '.qw-body #twikoo .tk-replies .tk-action,.qw-body #twikoo .tk-children .tk-action,.qw-body #twikoo .tk-replies .tk-extras,.qw-body #twikoo .tk-children .tk-extras{display:none!important;}',
+    '.qw-body #twikoo .tk-replies .tk-content,.qw-body #twikoo .tk-children .tk-content{background:transparent!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:0!important;font-size:12px!important;line-height:1.6!important;color:var(--jp-muted)!important;}',
+    '.qw-body #twikoo .tk-replies .tk-content p,.qw-body #twikoo .tk-children .tk-content p{color:var(--jp-muted)!important;}',
+    '.qw-body #twikoo .tk-replies .tk-time time,.qw-body #twikoo .tk-children .tk-time time{display:none!important;}',
     '.qw-body #twikoo .tk-footer{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:12px 0 0!important;background:transparent!important;}',
     '.qw-body #twikoo .tk-footer a,.qw-body #twikoo .tk-footer .tk-action-link{color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-admin-container{display:none!important;}',
-    '@media(max-width:640px){.qw-launcher{right:14px;bottom:16px;padding:11px 14px;}.qw-backdrop{padding:12px;}.qw-panel{max-height:calc(100dvh - 24px);border-radius:16px;}.qw-panel>header{padding:15px 16px;}.qw-body{padding:0 15px 14px;}.qw-notice{padding:10px 16px;font-size:9px;}.qw-body #twikoo .tk-comment .tk-avatar{width:40px!important;height:40px!important;}.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 52px)!important;}.qw-body #twikoo .tk-children{margin-left:52px!important;}}',
+    '@media(max-width:640px){.qw-launcher{right:14px;bottom:16px;padding:11px 14px;}.qw-backdrop{padding:12px;}.qw-panel{max-height:calc(100dvh - 24px);border-radius:16px;}.qw-panel>header{padding:15px 16px;}.qw-body{padding:0 15px 14px;}.qw-notice{padding:10px 16px;font-size:9px;}.qw-body #twikoo .tk-comment .tk-avatar{width:32px!important;height:32px!important;}.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 42px)!important;}.qw-body #twikoo .tk-children{margin-left:42px!important;}}',
     '@media(prefers-reduced-motion:reduce){.qw-launcher,.qw-backdrop,.qw-panel{animation:none!important;transition:none!important}}'
   ].join('\n');
 
@@ -138,9 +154,35 @@
         el: '#tcomment',
         path: 'chat',
         lang: 'zh-CN',
-        onCommentLoaded: function () {}
+        onCommentLoaded: function () { scheduleMark(); }
       });
     } catch (e) { twikooInited = false; }
+  }
+
+  // ===== 聊天气泡：识别"自己"的消息（对比 localStorage 昵称）→ 右侧 =====
+  function markSelf() {
+    var info = {};
+    try { info = JSON.parse(localStorage.getItem('twikoo') || '{}'); } catch (e) {}
+    var myNick = (info.nick || '').trim();
+    var list = document.querySelectorAll('.qw-body #twikoo .tk-comment');
+    for (var i = 0; i < list.length; i++) {
+      var c = list[i];
+      var nickEl = c.querySelector('.tk-nick');
+      var nick = nickEl ? nickEl.textContent.trim() : '';
+      if (myNick && nick === myNick) c.classList.add('tk-self');
+      else c.classList.remove('tk-self');
+    }
+  }
+  var markTimer = null;
+  function scheduleMark() {
+    if (markTimer) clearTimeout(markTimer);
+    markTimer = setTimeout(markSelf, 250);
+  }
+  // 监听评论列表变化（新增/加载）自动重新标记
+  var tcommentEl = document.getElementById('tcomment');
+  if (tcommentEl && window.MutationObserver) {
+    var mo = new MutationObserver(function () { scheduleMark(); });
+    mo.observe(tcommentEl, { childList: true, subtree: true });
   }
 
   function openChat() {
