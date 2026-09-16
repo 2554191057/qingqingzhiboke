@@ -235,8 +235,8 @@
     '</header>' +
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
     '<div class="qw-login-mask" id="qw-login-mask">' +
-    '<div class="qw-login-bar"><div class="qw-lb-text"><h4>身份验证</h4><p>昵称和头像使用你的邮箱公开资料</p></div><div class="qw-lb-right"><p>登录后才可以发送消息</p><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div></div>' +
-    '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div></div>' +
+    '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div>' +
+    '<div class="qw-login-bar"><div class="qw-lb-text"><h4>身份验证</h4><p>昵称和头像使用你的邮箱公开资料</p></div><div class="qw-lb-right"><p>登录后才可以发送消息</p><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div></div></div>' +
     '</div></div>' +
     /* 访客登录弹窗 */
     '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
