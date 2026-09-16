@@ -129,7 +129,7 @@
   };
 
   const tools = {
-    chat: { icon: SVG.hitokoto, callback: () => { window.open("shengri.html", "_blank"); } },
+    chat: { icon: SVG.hitokoto, callback: () => { if (window.openChatRoom) { window.openChatRoom(); } else { window.location.href = "fklts.html"; } } },
     hitokoto: {
       icon: SVG.quote,
       callback: function () {
