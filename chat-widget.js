@@ -448,7 +448,7 @@
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
       // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
-      var steps = [removeOwO, removeSubmitExtras, setSubmitPlaceholders, ensureLoginGate, moveNickTop,
+      var steps = [removeOwO, removeSubmitExtras, setSubmitPlaceholders, moveNickTop,
         moveActionBelow, restructureReplies, sortComments, insertTimeSep, markSelf];
       try { refreshLoginUI(); } catch (eR) {}
       try { markLiked(); } catch (e0) {}
@@ -473,75 +473,6 @@
     mo.observe(tcommentEl, { childList: true, subtree: true });
   }
 
-  // 登录状态
-  var LK_USER = 'qw_user_v1';
-  function getLoginUser() {
-    try { return JSON.parse(localStorage.getItem(LK_USER) || 'null'); } catch (e) { return null; }
-  }
-  function fillTwikooIdentity(nick, mail) {
-    // 填入 Twikoo 昵称/邮箱（Vue 双向绑定需要用 nativeInputValueSetter）
-    function setVal(input, val) {
-      var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-      setter.call(input, val);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-    var submit = document.querySelector('.qw-body .tk-submit');
-    if (!submit) return;
-    var inputs = submit.querySelectorAll('input.el-input__inner');
-    if (inputs[0]) setVal(inputs[0], nick);
-    if (inputs[1]) setVal(inputs[1], mail);
-  }
-  function showLoginOverlay() {
-    hideLoginOverlay();
-    var panel = document.getElementById('qw-panel');
-    if (!panel) return;
-    var ov = document.createElement('div');
-    ov.className = 'qw-login-overlay';
-    ov.id = 'qw-login-overlay';
-    ov.innerHTML = '<div class="qw-login-card">' +
-      '<h3>登录聊天室</h3>' +
-      '<p class="qw-login-sub">填写昵称和邮箱后即可发言</p>' +
-      '<input type="text" id="qw-login-nick" placeholder="昵称" maxlength="20">' +
-      '<input type="email" id="qw-login-mail" placeholder="邮箱（用于接收回复通知）" maxlength="60">' +
-      '<button class="qw-login-btn" id="qw-login-btn">进 入</button>' +
-      '<div class="qw-login-err" id="qw-login-err"></div>' +
-      '</div>';
-    panel.appendChild(ov);
-    document.getElementById('qw-login-btn').addEventListener('click', doLogin);
-    document.getElementById('qw-login-mail').addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
-    var u = getLoginUser();
-    if (u) {
-      document.getElementById('qw-login-nick').value = u.nick || '';
-      document.getElementById('qw-login-mail').value = u.mail || '';
-    }
-  }
-  function hideLoginOverlay() {
-    var ov = document.getElementById('qw-login-overlay');
-    if (ov) ov.remove();
-  }
-  function doLogin() {
-    var nick = (document.getElementById('qw-login-nick').value || '').trim();
-    var mail = (document.getElementById('qw-login-mail').value || '').trim();
-    var err = document.getElementById('qw-login-err');
-    if (!nick) { err.textContent = '请填写昵称'; return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) { err.textContent = '请填写正确的邮箱'; return; }
-    try { localStorage.setItem(LK_USER, JSON.stringify({ nick: nick, mail: mail })); } catch (e) {}
-    fillTwikooIdentity(nick, mail);
-    hideLoginOverlay();
-  }
-  function openChat() {
-    backdrop.classList.add('qw-open');
-    document.body.style.overflow = 'hidden';
-    loadAssets(function () {
-      initTwikoo();
-      var user = getLoginUser();
-      if (!user) {
-        setTimeout(showLoginOverlay, 600);
-      } else {
-        fillTwikooIdentity(user.nick, user.mail);
-      }
-    });
-  }
   function closeChat() {
     backdrop.classList.remove('qw-open');
     document.body.style.overflow = '';
@@ -891,45 +822,6 @@
     setTwikooField('.qw-body .tk-meta-input input[name=nick]', u.nick);
     setTwikooField('.qw-body .tk-meta-input input[name=mail]', u.mail);
   }
-  function ensureLoginGate() {
-    var panel = document.querySelector('.qw-body');
-    if (!panel) return;
-    var u = getSavedUser();
-    var existing = panel.querySelector('.qw-login-mask');
-    if (u.nick && u.mail) {
-      if (existing) existing.remove();
-      return;
-    }
-    if (existing) return; // 已显示
-    applySavedUser();
-    var mask = document.createElement('div');
-    mask.className = 'qw-login-mask';
-    mask.innerHTML =
-      '<div class="qw-login-card">' +
-      '<h3>欢迎来到聊天室</h3>' +
-      '<p>填写昵称和邮箱后才能发言（仅用于显示头像和通知，不会公开）</p>' +
-      '<input type="text" id="qw-login-nick" placeholder="昵称" maxlength="20">' +
-      '<input type="email" id="qw-login-mail" placeholder="邮箱（用于 Gravatar 头像）">' +
-      '<button id="qw-login-enter">进入聊天</button>' +
-      '</div>';
-    panel.appendChild(mask);
-    mask.querySelector('#qw-login-enter').addEventListener('click', function () {
-      var nick = mask.querySelector('#qw-login-nick').value.trim();
-      var mail = mask.querySelector('#qw-login-mail').value.trim();
-      if (!nick) { mask.querySelector('#qw-login-nick').focus(); return; }
-      if (!mail || mail.indexOf('@') < 0) { mask.querySelector('#qw-login-mail').focus(); return; }
-      try {
-        localStorage.setItem(QW_NICK_KEY, nick);
-        localStorage.setItem(QW_MAIL_KEY, mail);
-      } catch (e) {}
-      applySavedUser();
-      mask.remove();
-    });
-    // 自动填已有的
-    if (u.nick) mask.querySelector('#qw-login-nick').value = u.nick;
-    if (u.mail) mask.querySelector('#qw-login-mail').value = u.mail;
-  }
-
   // 微信风回复预览条
   function showReplyBar(nick, text) {
     var submit = document.querySelector('.qw-body .tk-submit');
