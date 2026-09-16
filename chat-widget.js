@@ -164,6 +164,15 @@
     '.qw-admin-form button.qw-login{width:100%;margin-top:12px;padding:11px;border:none;border-radius:9px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s ease,transform .2s ease;}',
     '.qw-admin-form button.qw-login:hover{opacity:.9;transform:translateY(-1px);}',
     '.qw-admin-form button.qw-login:disabled{opacity:.55;cursor:not-allowed;}',
+    /* 聊天室登录遮罩 */
+    '.qw-login-overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(15,20,30,.88);backdrop-filter:blur(12px);border-radius:inherit;}',
+    '.qw-login-card{width:82%;max-width:300px;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:16px;padding:22px 20px;box-shadow:0 12px 40px rgba(0,0,0,.4);}',
+    '.qw-login-card h3{margin:0 0 4px;font-size:16px;color:var(--jp-ink);font-weight:700;text-align:center;}',
+    '.qw-login-card .qw-login-sub{margin:0 0 16px;font-size:11px;color:var(--jp-muted);text-align:center;}',
+    '.qw-login-card input{width:100%;box-sizing:border-box;border:1px solid var(--jp-line);border-radius:9px;background:var(--jp-paper);color:var(--jp-ink);font-size:13px;padding:10px 12px;margin-bottom:10px;outline:none;}',
+    '.qw-login-card input:focus{outline:1.5px solid var(--jp-accent);}',
+    '.qw-login-card .qw-login-btn{width:100%;padding:11px;border:none;border-radius:9px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:13px;font-weight:600;cursor:pointer;}',
+    '.qw-login-card .qw-login-err{color:#e74c3c;font-size:11px;text-align:center;margin-top:6px;min-height:14px;}',
     '.qw-admin-err{font-size:11px;color:#e05b5b;margin-top:10px;min-height:15px;}',
     '.qw-admin-stats{display:flex;gap:10px;margin-bottom:14px;}',
     '.qw-admin-stats div{flex:1;text-align:center;padding:12px 8px;border:1px solid var(--jp-line);border-radius:10px;background:var(--jp-paper);}',
@@ -258,6 +267,7 @@
         el: '#tcomment',
         path: 'chat',
         lang: 'zh-CN',
+        requiredMeta: ['nick', 'mail'],
         onCommentLoaded: function () { scheduleMark(); }
       });
     } catch (e) { twikooInited = false; }
@@ -430,10 +440,74 @@
     mo.observe(tcommentEl, { childList: true, subtree: true });
   }
 
+  // 登录状态
+  var LK_USER = 'qw_user_v1';
+  function getLoginUser() {
+    try { return JSON.parse(localStorage.getItem(LK_USER) || 'null'); } catch (e) { return null; }
+  }
+  function fillTwikooIdentity(nick, mail) {
+    // 填入 Twikoo 昵称/邮箱（Vue 双向绑定需要用 nativeInputValueSetter）
+    function setVal(input, val) {
+      var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+      setter.call(input, val);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    var submit = document.querySelector('.qw-body .tk-submit');
+    if (!submit) return;
+    var inputs = submit.querySelectorAll('input.el-input__inner');
+    if (inputs[0]) setVal(inputs[0], nick);
+    if (inputs[1]) setVal(inputs[1], mail);
+  }
+  function showLoginOverlay() {
+    hideLoginOverlay();
+    var panel = document.getElementById('qw-panel');
+    if (!panel) return;
+    var ov = document.createElement('div');
+    ov.className = 'qw-login-overlay';
+    ov.id = 'qw-login-overlay';
+    ov.innerHTML = '<div class="qw-login-card">' +
+      '<h3>登录聊天室</h3>' +
+      '<p class="qw-login-sub">填写昵称和邮箱后即可发言</p>' +
+      '<input type="text" id="qw-login-nick" placeholder="昵称" maxlength="20">' +
+      '<input type="email" id="qw-login-mail" placeholder="邮箱（用于接收回复通知）" maxlength="60">' +
+      '<button class="qw-login-btn" id="qw-login-btn">进 入</button>' +
+      '<div class="qw-login-err" id="qw-login-err"></div>' +
+      '</div>';
+    panel.appendChild(ov);
+    document.getElementById('qw-login-btn').addEventListener('click', doLogin);
+    document.getElementById('qw-login-mail').addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+    var u = getLoginUser();
+    if (u) {
+      document.getElementById('qw-login-nick').value = u.nick || '';
+      document.getElementById('qw-login-mail').value = u.mail || '';
+    }
+  }
+  function hideLoginOverlay() {
+    var ov = document.getElementById('qw-login-overlay');
+    if (ov) ov.remove();
+  }
+  function doLogin() {
+    var nick = (document.getElementById('qw-login-nick').value || '').trim();
+    var mail = (document.getElementById('qw-login-mail').value || '').trim();
+    var err = document.getElementById('qw-login-err');
+    if (!nick) { err.textContent = '请填写昵称'; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) { err.textContent = '请填写正确的邮箱'; return; }
+    try { localStorage.setItem(LK_USER, JSON.stringify({ nick: nick, mail: mail })); } catch (e) {}
+    fillTwikooIdentity(nick, mail);
+    hideLoginOverlay();
+  }
   function openChat() {
     backdrop.classList.add('qw-open');
     document.body.style.overflow = 'hidden';
-    loadAssets(function () { initTwikoo(); });
+    loadAssets(function () {
+      initTwikoo();
+      var user = getLoginUser();
+      if (!user) {
+        setTimeout(showLoginOverlay, 600);
+      } else {
+        fillTwikooIdentity(user.nick, user.mail);
+      }
+    });
   }
   function closeChat() {
     backdrop.classList.remove('qw-open');
