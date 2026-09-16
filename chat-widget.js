@@ -380,13 +380,29 @@
     var info = {};
     try { info = JSON.parse(localStorage.getItem('twikoo') || '{}'); } catch (e) {}
     var myNick = (info.nick || '').trim();
+    var myMail = (info.mail || '').trim().toLowerCase();
+    try {
+      var qn = localStorage.getItem('qw_visitor_nick') || '';
+      var qe = (localStorage.getItem('qw_visitor_email') || '').trim().toLowerCase();
+      if (qn) myNick = qn;
+      if (qe) myMail = qe;
+    } catch (e) {}
     var list = document.querySelectorAll('.qw-body #twikoo .tk-comment');
     for (var i = 0; i < list.length; i++) {
-      var c = list[i];
-      var nickEl = c.querySelector('.tk-nick');
+      var cc = list[i];
+      var nickEl = cc.querySelector('.tk-nick');
       var nick = nickEl ? nickEl.textContent.trim() : '';
-      if (myNick && nick === myNick) c.classList.add('tk-self');
-      else c.classList.remove('tk-self');
+      var isSelf = false;
+      try {
+        var vue = cc.__vue__;
+        if (vue && vue.comment) {
+          var cMail = (vue.comment.mail || '').trim().toLowerCase();
+          if (myMail && cMail === myMail) isSelf = true;
+        }
+      } catch (e) {}
+      if (!isSelf && myNick && nick === myNick) isSelf = true;
+      if (isSelf) cc.classList.add('tk-self');
+      else cc.classList.remove('tk-self');
     }
   }
   // ===== QQ式引用回复：把嵌套子评论重组为"独立气泡 + 气泡内引用块" =====
