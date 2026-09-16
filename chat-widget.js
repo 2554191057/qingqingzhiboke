@@ -230,6 +230,12 @@
     } catch (e) { twikooInited = false; }
   }
 
+  // ===== 移除左下角表情按钮（Twikoo OwO，用不到直接删掉 DOM） =====
+  function removeOwO() {
+    document.querySelectorAll('.qw-body #twikoo .tk-submit-action-icon.OwO, .qw-body #twikoo .OwO-logo, .qw-body #twikoo .tk-submit .OwO').forEach(function (el) {
+      el.remove();
+    });
+  }
   // ===== 聊天气泡：识别"自己"的消息（对比 localStorage 昵称）→ 右侧 =====
   function markSelf() {
     var info = {};
@@ -310,10 +316,8 @@
       if (lastTs === 0 || ts - lastTs > 5 * 60 * 1000) {
         var d = new Date(ts);
         var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
-        var label = pad(d.getHours()) + ':' + pad(d.getMinutes());
-        if (d.getDate() !== new Date().getDate() || d.getMonth() !== new Date().getMonth()) {
-          label = pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + label;
-        }
+        var label = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' +
+          pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
         var sep = document.createElement('div');
         sep.className = 'qw-time-sep';
         sep.textContent = label;
@@ -339,6 +343,7 @@
   function scheduleMark() {
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
+      removeOwO();
       restructureReplies();
       sortComments();
       insertTimeSep();
