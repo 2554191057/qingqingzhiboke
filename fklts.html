@@ -42,192 +42,39 @@
         .theme-toggle { background: rgba(255, 255, 255, 0.9) !important; border: 1px solid #cedaed !important; }
         [data-theme="dark"] .theme-toggle { background: rgba(13, 30, 48, 0.8) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; }
 
-        /* ===== 聊天室主区（qiguangji ChatRoom 布局） ===== */
+        /* 悬浮聊天室直达页：简单欢迎底页 */
         body { background: var(--jp-paper) !important; }
         [data-theme="dark"] body { background: var(--jp-paper) !important; }
-        .chat-page { display: flex; justify-content: center; margin: 84px auto 48px; padding: 0 16px; }
-        .chat-card {
-            width: min(680px, 100%); max-width: 100%;
-            display: flex; flex-direction: column;
+        .chat-welcome { display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 84px); padding: 24px 16px; }
+        .welcome-card {
+            width: min(440px, 100%);
+            padding: 42px 32px;
+            text-align: center;
             background: var(--jp-surface);
             border: 1px solid var(--jp-line);
             border-radius: 18px;
             box-shadow: 0 28px 100px rgba(0, 0, 0, 0.28), 0 0 40px var(--jp-glow);
-            overflow: hidden;
             color: var(--jp-ink);
             transition: background 0.45s ease, border-color 0.45s ease;
         }
-        .chat-head {
-            display: flex; align-items: center; gap: 13px;
-            padding: 18px 20px;
-            border-bottom: 1px solid var(--jp-line);
-            background: linear-gradient(110deg, var(--jp-glow), transparent);
-        }
-        .chat-head .chat-icon {
-            padding: 10px;
-            background: var(--jp-glow);
-            border-radius: 11px;
-            color: var(--jp-accent);
-            font-size: 17px;
+        .welcome-card .icon {
+            width: 62px; height: 62px; margin: 0 auto 18px;
             display: flex; align-items: center; justify-content: center;
+            font-size: 24px; color: var(--jp-accent);
+            background: var(--jp-glow); border-radius: 50%;
         }
-        .chat-head h1 { margin: 0; font-size: 18px; font-weight: 650; color: var(--jp-ink); }
-        [data-theme="dark"] .chat-head h1 { color: var(--jp-ink); }
-        .chat-head .sub { display: flex; align-items: center; gap: 5px; margin: 5px 0 0; font-size: 10px; color: var(--jp-muted); }
-        .chat-head .sub .dot { width: 6px; height: 6px; border-radius: 50%; background: #3ecf6a; box-shadow: 0 0 6px rgba(62, 207, 106, 0.7); }
-        .chat-head .chat-close {
-            margin-left: auto; padding: 8px;
-            color: var(--jp-muted); font-size: 15px;
-            cursor: pointer; border-radius: 8px;
-            transition: background 0.2s ease, color 0.2s ease;
-        }
-        .chat-head .chat-close:hover { background: var(--jp-glow); color: var(--jp-ink); }
-        .chat-notice {
-            font-size: 10px; color: var(--jp-muted);
-            padding: 12px 20px;
-            background: var(--jp-glow);
-            border-bottom: 1px solid transparent;
-        }
-        [data-theme="dark"] .chat-notice { border-bottom-color: var(--jp-line); }
-        .chat-body { padding: 0 20px 18px; overflow: hidden; display: flex; flex-direction: column; flex: 1; min-height: 0; }
-        .chat-tip { margin: 14px 0 0; font-size: 10px; color: var(--jp-muted); text-align: center; }
-
-        /* ===== Twikoo → qiguangji 覆盖（核心） ===== */
-        /* 消息流在上、输入区在底部（qiguangji 聊天室顺序） */
-        #tcomment { --twikoo-bg: transparent; --twikoo-theme-bg: transparent; --twikoo-theme: transparent; display: flex; flex: 1; min-height: 0; }
-        #twikoo { background: transparent !important; display: flex !important; flex-direction: column !important; min-height: 0 !important; flex: 1 !important; }
-        #twikoo .tk-comments { order: 1 !important; flex: 1 1 auto !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; background: transparent !important; }
-        #twikoo .tk-comments-container {
-            flex: 1 !important; max-height: none !important; overflow-y: auto !important;
-            padding: 10px 0 12px;
-            background: transparent !important;
-            overscroll-behavior: contain;
-        }
-        #twikoo .tk-comments-container::-webkit-scrollbar { width: 5px; }
-        #twikoo .tk-comments-container::-webkit-scrollbar-thumb { background: var(--jp-line); border-radius: 3px; }
-
-        /* 输入表单 */
-        #twikoo .tk-submit { order: 2 !important; flex-shrink: 0 !important; background: transparent !important; padding: 14px 0 0; border-top: 1px solid var(--jp-line); display: none !important; }
-        #twikoo .tk-submit.qw-open { display: block !important; }
-        /* 底部"评论"按钮（点击展开输入区） */
-        .qw-comment-btn { margin-top: 12px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; border: 1px dashed var(--jp-line); border-radius: 10px; background: var(--jp-paper); color: var(--jp-muted); font-size: 12px; cursor: pointer; transition: border-color .2s ease, color .2s ease, background .2s ease; }
-        .qw-comment-btn:hover { border-color: var(--jp-accent); color: var(--jp-accent); background: var(--jp-glow); }
-        .qw-comment-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
-        .qw-comment-btn.qw-hide { display: none !important; }
-        #twikoo .tk-submit .tk-row { background: transparent !important; margin: 0 !important; }
-        #twikoo .tk-submit .tk-row > .tk-avatar { display: none !important; }
-        #twikoo .tk-submit .tk-col { width: 100% !important; padding: 0 !important; }
-        #twikoo .tk-meta-input { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px; }
-        #twikoo .tk-meta-input .el-input { margin: 0 !important; min-width: 0 !important; width: 100% !important; }
-        #twikoo .tk-meta-input .el-input:nth-child(3) { display: none !important; }
-        #twikoo .el-input-group { display: flex !important; align-items: center !important; }
-        #twikoo .el-input-group__prepend { display: none !important; }
-        #twikoo .el-input__inner {
-            border: 1px solid var(--jp-line) !important;
-            border-radius: 7px !important;
-            background: var(--jp-paper) !important;
-            color: var(--jp-ink) !important;
-            font-size: 12px !important;
-            padding: 8px 11px !important;
-            height: auto !important;
-            box-shadow: none !important;
-            min-width: 0 !important;
-            flex: 1 !important;
-        }
-        #twikoo .el-input__inner:focus { outline: 1px solid var(--jp-accent) !important; }
-        #twikoo .tk-input.el-textarea { margin-top: 10px !important; }
-        #twikoo .tk-input textarea {
-            border: 1px solid var(--jp-line) !important;
-            border-radius: 7px !important;
-            background: var(--jp-paper) !important;
-            color: var(--jp-ink) !important;
-            font-size: 12px !important;
-            padding: 9px 11px !important;
-            resize: vertical; max-height: 140px;
-            box-shadow: none !important;
-        }
-        #twikoo .tk-input textarea:focus { outline: 1px solid var(--jp-accent) !important; }
-        #twikoo .el-input__count { color: var(--jp-muted) !important; font-size: 10px !important; }
-        /* 表情等操作 */
-        #twikoo .tk-submit-action-icon { color: var(--jp-muted) !important; }
-        #twikoo .tk-submit-action-icon svg { width: 15px; height: 15px; }
-        [data-theme="dark"] #twikoo .tk-submit-action-icon { filter: none !important; }
-        #twikoo .tk-row-actions-start .tk-submit-action-icon, #twikoo .tk-row-actions-start button { color: var(--jp-muted) !important; }
-        /* 发送按钮 */
-        #twikoo .tk-send {
-            background: linear-gradient(120deg, #087fae, #4866db) !important;
-            color: #fff !important;
-            border-radius: 7px !important;
-            font-size: 11px !important;
-            padding: 10px 14px !important;
-            display: flex; align-items: center; gap: 7px;
-            border: none !important;
-        }
-        [data-theme="dark"] #twikoo .tk-send { background: linear-gradient(120deg, #087fae, #4866db) !important; }
-        #twikoo .tk-send:disabled { opacity: .45 !important; cursor: not-allowed !important; }
-
-        /* 评论消息（qiguangji 宽屏聊天流：圆头像、昵称+时间横排、无气泡） */
-        #twikoo .tk-comment {
-            display: flex !important; align-items: flex-start !important;
-            gap: 12px !important; margin-bottom: 22px !important;
-            padding: 0 !important;
-        }
-        #twikoo .tk-comment .tk-avatar {
-            width: 50px !important; height: 50px !important;
-            border-radius: 50% !important; overflow: hidden !important;
-            flex-shrink: 0; margin: 0 !important;
-            background: var(--jp-glow); display: flex; align-items: center; justify-content: center;
-            font-size: 20px; color: var(--jp-accent);
-        }
-        #twikoo .tk-comment .tk-avatar img { width: 100% !important; height: 100% !important; object-fit: cover !important; border-radius: 50% !important; }
-        #twikoo .tk-comment .tk-main { min-width: 0 !important; max-width: calc(100% - 62px) !important; padding: 0 !important; }
-        #twikoo .tk-comment .tk-row { display: block !important; margin: 0 0 6px !important; }
-        #twikoo .tk-meta { display: flex; align-items: baseline; gap: 12px; font-size: 10px !important; color: var(--jp-muted) !important; }
-        #twikoo .tk-nick strong { color: var(--jp-accent) !important; font-weight: 700 !important; font-size: 13px !important; }
-        #twikoo .tk-time time { font-size: 10px !important; color: var(--jp-muted) !important; }
-        #twikoo .tk-action { margin-left: auto !important; display: flex !important; gap: 10px !important; align-items: center !important; }
-        #twikoo .tk-action .tk-action-link { color: var(--jp-muted) !important; font-size: 10px !important; padding: 0 !important; }
-        #twikoo .tk-action-icon svg { width: 12px !important; height: 12px !important; }
-        #twikoo .tk-content {
-            white-space: pre-wrap; overflow-wrap: anywhere;
-            padding: 2px 0 !important;
-            background: transparent !important;
-            border: none !important;
-            border-radius: 0 !important;
-            font-size: 13px !important; line-height: 1.75 !important;
-            margin: 0 !important;
-        }
-        #twikoo .tk-content p { color: var(--jp-ink) !important; margin: 0 !important; }
-        #twikoo .tk-content a { color: var(--jp-accent) !important; }
-        /* 子评论缩进 */
-        #twikoo .tk-children { margin-left: 62px !important; padding-left: 0 !important; }
-        #twikoo .tk-children .tk-comment { margin-bottom: 12px !important; }
-        #twikoo .tk-children .tk-content { font-size: 11px !important; }
-
-        /* 空状态 */
-        #twikoo .tk-comments-container .tk-no-comment, #twikoo .tk-empty {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 150px; gap: 10px;
-            color: var(--jp-muted) !important; font-size: 12px !important;
-            text-align: center;
-        }
-
-        /* footer / 管理 */
-        #twikoo .tk-footer { text-align: center !important; font-size: 10px !important; color: var(--jp-muted) !important; padding: 12px 0 0 !important; background: transparent !important; }
-        #twikoo .tk-footer a, #twikoo .tk-footer .tk-action-link { color: var(--jp-muted) !important; }
-        #twikoo .tk-admin-container { display: none !important; }
-
-        @media (max-width: 640px) {
-            .chat-page { margin-top: 76px; }
-            .chat-card { border-radius: 16px; }
-            .chat-head { padding: 15px 16px; }
-            .chat-body { padding: 0 15px 14px; }
-            .chat-notice { padding: 10px 16px; font-size: 9px; }
-            #twikoo .tk-comment .tk-avatar { width: 40px !important; height: 40px !important; }
-            #twikoo .tk-comment .tk-main { max-width: calc(100% - 52px) !important; }
-            #twikoo .tk-children { margin-left: 52px !important; }
-        }
+        .welcome-card h1 { margin: 0 0 10px; font-size: 20px; font-weight: 650; color: var(--jp-ink); }
+        .welcome-card p { margin: 0; font-size: 12px; color: var(--jp-muted); line-height: 1.8; }
+        .welcome-card .dot { display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: #3ecf6a; box-shadow: 0 0 6px rgba(62, 207, 106, 0.7); vertical-align: middle; }
     </style>
+    <script>
+        // ===== 首次进入必须经过图形验证（与主站一致） =====
+        if (!sessionStorage.getItem('auth_ok')) {
+            var __p = (location.pathname.split('/').pop() || '');
+            var __q = (__p && __p !== 'yanzheng.html') ? '?back=' + encodeURIComponent(__p) : '';
+            window.location.replace('yanzheng.html' + __q);
+        }
+    </script>
 </head>
 <body>
     <!-- ========== 顶部导航 ========== -->
@@ -259,29 +106,17 @@
         </div>
     </header>
 
-    <!-- ========== 聊天室主区（qiguangji ChatRoom 风格） ========== -->
-    <main class="chat-page">
-        <div class="chat-card">
-            <div class="chat-head">
-                <div class="chat-icon"><i class="fa-solid fa-comments"></i></div>
-                <div>
-                    <h1>访客聊天室</h1>
-                    <p class="sub"><span class="dot"></span>实时同步 · Powered by Twikoo</p>
-                </div>
-                <a href="boke.html" class="chat-close" aria-label="关闭聊天室返回首页" title="关闭"><i class="fa-solid fa-xmark"></i></a>
-            </div>
-            <p class="chat-notice">庆庆纸博客公共频道 · 可自由浏览，填写昵称后即可参与交流。</p>
-            <div class="chat-body">
-                <div id="tcomment"></div>
-                <button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button>
-                <p class="chat-tip" id="chatTip">Powered by Twikoo · 全站访客可见，文明发言。</p>
-            </div>
+    <!-- ========== 悬浮聊天室直达页（聊天室以悬浮面板形式打开） ========== -->
+    <main class="chat-welcome">
+        <div class="welcome-card">
+            <div class="icon"><i class="fa-solid fa-comments"></i></div>
+            <h1>访客聊天室</h1>
+            <p><span class="dot"></span>全站悬浮聊天室正在为你打开…<br>无需跳转页面，随时可与全站访客交流。</p>
         </div>
     </main>
 
-    <!-- Twikoo 评论组件 -->
-    <link rel="stylesheet" href="https://registry.npmmirror.com/twikoo/1.7.24/files/dist/twikoo.css">
-    <script src="https://registry.npmmirror.com/twikoo/1.7.24/files/dist/twikoo.all.min.js"></script>
+    <!-- 全站悬浮访客聊天室组件（自包含 CSS/HTML/Twikoo） -->
+    <script src="chat-widget.js?v=2"></script>
 
     <script>
         // ===== 主题：初始化（19-7 自动夜间）+ 切换 =====
@@ -303,7 +138,7 @@
             }
             init();
             themeToggle.addEventListener('click', toggle);
-            // 导航下拉（open 类加在父容器 .nav-dropdown 上，与 style.css 的 .nav-dropdown.open .nav-dropdown-menu 规则匹配）
+            // 导航下拉
             var navDrop = document.getElementById('navDropdown');
             var dd = document.getElementById('navDropdownToggle');
             dd.addEventListener('click', function (e) { e.stopPropagation(); navDrop.classList.toggle('open'); });
@@ -316,37 +151,12 @@
             window.addEventListener('scroll', function () { nav.classList.toggle('scrolled', window.scrollY > 20); });
         })();
 
-        // ===== Twikoo 聊天室（跨访客可见） =====
-        (function () {
-            function loadTwikoo() {
-                if (!window.twikoo) { setTimeout(loadTwikoo, 300); return; }
-                twikoo.init({
-                    envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo',
-                    el: '#tcomment',
-                    path: 'chat',
-                    lang: 'zh-CN',
-                    onCommentLoaded: function () {}
-                });
-            }
-            loadTwikoo();
-
-            // 底部"评论"按钮 → 展开输入区
-            var commentBtn = document.getElementById('qw-comment-btn');
-            commentBtn.addEventListener('click', function () {
-                var submit = document.getElementById('twikoo');
-                if (!submit) { setTimeout(function () { commentBtn.click(); }, 300); return; }
-                var sub = submit.querySelector('.tk-submit');
-                if (!sub) { setTimeout(function () { commentBtn.click(); }, 300); return; }
-                sub.classList.add('qw-open');
-                commentBtn.classList.add('qw-hide');
-                // 把"必填"占位提示改为 昵称/邮箱
-                var inners = sub.querySelectorAll('.tk-meta-input .el-input__inner');
-                if (inners.length >= 1) inners[0].placeholder = '昵称';
-                if (inners.length >= 2) inners[1].placeholder = '邮箱';
-                var ta = sub.querySelector('textarea');
-                if (ta) { ta.placeholder = '友善交流，文明发言…'; setTimeout(function () { ta.focus(); }, 50); }
-            });
-        })();
+        // ===== 打开即自动弹出悬浮聊天室 =====
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                if (window.openChatRoom) window.openChatRoom();
+            }, 400);
+        });
     </script>
 </body>
 </html>
