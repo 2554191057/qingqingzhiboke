@@ -47,7 +47,7 @@
         [data-theme="dark"] body { background: var(--jp-paper) !important; }
         .chat-page { display: flex; justify-content: center; margin: 84px auto 48px; padding: 0 16px; }
         .chat-card {
-            width: 460px; max-width: 100%;
+            width: min(680px, 100%); max-width: 100%;
             display: flex; flex-direction: column;
             background: var(--jp-surface);
             border: 1px solid var(--jp-line);
@@ -159,39 +159,41 @@
         [data-theme="dark"] #twikoo .tk-send { background: linear-gradient(120deg, #087fae, #4866db) !important; }
         #twikoo .tk-send:disabled { opacity: .45 !important; cursor: not-allowed !important; }
 
-        /* 评论消息（qiguangji 气泡） */
+        /* 评论消息（qiguangji 宽屏聊天流：圆头像、昵称+时间横排、无气泡） */
         #twikoo .tk-comment {
             display: flex !important; align-items: flex-start !important;
-            gap: 10px !important; margin-bottom: 18px !important;
+            gap: 12px !important; margin-bottom: 22px !important;
             padding: 0 !important;
         }
         #twikoo .tk-comment .tk-avatar {
-            width: 29px !important; height: 29px !important;
-            border-radius: 8px !important; overflow: hidden !important;
+            width: 50px !important; height: 50px !important;
+            border-radius: 50% !important; overflow: hidden !important;
             flex-shrink: 0; margin: 0 !important;
+            background: var(--jp-glow); display: flex; align-items: center; justify-content: center;
+            font-size: 20px; color: var(--jp-accent);
         }
-        #twikoo .tk-comment .tk-avatar img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
-        #twikoo .tk-comment .tk-main { min-width: 0 !important; max-width: calc(100% - 40px) !important; padding: 0 !important; }
-        #twikoo .tk-comment .tk-row { display: block !important; margin: 0 0 7px !important; }
-        #twikoo .tk-meta { display: flex; align-items: center; gap: 12px; font-size: 10px !important; color: var(--jp-muted) !important; }
-        #twikoo .tk-nick strong { color: var(--jp-accent) !important; font-weight: 650 !important; font-size: 11px !important; }
-        #twikoo .tk-time time { font-size: 9px !important; color: var(--jp-muted) !important; }
-        #twikoo .tk-action { margin-left: auto !important; display: flex !important; gap: 8px !important; }
-        #twikoo .tk-action .tk-action-link { color: var(--jp-muted) !important; font-size: 9px !important; padding: 0 !important; }
-        #twikoo .tk-action-icon svg { width: 11px !important; height: 11px !important; }
+        #twikoo .tk-comment .tk-avatar img { width: 100% !important; height: 100% !important; object-fit: cover !important; border-radius: 50% !important; }
+        #twikoo .tk-comment .tk-main { min-width: 0 !important; max-width: calc(100% - 62px) !important; padding: 0 !important; }
+        #twikoo .tk-comment .tk-row { display: block !important; margin: 0 0 6px !important; }
+        #twikoo .tk-meta { display: flex; align-items: baseline; gap: 12px; font-size: 10px !important; color: var(--jp-muted) !important; }
+        #twikoo .tk-nick strong { color: var(--jp-accent) !important; font-weight: 700 !important; font-size: 13px !important; }
+        #twikoo .tk-time time { font-size: 10px !important; color: var(--jp-muted) !important; }
+        #twikoo .tk-action { margin-left: auto !important; display: flex !important; gap: 10px !important; align-items: center !important; }
+        #twikoo .tk-action .tk-action-link { color: var(--jp-muted) !important; font-size: 10px !important; padding: 0 !important; }
+        #twikoo .tk-action-icon svg { width: 12px !important; height: 12px !important; }
         #twikoo .tk-content {
             white-space: pre-wrap; overflow-wrap: anywhere;
-            padding: 10px 12px !important;
-            background: var(--jp-glow) !important;
-            border: 1px solid var(--jp-line) !important;
-            border-radius: 0 10px 10px 10px !important;
-            font-size: 12px !important; line-height: 1.7 !important;
+            padding: 2px 0 !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+            font-size: 13px !important; line-height: 1.75 !important;
             margin: 0 !important;
         }
         #twikoo .tk-content p { color: var(--jp-ink) !important; margin: 0 !important; }
         #twikoo .tk-content a { color: var(--jp-accent) !important; }
         /* 子评论缩进 */
-        #twikoo .tk-children { margin-left: 39px !important; padding-left: 0 !important; }
+        #twikoo .tk-children { margin-left: 62px !important; padding-left: 0 !important; }
         #twikoo .tk-children .tk-comment { margin-bottom: 12px !important; }
         #twikoo .tk-children .tk-content { font-size: 11px !important; }
 
@@ -215,6 +217,9 @@
             .chat-body { padding: 0 15px 14px; }
             .chat-notice { padding: 10px 16px; font-size: 9px; }
             #twikoo .tk-comments-container { max-height: 260px; }
+            #twikoo .tk-comment .tk-avatar { width: 40px !important; height: 40px !important; }
+            #twikoo .tk-comment .tk-main { max-width: calc(100% - 52px) !important; }
+            #twikoo .tk-children { margin-left: 52px !important; }
         }
     </style>
 </head>
