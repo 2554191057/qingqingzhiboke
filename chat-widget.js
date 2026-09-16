@@ -494,7 +494,8 @@
   if (loginClose) loginClose.addEventListener('click', function (e) { e.stopPropagation(); });
   document.getElementById('qw-login-backdrop').addEventListener('click', closeLogin);
   closeBtn.addEventListener('click', closeChat);
-  // 仅 X 按钮关闭（同管理员面板逻辑，不响应遮罩点击和 Esc）
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
+  // 仅 X 按钮和 Esc 关闭，不响应遮罩点击
 
   // ===== 管理员面板（自绘：登录 → 评论管理 / 删除 / 拉黑邮箱） =====
   var adminBtn = document.getElementById('qw-admin-trigger');
