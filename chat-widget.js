@@ -96,6 +96,9 @@
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content:before{left:auto!important;right:-6px!important;border-right-width:0!important;border-left-width:6px!important;border-right-color:transparent!important;border-left-color:rgba(16,147,195,.16)!important;}',
     /* ===== 操作按钮：移到气泡下方横排（常显长条） ===== */
     '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:1!important;}',
+    /* 已点赞高亮（本地记录，服务端 liked 状态不可用） */
+    '.qw-body #twikoo .tk-action-link.qw-liked{color:var(--jp-accent)!important;font-weight:600!important;}',
+    '.qw-body #twikoo .tk-action-link.qw-liked .tk-action-icon{transform:scale(1.08);}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-action{justify-content:flex-end!important;}',
     '.qw-body #twikoo .tk-action .tk-action-link{color:var(--jp-muted)!important;font-size:11px!important;padding:0!important;display:inline-flex!important;align-items:center!important;gap:3px!important;transition:color .15s ease!important;}',
     '.qw-body #twikoo .tk-action .tk-action-link:hover{color:var(--jp-accent)!important;}',
@@ -386,6 +389,7 @@
       restructureReplies();
       sortComments();
       insertTimeSep();
+      markLiked();
       markSelf();
     }, 250);
   }
@@ -639,6 +643,20 @@
   var LK = 'qw_liked_v1';
   var likedSet = {};
   try { likedSet = JSON.parse(localStorage.getItem(LK) || '{}'); } catch (e) { likedSet = {}; }
+  // ===== 已点赞高亮恢复：本地记录过的评论，点赞按钮固定显示为已赞（服务端 liked 状态因 IP 防刷不可用） =====
+  function markLiked() {
+    document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
+      var id = c.id || '';
+      var link = c.querySelector('.tk-action-link');
+      if (!link) return;
+      if (likedSet[id]) {
+        link.classList.add('qw-liked');
+      } else {
+        link.classList.remove('qw-liked');
+      }
+    });
+  }
+
   var tipTimer = null;
   function qwTip(msg) {
     var tip = document.getElementById('qw-tip');
@@ -669,6 +687,7 @@
     } else {
       likedSet[id] = 1;
       try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
+      btn.classList.add('qw-liked');
     }
   }, true);
 
