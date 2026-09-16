@@ -82,6 +82,25 @@
     '.qw-reply-bar .qw-reply-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}',
     '.qw-reply-bar .qw-reply-cancel{cursor:pointer;color:var(--jp-muted);flex-shrink:0;padding:0 4px;font-size:14px;line-height:1;}',
     '.qw-reply-bar .qw-reply-cancel:hover{color:var(--jp-ink);}',
+    /* 访客登录：header 登录按钮 */
+    '.qw-login-btn{background:transparent;border:1px solid var(--jp-line);color:var(--jp-muted);border-radius:7px;padding:5px 11px;font-size:11px;cursor:pointer;transition:all .15s ease;}',
+    '.qw-login-btn:hover{border-color:var(--jp-accent);color:var(--jp-accent);}',
+    '.qw-login-btn.qw-logged-in{color:var(--jp-accent);border-color:var(--jp-accent);font-weight:600;}',
+    /* 登录弹窗 */
+    '.qw-login-backdrop{position:fixed;inset:0;z-index:200;background:rgba(1,6,17,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;}',
+    '.qw-login-backdrop.qw-open{display:flex;}',
+    '.qw-login-panel{width:320px;max-width:100%;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:14px;padding:20px;box-shadow:0 12px 40px rgba(0,0,0,.4);}',
+    '.qw-login-panel h3{margin:0 0 4px;font-size:15px;color:var(--jp-ink);}',
+    '.qw-login-panel p{margin:0 0 14px;font-size:11px;color:var(--jp-muted);}',
+    '.qw-login-panel input{width:100%;box-sizing:border-box;border:1px solid var(--jp-line);background:var(--jp-paper);color:var(--jp-ink);border-radius:8px;padding:9px 11px;font-size:12px;margin-bottom:9px;outline:none;}',
+    '.qw-login-panel input:focus{border-color:var(--jp-accent);}',
+    '.qw-login-panel button{width:100%;padding:10px;border:none;border-radius:8px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:12px;font-weight:600;cursor:pointer;}',
+    /* 未登录遮罩（盖在输入区上方） */
+    '.qw-login-mask{position:relative;}',
+    '.qw-login-mask .qw-mask-overlay{display:none;position:absolute;left:0;right:0;top:0;bottom:0;z-index:10;background:rgba(27,31,34,.88);backdrop-filter:blur(3px);border-radius:10px;align-items:center;justify-content:center;flex-direction:column;gap:8px;cursor:pointer;}',
+    '.qw-login-mask.qw-needs-login .qw-mask-overlay{display:flex;}',
+    '.qw-mask-overlay .qw-mask-icon{font-size:26px;}',
+    '.qw-mask-overlay .qw-mask-text{font-size:12px;color:var(--jp-accent);font-weight:600;}',
     /* 登录门：未填邮箱昵称时遮罩输入区 */
     '.qw-login-mask{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(15,20,28,.78);backdrop-filter:blur(8px);}',
     '.qw-login-card{width:320px;max-width:88%;background:var(--jp-surface,#1e2530);border:1px solid var(--jp-line,#2a3444);border-radius:18px;padding:24px 22px;box-shadow:0 12px 40px rgba(0,0,0,.4);}',
@@ -215,11 +234,21 @@
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>' +
     '<div><h2 id="qw-title">访客聊天室</h2><p><span class="qw-dot"></span>实时同步 · Powered by Twikoo</p></div>' +
+    '<button id="qw-login-btn" class="qw-login-btn" aria-label="登录" title="登录">登录</button>' +
     '<button id="qw-admin-btn" class="qw-admin-btn" aria-label="管理员" title="管理员登录"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
-    '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，填写昵称后即可参与交流。</p>' +
-    '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div>' +
+    '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
+    '<div class="qw-login-mask" id="qw-login-mask"><div class="qw-mask-overlay" id="qw-mask-overlay"><div class="qw-mask-icon">🔒</div><div class="qw-mask-text">点击登录后发言</div></div>' +
+    '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div></div>' +
+    '</div></div>' +
+    /* 访客登录弹窗 */
+    '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
+    '<div class="qw-login-panel">' +
+    '<h3>登录发言</h3><p>填昵称和邮箱即可加入聊天，下次自动登录</p>' +
+    '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20">' +
+    '<input type="email" id="qw-login-email" placeholder="邮箱（仅用于身份识别，不公开）">' +
+    '<button id="qw-login-submit">登 录</button>' +
     '</div></div>' +
     /* 自绘管理员面板 */
     '<div id="qw-admin-backdrop" class="qw-admin-backdrop">' +
@@ -418,6 +447,7 @@
       // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
       var steps = [removeOwO, removeSubmitExtras, setSubmitPlaceholders, ensureLoginGate, moveNickTop,
         moveActionBelow, restructureReplies, sortComments, insertTimeSep, markSelf];
+      try { refreshLoginUI(); } catch (eR) {}
       try { markLiked(); } catch (e0) {}
       steps.forEach(function (fn) { try { fn(); } catch (err) {} });
       try { markLiked(); } catch (e1) {}
@@ -515,6 +545,28 @@
   }
 
   launcher.addEventListener('click', openChat);
+  document.addEventListener('DOMContentLoaded', refreshLoginUI);
+  // 打开聊天室后刷新登录态
+  var _origOpen = openChat;
+  openChat = function () {
+    _origOpen.apply(this, arguments);
+    setTimeout(refreshLoginUI, 300);
+  };
+  var loginBtn = document.getElementById('qw-login-btn');
+  if (loginBtn) loginBtn.addEventListener('click', function () {
+    if (isLoggedIn()) {
+      if (confirm('退出当前账号？')) logout();
+    } else {
+      openLogin();
+    }
+  });
+  var maskOverlay = document.getElementById('qw-mask-overlay');
+  if (maskOverlay) maskOverlay.addEventListener('click', openLogin);
+  var loginSubmit = document.getElementById('qw-login-submit');
+  if (loginSubmit) loginSubmit.addEventListener('click', doLogin);
+  var loginClose = document.querySelector('#qw-login-backdrop .qw-login-panel');
+  if (loginClose) loginClose.addEventListener('click', function (e) { e.stopPropagation(); });
+  document.getElementById('qw-login-backdrop').addEventListener('click', closeLogin);
   closeBtn.addEventListener('click', closeChat);
   backdrop.addEventListener('click', function (e) { if (e.target === backdrop) closeChat(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
@@ -898,6 +950,78 @@
     var input = submit.querySelector('.tk-input');
     submit.insertBefore(bar, input);
     input && input.querySelector('textarea') && input.querySelector('textarea').focus();
+  }
+
+  // ===== 访客登录（邮箱+昵称，localStorage 记住） =====
+  var QW_NICK = 'qw_visitor_nick';
+  var QW_EMAIL = 'qw_visitor_email';
+  function getVisitor() {
+    try { return { nick: localStorage.getItem(QW_NICK) || '', email: localStorage.getItem(QW_EMAIL) || '' }; }
+    catch (e) { return { nick: '', email: '' }; }
+  }
+  function isLoggedIn() {
+    var v = getVisitor();
+    return !!(v.nick && v.email);
+  }
+  function setNativeValue(input, value) {
+    if (!input) return;
+    var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value', input);
+    if (setter && setter.set) setter.set.call(input, value);
+    else input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  function applyVisitorToTwikoo() {
+    var v = getVisitor();
+    if (!v.nick) return;
+    var inputs = document.querySelectorAll('.qw-body .tk-meta-input input');
+    if (inputs[0]) setNativeValue(inputs[0], v.nick);
+    if (inputs[1]) setNativeValue(inputs[1], v.email);
+  }
+  function refreshLoginUI() {
+    var btn = document.getElementById('qw-login-btn');
+    var mask = document.getElementById('qw-login-mask');
+    if (!btn || !mask) return;
+    if (isLoggedIn()) {
+      btn.textContent = getVisitor().nick;
+      btn.classList.add('qw-logged-in');
+      btn.title = '退出登录';
+      mask.classList.remove('qw-needs-login');
+      applyVisitorToTwikoo();
+    } else {
+      btn.textContent = '登录';
+      btn.classList.remove('qw-logged-in');
+      btn.title = '登录后发言';
+      mask.classList.add('qw-needs-login');
+    }
+  }
+  function openLogin() {
+    var bd = document.getElementById('qw-login-backdrop');
+    if (!bd) return;
+    var v = getVisitor();
+    document.getElementById('qw-login-nick').value = v.nick;
+    document.getElementById('qw-login-email').value = v.email;
+    bd.classList.add('qw-open');
+    setTimeout(function(){ document.getElementById('qw-login-nick').focus(); }, 100);
+  }
+  function closeLogin() {
+    document.getElementById('qw-login-backdrop').classList.remove('qw-open');
+  }
+  function doLogin() {
+    var nick = document.getElementById('qw-login-nick').value.trim();
+    var email = document.getElementById('qw-login-email').value.trim();
+    if (!nick) { document.getElementById('qw-login-nick').focus(); return; }
+    if (!email || email.indexOf('@') < 0) { document.getElementById('qw-login-email').focus(); return; }
+    try {
+      localStorage.setItem(QW_NICK, nick);
+      localStorage.setItem(QW_EMAIL, email);
+    } catch (e) {}
+    closeLogin();
+    refreshLoginUI();
+    alert('欢迎，' + nick);
+  }
+  function logout() {
+    try { localStorage.removeItem(QW_NICK); localStorage.removeItem(QW_EMAIL); } catch (e) {}
+    refreshLoginUI();
   }
 
   function markLiked() {
