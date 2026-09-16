@@ -76,6 +76,12 @@
     '.qw-body #twikoo [class*=comment-parent] [class*=cancel],.qw-body #twikoo [class*=comment-parent] button{cursor:pointer;color:var(--jp-muted)!important;margin-left:auto;padding:0 4px!important;border:none!important;background:transparent!important;font-size:14px!important;line-height:1;}',
     /* 微信风：发送按钮与输入框同行右侧 */
     '.qw-body #twikoo .tk-row-actions-start{display:flex!important;justify-content:flex-end!important;margin-top:6px!important;}',
+    /* 自绘微信风回复预览条 */
+    '.qw-reply-bar{display:flex;align-items:center;gap:8px;background:var(--jp-paper)!important;border:1px solid var(--jp-line)!important;border-radius:8px;padding:6px 10px;margin:0 0 8px;font-size:11px;color:var(--jp-muted);}',
+    '.qw-reply-bar .qw-reply-nick{color:var(--jp-accent)!important;font-weight:600;flex-shrink:0;}',
+    '.qw-reply-bar .qw-reply-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}',
+    '.qw-reply-bar .qw-reply-cancel{cursor:pointer;color:var(--jp-muted);flex-shrink:0;padding:0 4px;font-size:14px;line-height:1;}',
+    '.qw-reply-bar .qw-reply-cancel:hover{color:var(--jp-ink);}',
     /* ===== 聊天气泡布局：自己右侧、别人左侧 ===== */
     '.qw-body #twikoo .tk-comment{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
     '.qw-body #twikoo .tk-comment.tk-self{flex-direction:row-reverse!important;}',
@@ -666,7 +672,16 @@
     var dislikeBtn = links[1];
     var isLike = links.length && btn === likeBtn;
     var isDislike = links.length > 1 && btn === dislikeBtn;
-    if (!isLike && !isDislike) return; // 回复按钮不受限
+    var isReply = links.length > 2 && btn === links[2];
+    if (isReply) {
+      var nickEl = comment.querySelector('.tk-nick');
+      var nick = nickEl ? nickEl.textContent.trim() : '';
+      var contentEl = comment.querySelector('.tk-content, .tk-row-content');
+      var content = contentEl ? contentEl.textContent.trim().slice(0, 40) : '';
+      showReplyBar(nick, content);
+      return;
+    }
+    if (!isLike && !isDislike) return; // 赞/踩之外的其他按钮不处理
     function block(ev) {
       ev.preventDefault();
       ev.stopPropagation();
@@ -716,6 +731,31 @@
   var likedSet = {};
   try { likedSet = JSON.parse(localStorage.getItem(LK) || '{}'); } catch (e) { likedSet = {}; }
   // ===== 已点赞高亮恢复：本地记录过的评论，点赞按钮固定显示为已赞（服务端 liked 状态因 IP 防刷不可用） =====
+  // 微信风回复预览条
+  function showReplyBar(nick, text) {
+    var submit = document.querySelector('.qw-body .tk-submit');
+    if (!submit) return;
+    var old = submit.querySelector('.qw-reply-bar');
+    if (old) old.remove();
+    var bar = document.createElement('div');
+    bar.className = 'qw-reply-bar';
+    bar.innerHTML = '<span class="qw-reply-nick">回复 ' + (nick || '') + '：</span>' +
+      '<span class="qw-reply-text"></span>' +
+      '<span class="qw-reply-cancel">×</span>';
+    bar.querySelector('.qw-reply-text').textContent = text || '';
+    bar.querySelector('.qw-reply-cancel').addEventListener('click', function () {
+      bar.remove();
+      // 同时取消 Twikoo 内部 parentComment（Vue）
+      try {
+        var vm = document.querySelector('#twikoo').__vue__;
+        if (vm) { vm.parentComment = null; }
+      } catch (e) {}
+    });
+    var input = submit.querySelector('.tk-input');
+    submit.insertBefore(bar, input);
+    input && input.querySelector('textarea') && input.querySelector('textarea').focus();
+  }
+
   function markLiked() {
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
       var id = c.id || '';
