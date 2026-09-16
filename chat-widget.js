@@ -97,19 +97,10 @@
     '.qw-body #twikoo .tk-content{border-radius:16px 16px 16px 4px!important;padding:10px 14px!important;font-size:14px!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{border-radius:16px 16px 4px 16px!important;}',
     '.qw-body #twikoo .tk-comment{margin-bottom:12px!important;}',
-    /* ===== 回复 = 微信式引用块（灰底小卡片，非嵌套评论列表） ===== */
-    '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{margin:6px 0 0!important;padding:0!important;width:100%!important;align-self:stretch!important;display:block!important;}',
+    /* ===== QQ式引用回复：气泡内引用块（左竖线灰条） ===== */
+    '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.14)!important;border-left:3px solid var(--jp-accent)!important;border-radius:4px!important;padding:4px 9px!important;font-size:12px!important;line-height:1.6!important;color:var(--jp-muted)!important;margin:0 0 7px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;}',
+    '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{display:none!important;}',
     '.qw-body #twikoo .tk-expand-wrap,.qw-body #twikoo .tk-expand{display:none!important;}',
-    '.qw-body #twikoo .tk-replies .tk-comment,.qw-body #twikoo .tk-children .tk-comment{display:block!important;background:rgba(128,142,168,.10)!important;border:1px solid var(--jp-line)!important;border-radius:9px!important;padding:7px 10px!important;margin:4px 0 0!important;}',
-    '.qw-body #twikoo .tk-replies .tk-avatar,.qw-body #twikoo .tk-children .tk-avatar{display:none!important;}',
-    '.qw-body #twikoo .tk-replies .tk-main,.qw-body #twikoo .tk-children .tk-main{max-width:100%!important;width:100%!important;display:block!important;}',
-    '.qw-body #twikoo .tk-replies .tk-row,.qw-body #twikoo .tk-children .tk-row{display:flex!important;flex-direction:row!important;margin:0 0 2px!important;padding:0!important;gap:6px!important;}',
-    '.qw-body #twikoo .tk-replies .tk-meta,.qw-body #twikoo .tk-children .tk-meta{font-size:10px!important;}',
-    '.qw-body #twikoo .tk-replies .tk-nick strong,.qw-body #twikoo .tk-children .tk-nick strong{font-size:11px!important;color:var(--jp-accent)!important;}',
-    '.qw-body #twikoo .tk-replies .tk-action,.qw-body #twikoo .tk-children .tk-action,.qw-body #twikoo .tk-replies .tk-extras,.qw-body #twikoo .tk-children .tk-extras{display:none!important;}',
-    '.qw-body #twikoo .tk-replies .tk-content,.qw-body #twikoo .tk-children .tk-content{background:transparent!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:0!important;font-size:12px!important;line-height:1.6!important;color:var(--jp-muted)!important;}',
-    '.qw-body #twikoo .tk-replies .tk-content p,.qw-body #twikoo .tk-children .tk-content p{color:var(--jp-muted)!important;}',
-    '.qw-body #twikoo .tk-replies .tk-time time,.qw-body #twikoo .tk-children .tk-time time{display:none!important;}',
     '.qw-body #twikoo .tk-footer{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:12px 0 0!important;background:transparent!important;}',
     '.qw-body #twikoo .tk-footer a,.qw-body #twikoo .tk-footer .tk-action-link{color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-admin-container{display:none!important;}',
@@ -186,10 +177,50 @@
       else c.classList.remove('tk-self');
     }
   }
+  // ===== QQ式引用回复：把嵌套子评论重组为"独立气泡 + 气泡内引用块" =====
+  function restructureReplies() {
+    var scope = document.querySelector('.qw-body #twikoo');
+    if (!scope) return;
+    var containers = scope.querySelectorAll('.tk-replies, .tk-children');
+    for (var i = 0; i < containers.length; i++) {
+      var replies = containers[i];
+      var parentComment = replies.closest('.tk-comment');
+      if (!parentComment) continue;
+      var parentContentEl = parentComment.querySelector('.tk-content');
+      var parentNickEl = parentComment.querySelector('.tk-nick');
+      var parentText = parentContentEl ? parentContentEl.textContent.trim() : '';
+      var parentNick = parentNickEl ? parentNickEl.textContent.trim() : '';
+      var kids = replies.querySelectorAll(':scope > .tk-comment');
+      for (var j = 0; j < kids.length; j++) {
+        var reply = kids[j];
+        if (reply.dataset.qwQuoted) continue;
+        reply.dataset.qwQuoted = '1';
+        // 移出嵌套列表 → 父评论后面的独立气泡
+        parentComment.parentNode.insertBefore(reply, parentComment.nextSibling);
+        // 气泡内容顶部插入引用块（被引用人的昵称 + 原文）
+        var contentEl = reply.querySelector('.tk-content');
+        if (contentEl && parentText) {
+          var quote = document.createElement('div');
+          quote.className = 'qw-quote';
+          quote.textContent = (parentNick ? parentNick + '：' : '') + parentText;
+          contentEl.insertBefore(quote, contentEl.firstChild);
+          // 删除 Twikoo 自动加的"回复 @昵称 : "前缀（引用块已说明）
+          var preSpans = contentEl.querySelectorAll(':scope > span');
+          for (var k = 0; k < preSpans.length; k++) {
+            if (preSpans[k].querySelector('.tk-ruser')) { preSpans[k].remove(); break; }
+          }
+        }
+      }
+      replies.style.display = 'none';
+    }
+  }
   var markTimer = null;
   function scheduleMark() {
     if (markTimer) clearTimeout(markTimer);
-    markTimer = setTimeout(markSelf, 250);
+    markTimer = setTimeout(function () {
+      restructureReplies();
+      markSelf();
+    }, 250);
   }
   // 监听评论列表变化（新增/加载）自动重新标记
   var tcommentEl = document.getElementById('tcomment');
