@@ -70,6 +70,12 @@
     '.qw-body #twikoo .tk-row-actions-start .tk-submit-action-icon,.qw-body #twikoo .tk-row-actions-start button{color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
+    /* 微信风回复预览条（点回复后输入框上方显示"回复 XX：..."） */
+    '.qw-body #twikoo [class*=comment-parent]{display:flex!important;align-items:center;gap:6px;background:var(--jp-paper)!important;border:1px solid var(--jp-line)!important;border-radius:8px!important;padding:6px 10px!important;margin-bottom:8px!important;font-size:11px!important;color:var(--jp-muted)!important;}',
+    '.qw-body #twikoo [class*=comment-parent] [class*=nick]{color:var(--jp-accent)!important;font-weight:600;}',
+    '.qw-body #twikoo [class*=comment-parent] [class*=cancel],.qw-body #twikoo [class*=comment-parent] button{cursor:pointer;color:var(--jp-muted)!important;margin-left:auto;padding:0 4px!important;border:none!important;background:transparent!important;font-size:14px!important;line-height:1;}',
+    /* 微信风：发送按钮与输入框同行右侧 */
+    '.qw-body #twikoo .tk-row-actions-start{display:flex!important;justify-content:flex-end!important;margin-top:6px!important;}',
     /* ===== 聊天气泡布局：自己右侧、别人左侧 ===== */
     '.qw-body #twikoo .tk-comment{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
     '.qw-body #twikoo .tk-comment.tk-self{flex-direction:row-reverse!important;}',
