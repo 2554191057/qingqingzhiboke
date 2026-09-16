@@ -33,7 +33,6 @@
     '.qw-admin-btn{margin-left:auto;padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
     '.qw-admin-btn:hover{background:var(--jp-glow);color:var(--jp-ink);}',
     '.qw-admin-btn.qw-admin-on{color:#e8a33d;}',
-    '.qw-close{margin-left:0;padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
     '.qw-close:hover{background:var(--jp-glow);color:var(--jp-ink);}',
     '.qw-notice{font-size:10px;color:var(--jp-muted);padding:12px 20px;background:var(--jp-glow);}',
     '.qw-body{padding:0 20px 18px;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;}',
