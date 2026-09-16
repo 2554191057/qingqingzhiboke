@@ -110,8 +110,8 @@
     '.qw-body #twikoo .qw-time-sep{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:10px 0 6px!important;opacity:.8!important;letter-spacing:.5px!important;}',
     /* 气泡（紧凑） */
     '.qw-body #twikoo .tk-comment{margin-bottom:7px!important;}',
-    '.qw-body #twikoo .tk-comment .tk-avatar{width:28px!important;height:28px!important;font-size:13px!important;}',
-    '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 38px)!important;}',
+    '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;font-size:17px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 48px)!important;}',
     /* ===== QQ式引用回复：气泡内引用栏（细淡灰条） ===== */
     '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.08)!important;border-left:2px solid var(--jp-line)!important;border-radius:3px!important;padding:3px 8px!important;font-size:11px!important;line-height:1.5!important;color:var(--jp-muted)!important;margin:0 0 5px!important;display:-webkit-box!important;-webkit-line-clamp:1!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;}',
     '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{display:none!important;}',
