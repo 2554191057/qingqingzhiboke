@@ -103,15 +103,6 @@
     '.qw-login-bar .qw-lb-text p{margin:0;font-size:10px;color:var(--jp-muted);}',
     '.qw-login-bar .qw-lb-btn{background:linear-gradient(120deg,#087fae,#4866db);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;}',
     '.qw-login-bar .qw-lb-btn:hover{opacity:.92;}',
-    /* 登录门：未填邮箱昵称时遮罩输入区 */
-    '.qw-login-mask{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(15,20,28,.78);backdrop-filter:blur(8px);}',
-    '.qw-login-card{width:320px;max-width:88%;background:var(--jp-surface,#1e2530);border:1px solid var(--jp-line,#2a3444);border-radius:18px;padding:24px 22px;box-shadow:0 12px 40px rgba(0,0,0,.4);}',
-    '.qw-login-card h3{margin:0 0 4px;font-size:16px;color:var(--jp-ink,#e8ecf2);font-weight:700;}',
-    '.qw-login-card p{margin:0 0 16px;font-size:11px;color:var(--jp-muted,#8a94a6);}',
-    '.qw-login-card input{width:100%;box-sizing:border-box;border:1px solid var(--jp-line,#2a3444);border-radius:9px;background:var(--jp-paper,#161b23);color:var(--jp-ink,#e8ecf2);font-size:13px;padding:10px 12px;margin-bottom:10px;outline:none;}',
-    '.qw-login-card input:focus{border-color:var(--jp-accent,#4a9eff);}',
-    '.qw-login-card button{width:100%;padding:11px;border:none;border-radius:9px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:13px;font-weight:600;cursor:pointer;}',
-    '.qw-login-card button:hover{opacity:.92;}',
     /* ===== 聊天气泡布局：自己右侧、别人左侧 ===== */
     '.qw-body #twikoo .tk-comment{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
     '.qw-body #twikoo .tk-comment.tk-self{flex-direction:row-reverse!important;}',
