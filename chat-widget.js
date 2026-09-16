@@ -280,9 +280,9 @@
     '</div></div>' +
     '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
     '<div class="qw-login-panel">' +
-    '<h3 id="qw-login-title">登录发言</h3><p id="qw-login-sub">已有账号？输入邮箱和密码登录</p>' +
+    '<h3 id="qw-login-title">登录发言</h3><p id="qw-login-sub">已有账号？输入邮箱或昵称和密码登录</p>' +
     '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20" style="display:none">' +
-    '<input type="email" id="qw-login-email" placeholder="邮箱">' +
+    '<input type="text" id="qw-login-email" placeholder="邮箱或昵称">' +
     '<input type="password" id="qw-login-pwd" placeholder="密码">' +
     '<button id="qw-login-submit">登 录</button>' +
     '<p id="qw-login-toggle" style="text-align:center;margin:12px 0 0;font-size:11px;color:var(--jp-accent);cursor:pointer;">没有账号？点击注册</p>' +
