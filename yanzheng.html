@@ -38,18 +38,6 @@
         .box h2 { margin: 0 0 8px; font-size: 1.3rem; }
         .box .tip { margin: 0 0 20px; color: #888; font-size: 0.9rem; }
         .turnstile-wrap { display: flex; justify-content: center; min-height: 65px; align-items: center; }
-        .fallback-btn {
-            display: none;
-            margin: 10px auto 0;
-            padding: 12px 36px;
-            background: linear-gradient(120deg,#087fae,#4866db);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
         .mirrors {
             margin-top: 20px;
             padding-top: 16px;
@@ -75,7 +63,6 @@
         <div class="turnstile-wrap">
             <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess"></div>
         </div>
-        <button class="fallback-btn" id="fallbackBtn" onclick="directEnter()">直接进入</button>
         <div class="mirrors" id="mirrorLinks">
             其他入口：
             <a href="https://qqzttkx.ficp.fun/" class="mirror-hsk" target="_blank">花生壳</a>
@@ -105,7 +92,7 @@
             fetch(url, {mode: 'no-cors', cache: 'no-store'})
                 .then(function(){ location.href = url; })
                 .catch(function(){ tryNext(); });
-            setTimeout(tryNext, 4000); // 4秒超时换下一个
+            setTimeout(tryNext, 4000);
         }
         tryNext();
     }
@@ -113,24 +100,12 @@
         sessionStorage.setItem('auth_ok', '1');
         setTimeout(gotoBestMirror, 500);
     }
-    function directEnter() {
-        sessionStorage.setItem('auth_ok', '1');
-        gotoBestMirror();
-    }
-    // 隐藏当前域名对应的链接
     (function(){
       var h = location.hostname;
       if (h.indexOf('ficp.fun') >= 0) document.querySelector('.mirror-hsk').style.display = 'none';
       if (h.indexOf('eu.cc') >= 0 || h.indexOf('pages.dev') >= 0) document.querySelector('.mirror-cf').style.display = 'none';
       if (h.indexOf('github.io') >= 0) document.querySelector('.mirror-gh').style.display = 'none';
     })();
-    // Turnstile 加载失败（5秒内未出现）显示直接进入按钮
-    setTimeout(function(){
-        var widget = document.querySelector('.cf-turnstile');
-        if (widget && !widget.querySelector('iframe')) {
-            document.getElementById('fallbackBtn').style.display = 'block';
-        }
-    }, 5000);
     </script>
 </body>
 </html>
