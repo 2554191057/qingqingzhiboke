@@ -68,7 +68,6 @@
             <a href="https://qqzttkx.ficp.fun/" class="mirror-hsk" target="_blank">花生壳</a>
             <a href="https://qqzttkxpd.ficp.fun/" class="mirror-hsk2" target="_blank">花生壳2</a>
             <a href="https://qqzttkx.eu.cc/" class="mirror-cf" target="_blank">Cloudflare</a>
-            <a href="https://2554191057.github.io/qingqingzhiboke/" class="mirror-gh" target="_blank">GitHub</a>
         </div>
     </div>
     <script src="js/sakura/config.js"></script>
@@ -81,8 +80,7 @@
     var CDN_ORDER = [
         'https://qqzttkx.eu.cc/boke.html',
         'https://qqzttkx.ficp.fun/boke.html',
-        'https://qqzttkxpd.ficp.fun/boke.html',
-        'https://2554191057.github.io/qingqingzhiboke/boke.html'
+        'https://qqzttkxpd.ficp.fun/boke.html'
     ];
     function gotoBestMirror() {
         var back = new URLSearchParams(location.search).get('back');
@@ -107,7 +105,6 @@
       if (h === 'qqzttkx.ficp.fun') document.querySelector('.mirror-hsk').style.display = 'none';
       if (h === 'qqzttkxpd.ficp.fun') document.querySelector('.mirror-hsk2').style.display = 'none';
       if (h.indexOf('eu.cc') >= 0 || h.indexOf('pages.dev') >= 0) document.querySelector('.mirror-cf').style.display = 'none';
-      if (h.indexOf('github.io') >= 0) document.querySelector('.mirror-gh').style.display = 'none';
     })();
     </script>
 </body>
