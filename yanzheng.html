@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -12,12 +12,10 @@
             align-items: center;
             justify-content: center;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            /* 樱花引导页同款深色背景 */
             background: #1b1f22;
             color: #333;
             overflow: hidden;
         }
-        /* 樱花 WebGL 画布：全屏固定背景，不拦截交互 */
         #sakura.sakura-canvas {
             display: block;
             position: fixed;
@@ -40,439 +38,67 @@
             box-sizing: border-box;
         }
         .box h2 { margin: 0 0 8px; font-size: 1.3rem; }
-        .box .tip { margin: 0 0 6px; color: #888; font-size: 0.9rem; }
-        .box .hint { margin: 14px 0 0; color: #aaa; font-size: 0.82rem; }
-        .box a { color: #e8704a; text-decoration: none; font-weight: 600; }
-
-        /* ==== jigsaw 风格验证码 ==== */
-        #captcha {
-            position: relative;
-            width: 310px;
-            margin: 14px auto 0;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-            background: #fff;
-            padding: 1px 0 1px;
-        }
-        #captcha > canvas.bg {
-            display: block;
-            width: 310px;
-            height: 155px;
-            border-radius: 6px;
-        }
-        .j-block {
-            position: absolute;
-            left: 0;
-            top: 0;
-            cursor: grab;
-            z-index: 2;
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
-        }
-        .j-block:active { cursor: grabbing; }
-        .j-refresh {
-            position: absolute;
-            right: 6px;
-            top: 6px;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.92);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #666;
-            cursor: pointer;
-            z-index: 3;
-            user-select: none;
-        }
-        .j-refresh:active { transform: scale(0.94); }
-        .j-loading {
-            position: absolute;
-            left: 0; top: 0;
-            width: 310px;
-            height: 155px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: #45494c;
-            font-size: 13px;
-            background: #fff;
-            z-index: 4;
-        }
-        .j-loading .j-spin {
-            width: 16px; height: 16px;
-            border: 2px solid #D1E9FE;
-            border-top-color: #1991FA;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        .j-slider {
-            position: relative;
-            width: 310px;
-            height: 40px;
-            line-height: 40px;
-            text-align: center;
-            margin: 12px 0 1px;
-            background: #f7f9fa;
-            color: #45494c;
-            border: 1px solid #e4e7eb;
-            box-sizing: border-box;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .j-mask {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 40px;
-            border: 0 solid #1991FA;
-            background: #D1E9FE;
-            box-sizing: border-box;
-        }
-        .j-btn {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 40px;
-            height: 40px;
-            background: #fff;
-            box-shadow: 0 0 3px rgba(0,0,0,0.3);
-            transition: background .2s linear;
-            cursor: grab;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-        }
-        .j-btn:active { cursor: grabbing; }
-        .j-btn:hover { background: #1991FA; color: #fff; }
-        .j-btn .j-arrow {
-            font-size: 15px;
-            color: #1991FA;
-            line-height: 1;
-        }
-        .j-btn:hover .j-arrow { color: #fff; }
-        .j-text {
-            position: relative;
-            z-index: 1;
-            font-size: 13px;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .j-slider.active .j-btn { border: 1px solid #1991FA; }
-        .j-slider.active .j-mask { border-width: 1px; }
-        .j-slider.success .j-btn {
-            border: 1px solid #52CCBA;
-            background-color: #52CCBA !important;
-        }
-        .j-slider.success .j-btn .j-arrow { color: #fff; }
-        .j-slider.success .j-mask {
-            border: 1px solid #52CCBA;
-            background-color: #D2F4EF;
-        }
-        .j-slider.fail .j-btn {
-            border: 1px solid #f57a7a;
-            background-color: #f57a7a !important;
-        }
-        .j-slider.fail .j-btn .j-arrow { color: #fff; }
-        .j-slider.fail .j-mask {
-            border: 1px solid #f57a7a;
-            background-color: #fce1e1;
-        }
-        .j-slider.active .j-text,
-        .j-slider.success .j-text,
-        .j-slider.fail .j-text { display: none; }
-        .status {
-            min-height: 18px;
-            margin-top: 10px;
-            font-size: 13px;
-            color: #999;
-        }
-        .status.ok { color: #2fbd52; font-weight: 600; }
-        .status.fail { color: #e74c3c; font-weight: 600; }
+        .box .tip { margin: 0 0 20px; color: #888; font-size: 0.9rem; }
+        .turnstile-wrap { display: flex; justify-content: center; }
     </style>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
-    <!-- 樱花飘落背景（WebGL） -->
     <canvas id="sakura" class="sakura-canvas"></canvas>
     <div class="box">
-                <h2>欢迎来到庆庆纸博客</h2>
+        <h2>欢迎来到庆庆纸博客</h2>
         <p class="tip">完成验证后自动进入</p>
-        <div id="captcha">
-            <canvas class="bg" id="bgCanvas" width="310" height="155"></canvas>
-            <canvas class="j-block" id="blockCanvas" width="310" height="155"></canvas>
-            <div class="j-refresh" id="refreshBtn" title="换一张">↻</div>
-            <div class="j-loading" id="loadingBox"><span class="j-spin"></span><span>加载中...</span></div>
-            <div class="j-slider" id="sliderBox">
-                <div class="j-mask" id="sliderMask">
-                    <div class="j-btn" id="sliderBtn"><span class="j-arrow">→</span></div>
-                </div>
-                <span class="j-text" id="sliderText">向右滑动填充拼图</span>
-            </div>
+        <div class="turnstile-wrap">
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess"></div>
         </div>
-        <div class="status" id="status"></div>
-        <p class="hint" id="hintLink" style="display:none">如果没有自动跳转，请 <a href="boke.html">点击这里</a></p>
     </div>
     <script>
-        // 主题初始化：与主站一致，夜间(19-7点)自动夜间，其余日间
-        (function () {
-            var h = new Date().getHours();
-            if (h >= 19 || h < 7) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            }
-        })();
-        (function () {
-            var W = 310, H = 155, S = 42, TOL = 10;
-            var bgCanvas = document.getElementById('bgCanvas');
-            var blockCanvas = document.getElementById('blockCanvas');
-            var sliderBox = document.getElementById('sliderBox');
-            var sliderMask = document.getElementById('sliderMask');
-            var sliderBtn = document.getElementById('sliderBtn');
-            var sliderText = document.getElementById('sliderText');
-            var refreshBtn = document.getElementById('refreshBtn');
-            var loadingBox = document.getElementById('loadingBox');
-            var status = document.getElementById('status');
-            var hintLink = document.getElementById('hintLink');
-            var bctx = bgCanvas.getContext('2d');
-            var sctx = blockCanvas.getContext('2d');
-
-            var gapX = 0, gapY = 0, pieceX = 0;
-            // 离屏背景画布（同源绘制，避免跨域 getImageData 报错）
-            var srcCanvas = document.createElement('canvas');
-            srcCanvas.width = 620;
-            srcCanvas.height = 310;
-            var pressed = false;
-            var startX = 0;
-            var trail = [];
-            var done = false;
-            var resetTimer = null;
-
-            // —— 缺口路径（与 yeild/jigsaw 一致：右侧上凸齿 + 右侧下凸齿 + 左侧下凸齿）——
-            function jigsawPath(ctx, x, y, mode) {
-                var PI = Math.PI, L = S;
-                ctx.beginPath();
-                ctx.moveTo(x, y);
-                ctx.arc(x + 21, y - 7, 9, 0.72 * PI, 2.26 * PI);
-                ctx.lineTo(x + L, y);
-                ctx.arc(x + L + 7, y + 21, 9, 1.21 * PI, 2.78 * PI);
-                ctx.lineTo(x + L, y + L);
-                ctx.lineTo(x, y + L);
-                ctx.arc(x + 7, y + 21, 9.4, 2.76 * PI, 1.24 * PI, true);
-                ctx.lineTo(x, y);
-                ctx.lineWidth = 2;
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.stroke();
-                ctx.globalCompositeOperation = 'destination-over';
-                if (mode === 'fill') ctx.fill();
-                else ctx.clip();
-            }
-
-            // —— 随机背景生成（每次不同：渐变 + 光斑 + 几何图形，620x310 高清）——
-            function randomBg() {
-                var c = srcCanvas, x = c.getContext('2d');
-                x.clearRect(0, 0, c.width, c.height);
-                var h1 = Math.floor(Math.random() * 360);
-                var h2 = (h1 + 50 + Math.floor(Math.random() * 90)) % 360;
-                var h3 = (h2 + 40 + Math.floor(Math.random() * 90)) % 360;
-                var g = x.createLinearGradient(0, 0, c.width, c.height);
-                g.addColorStop(0, 'hsl(' + h1 + ',58%,62%)');
-                g.addColorStop(0.55, 'hsl(' + h2 + ',55%,54%)');
-                g.addColorStop(1, 'hsl(' + h3 + ',58%,46%)');
-                x.fillStyle = g;
-                x.fillRect(0, 0, c.width, c.height);
-                // 大光斑
-                for (var i = 0; i < 12; i++) {
-                    x.globalAlpha = 0.06 + Math.random() * 0.14;
-                    x.fillStyle = Math.random() > 0.5 ? '#ffffff' : 'rgba(0,0,0,0.35)';
-                    x.beginPath();
-                    x.arc(Math.random() * c.width, Math.random() * c.height, 25 + Math.random() * 95, 0, Math.PI * 2);
-                    x.fill();
-                }
-                // 几何图形（圆/三角/方块/线段）
-                for (var i = 0; i < 11; i++) {
-                    var px = Math.random() * c.width, py = Math.random() * c.height;
-                    var s = 14 + Math.random() * 48;
-                    x.globalAlpha = 0.16 + Math.random() * 0.28;
-                    x.fillStyle = 'hsl(' + Math.floor(Math.random() * 360) + ',72%,' + (48 + Math.floor(Math.random() * 32)) + '%)';
-                    var k = Math.random();
-                    x.beginPath();
-                    if (k < 0.38) {
-                        x.arc(px, py, s / 2, 0, Math.PI * 2);
-                        x.fill();
-                    } else if (k < 0.66) {
-                        x.moveTo(px, py - s / 2);
-                        x.lineTo(px + s / 2, py + s / 2);
-                        x.lineTo(px - s / 2, py + s / 2);
-                        x.fill();
-                    } else if (k < 0.88) {
-                        x.rect(px - s / 2, py - s / 2, s, s);
-                        x.fill();
-                    } else {
-                        x.lineWidth = 3 + Math.random() * 5;
-                        x.strokeStyle = x.fillStyle;
-                        x.moveTo(px, py);
-                        x.lineTo(px + s * 1.2, py - s * 0.7);
-                        x.stroke();
-                    }
-                }
-                // 柔和细杂点
-                x.globalAlpha = 0.05;
-                x.fillStyle = '#fff';
-                for (var i = 0; i < 40; i++) {
-                    x.fillRect(Math.random() * c.width, Math.random() * c.height, 2, 2);
-                }
-                x.globalAlpha = 1;
-            }
-
-            function draw() {
-                bctx.clearRect(0, 0, W, H);
-                // 先重置拼图块画布为全尺寸（清除上次的 clip/尺寸残留）
-                blockCanvas.width = W;
-                blockCanvas.height = H;
-                var sctx2 = blockCanvas.getContext('2d');
-                gapX = Math.round(73 + Math.random() * (W - 146));
-                gapY = Math.round(28 + Math.random() * (H - 101));
-                randomBg();
-                // 背景缺口
-                jigsawPath(bctx, gapX, gapY, 'fill');
-                bctx.drawImage(srcCanvas, 0, 0, W, H);
-                // 拼图块：在缺口位置 clip，取缺口处图像
-                jigsawPath(sctx2, gapX, gapY, 'clip');
-                sctx2.drawImage(srcCanvas, 0, 0, W, H);
-                // 截取缺口附近图像区域，移到画布左侧（供拖动）
-                var clipY = gapY - 18 - 1;
-                var data = sctx2.getImageData(gapX - 3, clipY, 63, 63);
-                blockCanvas.width = 63;
-                sctx2.putImageData(data, 0, clipY);
-                blockCanvas.style.left = '0px';
-                pieceX = 0;
-            }
-
-            function loadImage() {
-                draw();
-            }
-
-            // —— 拖动 ——
-            function onStart(e) {
-                if (done) return;
-                var t = e.touches ? e.touches[0] : e;
-                pressed = true;
-                startX = t.clientX;
-                trail = [];
-                if (e.cancelable) e.preventDefault();
-            }
-
-            function onMove(e) {
-                if (done || !pressed) return;
-                e.preventDefault();
-                var t = e.touches ? e.touches[0] : e;
-                var c = t.clientX - startX;
-                if (c < 0 || c + 40 >= W) return;
-                var map = (W - 60) / (W - 40);
-                var px = map * c;
-                sliderBtn.style.left = c + 'px';
-                sliderMask.style.width = c + 'px';
-                blockCanvas.style.left = px + 'px';
-                pieceX = px;
-                sliderBox.classList.add('active');
-                trail.push(t.clientY);
-            }
-
-            function onEnd(e) {
-                if (done || !pressed) return;
-                pressed = false;
-                sliderBox.classList.remove('active');
-                var l = verify();
-                if (l.spliced) {
-                    if (l.verified) {
-                        finish();
-                    } else {
-                        sliderBox.classList.add('fail');
-                        sliderText.textContent = '请再试一次';
-                        status.textContent = '✗ 拖动轨迹异常，已换新图';
-                        status.className = 'status fail';
-                        clearTimeout(resetTimer);
-                        resetTimer = setTimeout(reset, 500);
-                    }
-                } else {
-                    sliderBox.classList.add('fail');
-                    sliderText.textContent = '请再试一次';
-                    status.textContent = '✗ 未对准缺口，已换新图';
-                    status.className = 'status fail';
-                    clearTimeout(resetTimer);
-                    resetTimer = setTimeout(reset, 1000);
-                }
-            }
-
-            function verify() {
-                var n = trail.length;
-                if (n < 2) return { spliced: Math.abs(pieceX - gapX) < TOL, verified: false };
-                var avg = trail.reduce(function (a, b) { return a + b; }) / n;
-                var sd = Math.sqrt(trail.map(function (v) { var d = v - avg; return d * d; }).reduce(function (a, b) { return a + b; }) / n);
-                return {
-                    spliced: Math.abs(pieceX - gapX) < TOL,
-                    verified: sd > 0
-                };
-            }
-
-            function reset() {
-                clearTimeout(resetTimer);
-                done = false;
-                sliderBox.classList.remove('active', 'success', 'fail');
-                sliderText.textContent = '向右滑动填充拼图';
-                sliderBtn.style.left = '0px';
-                sliderMask.style.width = '0px';
-                blockCanvas.style.left = '0px';
-                status.textContent = '';
-                status.className = 'status';
-                hintLink.style.display = 'none';
-                loadImage();
-            }
-
-            function finish() {
-                if (done) return;
-                done = true;
-                sliderBox.classList.add('success');
-                sliderText.textContent = '✓ 验证通过';
-                status.textContent = '✓ 验证通过，正在进入…';
-                status.className = 'status ok';
-                hintLink.style.display = 'block';
-                sessionStorage.setItem('auth_ok', '1');
-                var back = new URLSearchParams(location.search).get('back');
-                setTimeout(function () {
-                    window.location.replace(back || 'boke.html');
-                }, 600);
-            }
-
-            // —— 事件绑定 ——
-            sliderBtn.addEventListener('mousedown', onStart);
-            sliderBtn.addEventListener('touchstart', onStart, { passive: false });
-            blockCanvas.addEventListener('mousedown', onStart);
-            blockCanvas.addEventListener('touchstart', onStart, { passive: false });
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('touchmove', onMove, { passive: false });
-            document.addEventListener('mouseup', onEnd);
-            document.addEventListener('touchend', onEnd);
-            refreshBtn.addEventListener('click', function () {
-                clearTimeout(resetTimer);
-                reset();
+    // 樱花背景（简化版，纯粒子）
+    (function(){
+        var c = document.getElementById('sakura');
+        var ctx = c.getContext('2d');
+        function resize(){ c.width = innerWidth; c.height = innerHeight; }
+        resize(); addEventListener('resize', resize);
+        var petals = [];
+        for(var i=0;i<40;i++){
+            petals.push({
+                x: Math.random()*c.width,
+                y: Math.random()*c.height,
+                r: 3+Math.random()*5,
+                sx: -0.5+Math.random(),
+                sy: 0.5+Math.random()*1,
+                rot: Math.random()*Math.PI*2,
+                vr: -0.02+Math.random()*0.04,
+                o: 0.3+Math.random()*0.5
             });
+        }
+        function draw(){
+            ctx.clearRect(0,0,c.width,c.height);
+            petals.forEach(function(p){
+                ctx.save();
+                ctx.translate(p.x,p.y);
+                ctx.rotate(p.rot);
+                ctx.globalAlpha = p.o;
+                ctx.fillStyle = '#ffb7c5';
+                ctx.beginPath();
+                ctx.ellipse(0,0,p.r,p.r*0.6,0,0,Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+                p.x += p.sx; p.y += p.sy; p.rot += p.vr;
+                if(p.y > c.height+10){ p.y = -10; p.x = Math.random()*c.width; }
+                if(p.x < -10) p.x = c.width+10;
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
 
-            loadImage();
-        })();
+    // Turnstile 验证成功后跳转
+    function onTurnstileSuccess(token) {
+        sessionStorage.setItem('auth_ok', '1');
+        var back = new URLSearchParams(location.search).get('back') || 'boke.html';
+        setTimeout(function(){ location.href = back; }, 500);
+    }
     </script>
-    <!-- 樱花飘落背景（WebGL），依赖顺序：config → math → shaders → gl-utils → renderer → bootstrap -->
-    <script src="js/sakura/config.js"></script>
-    <script src="js/sakura/math.js"></script>
-    <script src="js/sakura/shaders.js"></script>
-    <script src="js/sakura/gl-utils.js"></script>
-    <script src="js/sakura/renderer.js"></script>
-    <script src="js/sakura/bootstrap.js"></script>
 </body>
 </html>
