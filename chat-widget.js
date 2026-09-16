@@ -29,6 +29,9 @@
     '.qw-panel header p{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--jp-muted);margin:5px 0 0;}',
     '.qw-panel header p .qw-dot{width:6px;height:6px;border-radius:50%;background:#3ecf6a;box-shadow:0 0 6px rgba(62,207,106,.7);}',
     '.qw-close{padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
+    '.qw-logout-btn{display:none;padding:6px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:var(--jp-paper);color:var(--jp-muted);cursor:pointer;transition:all .2s ease;}',
+    '.qw-logout-btn:hover{color:#e05b5b;border-color:#e05b5b;}',
+    '.qw-panel.qw-logged-in .qw-logout-btn{display:block;}',
     '.qw-close:hover{background:var(--jp-glow);color:var(--jp-ink);}',
     '.qw-admin-btn{margin-left:auto;padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
     '.qw-admin-btn:hover{background:var(--jp-glow);color:var(--jp-ink);}',
@@ -229,6 +232,7 @@
     '<div><h2 id="qw-title">访客聊天室</h2><p><span class="qw-dot"></span>实时同步 · Powered by Twikoo</p></div>' +
 
     '<button class="qw-admin-btn" id="qw-admin-trigger" aria-label="聊天管理" title="聊天管理"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
+    '<button class="qw-logout-btn" id="qw-logout-btn" title="退出登录">退出</button>' +
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
@@ -750,6 +754,9 @@
 
   adminBtn.addEventListener('click', function () {
     openAdmin();
+  });
+  document.getElementById('qw-logout-btn').addEventListener('click', function () {
+    logout();
   });
   // 管理员面板只能点 X 关闭（不响应 Esc 和遮罩点击）
 
