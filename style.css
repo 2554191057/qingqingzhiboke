@@ -1,4 +1,4 @@
-﻿/* ========================================
+/* ========================================
    庆庆纸博客 · 简约风格 · 纸张温暖配色
    Palette: 米白 #FAF7F2 / 暖橙 #E67E52 / 墨灰 #3A3A3A / 沙色 #D9C8AE
    ======================================== */
@@ -5480,34 +5480,34 @@ html.touch-only .nav-dropdown-item:hover { background: transparent !important; c
     box-shadow: inset 0 0 0 1px rgba(230, 126, 82, 0.35);
 }
 :root[data-theme="dark"] {
-    --color-bg: #1A1822;
-    --color-bg-alt: #22202C;
-    --color-card: #25222E;
+    --color-bg: #06111f;
+    --color-bg-alt: #0a2030;
+    --color-card: #0e2133;
     --color-accent: #E67E52;
     --color-accent-hover: #D16A40;
     --color-accent-light: rgba(230, 126, 82, 0.22);
-    --color-text: #F0EBE4;
-    --color-text-soft: #C8C0B8;
-    --color-text-faint: #8E8680;
-    --color-text-muted: #B0A8A0;
-    --color-line: rgba(200, 190, 180, 0.18);
+    --color-text: #E8EEF7;
+    --color-text-soft: #A9B8CC;
+    --color-text-faint: #7A8BA0;
+    --color-text-muted: #93A5BC;
+    --color-line: rgba(148, 163, 184, 0.18);
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
     --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.45);
     --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
-    /* 深色模式液态玻璃变量 */
-    --glass-bg: #1a1a1a;
-    --glass-bg-strong: #1a1a1a;
-    --glass-border: #333333;
-    --glass-blur: none;
-    --glass-blur-strong: none;
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.50),
+    /* 深色模式液态玻璃变量（仿栖光集：slate-800 毛玻璃） */
+    --glass-bg: rgba(30, 41, 59, 0.55);
+    --glass-bg-strong: rgba(30, 41, 59, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-blur: blur(12px);
+    --glass-blur-strong: blur(20px);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.30),
                     inset 0 0 0 0.5px rgba(255, 255, 255, 0.10),
                     inset 0 1px 1px rgba(255, 255, 255, 0.10),
                     inset 0 -1px 1px rgba(0, 0, 0, 0.30),
                     inset 1px 0 1px rgba(255, 255, 255, 0.06),
                     inset -1px 0 1px rgba(255, 255, 255, 0.06),
                     inset 0 8px 16px rgba(0, 0, 0, 0.15);
-    --glass-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.60),
+    --glass-shadow-hover: 0 20px 60px rgba(0, 0, 0, 0.45),
                           inset 0 0 0 0.5px rgba(255, 255, 255, 0.14),
                           inset 0 1px 2px rgba(255, 255, 255, 0.12),
                           inset 0 -1px 1px rgba(0, 0, 0, 0.35),
@@ -5524,12 +5524,12 @@ html.touch-only .nav-dropdown-item:hover { background: transparent !important; c
         rgba(255, 255, 255, 0.06) 50%,
         rgba(255, 255, 255, 0.02) 75%,
         rgba(255, 255, 255, 0.10) 100%);
-    /* 深色模式导航栏彩色光斑变量 */
-    --nav-blob-1: rgba(130, 105, 170, 0.32);
-    --nav-blob-2: rgba(70, 110, 120, 0.32);
-    --nav-blob-3: rgba(50, 45, 75, 0.28);
-    --nav-blob-4: rgba(92, 92, 140, 0.25);
-    --nav-blob-base: rgba(40, 35, 55, 0.65);
+    /* 深色模式导航栏彩色光斑变量（青蓝系） */
+    --nav-blob-1: rgba(20, 90, 130, 0.35);
+    --nav-blob-2: rgba(10, 60, 100, 0.32);
+    --nav-blob-3: rgba(8, 45, 80, 0.30);
+    --nav-blob-4: rgba(30, 100, 140, 0.28);
+    --nav-blob-base: rgba(10, 28, 48, 0.65);
 }
 
 /* 深色模式 body 背景 */
@@ -5540,9 +5540,9 @@ html.touch-only .nav-dropdown-item:hover { background: transparent !important; c
 /* 深色模式全局渐变背景层 */
 [data-theme="dark"] .bg-gradient-layer {
 [data-theme="dark"] .bg-gradient-layer {
-    background: #000000;
-    background-size: auto;
-    animation: none;
+    background: linear-gradient(135deg, #06111f 0%, #092439 28%, #071a2d 52%, #0a3042 76%, #06111f 100%);
+    background-size: 400% 400%;
+    animation: gradient-flow 20s ease infinite;
 }
 [data-theme="dark"] .bg-gradient-layer::before {
     background: none;
@@ -6518,4 +6518,12 @@ html.touch-only .nav-dropdown-item:hover { background: transparent !important; c
     .social-tip {
         display: none;
     }
+}
+
+
+/* 栖光集风格：夜间背景渐变流动 */
+@keyframes gradient-flow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }

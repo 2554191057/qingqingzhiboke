@@ -615,6 +615,44 @@ window.addEventListener('load', function() {
     }, 3500);
 })();
 </script>
+<!-- 看板娘（仿栖光集 Live2D widget，模型走 jsdelivr CDN，移动端不加载） -->
+<script>
+(function() {
+    if (screen.width < 768) return;
+    var CDN = 'https://cdn.jsdelivr.net/gh/TianXiaoQiang0621/qiguangji@main/qiguangji/public/live2d/';
+    if (!localStorage.getItem('modelId')) {
+        localStorage.setItem('modelId', '20');
+        localStorage.setItem('modelTexturesId', '0');
+    }
+    function loadRes(url, type) {
+        return new Promise(function(resolve, reject) {
+            var tag = type === 'css' ? document.createElement('link') : document.createElement('script');
+            if (type === 'css') { tag.rel = 'stylesheet'; tag.href = url; } else { tag.src = url; }
+            tag.onload = function() { resolve(url); };
+            tag.onerror = function() { reject(url); };
+            document.head.appendChild(tag);
+        });
+    }
+    Promise.all([
+        loadRes(CDN + 'css/right.css?v=8', 'css'),
+        loadRes(CDN + 'live2d.min.js?v=8', 'js'),
+        loadRes('live2d/waifu-tips.js?v=1', 'js')
+    ]).then(function() {
+        window.UtDebug = window.UtDebug || {};
+        ['error', 'log', 'warn'].forEach(function(m) {
+            if (typeof window.UtDebug[m] !== 'function') window.UtDebug[m] = function() {};
+        });
+        initWidget({
+            waifuPath: 'live2d/waifu-tips.json?v=1',
+            cdnPath: CDN,
+            tools: ['chat', 'hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit']
+        });
+    }).catch(function() {
+        // CDN 不可用时静默降级，不影响页面
+    });
+})();
+</script>
+
 </body>
 </html>
 
