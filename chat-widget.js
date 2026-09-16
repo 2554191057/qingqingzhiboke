@@ -537,9 +537,11 @@
         refreshLoginUI();
         syncLikesByEmail();
         refreshComments();
-      }, 400);
+      }, 200);
+      setTimeout(function(){ refreshComments(); syncLikesByEmail(); }, 800);
     });
-    // 每15秒自动刷新新消息
+    refreshComments();
+    syncLikesByEmail();
     if (_refreshTimer) clearInterval(_refreshTimer);
     _refreshTimer = setInterval(function(){
       if (backdrop.classList.contains('qw-open')) refreshComments();
