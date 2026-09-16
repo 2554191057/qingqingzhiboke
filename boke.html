@@ -656,25 +656,28 @@ window.addEventListener('load', function() {
 </script>
 
 <style>
-/* 看板娘默认右下角，支持拖动 */
-#live2d, .waifu {
-  position: fixed !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  left: auto !important;
-  top: auto !important;
-  transform: none !important;
-  -webkit-transform: none !important;
-  z-index: 9999;
-}
-#waifu-tool {
-  right: 20px !important;
-  bottom: 320px !important;
-  transform: none !important;
-}
 /* 隐藏右下角聊天室悬浮按钮 */
 .qw-launcher { display: none !important; }
 </style>
+<script>
+// 看板娘加载完成后移到右下角
+(function(){
+  function moveWaifu(){
+    var w = document.querySelector('.waifu');
+    var t = document.getElementById('waifu-tool');
+    if(!w) return setTimeout(moveWaifu, 500);
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var ww = w.offsetWidth || 280, wh = w.offsetHeight || 320;
+    w.style.left = (vw - ww - 10) + 'px';
+    w.style.top = (vh - wh - 10) + 'px';
+    w.style.right = 'auto';
+    w.style.bottom = 'auto';
+    if(t){ t.style.right = (vw - ww - 40) + 'px'; t.style.left = 'auto'; }
+  }
+  if(document.readyState === 'complete') moveWaifu();
+  else window.addEventListener('load', function(){ setTimeout(moveWaifu, 2000); });
+})();
+</script>
 
 <script src="js/html2canvas.min.js"></script>
 <script src="js/liquidGL.js"></script>
