@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -3894,10 +3894,28 @@ if (!sessionStorage.getItem('auth_ok')) {
         }
     }
 
-    // 页面卸载时停止音乐
-    window.addEventListener('beforeunload', () => {
-        mp.stop();
-    });
+    // 页面卸载时停止所有音乐（beforeunload + pagehide 双保险，覆盖 BFCache 场景）
+    function stopAllMusic() {
+        try { mp.stop(); } catch(e) {}
+        try {
+            if (bgMusicAudio) {
+                bgMusicAudio.pause();
+                bgMusicAudio.currentTime = 0;
+                bgMusicAudio = null;
+            }
+        } catch(e) {}
+        try {
+            if (audioCtx && audioCtx.state !== 'closed') {
+                audioCtx.close();
+            }
+        } catch(e) {}
+        // 停止所有 audio 元素
+        document.querySelectorAll('audio').forEach(a => {
+            try { a.pause(); a.src = ''; a.load(); } catch(e) {}
+        });
+    }
+    window.addEventListener('beforeunload', stopAllMusic);
+    window.addEventListener('pagehide', stopAllMusic);
 
     // 红包祝福弹窗逻辑
     const redpacketBtn = document.getElementById('redpacketBtn');
