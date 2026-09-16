@@ -638,14 +638,14 @@ window.addEventListener('load', function() {
     Promise.all([
         loadRes(CDN + 'css/right.css?v=8', 'css'),
         loadRes(CDN + 'live2d.min.js?v=8', 'js'),
-        loadRes('live2d/waifu-tips.js?v=1', 'js')
+        loadRes('live2d/waifu-tips.js?v=2', 'js')
     ]).then(function() {
         window.UtDebug = window.UtDebug || {};
         ['error', 'log', 'warn'].forEach(function(m) {
             if (typeof window.UtDebug[m] !== 'function') window.UtDebug[m] = function() {};
         });
         initWidget({
-            waifuPath: 'live2d/waifu-tips.json?v=1',
+            waifuPath: 'live2d/waifu-tips.json?v=2',
             cdnPath: CDN,
             tools: ['chat', 'hitokoto', 'asteroids', 'switch-model', 'switch-texture', 'photo', 'info', 'quit']
         });

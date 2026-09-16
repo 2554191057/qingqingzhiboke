@@ -84,6 +84,18 @@
         const variants = this.modelList.models[id] || this.modelList.models[20] || this.modelList.models[0];
         const path = variants[Number(tid)] || variants[0];
         loadlive2d("live2d", `${this.cdnPath}model/${path}/index.json`);
+        // 加载失败检测：5 秒后 canvas 仍为空则回退到默认模型
+        const self = this;
+        setTimeout(function() {
+          var c = document.getElementById('live2d');
+          var cv = c ? c.querySelector('canvas') : null;
+          if (!cv || cv.width < 10 || cv.height < 10) {
+            console.warn('[waifu] model', id, 'load failed, fallback to 20');
+            loadlive2d("live2d", `${self.cdnPath}model/${self.modelList.models[20][0]}/index.json`);
+            localStorage.setItem("modelId", "20");
+            localStorage.setItem("modelTexturesId", "0");
+          }
+        }, 5000);
       } else {
         loadlive2d("live2d", `${this.apiPath}get/?id=${id}-${tid}`);
         console.log(`Live2D 模型 ${id}-${tid} 加载完成`);
