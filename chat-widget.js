@@ -82,6 +82,15 @@
     '.qw-reply-bar .qw-reply-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}',
     '.qw-reply-bar .qw-reply-cancel{cursor:pointer;color:var(--jp-muted);flex-shrink:0;padding:0 4px;font-size:14px;line-height:1;}',
     '.qw-reply-bar .qw-reply-cancel:hover{color:var(--jp-ink);}',
+    /* 登录门：未填邮箱昵称时遮罩输入区 */
+    '.qw-login-mask{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(15,20,28,.78);backdrop-filter:blur(8px);}',
+    '.qw-login-card{width:320px;max-width:88%;background:var(--jp-surface,#1e2530);border:1px solid var(--jp-line,#2a3444);border-radius:18px;padding:24px 22px;box-shadow:0 12px 40px rgba(0,0,0,.4);}',
+    '.qw-login-card h3{margin:0 0 4px;font-size:16px;color:var(--jp-ink,#e8ecf2);font-weight:700;}',
+    '.qw-login-card p{margin:0 0 16px;font-size:11px;color:var(--jp-muted,#8a94a6);}',
+    '.qw-login-card input{width:100%;box-sizing:border-box;border:1px solid var(--jp-line,#2a3444);border-radius:9px;background:var(--jp-paper,#161b23);color:var(--jp-ink,#e8ecf2);font-size:13px;padding:10px 12px;margin-bottom:10px;outline:none;}',
+    '.qw-login-card input:focus{border-color:var(--jp-accent,#4a9eff);}',
+    '.qw-login-card button{width:100%;padding:11px;border:none;border-radius:9px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:13px;font-weight:600;cursor:pointer;}',
+    '.qw-login-card button:hover{opacity:.92;}',
     /* ===== 聊天气泡布局：自己右侧、别人左侧 ===== */
     '.qw-body #twikoo .tk-comment{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
     '.qw-body #twikoo .tk-comment.tk-self{flex-direction:row-reverse!important;}',
@@ -397,7 +406,7 @@
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
       // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
-      var steps = [removeOwO, removeSubmitExtras, setSubmitPlaceholders, moveNickTop,
+      var steps = [removeOwO, removeSubmitExtras, setSubmitPlaceholders, ensureLoginGate, moveNickTop,
         moveActionBelow, restructureReplies, sortComments, insertTimeSep, markSelf];
       try { markLiked(); } catch (e0) {}
       steps.forEach(function (fn) { try { fn(); } catch (err) {} });
@@ -731,6 +740,67 @@
   var likedSet = {};
   try { likedSet = JSON.parse(localStorage.getItem(LK) || '{}'); } catch (e) { likedSet = {}; }
   // ===== 已点赞高亮恢复：本地记录过的评论，点赞按钮固定显示为已赞（服务端 liked 状态因 IP 防刷不可用） =====
+  // ===== 登录门：未填昵称+邮箱不能发言 =====
+  var QW_NICK_KEY = 'qw_user_nick';
+  var QW_MAIL_KEY = 'qw_user_mail';
+  function getSavedUser() {
+    try { return { nick: localStorage.getItem(QW_NICK_KEY) || '', mail: localStorage.getItem(QW_MAIL_KEY) || '' }; }
+    catch (e) { return { nick: '', mail: '' }; }
+  }
+  function setTwikooField(sel, val) {
+    var el = document.querySelector(sel);
+    if (!el || !val) return;
+    var proto = Object.getPrototypeOf(el);
+    var setter = Object.getOwnPropertyDescriptor(proto, 'value').set;
+    setter.call(el, val);
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  function applySavedUser() {
+    var u = getSavedUser();
+    if (!u.nick && !u.mail) return;
+    setTwikooField('.qw-body .tk-meta-input input[name=nick]', u.nick);
+    setTwikooField('.qw-body .tk-meta-input input[name=mail]', u.mail);
+  }
+  function ensureLoginGate() {
+    var panel = document.querySelector('.qw-body');
+    if (!panel) return;
+    var u = getSavedUser();
+    var existing = panel.querySelector('.qw-login-mask');
+    if (u.nick && u.mail) {
+      if (existing) existing.remove();
+      return;
+    }
+    if (existing) return; // 已显示
+    applySavedUser();
+    var mask = document.createElement('div');
+    mask.className = 'qw-login-mask';
+    mask.innerHTML =
+      '<div class="qw-login-card">' +
+      '<h3>欢迎来到聊天室</h3>' +
+      '<p>填写昵称和邮箱后才能发言（仅用于显示头像和通知，不会公开）</p>' +
+      '<input type="text" id="qw-login-nick" placeholder="昵称" maxlength="20">' +
+      '<input type="email" id="qw-login-mail" placeholder="邮箱（用于 Gravatar 头像）">' +
+      '<button id="qw-login-enter">进入聊天</button>' +
+      '</div>';
+    panel.appendChild(mask);
+    mask.querySelector('#qw-login-enter').addEventListener('click', function () {
+      var nick = mask.querySelector('#qw-login-nick').value.trim();
+      var mail = mask.querySelector('#qw-login-mail').value.trim();
+      if (!nick) { mask.querySelector('#qw-login-nick').focus(); return; }
+      if (!mail || mail.indexOf('@') < 0) { mask.querySelector('#qw-login-mail').focus(); return; }
+      try {
+        localStorage.setItem(QW_NICK_KEY, nick);
+        localStorage.setItem(QW_MAIL_KEY, mail);
+      } catch (e) {}
+      applySavedUser();
+      mask.remove();
+    });
+    // 自动填已有的
+    if (u.nick) mask.querySelector('#qw-login-nick').value = u.nick;
+    if (u.mail) mask.querySelector('#qw-login-mail').value = u.mail;
+  }
+
   // 微信风回复预览条
   function showReplyBar(nick, text) {
     var submit = document.querySelector('.qw-body .tk-submit');
