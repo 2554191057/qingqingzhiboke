@@ -261,7 +261,7 @@
     /* 访客登录弹窗 */
     '<div id="qw-settings-modal" class="qw-settings-modal">' +
     '<div class="qw-settings-panel" style="position:relative">' +
-    '<div class="qw-close-x" onclick="document.getElementById('qw-settings-modal').classList.remove('qw-open')" style="position:absolute;top:10px;right:14px;cursor:pointer;font-size:18px;line-height:1;color:#888;user-select:none;">&times;</div>' +
+    '<div class="qw-close-x" id="qw-settings-close-x" style="position:absolute;top:10px;right:14px;cursor:pointer;font-size:18px;line-height:1;color:#888;user-select:none;">&times;</div>' +
     '<h3>账号设置</h3><p class="qw-set-sub">修改昵称、密码或邮箱</p>' +
     '<input type="text" id="qw-set-nick" placeholder="新昵称" maxlength="20" autocomplete="off" value="">' +
     '<input type="password" id="qw-set-old-pwd" placeholder="当前密码（验证身份）">' +
@@ -873,6 +873,7 @@
   function closeSettings() { settingsModal.classList.remove('qw-open'); }
   document.getElementById('qw-settings-btn').addEventListener('click', openSettings);
   settingsModal.addEventListener('click', function(e) { if (e.target === settingsModal) closeSettings(); });
+  document.getElementById('qw-settings-close-x').addEventListener('click', closeSettings);
   document.getElementById('qw-set-nick-cancel').addEventListener('click', closeSettings);
   document.getElementById('qw-set-pwd-cancel').addEventListener('click', closeSettings);
   document.getElementById('qw-set-email-cancel').addEventListener('click', closeSettings);
