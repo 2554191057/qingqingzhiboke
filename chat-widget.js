@@ -225,16 +225,7 @@
         el: '#tcomment',
         path: 'chat',
         lang: 'zh-CN',
-        onCommentLoaded: function () { scheduleMark(); },
-        onError: function (err) {
-          // 发言被后端拒绝（如已被拉黑）时明确提示
-          try {
-            var msg = (err && (err.message || err.msg)) || '';
-            if (err && err.code === 403) {
-              alert('发言失败：' + msg);
-            }
-          } catch (e) {}
-        }
+        onCommentLoaded: function () { scheduleMark(); }
       });
     } catch (e) { twikooInited = false; }
   }
