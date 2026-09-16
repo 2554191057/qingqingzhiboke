@@ -657,9 +657,21 @@ window.addEventListener('load', function() {
 
 <style>
 /* 看板娘默认右下角，支持拖动 */
-#live2d { position: fixed !important; right: 0 !important; bottom: 0 !important; left: auto !important; top: auto !important; z-index: 9999; }
-.waifu { position: fixed !important; right: 0 !important; bottom: 0 !important; left: auto !important; top: auto !important; }
-#waifu-tool { right: 0 !important; bottom: 260px !important; }
+#live2d, .waifu {
+  position: fixed !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  z-index: 9999;
+}
+#waifu-tool {
+  right: 20px !important;
+  bottom: 320px !important;
+  transform: none !important;
+}
 /* 隐藏右下角聊天室悬浮按钮 */
 .qw-launcher { display: none !important; }
 </style>
