@@ -81,10 +81,13 @@
     '.qw-body #twikoo .tk-meta{display:flex;align-items:baseline;gap:10px;font-size:10px!important;color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
     '.qw-body #twikoo .tk-time time{font-size:10px!important;color:var(--jp-muted)!important;}',
-    '.qw-body #twikoo .tk-action{margin-left:auto!important;display:flex!important;gap:8px!important;align-items:center!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-row>.tk-action{margin-left:0!important;margin-right:auto!important;}',
-    '.qw-body #twikoo .tk-action .tk-action-link{color:var(--jp-muted)!important;font-size:10px!important;padding:0!important;}',
-    '.qw-body #twikoo .tk-action-icon svg{width:12px!important;height:12px!important;}',
+    /* ===== 操作按钮：移到气泡下方横排（常显长条） ===== */
+    '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:1!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-action{justify-content:flex-end!important;}',
+    '.qw-body #twikoo .tk-action .tk-action-link{color:var(--jp-muted)!important;font-size:11px!important;padding:0!important;display:inline-flex!important;align-items:center!important;gap:3px!important;transition:color .15s ease!important;}',
+    '.qw-body #twikoo .tk-action .tk-action-link:hover{color:var(--jp-accent)!important;}',
+    '.qw-body #twikoo .tk-action-icon svg{width:13px!important;height:13px!important;}',
+    '.qw-body #twikoo .tk-action-count{font-size:10px!important;}',
     '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:16px 16px 16px 4px!important;padding:10px 14px!important;font-size:14px!important;line-height:1.7!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;width:fit-content!important;max-width:100%!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:16px 16px 4px 16px!important;}',
     '.qw-body #twikoo .tk-content p{color:var(--jp-ink)!important;margin:0!important;}',
@@ -92,9 +95,6 @@
     /* ===== 微信聊天流：隐藏评论区元素（统计/排序/设备/footer） ===== */
     '.qw-body #twikoo .tk-comments-title,.qw-body #twikoo .tk-action-bar,.qw-body #twikoo .tk-comments-switch,.qw-body #twikoo .tk-extra,.qw-body #twikoo .tk-extras,.qw-body #twikoo .tk-footer{display:none!important;}',
     '.qw-body #twikoo .tk-comments-container{padding-top:6px!important;}',
-    /* 操作按钮：悬停/聚焦才显示（微信式） */
-    '.qw-body #twikoo .tk-action{opacity:0!important;transition:opacity .18s ease!important;}',
-    '.qw-body #twikoo .tk-comment:hover .tk-action,.qw-body #twikoo .tk-action:focus-within{opacity:1!important;}',
     /* 时间用居中时间条显示（微信式），隐藏每条小时间 */
     '.qw-body #twikoo .tk-time{display:none!important;}',
     '.qw-body #twikoo .qw-time-sep{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:10px 0 6px!important;opacity:.8!important;letter-spacing:.5px!important;}',
@@ -236,6 +236,19 @@
       el.remove();
     });
   }
+  // ===== 把点赞/回复等操作按钮从头部行移到气泡下方横排 =====
+  function moveActionBelow() {
+    document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
+      var main = c.querySelector(':scope > .tk-main');
+      if (!main) return;
+      var row = main.querySelector(':scope > .tk-row');
+      var action = row ? row.querySelector(':scope > .tk-action') : null;
+      var content = main.querySelector(':scope > .tk-content');
+      if (action && content && action.parentNode === row) {
+        main.insertBefore(action, content.nextSibling);
+      }
+    });
+  }
   // ===== 聊天气泡：识别"自己"的消息（对比 localStorage 昵称）→ 右侧 =====
   function markSelf() {
     var info = {};
@@ -344,6 +357,7 @@
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
       removeOwO();
+      moveActionBelow();
       restructureReplies();
       sortComments();
       insertTimeSep();
