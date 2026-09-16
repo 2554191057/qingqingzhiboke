@@ -631,6 +631,44 @@
     if (a) { e.preventDefault(); openChat(); }
   }, true);
 
+  // ===== 点赞防刷：同一浏览器只能点一次赞（跨窗口共享 localStorage） =====
+  // 配合后端按 IP 去重：同 IP 多设备也刷不了；换 IP/换浏览器理论上可刷，无法根治
+  var LK = 'qw_liked_v1';
+  var likedSet = {};
+  try { likedSet = JSON.parse(localStorage.getItem(LK) || '{}'); } catch (e) { likedSet = {}; }
+  var tipTimer = null;
+  function qwTip(msg) {
+    var tip = document.getElementById('qw-tip');
+    if (!tip) {
+      tip = document.createElement('div');
+      tip.id = 'qw-tip';
+      tip.style.cssText = 'position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:9999;background:rgba(18,28,46,.94);color:#fff;font-size:12px;padding:8px 16px;border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.35);pointer-events:none;opacity:0;transition:opacity .25s;';
+      document.body.appendChild(tip);
+    }
+    tip.textContent = msg;
+    tip.style.opacity = '1';
+    clearTimeout(tipTimer);
+    tipTimer = setTimeout(function () { tip.style.opacity = '0'; }, 1600);
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.qw-body #twikoo .tk-comment .tk-action-link') : null;
+    if (!btn) return;
+    var comment = btn.closest('.tk-comment');
+    var id = comment && comment.id ? comment.id : '';
+    if (!id) return;
+    // 仅拦截"点赞"（该评论的第一个操作按钮），踩/回复不受限
+    if (btn !== comment.querySelector('.tk-action-link')) return;
+    if (likedSet[id]) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      qwTip('您已点过赞');
+    } else {
+      likedSet[id] = 1;
+      try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
+    }
+  }, true);
+
   // 外部可调用
   window.openChatRoom = openChat;
   window.closeChatRoom = closeChat;
