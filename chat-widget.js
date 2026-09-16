@@ -157,6 +157,7 @@
     '.qw-admin-item .qw-tm{color:var(--jp-muted);margin-left:auto;font-size:10px;}',
     '.qw-admin-item .qw-cmt{color:var(--jp-ink);margin:7px 0;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;}',
     '.qw-admin-item .qw-ops{display:flex;gap:7px;justify-content:flex-end;}',
+    '.qw-admin-item .qw-like-info{margin:6px 0 0;font-size:10px;color:var(--jp-accent);opacity:.9;word-break:break-all;line-height:1.5;}',
     '.qw-admin-item .qw-ops button{border:1px solid var(--jp-line);background:var(--jp-surface);color:var(--jp-muted);font-size:10px;padding:5px 10px;border-radius:7px;cursor:pointer;transition:all .2s ease;}',
     '.qw-admin-item .qw-ops button.qw-del:hover{border-color:#e05b5b;color:#e05b5b;background:rgba(224,91,91,.08);}',
     '.qw-admin-item .qw-ops button.qw-blk:hover{border-color:#e8a33d;color:#e8a33d;background:rgba(232,163,61,.08);}',
@@ -511,7 +512,13 @@
   function renderManageView() {
     adminBody.innerHTML = '<div class="qw-admin-loading">加载评论数据…</div>';
     var blocks = [];
-    adminPost({ event: 'QW_BLOCK_LIST', accessToken: adminToken }).then(function (r) {
+    var likeMap = {};
+    adminPost({ event: 'QW_LIKE_LIST', accessToken: adminToken }).then(function (lr) {
+      if (lr && lr.code === 0) {
+        (lr.data || []).forEach(function (x) { likeMap[x.commentId] = x.ips || []; });
+      }
+      return adminPost({ event: 'QW_BLOCK_LIST', accessToken: adminToken });
+    }).then(function (r) {
       if (r && r.code === 0) blocks = r.data || [];
       return adminPost({ event: 'COMMENT_GET_FOR_ADMIN', accessToken: adminToken, per: 50, page: 1 });
     }).then(function (r1) {
@@ -531,13 +538,22 @@
           });
         }.bind(null, p));
       }
-      seq.then(function () { renderManageList(all, blocks); });
+      seq.then(function () { renderManageList(all, blocks, likeMap); });
     }).catch(function () {
       adminBody.innerHTML = '<div class="qw-admin-loading">网络异常，加载失败</div>';
     });
   }
 
-  function renderManageList(comments, blocks) {
+  // 点赞人信息：人数以 Twikoo ups 为准，点赞人 IP 来自后端旁路记录（明文）
+  function likeInfoHtml(c, likeMap) {
+    var ups = c.ups || c.likes || [];
+    if (!ups.length) return '';
+    var ips = (likeMap && likeMap[c._id]) || [];
+    return '<div class="qw-like-info">👍 ' + ups.length + ' 人' +
+      (ips.length ? ' · ' + escHtml(ips.join('、')) : '') + '</div>';
+  }
+
+  function renderManageList(comments, blocks, likeMap) {
     var root = comments.filter(function (c) { return !c.rid; });
     var html = '';
     html += '<div class="qw-admin-stats">' +
@@ -557,6 +573,7 @@
           (c.ip ? '<span class="qw-ip">' + escHtml(c.ip) + '</span>' : '') +
           '<span class="qw-tm">' + fmtTime(c.created) + '</span></div>' +
           '<div class="qw-cmt">' + escHtml(stripHtml(c.comment)) + '</div>' +
+          likeInfoHtml(c, likeMap) +
           '<div class="qw-ops">' +
           '<button class="qw-del" data-act="del" data-id="' + c._id + '">删除</button>' +
           (c.mail ? '<button class="qw-blk" data-act="blk" data-mail="' + escAttr(c.mail) + '">拉黑邮箱</button>' : '') +
