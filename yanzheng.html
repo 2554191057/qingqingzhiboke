@@ -76,11 +76,11 @@
             <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess"></div>
         </div>
         <button class="fallback-btn" id="fallbackBtn" onclick="directEnter()">直接进入</button>
-        <div class="mirrors">
+        <div class="mirrors" id="mirrorLinks">
             其他入口：
-            <a href="https://qqzttkx.ficp.fun/" target="_blank">花生壳</a>
-            <a href="https://qqzttkx.eu.cc/" target="_blank">Cloudflare</a>
-            <a href="https://2554191057.github.io/qingqingzhiboke/" target="_blank">GitHub</a>
+            <a href="https://qqzttkx.ficp.fun/" class="mirror-hsk" target="_blank">花生壳</a>
+            <a href="https://qqzttkx.eu.cc/" class="mirror-cf" target="_blank">Cloudflare</a>
+            <a href="https://2554191057.github.io/qingqingzhiboke/" class="mirror-gh" target="_blank">GitHub</a>
         </div>
     </div>
     <script src="js/sakura/config.js"></script>
@@ -117,6 +117,13 @@
         sessionStorage.setItem('auth_ok', '1');
         gotoBestMirror();
     }
+    // 隐藏当前域名对应的链接
+    (function(){
+      var h = location.hostname;
+      if (h.indexOf('ficp.fun') >= 0) document.querySelector('.mirror-hsk').style.display = 'none';
+      if (h.indexOf('eu.cc') >= 0 || h.indexOf('pages.dev') >= 0) document.querySelector('.mirror-cf').style.display = 'none';
+      if (h.indexOf('github.io') >= 0) document.querySelector('.mirror-gh').style.display = 'none';
+    })();
     // Turnstile 加载失败（5秒内未出现）显示直接进入按钮
     setTimeout(function(){
         var widget = document.querySelector('.cf-turnstile');
