@@ -44,7 +44,7 @@
     '.qw-body #twikoo .tk-submit .tk-row>.tk-avatar{display:none!important;}',
     '.qw-body #twikoo .tk-submit .tk-col{width:100%!important;padding:0!important;}',
     '.qw-body #twikoo .tk-meta-input{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;}',
-    '.qw-body #twikoo .tk-meta-input .el-input{margin:0!important;min-width:0!important;}',
+    '.qw-body #twikoo .tk-meta-input .el-input{margin:0!important;min-width:0!important;width:100%!important;}',
     '.qw-body #twikoo .tk-meta-input .el-input:nth-child(3){grid-column:1 / -1;}',
     '.qw-body #twikoo .el-input-group__prepend{background:transparent!important;border:none!important;color:var(--jp-muted)!important;font-size:10px!important;padding:0 8px 0 2px!important;box-shadow:none!important;white-space:nowrap;}',
     '.qw-body #twikoo .el-input__inner{border:1px solid var(--jp-line)!important;border-radius:7px!important;background:var(--jp-paper)!important;color:var(--jp-ink)!important;font-size:12px!important;padding:8px 11px!important;height:auto!important;box-shadow:none!important;min-width:0!important;flex:1!important;}',
