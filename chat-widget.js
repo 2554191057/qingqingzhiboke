@@ -749,6 +749,7 @@
     var isLike = links.length && btn === likeBtn;
     var isDislike = links.length > 1 && btn === dislikeBtn;
     var isReply = links.length > 2 && btn === links[2];
+    if ((isLike || isDislike) && !isLoggedIn()) { openLogin(); return; } // 赞踩需先登录
     if (isReply) {
       var nickEl = comment.querySelector('.tk-nick');
       var nick = nickEl ? nickEl.textContent.trim() : '';
