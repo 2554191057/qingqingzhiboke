@@ -32,6 +32,23 @@
     '.qw-logout-btn{display:none;padding:6px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:var(--jp-paper);color:var(--jp-muted);cursor:pointer;transition:all .2s ease;}',
     '.qw-logout-btn:hover{color:#e05b5b;border-color:#e05b5b;}',
     '.qw-panel.qw-logged-in .qw-logout-btn{display:block;}',
+    '.qw-settings-btn{display:none;padding:8px;color:var(--jp-muted);cursor:pointer;border-radius:8px;background:none;border:none;}',
+    '.qw-panel.qw-logged-in .qw-settings-btn{display:flex;}',
+    '.qw-settings-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(1,6,17,.6);backdrop-filter:blur(4px);}',
+    '.qw-settings-modal.qw-open{display:flex;}',
+    '.qw-settings-panel{width:min(380px,90vw);background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:14px;padding:20px;color:var(--jp-ink);}',
+    '.qw-settings-panel h3{margin:0 0 4px;font-size:15px;}',
+    '.qw-settings-panel .qw-set-sub{font-size:10px;color:var(--jp-muted);margin:0 0 14px;}',
+    '.qw-settings-panel input{width:100%;box-sizing:border-box;border:1px solid var(--jp-line);border-radius:8px;background:var(--jp-paper);color:var(--jp-ink);padding:9px 11px;font-size:12px;margin-bottom:8px;outline:none;}',
+    '.qw-settings-panel input:focus{border-color:var(--jp-accent);}',
+    '.qw-settings-panel .qw-set-row{display:flex;gap:8px;margin-top:4px;}',
+    '.qw-settings-panel .qw-set-row button{flex:1;padding:9px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;}',
+    '.qw-settings-panel .qw-set-save{background:linear-gradient(120deg,#087fae,#4866db);color:#fff;}',
+    '.qw-settings-panel .qw-set-cancel{background:var(--jp-glow);color:var(--jp-ink);}',
+    '.qw-settings-panel .qw-set-msg{font-size:11px;margin-top:6px;min-height:16px;}',
+    '.qw-settings-panel .qw-set-ok{color:#2e9e5b;}',
+    '.qw-settings-panel .qw-set-err{color:#e05b5b;}',
+    '.qw-settings-section{border-top:1px solid var(--jp-line);padding-top:12px;margin-top:12px;}',
     '.qw-close:hover{background:var(--jp-glow);color:var(--jp-ink);}',
     '.qw-admin-btn{margin-left:auto;padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
     '.qw-admin-btn:hover{background:var(--jp-glow);color:var(--jp-ink);}',
@@ -232,6 +249,7 @@
     '<div><h2 id="qw-title">访客聊天室</h2><p><span class="qw-dot"></span>实时同步 · Powered by Twikoo</p></div>' +
 
     '<button class="qw-admin-btn" id="qw-admin-trigger" aria-label="聊天管理" title="聊天管理"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
+    '<button class="qw-settings-btn" id="qw-settings-btn" title="账号设置"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>' +
     '<button class="qw-logout-btn" id="qw-logout-btn" title="退出登录">退出</button>' +
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
@@ -241,6 +259,25 @@
     '<div class="qw-login-bar"><div class="qw-lb-text"><h4>身份验证</h4><p>昵称和头像使用你的邮箱公开资料</p></div><div class="qw-lb-right"><p>登录后才可以发送消息</p><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div></div></div>' +
     '</div></div>' +
     /* 访客登录弹窗 */
+    '<div id="qw-settings-modal" class="qw-settings-modal">' +
+    '<div class="qw-settings-panel">' +
+    '<h3>账号设置</h3><p class="qw-set-sub">修改昵称、密码或邮箱</p>' +
+    '<input type="text" id="qw-set-nick" placeholder="新昵称" maxlength="20">' +
+    '<input type="password" id="qw-set-old-pwd" placeholder="当前密码（验证身份）">' +
+    '<div class="qw-set-row"><button class="qw-set-cancel" id="qw-set-nick-cancel">关闭</button><button class="qw-set-save" id="qw-set-nick-save">改昵称</button></div>' +
+    '<div class="qw-set-section">' +
+    '<input type="password" id="qw-set-new-pwd1" placeholder="新密码">' +
+    '<input type="password" id="qw-set-new-pwd2" placeholder="确认新密码">' +
+    '<input type="password" id="qw-set-pwd-pwd" placeholder="当前密码">' +
+    '<div class="qw-set-row"><button class="qw-set-cancel" id="qw-set-pwd-cancel">关闭</button><button class="qw-set-save" id="qw-set-pwd-save">改密码</button></div>' +
+    '</div>' +
+    '<div class="qw-set-section">' +
+    '<input type="email" id="qw-set-new-email" placeholder="新邮箱">' +
+    '<input type="password" id="qw-set-email-pwd" placeholder="当前密码">' +
+    '<div class="qw-set-row"><button class="qw-set-cancel" id="qw-set-email-cancel">关闭</button><button class="qw-set-save" id="qw-set-email-save">改邮箱</button></div>' +
+    '</div>' +
+    '<p class="qw-set-msg" id="qw-set-msg"></p>' +
+    '</div></div>' +
     '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
     '<div class="qw-login-panel">' +
     '<h3>登录发言</h3><p>设置昵称、邮箱和密码，多设备可同步登录</p>' +
@@ -757,6 +794,92 @@
   });
   document.getElementById('qw-logout-btn').addEventListener('click', function () {
     logout();
+  });
+  // ===== 账号设置弹窗 =====
+  var settingsModal = document.getElementById('qw-settings-modal');
+  var setMsg = document.getElementById('qw-set-msg');
+  function showSetMsg(text, ok) {
+    setMsg.textContent = text;
+    setMsg.className = 'qw-set-msg ' + (ok ? 'qw-set-ok' : 'qw-set-err');
+  }
+  function openSettings() {
+    var v = getVisitor();
+    document.getElementById('qw-set-nick').value = v.nick || '';
+    document.getElementById('qw-set-old-pwd').value = '';
+    document.getElementById('qw-set-new-pwd1').value = '';
+    document.getElementById('qw-set-new-pwd2').value = '';
+    document.getElementById('qw-set-pwd-pwd').value = '';
+    document.getElementById('qw-set-new-email').value = '';
+    document.getElementById('qw-set-email-pwd').value = '';
+    setMsg.textContent = '';
+    settingsModal.classList.add('qw-open');
+  }
+  function closeSettings() { settingsModal.classList.remove('qw-open'); }
+  document.getElementById('qw-settings-btn').addEventListener('click', openSettings);
+  settingsModal.addEventListener('click', function(e) { if (e.target === settingsModal) closeSettings(); });
+  document.getElementById('qw-set-nick-cancel').addEventListener('click', closeSettings);
+  document.getElementById('qw-set-pwd-cancel').addEventListener('click', closeSettings);
+  document.getElementById('qw-set-email-cancel').addEventListener('click', closeSettings);
+  function setBtnLoading(btn, text) { btn.disabled = true; btn.textContent = text; }
+  function setBtnRestore(btn, text) { btn.disabled = false; btn.textContent = text; }
+  // 改昵称
+  document.getElementById('qw-set-nick-save').addEventListener('click', function() {
+    var v = getVisitor();
+    var nick = document.getElementById('qw-set-nick').value.trim();
+    var pwd = document.getElementById('qw-set-old-pwd').value;
+    if (!nick) { showSetMsg('请输入新昵称', false); return; }
+    if (!pwd) { showSetMsg('请输入当前密码', false); return; }
+    var btn = this; setBtnLoading(btn, '保存中…');
+    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ event:'QW_USER_UPDATE', email: v.email, oldPassword: pwd, newNick: nick })
+    }).then(function(r){return r.json();}).then(function(r){
+      setBtnRestore(btn, '改昵称');
+      if (r.code === 0) {
+        localStorage.setItem(QW_NICK, nick);
+        showSetMsg('昵称已修改', true);
+        setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
+      } else showSetMsg(r.message || '修改失败', false);
+    }).catch(function(){ setBtnRestore(btn, '改昵称'); showSetMsg('网络错误', false); });
+  });
+  // 改密码
+  document.getElementById('qw-set-pwd-save').addEventListener('click', function() {
+    var v = getVisitor();
+    var p1 = document.getElementById('qw-set-new-pwd1').value;
+    var p2 = document.getElementById('qw-set-new-pwd2').value;
+    var pwd = document.getElementById('qw-set-pwd-pwd').value;
+    if (!p1 || p1.length < 4) { showSetMsg('新密码至少4位', false); return; }
+    if (p1 !== p2) { showSetMsg('两次密码不一致', false); return; }
+    if (!pwd) { showSetMsg('请输入当前密码', false); return; }
+    var btn = this; setBtnLoading(btn, '保存中…');
+    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ event:'QW_USER_UPDATE', email: v.email, oldPassword: pwd, newPassword: p1 })
+    }).then(function(r){return r.json();}).then(function(r){
+      setBtnRestore(btn, '改密码');
+      if (r.code === 0) {
+        localStorage.setItem('qw_user_pwd', p1);
+        showSetMsg('密码已修改', true);
+        setTimeout(closeSettings, 800);
+      } else showSetMsg(r.message || '修改失败', false);
+    }).catch(function(){ setBtnRestore(btn, '改密码'); showSetMsg('网络错误', false); });
+  });
+  // 改邮箱
+  document.getElementById('qw-set-email-save').addEventListener('click', function() {
+    var v = getVisitor();
+    var ne = document.getElementById('qw-set-new-email').value.trim();
+    var pwd = document.getElementById('qw-set-email-pwd').value;
+    if (!ne || ne.indexOf('@') < 0) { showSetMsg('请输入有效邮箱', false); return; }
+    if (!pwd) { showSetMsg('请输入当前密码', false); return; }
+    var btn = this; setBtnLoading(btn, '保存中…');
+    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ event:'QW_CHANGE_EMAIL', email: v.email, newEmail: ne, password: pwd })
+    }).then(function(r){return r.json();}).then(function(r){
+      setBtnRestore(btn, '改邮箱');
+      if (r.code === 0) {
+        localStorage.setItem(QW_EMAIL, ne);
+        showSetMsg('邮箱已修改', true);
+        setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
+      } else showSetMsg(r.message || '修改失败', false);
+    }).catch(function(){ setBtnRestore(btn, '改邮箱'); showSetMsg('网络错误', false); });
   });
   // 管理员面板只能点 X 关闭（不响应 Esc 和遮罩点击）
 
