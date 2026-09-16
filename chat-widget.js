@@ -94,11 +94,13 @@
     '.qw-body #twikoo .tk-time{display:none!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-row .tk-nick{display:none!important;}',
     /* 气泡更圆更大（微信 16px 圆角） */
-    '.qw-body #twikoo .tk-content{border-radius:16px 16px 16px 4px!important;padding:10px 14px!important;font-size:14px!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{border-radius:16px 16px 4px 16px!important;}',
-    '.qw-body #twikoo .tk-comment{margin-bottom:12px!important;}',
-    /* ===== QQ式引用回复：气泡内引用块（左竖线灰条） ===== */
-    '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.14)!important;border-left:3px solid var(--jp-accent)!important;border-radius:4px!important;padding:4px 9px!important;font-size:12px!important;line-height:1.6!important;color:var(--jp-muted)!important;margin:0 0 7px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;}',
+    '.qw-body #twikoo .tk-content{border-radius:14px 14px 14px 4px!important;padding:8px 12px!important;font-size:13px!important;line-height:1.65!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{border-radius:14px 14px 4px 14px!important;}',
+    '.qw-body #twikoo .tk-comment{margin-bottom:10px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-avatar{width:34px!important;height:34px!important;font-size:16px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 44px)!important;}',
+    /* ===== QQ式引用回复：气泡内引用栏（细淡灰条） ===== */
+    '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.08)!important;border-left:2px solid var(--jp-line)!important;border-radius:3px!important;padding:3px 8px!important;font-size:11px!important;line-height:1.5!important;color:var(--jp-muted)!important;margin:0 0 5px!important;display:-webkit-box!important;-webkit-line-clamp:1!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;}',
     '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{display:none!important;}',
     '.qw-body #twikoo .tk-expand-wrap,.qw-body #twikoo .tk-expand{display:none!important;}',
     '.qw-body #twikoo .tk-footer{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:12px 0 0!important;background:transparent!important;}',
