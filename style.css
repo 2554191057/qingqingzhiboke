@@ -597,9 +597,9 @@ img { max-width: 100%; display: block; }
     animation: navbarFlow 16s ease-in-out infinite alternate;
     backdrop-filter: var(--glass-blur-strong);
     -webkit-backdrop-filter: var(--glass-blur-strong);
-    border-bottom: 1px solid rgba(255, 210, 175, 0.5);
-    box-shadow: 0 4px 20px rgba(58, 58, 58, 0.08),
-                0 0 30px rgba(255, 190, 160, 0.15),
+    border-bottom: 1px solid rgba(206, 218, 237, 0.80);
+    box-shadow: 0 4px 20px rgba(24, 38, 65, 0.08),
+                0 0 30px rgba(16, 147, 195, 0.12),
                 inset 0 1px 1px rgba(255, 255, 255, 0.85);
 }
 .navbar::after {
@@ -624,10 +624,10 @@ img { max-width: 100%; display: block; }
     animation: navbarFlow 16s ease-in-out infinite alternate;
     backdrop-filter: var(--glass-blur-strong);
     -webkit-backdrop-filter: var(--glass-blur-strong);
-    box-shadow: 0 6px 28px rgba(58, 58, 58, 0.12),
-                0 0 40px rgba(255, 190, 160, 0.20),
+    box-shadow: 0 6px 28px rgba(24, 38, 65, 0.12),
+                0 0 40px rgba(16, 147, 195, 0.16),
                 inset 0 1px 1px rgba(255, 255, 255, 0.9);
-    border-bottom-color: rgba(255, 210, 175, 0.6);
+    border-bottom-color: rgba(206, 218, 237, 0.9);
 }
 .logo {
     display: flex;
