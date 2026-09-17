@@ -455,6 +455,7 @@
       if (e.target.closest("#waifu-tool")) return;
       e.preventDefault();
       dragging = true;
+      el.classList.add("dragging");
       el.style.transition = "none";
       const ev = e.touches ? e.touches[0] : e;
       const pos = getPos();
@@ -486,6 +487,7 @@
     function onEnd() {
       if (!dragging) return;
       dragging = false;
+      el.classList.remove("dragging");
       if (!moved) return;
       localStorage.setItem("waifu-pos", JSON.stringify({
         left: parseInt(el.style.left),
