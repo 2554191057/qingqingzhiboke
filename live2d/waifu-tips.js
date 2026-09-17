@@ -547,11 +547,8 @@
       }
     });
 
-    if (localStorage.getItem("waifu-display") && Date.now() - localStorage.getItem("waifu-display") <= 86400000) {
-      toggle.setAttribute("first-time", "true");
-      setTimeout(() => { toggle.classList.add("waifu-toggle-active"); }, 0);
-    } else {
-      init(opts);
-    }
+    // 进入网站直接显示看板娘，点收起后通过展开按钮恢复
+    localStorage.removeItem("waifu-display");
+    init(opts);
   };
 }();

@@ -1,0 +1,607 @@
+{
+  "sha": "fbc8e98d60e9b1276a17c1d5e2900f20a74e94e4",
+  "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/trees/fbc8e98d60e9b1276a17c1d5e2900f20a74e94e4",
+  "tree": [
+    {
+      "path": "ACCESS_STATS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "349b3d191861cfaac150f1b7adfb9099994eb5d5",
+      "size": 2850,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/349b3d191861cfaac150f1b7adfb9099994eb5d5"
+    },
+    {
+      "path": "BAOTA_DATABASE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59b3f94f4db591e55565539d4b21dd6bc95c71da",
+      "size": 6605,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/59b3f94f4db591e55565539d4b21dd6bc95c71da"
+    },
+    {
+      "path": "BAOTA_DEPLOYMENT.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "36df95a5572e37500fac4bf02b87782cc573f6dd",
+      "size": 20961,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/36df95a5572e37500fac4bf02b87782cc573f6dd"
+    },
+    {
+      "path": "DEPLOY_NOTES.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0adf4a48951ce2226bf6a9fea025ed9ea863fd50",
+      "size": 2421,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/0adf4a48951ce2226bf6a9fea025ed9ea863fd50"
+    },
+    {
+      "path": "FASTAPI_API_DOCS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da8b45c1187df850847285af58288b49501a27e9",
+      "size": 12246,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/da8b45c1187df850847285af58288b49501a27e9"
+    },
+    {
+      "path": "LOCAL_RUN.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d45ae11a2a98f0d64d0e346b4063a7deff3bf84c",
+      "size": 4456,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/d45ae11a2a98f0d64d0e346b4063a7deff3bf84c"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8cf2b53f1bce82fb0a84075761499efecbab9623",
+      "size": 5030,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/8cf2b53f1bce82fb0a84075761499efecbab9623"
+    },
+    {
+      "path": "SERVER_UPLOAD_README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "95ccbbe16bc9dcc63d09bcc18671d5ae0e9ef42a",
+      "size": 797,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/95ccbbe16bc9dcc63d09bcc18671d5ae0e9ef42a"
+    },
+    {
+      "path": "TENCENT_COS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f13989ff44ff04785eccf702e3af0aba9adafb4a",
+      "size": 4649,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/f13989ff44ff04785eccf702e3af0aba9adafb4a"
+    },
+    {
+      "path": "UPLOAD_MANIFEST.sha256",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "441d7ace988b483b11b6050bb16f0f29a59d827a",
+      "size": 269919,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/441d7ace988b483b11b6050bb16f0f29a59d827a"
+    },
+    {
+      "path": "docs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9121ef5523a9404cba625dcd3730864159daed5e",
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/trees/9121ef5523a9404cba625dcd3730864159daed5e"
+    },
+    {
+      "path": "docs/README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "310e97972057d28bd5af500003c9b08bccd47036",
+      "size": 2013,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/310e97972057d28bd5af500003c9b08bccd47036"
+    },
+    {
+      "path": "nginx-cache-debug.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b99d08c4f94720247d93878aa03690811c63045",
+      "size": 2541,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/2b99d08c4f94720247d93878aa03690811c63045"
+    },
+    {
+      "path": "qiguangji-backend",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2e60d9264b90bc6d286b1cd40c9c48ae768ea21e",
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/trees/2e60d9264b90bc6d286b1cd40c9c48ae768ea21e"
+    },
+    {
+      "path": "qiguangji-backend/.env.example",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cf5bbcd73001b6f46e45f55b516d6a463c264893",
+      "size": 1184,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/cf5bbcd73001b6f46e45f55b516d6a463c264893"
+    },
+    {
+      "path": "qiguangji-backend/DATABASE.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf7329ac01248cf70541d77d2d5e3f1eb2c2252b",
+      "size": 2677,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/bf7329ac01248cf70541d77d2d5e3f1eb2c2252b"
+    },
+    {
+      "path": "qiguangji-backend/admin",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4d30663940029a45a32a3f57580dad7e4b2df1e5",
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/trees/4d30663940029a45a32a3f57580dad7e4b2df1e5"
+    },
+    {
+      "path": "qiguangji-backend/admin/.browserslistrc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "40bd99ce6ea5150b118ce04510690655d69d99d0",
+      "size": 39,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/40bd99ce6ea5150b118ce04510690655d69d99d0"
+    },
+    {
+      "path": "qiguangji-backend/admin/.env.production",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "053dbfe4ee8e98564f96724ce333559e71767346",
+      "size": 784,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/053dbfe4ee8e98564f96724ce333559e71767346"
+    },
+    {
+      "path": "qiguangji-backend/admin/.npmrc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dddf8bc05582a3c19765a2ce7afa2fff3dff94ef",
+      "size": 102,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/dddf8bc05582a3c19765a2ce7afa2fff3dff94ef"
+    },
+    {
+      "path": "qiguangji-backend/admin/.nvmrc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b041eed9ad453ed500d29fd93ade764744554280",
+      "size": 8,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/b041eed9ad453ed500d29fd93ade764744554280"
+    },
+    {
+      "path": "qiguangji-backend/admin/build",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "f9c99c1e33f0234e4b8e9c26f9b90b61f2bc8b1f",
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/trees/f9c99c1e33f0234e4b8e9c26f9b90b61f2bc8b1f"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/cdn.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d8a2edfa01370da594e9870c6e8e9adc9a329e58",
+      "size": 1601,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/d8a2edfa01370da594e9870c6e8e9adc9a329e58"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/compress.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6178986b691e9ccda4f4e1c45546d93a4eca8ac6",
+      "size": 1577,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/6178986b691e9ccda4f4e1c45546d93a4eca8ac6"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/favicon.ico",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bef93d4b01212f57cecb50658e8c9518be13e607",
+      "size": 1270,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/bef93d4b01212f57cecb50658e8c9518be13e607"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/icon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "45fd15d6f7b01487752631089f925f947f2727ec",
+      "size": 76172,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/45fd15d6f7b01487752631089f925f947f2727ec"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "379f73580bfc47626e1b33446fbef4b4b56b96ef",
+      "size": 2098,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/379f73580bfc47626e1b33446fbef4b4b56b96ef"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/info.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "679dd8859c00d9760725fb093e53ed087a4349a3",
+      "size": 1732,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/679dd8859c00d9760725fb093e53ed087a4349a3"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/logo.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a63d2b1ab0071480a65f61d515c8419d2bef1e08",
+      "size": 706,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/a63d2b1ab0071480a65f61d515c8419d2bef1e08"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/optimize.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5ef414416a2ef39810b1e304c5183cb8f9b3d3d6",
+      "size": 2134,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/5ef414416a2ef39810b1e304c5183cb8f9b3d3d6"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/platform-config.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "40dd6b68db7191fe5a324b5a5aa0055f8c3ec6ae",
+      "size": 824,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/40dd6b68db7191fe5a324b5a5aa0055f8c3ec6ae"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/plugins.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "715022ad1384b19d43e81d747b151b54274c16ac",
+      "size": 2714,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/715022ad1384b19d43e81d747b151b54274c16ac"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "a8453c6fffdf6aa70027690a008da6aeca47215c",
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/trees/a8453c6fffdf6aa70027690a008da6aeca47215c"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "af92a9b06fda5c4032df476e6ca3cd90374ee7e3",
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/trees/af92a9b06fda5c4032df476e6ca3cd90374ee7e3"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/403-CP2tVvFQ.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5bf10b22c0824442717b3aacaafb721878b11318",
+      "size": 51,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/5bf10b22c0824442717b3aacaafb721878b11318"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/404-B_u8eL3m.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "00b98e746406c71987731d03bfc803517011a527",
+      "size": 51,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/00b98e746406c71987731d03bfc803517011a527"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/500-zNlDq9eM.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bd858583dfee276f4577a9629eae142916e6b732",
+      "size": 51,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/bd858583dfee276f4577a9629eae142916e6b732"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/AccountManagement-Dhz2OkIV.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "37b43caa112002ec04db358212cf26fe7b1706e8",
+      "size": 104,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/37b43caa112002ec04db358212cf26fe7b1706e8"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/LoginQrCode-CHb_4LNV.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0fb4d30f86c5c699de5a400464b970149e659b55",
+      "size": 105,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/0fb4d30f86c5c699de5a400464b970149e659b55"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/Preferences-Dbu6eB9j.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d25d44c7de6d1b5faf8f85ea2108d809186b8a3a",
+      "size": 104,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/d25d44c7de6d1b5faf8f85ea2108d809186b8a3a"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/ReCropperPreview-zT5EqYiT.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "42e4fe3b424bfcc2338c181497d4821b6e71bd29",
+      "size": 3899,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/42e4fe3b424bfcc2338c181497d4821b6e71bd29"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/ReSegmented-Bnaa5DXC.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de2692bb5a1a765736ecfff76d1aedeca1f6c87c",
+      "size": 4670,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/de2692bb5a1a765736ecfff76d1aedeca1f6c87c"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/Vditor-wpdf5DiJ.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "27ff32916d3d73a192207271f6b241b29488df1c",
+      "size": 37090,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/27ff32916d3d73a192207271f6b241b29488df1c"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/account-settings-BKBorhYJ.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "92e929af58dd32d3e380574dd676392e750d1221",
+      "size": 916,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/92e929af58dd32d3e380574dd676392e750d1221"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/dashboard-DGi2LbHy.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e9ead22402d12f578d6d8b6d0ba71ca64b534d0",
+      "size": 57,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/1e9ead22402d12f578d6d8b6d0ba71ca64b534d0"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/dept-CNvtYyW5.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "750a1c9b94baa57d9e9b9095b5600c677c1c9f55",
+      "size": 183,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/750a1c9b94baa57d9e9b9095b5600c677c1c9f55"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/detail-Cjcr2fUk.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5da9b6b4d7d043eb5639340a5a1d0333d2edeb93",
+      "size": 3266,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/5da9b6b4d7d043eb5639340a5a1d0333d2edeb93"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/editor-DmtQjJkw.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7fa4790379e5a5b08eaec20373ef1f517d43061a",
+      "size": 63,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/7fa4790379e5a5b08eaec20373ef1f517d43061a"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/empty-CYRgfmJF.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "07d571b90c3462f23322af78f56f998168c5f92b",
+      "size": 324,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/07d571b90c3462f23322af78f56f998168c5f92b"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/form-BqymwgzK.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bf04716f5073ab5b0d963d4fe9ad4261c05e7c97",
+      "size": 44,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/bf04716f5073ab5b0d963d4fe9ad4261c05e7c97"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/frame-BDVgfY8F.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c8f49610dbcf3b2b4d8d955674e0fa0299920946",
+      "size": 237,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/c8f49610dbcf3b2b4d8d955674e0fa0299920946"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/hook-B8poJyYs.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c47ea963972f6573f7b0b1f8ed2035345ab0b81",
+      "size": 65,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/1c47ea963972f6573f7b0b1f8ed2035345ab0b81"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/index-Cy-U4vB5.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "59963fc65479cdd800334ca69e0f8db74aa762aa",
+      "size": 15911,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/59963fc65479cdd800334ca69e0f8db74aa762aa"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/index-VWvLoTh-.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0049d581dbb3c1e775f6964c278756f5d98da78d",
+      "size": 723237,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/0049d581dbb3c1e775f6964c278756f5d98da78d"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/layout-Be7eNl7H.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "490e379a9f8798902d95948bdb2f2c98198dc034",
+      "size": 39158,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/490e379a9f8798902d95948bdb2f2c98198dc034"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/login-BwhuWEF9.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "442410097d72b565bde45f5aa7d5ade4c63a6ef4",
+      "size": 1377,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/442410097d72b565bde45f5aa7d5ade4c63a6ef4"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/login-qPbMhzIV.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e226bc9c237582b34dba5f57df57f1e6221a7ec2",
+      "size": 177,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/e226bc9c237582b34dba5f57df57f1e6221a7ec2"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/menu-BJ9yXH54.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "334deead4a81a8d3f95cb4e2954c7884a127e394",
+      "size": 183,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/334deead4a81a8d3f95cb4e2954c7884a127e394"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/online-DD-9osdt.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "31bb4941180780d0cc3e3ed34a6d7dc702e0c673",
+      "size": 177,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/31bb4941180780d0cc3e3ed34a6d7dc702e0c673"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/operation-ZJ_hO2JH.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05e2b160387484271b0303cd20533545a0be6b11",
+      "size": 177,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/05e2b160387484271b0303cd20533545a0be6b11"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/role-B7xkPKoh.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "212c466d5567b32e7aaf77034063f81fca2023c3",
+      "size": 177,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/212c466d5567b32e7aaf77034063f81fca2023c3"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/system-CyjmCbP2.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1aa9b5120e6a19c24309acbf84a92d12bcade315",
+      "size": 177,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/1aa9b5120e6a19c24309acbf84a92d12bcade315"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/table-D9LhvYuO.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bbfc189f5c9a0e32dd1c44f8e3f1d22db94b3f00",
+      "size": 337,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/bbfc189f5c9a0e32dd1c44f8e3f1d22db94b3f00"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/tree-Bl4AcUPT.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "552883b52af0471d7779d285f7c7dae580bf62e5",
+      "size": 109,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/552883b52af0471d7779d285f7c7dae580bf62e5"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/user-CnO4tNCP.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5c0d2d58711f8d56881492faba650233654fbdb",
+      "size": 233,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/e5c0d2d58711f8d56881492faba650233654fbdb"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/css/welcome-D7vcj9cn.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "74c66f620069b0cc0e24b3e6b76ff1cee9cc2660",
+      "size": 2021,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/74c66f620069b0cc0e24b3e6b76ff1cee9cc2660"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "5f55c38b746ff6d5d3d0233e244471f83d28c4b6",
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/trees/5f55c38b746ff6d5d3d0233e244471f83d28c4b6"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js/403-sEv2j3sK.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "07028eba73705c4ac89b1f6bfc8d6d5ad15f93a5",
+      "size": 11998,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/07028eba73705c4ac89b1f6bfc8d6d5ad15f93a5"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js/404-TspjJ8TW.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "082f30bf3e08747180731fa0f12a953ced14a429",
+      "size": 13095,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/082f30bf3e08747180731fa0f12a953ced14a429"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js/500-U75rk9uD.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "82c99e198c1574094f42e3ecc233512aed86f7f4",
+      "size": 15078,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/82c99e198c1574094f42e3ecc233512aed86f7f4"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js/AccountManagement-b6diy6gh.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7238d4d70e4c68228216a7b690ce39062c834f49",
+      "size": 1527,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/7238d4d70e4c68228216a7b690ce39062c834f49"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js/ChartBar-DMbE3EcC.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0698d99efba0e8158421421bc1dcbd72999da5e8",
+      "size": 1397,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/0698d99efba0e8158421421bc1dcbd72999da5e8"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js/ChartLine-BIk1EpKU.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8fd8a4c528f840f1d4bbc0cdd6c69eddfea4d90a",
+      "size": 836,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/8fd8a4c528f840f1d4bbc0cdd6c69eddfea4d90a"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js/ChartRound-C_3of7tM.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bfcf6694f5a90c003ed07c017613c30d3044181e",
+      "size": 1007,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/bfcf6694f5a90c003ed07c017613c30d3044181e"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js/EditorBase-BnJq6_CB.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b0a6042b34d17ce8bf63add68a588e10fcbab03",
+      "size": 977,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/4b0a6042b34d17ce8bf63add68a588e10fcbab03"
+    },
+    {
+      "path": "qiguangji-backend/admin/build/static/js/EditorMulti-B2eJ6_2S.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1cebc04447dbed4b3bc1779ef1e99b1d9bf8e45f",
+      "size": 1392,
+      "url": "https://api.github.com/repos/TianXiaoQiang0621/qiguangji/git/blobs/1cebc04447dbed4b3bc1779ef1e99b1d9bf8e45f"
+    },
+    {
+      "path": "qiguangji-back
