@@ -421,6 +421,13 @@
       }
     }
   }
+  function renameEmpty() {
+    var els = document.querySelectorAll('.qw-body #twikoo *');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el.children.length === 0 && el.textContent.trim() === '没有评论') el.textContent = '暂无消息';
+    }
+  }
   function markSelf() {
     var info = {};
     try { info = JSON.parse(localStorage.getItem('twikoo') || '{}'); } catch (e) {}
@@ -545,7 +552,7 @@
     markTimer = setTimeout(function () {
       // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
       var steps = [removeOwO, removeSubmitExtras, setSubmitPlaceholders, moveNickTop,
-        moveActionBelow, restructureReplies, sortComments, insertTimeSep, markSelf];
+        moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, markSelf];
       try { refreshLoginUI(); } catch (eR) {}
       try { markLiked(); } catch (e0) {}
       steps.forEach(function (fn) { try { fn(); } catch (err) {} });
