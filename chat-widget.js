@@ -1687,6 +1687,8 @@
   function applyVisitorToTwikoo() {
     var v = getVisitor();
     if (!v.nick) return;
+    document.cookie = 'twikoo-nick=' + encodeURIComponent(v.nick) + ';path=/;max-age=31536000';
+    document.cookie = 'twikoo-mail=' + encodeURIComponent(v.email || '') + ';path=/;max-age=31536000';
     var inputs = document.querySelectorAll('.qw-body .tk-meta-input input');
     if (inputs[0]) setNativeValue(inputs[0], v.nick);
     if (inputs[1]) setNativeValue(inputs[1], v.email);
