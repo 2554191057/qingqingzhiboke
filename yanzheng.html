@@ -84,7 +84,14 @@
     }
     (function(){
       var h = location.hostname;
-      if (h === 'qqzttkx.ficp.fun') document.querySelector('.mirror-hsk').style.display = 'none';
+      if (h === 'qqzttkx.ficp.fun') {
+        document.querySelector('.mirror-hsk').style.display = 'none';
+        // 自动切到主域 qqzttkx.eu.cc，打不开才留在花生壳
+        var PRIMARY = 'https://qqzttkx.eu.cc/';
+        fetch(PRIMARY, { mode: 'no-cors', cache: 'no-store' })
+          .then(function(){ location.replace(PRIMARY + location.search + location.hash); })
+          .catch(function(){});
+      }
       if (h.indexOf('eu.cc') >= 0 || h.indexOf('pages.dev') >= 0) document.querySelector('.mirror-cf').style.display = 'none';
     })();
     </script>
