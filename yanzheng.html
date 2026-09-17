@@ -80,9 +80,9 @@ document.addEventListener('selectstart', e => {
         <h2>欢迎来到庆庆纸博客</h2>
         <p class="tip">完成验证后自动进入</p>
         <div class="turnstile-wrap">
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError" data-timeout-callback="onTurnstileTimeout"></div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess"></div>
         </div>
-        <p class="tip" id="tsStatus" style="margin:10px 0 0; font-size:.8rem; color:#aaa;">若长时间无反应，请刷新或使用下方镜像</p>
+        <p class="tip" id="tsStatus" style="margin:10px 0 0; font-size:.8rem; color:#aaa;">正在自动验证…</p>
         <div class="mirrors" id="mirrorLinks">
             其他入口：
             <a href="https://qqzttkx.ficp.fun/?from=cf" class="mirror-hsk" target="_blank">花生壳</a>
@@ -96,18 +96,30 @@ document.addEventListener('selectstart', e => {
     <script src="js/sakura/renderer.js"></script>
     <script src="js/sakura/bootstrap.js"></script>
     <script>
+    var WHITELIST_IPS = ['222.245.15.120'];
     function onTurnstileSuccess(token) {
         sessionStorage.setItem('auth_ok', '1');
         var back = new URLSearchParams(location.search).get('back');
         if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
         location.href = 'https://qqzttkx.eu.cc/boke.html';
     }
+    // 白名单IP直接跳过验证
+    fetch('https://ipwho.is/?fields=ip')
+        .then(r => r.json())
+        .then(d => {
+            if (d.ip && WHITELIST_IPS.includes(d.ip)) {
+                sessionStorage.setItem('auth_ok', '1');
+                var back = new URLSearchParams(location.search).get('back');
+                if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
+                location.href = 'https://qqzttkx.eu.cc/boke.html';
+            }
+        })
+        .catch(()=>{});
     (function(){
       var h = location.hostname;
       var fromCf = new URLSearchParams(location.search).get('from') === 'cf';
       if (h === 'qqzttkx.ficp.fun' || h === 'qqzttkxpd.ficp.fun') {
         document.querySelector('.mirror-hsk').style.display = 'none';
-        // 直接访问花生壳自动切主域；从主域点镜像过来的不跳
         if (!fromCf) {
           var PRIMARY = 'https://qqzttkx.eu.cc/';
           fetch(PRIMARY, { mode: 'no-cors', cache: 'no-store' })
@@ -120,11 +132,3 @@ document.addEventListener('selectstart', e => {
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
