@@ -31,6 +31,8 @@
     '.qw-close{padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
     '.qw-icon-btn{padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
     '.qw-icon-btn:hover{background:var(--jp-glow);color:var(--jp-ink);}',
+    '.qw-icon-btn.qw-spinning svg{animation:qwSpin .8s linear infinite;}',
+    '@keyframes qwSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}',
     '.qw-logout-btn{display:none;padding:6px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:var(--jp-paper);color:var(--jp-muted);cursor:pointer;transition:all .2s ease;}',
     '.qw-logout-btn:hover{color:#e05b5b;border-color:#e05b5b;}',
     '.qw-panel.qw-logged-in .qw-logout-btn{display:block;}',
@@ -784,9 +786,16 @@
     chatRefreshBtn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
+      chatRefreshBtn.classList.add('qw-spinning');
+      var tcomment = document.getElementById('tcomment');
+      if (tcomment) {
+        var oldHtml = tcomment.innerHTML;
+        tcomment.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--jp-muted);font-size:13px;">正在刷新聊天数据…</div>';
+      }
       if (window.twikoo) {
         window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
       }
+      setTimeout(function(){ chatRefreshBtn.classList.remove('qw-spinning'); }, 2000);
     });
   }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
@@ -852,7 +861,9 @@
   if (adminRefreshBtn) {
     adminRefreshBtn.addEventListener('click', function(e) {
       e.preventDefault();
+      adminRefreshBtn.classList.add('qw-spinning');
       if (adminToken) renderManageView();
+      setTimeout(function(){ adminRefreshBtn.classList.remove('qw-spinning'); }, 1500);
     });
   }
 
