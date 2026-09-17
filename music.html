@@ -4,23 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>音乐 - 庆庆纸天天开心</title>
-<link rel="stylesheet" href="style.css?v=281">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<link rel="stylesheet" href="style.css?v=282">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 body { background: #06111f; color: #e5edff; min-height: 100vh; }
-.music-wrap { max-width: 900px; margin: 80px auto 40px; padding: 20px; }
-.music-title { text-align: center; margin-bottom: 30px; }
-.music-title h1 { font-size: 32px; color: #fff; margin-bottom: 8px; }
-.music-title p { color: rgba(255,255,255,.5); }
+.music-wrap { max-width: 1100px; margin: 90px auto 40px; padding: 20px; }
+.music-header { margin-bottom: 30px; }
+.music-header .tag { color: #0ea5e9; font-size: 13px; letter-spacing: 2px; margin-bottom: 8px; }
+.music-header h1 { font-size: 36px; color: #fff; margin-bottom: 8px; }
+.music-header p { color: rgba(255,255,255,.5); }
+.music-main { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; }
+@media (max-width: 800px) { .music-main { grid-template-columns: 1fr; } }
+.player-card { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 24px; }
+.player-cover { width: 100%; aspect-ratio: 1; border-radius: 12px; background: #1a2a3a; display: flex; align-items: center; justify-content: center; font-size: 64px; margin-bottom: 20px; }
+.player-title { text-align: center; }
+.player-title h3 { color: #fff; font-size: 20px; margin-bottom: 4px; }
+.player-title p { color: rgba(255,255,255,.5); font-size: 14px; }
+.player-controls { display: flex; justify-content: center; gap: 20px; margin-top: 20px; align-items: center; }
+.player-controls button { background: none; border: none; color: rgba(255,255,255,.7); font-size: 20px; cursor: pointer; }
+.player-controls .play-btn { width: 56px; height: 56px; border-radius: 50%; background: #0ea5e9; color: #fff; font-size: 22px; }
+.playlist-card { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; padding: 20px; }
+.playlist-tabs { display: flex; gap: 20px; border-bottom: 1px solid rgba(255,255,255,.1); padding-bottom: 12px; margin-bottom: 16px; }
+.playlist-tabs span { color: #0ea5e9; font-size: 14px; }
+.playlist-search { background: rgba(255,255,255,.06); border: none; border-radius: 8px; padding: 10px 14px; color: #fff; width: 100%; margin-bottom: 12px; }
+.playlist-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 8px; cursor: pointer; }
+.playlist-item:hover { background: rgba(255,255,255,.05); }
+.playlist-item .idx { color: rgba(255,255,255,.4); width: 20px; font-size: 14px; }
+.playlist-item .info { flex: 1; }
+.playlist-item .info .name { color: #fff; font-size: 14px; }
+.playlist-item .info .artist { color: rgba(255,255,255,.4); font-size: 12px; }
 </style>
 </head>
 <body>
 <header class="navbar" id="navbar">
     <div class="nav-container">
-        <a href="boke.html" class="logo">
-            <span class="logo-icon">🧑‍💻</span>
-            <span class="logo-text">庆庆纸天天开心</span>
-        </a>
+        <a href="boke.html" class="logo"><span class="logo-icon">🧑‍💻</span><span class="logo-text">庆庆纸天天开心</span></a>
         <nav class="navbar-nav">
             <a href="boke.html" class="nav-item"><i class="fa-solid fa-house"></i><span>首页</span></a>
             <a href="boke.html#about" class="nav-item"><i class="fa-solid fa-user"></i><span>关于</span></a>
@@ -34,30 +52,68 @@ body { background: #06111f; color: #e5edff; min-height: 100vh; }
     </div>
 </header>
 <div class="music-wrap">
-    <div class="music-title">
-        <h1>🎵 音乐</h1>
+    <div class="music-header">
+        <div class="tag">🎵 FREQUENCY / MUSIC</div>
+        <h1>声音实验室</h1>
         <p>给专注一点节奏，给灵感一段旋律</p>
     </div>
-    <div id="aplayer"></div>
+    <div class="music-main">
+        <div class="player-card">
+            <div class="player-cover">🎧</div>
+            <div class="player-title">
+                <h3 id="nowPlaying">选择一首歌</h3>
+                <p id="nowArtist">点击右侧播放列表开始</p>
+            </div>
+            <div class="player-controls">
+                <button><i class="fa-solid fa-shuffle"></i></button>
+                <button><i class="fa-solid fa-backward-step"></i></button>
+                <button class="play-btn" id="playBtn"><i class="fa-solid fa-play"></i></button>
+                <button><i class="fa-solid fa-forward-step"></i></button>
+                <button><i class="fa-solid fa-volume-up"></i></button>
+            </div>
+        </div>
+        <div class="playlist-card">
+            <div class="playlist-tabs">
+                <span>📋 播放列表</span>
+                <span>🎤 歌词视窗</span>
+            </div>
+            <input class="playlist-search" placeholder="🔍 搜索歌名或歌手">
+            <div id="playlist"></div>
+        </div>
+    </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<audio id="audio"></audio>
 <script>
-new APlayer({
-    element: document.getElementById('aplayer'),
-    narrow: false,
-    autoplay: false,
-    theme: '#0ea5e9',
-    loop: 'all',
-    order: 'list',
-    preload: 'auto',
-    volume: 0.7,
-    listFolded: false,
-    audio: [
-        { name: '蝶儿总在空中飞（伴奏）', artist: '亮哈哈', url: 'https://music.163.com/song/media/outer/url?id=1901371664.mp3', cover: 'https://p1.music.126.net/6y-UleORITEDbvrNL0sNoQ==/19255720136913329.jpg' },
-        { name: '永恒的回忆', artist: '浅绯色的喵', url: 'https://music.163.com/song/media/outer/url?id=1825542806.mp3', cover: 'https://p1.music.126.net/6y-UleORITEDbvrNL0sNoQ==/19255720136913329.jpg' },
-        { name: '寂静之空', artist: '傅许', url: 'https://music.163.com/song/media/outer/url?id=1837130748.mp3', cover: 'https://p1.music.126.net/6y-UleORITEDbvrNL0sNoQ==/19255720136913329.jpg' }
-    ]
+const songs = [
+    {name:'蝶儿总在空中飞（伴奏）', artist:'亮哈哈', url:'https://music.163.com/song/media/outer/url?id=1901371664.mp3'},
+    {name:'永恒的回忆', artist:'浅绯色的喵', url:'https://music.163.com/song/media/outer/url?id=1825542806.mp3'},
+    {name:'寂静之空', artist:'傅许', url:'https://music.163.com/song/media/outer/url?id=1837130748.mp3'}
+];
+const pl = document.getElementById('playlist');
+songs.forEach((s,i)=>{
+    const d = document.createElement('div');
+    d.className = 'playlist-item';
+    d.innerHTML = `<span class="idx">${String(i+1).padStart(2,'0')}</span><div class="info"><div class="name">${s.name}</div><div class="artist">${s.artist}</div></div><i class="fa-solid fa-play" style="color:#0ea5e9"></i>`;
+    d.onclick = ()=>{ play(i); };
+    pl.appendChild(d);
 });
+let cur = -1, playing = false;
+const audio = document.getElementById('audio');
+function play(i){
+    cur = i;
+    audio.src = songs[i].url;
+    audio.play();
+    document.getElementById('nowPlaying').textContent = songs[i].name;
+    document.getElementById('nowArtist').textContent = songs[i].artist;
+    playing = true;
+    document.getElementById('playBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+}
+document.getElementById('playBtn').onclick = ()=>{
+    if(cur<0){ play(0); return; }
+    if(playing){ audio.pause(); document.getElementById('playBtn').innerHTML='<i class="fa-solid fa-play"></i>'; }
+    else { audio.play(); document.getElementById('playBtn').innerHTML='<i class="fa-solid fa-pause"></i>'; }
+    playing = !playing;
+};
 </script>
 </body>
 </html>

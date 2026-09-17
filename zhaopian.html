@@ -4,25 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>照片墙 - 庆庆纸天天开心</title>
-<link rel="stylesheet" href="style.css?v=281">
+<link rel="stylesheet" href="style.css?v=282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 body { background: #06111f; color: #e5edff; min-height: 100vh; }
-.gallery-wrap { max-width: 1200px; margin: 80px auto 40px; padding: 20px; }
-.gallery-title { text-align: center; margin-bottom: 30px; }
-.gallery-title h1 { font-size: 32px; color: #fff; margin-bottom: 8px; }
-.gallery-title p { color: rgba(255,255,255,.5); }
-.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
-.gallery-item { aspect-ratio: 4/3; border-radius: 12px; overflow: hidden; background: rgba(255,255,255,.05); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.3); font-size: 14px; }
+.gallery-wrap { max-width: 900px; margin: 90px auto 40px; padding: 20px; }
+.gallery-header { margin-bottom: 40px; }
+.gallery-header .icon { color: #0ea5e9; font-size: 28px; margin-bottom: 8px; }
+.gallery-header h1 { font-size: 36px; color: #fff; margin-bottom: 8px; }
+.gallery-header p { color: rgba(255,255,255,.5); }
+.album-grid { display: flex; flex-wrap: wrap; gap: 40px; }
+.album-card { text-align: center; }
+.album-cover { width: 260px; height: 190px; border-radius: 12px; background: rgba(255,255,255,.06); position: relative; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 48px; }
+.album-badge { position: absolute; bottom: 10px; right: 10px; background: #0ea5e9; color: #fff; font-size: 12px; padding: 3px 10px; border-radius: 12px; }
+.album-card h3 { color: #fff; font-size: 16px; margin-bottom: 4px; }
+.album-card .date { color: rgba(255,255,255,.4); font-size: 13px; }
 </style>
 </head>
 <body>
 <header class="navbar" id="navbar">
     <div class="nav-container">
-        <a href="boke.html" class="logo">
-            <span class="logo-icon">🧑‍💻</span>
-            <span class="logo-text">庆庆纸天天开心</span>
-        </a>
+        <a href="boke.html" class="logo"><span class="logo-icon">🧑‍💻</span><span class="logo-text">庆庆纸天天开心</span></a>
         <nav class="navbar-nav">
             <a href="boke.html" class="nav-item"><i class="fa-solid fa-house"></i><span>首页</span></a>
             <a href="boke.html#about" class="nav-item"><i class="fa-solid fa-user"></i><span>关于</span></a>
@@ -36,12 +38,22 @@ body { background: #06111f; color: #e5edff; min-height: 100vh; }
     </div>
 </header>
 <div class="gallery-wrap">
-    <div class="gallery-title">
-        <h1>📷 照片墙</h1>
-        <p>记录生活中的美好瞬间</p>
+    <div class="gallery-header">
+        <div class="icon"><i class="fa-solid fa-camera-retro"></i></div>
+        <h1>照片墙</h1>
+        <p>用照片记录生活的每一个瞬间</p>
     </div>
-    <div class="gallery-grid" id="galleryGrid">
-        <div class="gallery-item">照片上传后显示在这里</div>
+    <div class="album-grid">
+        <div class="album-card">
+            <div class="album-cover">🏔️<span class="album-badge">12 张</span></div>
+            <h3>沿途的风景</h3>
+            <div class="date">2026-09-11</div>
+        </div>
+        <div class="album-card">
+            <div class="album-cover">🐱<span class="album-badge">18 张</span></div>
+            <h3>我的小猫</h3>
+            <div class="date">2026-09-09</div>
+        </div>
     </div>
 </div>
 </body>
