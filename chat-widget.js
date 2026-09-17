@@ -789,16 +789,10 @@
       e.preventDefault();
       e.stopPropagation();
       chatRefreshBtn.classList.add('qw-spinning');
-      var tcomment = document.getElementById('tcomment');
-      if (tcomment) {
-        tcomment.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--jp-muted);font-size:13px;">正在刷新聊天数据…</div>';
+      if (window.twikoo) {
+        window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
       }
-      setTimeout(function() {
-        if (window.twikoo) {
-          window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
-        }
-      }, 600);
-      setTimeout(function(){ chatRefreshBtn.classList.remove('qw-spinning'); }, 2000);
+      setTimeout(function(){ chatRefreshBtn.classList.remove('qw-spinning'); }, 1500);
     });
   }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
