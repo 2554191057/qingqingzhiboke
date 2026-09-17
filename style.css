@@ -4005,7 +4005,8 @@ html.touch-only .nav-dropdown-item:hover { background: transparent !important; c
         .nav-link:hover { color: var(--color-accent); background: var(--color-accent-light); }
     }
 
-    .hero { padding: 90px 18px 40px; }
+    /* 窄屏：hero 高度自适应内容（min-height:auto），避免内容超高被推到首屏外显示不全 */
+    .hero { min-height: auto; padding: 90px 18px 40px; }
     .hero-btns { flex-direction: column; width: 100%; max-width: 320px; margin: 0 auto 40px; }
     .hero-btns .btn { width: 100%; }
 

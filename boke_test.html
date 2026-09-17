@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
+<head><script>try{sessionStorage.setItem("auth_ok","1");sessionStorage.setItem("welcome-shown","1")}catch(e){}
+window.addEventListener("load",function(){setTimeout(function(){var kids=Array.prototype.slice.call(document.body.children).map(function(el){var r=el.getBoundingClientRect();return {tag:el.tagName,id:el.id,cls:(el.className||"").toString().slice(0,40),top:Math.round(r.top),h:Math.round(r.height)}});var d=document.createElement("div");d.id="__dbg";d.textContent=JSON.stringify({v:[innerWidth,innerHeight],sc:[document.documentElement.scrollHeight,document.body.scrollHeight],kids:kids});document.body.appendChild(d)},2500)})</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -982,16 +983,6 @@ document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
 });
 </script>
 
-
-<script>
-// 点击导航栏 logo 图标跳转后台管理页（与聊天室同一后台）
-document.querySelectorAll('.logo-icon').forEach(function(el){
-  el.addEventListener('click', function(e){
-    e.preventDefault(); e.stopPropagation();
-    location.href = 'admin.html';
-  });
-});
-</script>
 </body>
 </html>
 

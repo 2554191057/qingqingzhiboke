@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>后台管理 · 庆庆纸博客</title>
+<style>
+:root {
+  --jp-bg: #0d1526;
+  --jp-surface: rgba(18, 28, 50, 0.92);
+  --jp-line: rgba(148, 163, 184, 0.16);
+  --jp-ink: #e2e8f0;
+  --jp-muted: #94a3b8;
+  --jp-accent: #818cf8;
+  --jp-glow: rgba(129, 140, 248, 0.18);
+  --jp-danger: #f87171;
+  --jp-ok: #34d399;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; user-select: none; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: radial-gradient(1200px 800px at 20% -10%, rgba(99,102,241,0.16), transparent 60%),
+              radial-gradient(900px 700px at 110% 110%, rgba(16,185,129,0.10), transparent 55%),
+              var(--jp-bg);
+  color: var(--jp-ink);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+a { color: var(--jp-accent); text-decoration: none; }
+input, button { font-family: inherit; }
+
+/* ===== 顶栏 ===== */
+.admin-topbar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 22px;
+  background: rgba(13, 21, 38, 0.72);
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--jp-line);
+  position: sticky; top: 0; z-index: 50;
+}
+.admin-topbar .t-logo {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.admin-topbar h1 { font-size: 16px; font-weight: 650; }
+.admin-topbar .t-sub { font-size: 11px; color: var(--jp-muted); margin-top: 2px; }
+.admin-topbar .t-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.admin-topbar .t-btn {
+  border: 1px solid var(--jp-line); background: transparent; color: var(--jp-muted);
+  font-size: 12px; padding: 7px 13px; border-radius: 9px; cursor: pointer; transition: all .2s;
+}
+.admin-topbar .t-btn:hover { color: var(--jp-ink); border-color: var(--jp-accent); background: rgba(129,140,248,0.08); }
+.admin-topbar .t-btn.primary { color: #fff; background: var(--jp-accent); border-color: var(--jp-accent); }
+.admin-topbar .t-btn.primary:hover { background: #6d77f0; }
+
+/* ===== 主体 ===== */
+.admin-main { flex: 1; padding: 22px; max-width: 1060px; width: 100%; margin: 0 auto; }
+
+/* 统计卡片 */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--jp-surface); border: 1px solid var(--jp-line); border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+}
+.stat-card b { font-size: 26px; font-weight: 700; display: block; line-height: 1.2; }
+.stat-card span { font-size: 11.5px; color: var(--jp-muted); }
+.stat-card .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+
+/* 面板 */
+.panel {
+  background: var(--jp-surface); border: 1px solid var(--jp-line); border-radius: 18px;
+  padding: 18px; margin-bottom: 18px;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.22);
+  animation: panelIn .3s cubic-bezier(.16,1,.3,1);
+}
+@keyframes panelIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.panel h3 { font-size: 14px; font-weight: 650; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.panel h3 .cnt { font-size: 11px; color: var(--jp-muted); font-weight: 400; margin-left: auto; }
+.panel h4 { font-size: 12.5px; font-weight: 600; margin: 16px 0 10px; color: var(--jp-ink); }
+
+/* 消息列表 */
+.msg-item {
+  border: 1px solid var(--jp-line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px;
+  background: rgba(255,255,255,0.015);
+}
+.msg-item .m-hd { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+.msg-item .m-nick { font-weight: 650; color: var(--jp-accent); }
+.msg-item .m-mail, .msg-item .m-ip { color: var(--jp-muted); font-size: 11px; }
+.msg-item .m-time { color: var(--jp-muted); font-size: 11px; margin-left: auto; }
+.msg-item .m-body { font-size: 13px; line-height: 1.6; margin-top: 7px; word-break: break-all; }
+.msg-item .m-ops { margin-top: 9px; display: flex; gap: 8px; }
+.msg-item .m-ops button {
+  font-size: 11.5px; padding: 5px 12px; border-radius: 8px; border: 1px solid var(--jp-line);
+  background: transparent; color: var(--jp-muted); cursor: pointer; transition: all .2s;
+}
+.msg-item .m-ops button.del:hover { color: #fff; background: rgba(248,113,113,0.85); border-color: transparent; }
+.msg-item .m-ops button.blk:hover { color: #fff; background: rgba(251,146,60,0.85); border-color: transparent; }
+
+/* 黑/白名单行 */
+.mgmt-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; border: 1px solid var(--jp-line); border-radius: 10px; margin-bottom: 8px; font-size: 12.5px; }
+.mgmt-row button {
+  font-size: 11px; padding: 4px 10px; border-radius: 7px; border: 1px solid var(--jp-line);
+  background: transparent; color: var(--jp-muted); cursor: pointer;
+}
+.mgmt-row button:hover { color: #fff; background: rgba(248,113,113,0.8); border-color: transparent; }
+.mgmt-add { display: flex; gap: 8px; margin-top: 12px; }
+.mgmt-add input {
+  flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--jp-line); color: var(--jp-ink);
+  border-radius: 9px; padding: 9px 13px; font-size: 12.5px; outline: none;
+}
+.mgmt-add input:focus { border-color: var(--jp-accent); }
+.mgmt-add button {
+  border: none; background: var(--jp-accent); color: #fff; border-radius: 9px; padding: 9px 18px;
+  font-size: 12.5px; cursor: pointer; white-space: nowrap;
+}
+.mgmt-add button:hover { background: #6d77f0; }
+
+/* 日志 */
+.log-item {
+  font-size: 12px; padding: 8px 12px; border: 1px solid var(--jp-line); border-radius: 9px; margin-bottom: 7px;
+  color: var(--jp-muted); line-height: 1.7; position: relative; padding-right: 30px;
+}
+.log-item .log-del {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--jp-muted); font-size: 12px; cursor: pointer;
+}
+.log-item .log-del:hover { color: var(--jp-danger); }
+
+/* 登录视图 */
+.login-wrap { max-width: 400px; margin: 12vh auto 0; text-align: center; }
+.login-card {
+  background: var(--jp-surface); border: 1px solid var(--jp-line); border-radius: 20px;
+  padding: 34px 30px 30px; box-shadow: 0 18px 60px rgba(0,0,0,0.30);
+}
+.login-card .lock {
+  width: 54px; height: 54px; margin: 0 auto 16px; border-radius: 16px;
+  background: linear-gradient(135deg, rgba(129,140,248,0.22), rgba(139,92,246,0.18));
+  border: 1px solid var(--jp-line);
+  display: flex; align-items: center; justify-content: center; color: var(--jp-accent);
+}
+.login-card h2 { font-size: 17px; font-weight: 650; margin-bottom: 6px; }
+.login-card p { font-size: 12px; color: var(--jp-muted); margin-bottom: 20px; }
+.login-card input {
+  width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--jp-line); color: var(--jp-ink);
+  border-radius: 11px; padding: 12px 15px; font-size: 14px; outline: none; margin-bottom: 14px;
+}
+.login-card input:focus { border-color: var(--jp-accent); }
+.login-card .login-btn {
+  width: 100%; border: none; background: var(--jp-accent); color: #fff; border-radius: 11px;
+  padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s;
+}
+.login-card .login-btn:hover { background: #6d77f0; }
+.login-card .login-btn:disabled { opacity: .6; cursor: wait; }
+.login-err { color: var(--jp-danger); font-size: 12px; min-height: 18px; margin-top: 10px; }
+.login-hint { margin-top: 16px; font-size: 11px; color: var(--jp-muted); }
+
+/* 加载 / 空状态 */
+.loading, .empty { text-align: center; padding: 26px 0; color: var(--jp-muted); font-size: 13px; }
+.loading .spin {
+  display: inline-block; width: 22px; height: 22px; border: 2px solid var(--jp-line);
+  border-top-color: var(--jp-accent); border-radius: 50%; animation: rot .8s linear infinite; margin-bottom: 10px;
+}
+@keyframes rot { to { transform: rotate(360deg); } }
+
+/* 页脚 */
+.admin-foot { text-align: center; padding: 18px; font-size: 11px; color: var(--jp-muted); }
+.admin-foot b { color: var(--jp-muted); }
+
+@media (max-width: 640px) {
+  .admin-main { padding: 14px; }
+  .panel { padding: 14px; border-radius: 15px; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-topbar { padding: 12px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="admin-topbar">
+  <div class="t-logo">🛡️</div>
+  <div>
+    <h1>后台管理</h1>
+    <div class="t-sub" id="topSub">未登录</div>
+  </div>
+  <div class="t-right">
+    <button class="t-btn" id="btnBack" onclick="location.href='boke.html'">← 返回首页</button>
+    <button class="t-btn" id="btnOpenChat" onclick="location.href='fklts.html'">聊天室</button>
+    <button class="t-btn" id="btnRefresh" style="display:none">刷新数据</button>
+    <button class="t-btn" id="btnLogout" style="display:none">退出登录</button>
+  </div>
+</div>
+
+<div class="admin-main" id="mainView"></div>
+
+<div class="admin-foot">庆庆纸博客 · 后台管理与聊天室为同一后台，密码一致，数据互通</div>
+
+<script>
+var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
+var adminToken = '';
+var adminLogs = [];
+var adminLogFilter = 'all';
+var ipLocCache = {};
+
+function adminPost(data) {
+  return fetch(TWIKOO_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(function (r) { return r.json(); });
+}
+
+function escHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function escAttr(s) { return escHtml(s); }
+function stripHtml(s) {
+  var d = document.createElement('div'); d.innerHTML = String(s == null ? '' : s); return d.textContent || '';
+}
+function fmtTime(ts) {
+  if (!ts) return '';
+  var d = new Date(Number(ts));
+  if (isNaN(d.getTime())) return '';
+  var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+  var s = pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  if (d.getFullYear() !== new Date().getFullYear()) s = d.getFullYear() + '-' + s;
+  return s;
+}
+
+/* ===== IP 归属地 ===== */
+var provinceMap = {
+  'beijing': '北京', 'shanghai': '上海', 'tianjin': '天津', 'chongqing': '重庆',
+  'guangdong': '广东', 'jiangsu': '江苏', 'zhejiang': '浙江', 'shandong': '山东',
+  'henan': '河南', 'hebei': '河北', 'hunan': '湖南', 'hubei': '湖北', 'sichuan': '四川',
+  'fujian': '福建', 'anhui': '安徽', 'jiangxi': '江西', 'liaoning': '辽宁',
+  'shanxi': '山西', 'shaanxi': '陕西', 'heilongjiang': '黑龙江', 'jilin': '吉林',
+  'guangxi': '广西', 'yunnan': '云南', 'guizhou': '贵州', 'gansu': '甘肃',
+  'inner mongolia': '内蒙古', 'xinjiang': '新疆', 'xizang': '西藏', 'qinghai': '青海',
+  'ningxia': '宁夏', 'hainan': '海南', 'hong kong': '香港', 'macau': '澳门', 'taiwan': '台湾'
+};
+var cityMap = {
+  'beijing': '北京', 'shanghai': '上海', 'tianjin': '天津', 'chongqing': '重庆',
+  'guangzhou': '广州', 'shenzhen': '深圳', 'dongguan': '东莞', 'foshan': '佛山',
+  'zhuhai': '珠海', 'zhongshan': '中山', 'huizhou': '惠州', 'jiangmen': '江门',
+  'chengdu': '成都', 'hangzhou': '杭州', 'ningbo': '宁波', 'wenzhou': '温州',
+  'jiaxing': '嘉兴', 'shaoxing': '绍兴', 'suzhou': '苏州', 'nanjing': '南京',
+  'wuxi': '无锡', 'changzhou': '常州', 'nantong': '南通', 'xuzhou': '徐州',
+  'jinan': '济南', 'qingdao': '青岛', 'yantai': '烟台', 'weifang': '潍坊',
+  'zhengzhou': '郑州', 'luoyang': '洛阳', 'wuhan': '武汉', 'xiangyang': '襄阳',
+  'changsha': '长沙', 'zhuzhou': '株洲', 'xiangtan': '湘潭', 'hengyang': '衡阳',
+  'yueyang': '岳阳', 'yiyang': '益阳', 'changde': '常德', 'zhangjiajie': '张家界',
+  'nanchang': '南昌', 'jiujiang': '九江', 'hefei': '合肥', 'wuhu': '芜湖',
+  'fuzhou': '福州', 'xiamen': '厦门', 'quanzhou': '泉州', 'putian': '莆田',
+  'shenyang': '沈阳', 'dalian': '大连', 'changchun': '长春', 'harbin': '哈尔滨',
+  'shijiazhuang': '石家庄', 'taiyuan': '太原', 'xian': '西安', 'xianyang': '咸阳',
+  'kunming': '昆明', 'guiyang': '贵阳', 'nanning': '南宁', 'haikou': '海口',
+  'lanzhou': '兰州', 'xining': '西宁', 'urumqi': '乌鲁木齐', 'lhasa': '拉萨',
+  'hohhot': '呼和浩特', 'yinchuan': '银川'
+};
+function cnCity(city) {
+  if (!city) return '';
+  return cityMap[String(city).toLowerCase().replace(/\s+/g, '')] || city;
+}
+function getIpLocation(ip, cb) {
+  if (!ip || !/^\d+\.\d+\.\d+\.\d+$/.test(ip)) return cb('');
+  if (ipLocCache[ip]) return cb(ipLocCache[ip]);
+  fetch('https://ipwho.is/' + ip).then(function (r) { return r.json(); }).then(function (d) {
+    if (!d || d.success === false) return cb('');
+    var prov = (d.region || '').toLowerCase().replace(/\s*(sheng|province|auto autonomous|region)\s*/g, '').trim();
+    var provCn = provinceMap[prov] || d.region || '';
+    var cityCn = cnCity(d.city || '');
+    var org = (d.connection && d.connection.org) || (d.connection && d.connection.isp) || '';
+    if (/CHINANET|China Telecom/i.test(org)) org = '电信';
+    else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
+    else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
+    else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
+    else org = org ? org.slice(0, 20) : '';
+    var loc = ((provCn ? provCn + ' ' : '') + cityCn + (org ? ' ' + org : '')).trim();
+    if (loc) { ipLocCache[ip] = loc; }
+    cb(loc);
+  }).catch(function () { cb(''); });
+}
+function enrichIps() {
+  var rows = document.querySelectorAll('.msg-item, .log-item');
+  rows.forEach(function (it) {
+    if (it.getAttribute('data-ip-done')) return;
+    var text = it.innerText || '';
+    var m = text.match(/IP\s*([0-9.]+)/);
+    if (!m) return;
+    it.setAttribute('data-ip-done', '1');
+    getIpLocation(m[1], function (loc) {
+      if (!loc) return;
+      var sub = it.querySelector('.m-ip') || it.querySelector('.log-sub');
+      var target = sub || it;
+      if (target && target.textContent.indexOf(loc) < 0) {
+        target.appendChild(document.createTextNode(' · ' + loc));
+      }
+    });
+  });
+}
+
+/* ===== 登录视图 ===== */
+function renderLoginView() {
+  document.getElementById('topSub').textContent = '未登录';
+  document.getElementById('btnLogout').style.display = 'none';
+  document.getElementById('btnRefresh').style.display = 'none';
+  document.getElementById('mainView').innerHTML =
+    '<div class="login-wrap"><div class="login-card">' +
+    '<div class="lock"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>' +
+    '<h2>管理员登录</h2>' +
+    '<p>与聊天室后台同一密码，评论 / 黑名单 / 白名单数据互通</p>' +
+    '<input id="adminPwd" type="password" placeholder="请输入管理密码" autocomplete="off">' +
+    '<button class="login-btn" id="loginBtn">登 录</button>' +
+    '<div class="login-err" id="loginErr"></div>' +
+    '<div class="login-hint">登录后可管理访客消息、拉黑邮箱、维护白名单、查看操作日志与在线访客</div>' +
+    '</div></div>';
+  var input = document.getElementById('adminPwd');
+  var btn = document.getElementById('loginBtn');
+  input.focus();
+  var doLogin = function () {
+    var pwd = input.value.trim();
+    if (!pwd) { document.getElementById('loginErr').textContent = '请输入管理密码'; return; }
+    btn.disabled = true; btn.textContent = '登录中…';
+    adminPost({ event: 'LOGIN', password: pwd }).then(function (res) {
+      if (res && res.code === 0) {
+        try { localStorage.setItem('qw_admin_token', pwd); } catch (e) {}
+        adminToken = pwd;
+        renderManageView();
+      } else {
+        document.getElementById('loginErr').textContent = (res && res.message) || '密码错误';
+        btn.disabled = false; btn.textContent = '登 录';
+      }
+    }).catch(function () {
+      document.getElementById('loginErr').textContent = '网络异常，请重试';
+      btn.disabled = false; btn.textContent = '登 录';
+    });
+  };
+  btn.addEventListener('click', doLogin);
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+}
+
+/* ===== 管理视图 ===== */
+function renderManageView() {
+  document.getElementById('topSub').textContent = '已登录';
+  document.getElementById('btnLogout').style.display = '';
+  document.getElementById('btnRefresh').style.display = '';
+  document.getElementById('mainView').innerHTML = '<div class="loading"><div class="spin"></div><br>加载聊天数据…</div>';
+  var blocks = [], wlist = [], likeMap = {};
+  var onlineCount = 0;
+  adminPost({ event: 'QW_LIKE_LIST', accessToken: adminToken }).then(function (lr) {
+    if (lr && lr.code === 0) {
+      (lr.data || []).forEach(function (x) { likeMap[x.commentId] = x.ips || []; });
+    }
+    return adminPost({ event: 'QW_BLOCK_LIST', accessToken: adminToken });
+  }).then(function (r) {
+    if (r && r.code === 0) blocks = r.data || [];
+    return adminPost({ event: 'QW_ADMIN_WHITELIST', accessToken: adminToken });
+  }).then(function (rw) {
+    if (rw && rw.code === 0) wlist = rw.data || [];
+    return adminPost({ event: 'QW_LOG_LIST', accessToken: adminToken, per: 100 });
+  }).then(function (rl) {
+    if (rl && rl.code === 0) adminLogs = rl.data || [];
+    return adminPost({ event: 'QW_ONLINE_COUNT' });
+  }).then(function (ro) {
+    if (ro && ro.code === 0) onlineCount = (ro.data && ro.data.count) || 0;
+    return adminPost({ event: 'COMMENT_GET_FOR_ADMIN', accessToken: adminToken, per: 50, page: 1 });
+  }).then(function (r1) {
+    if (!r1 || r1.code !== 0) {
+      document.getElementById('mainView').innerHTML = '<div class="loading">' + escHtml((r1 && r1.message) || '登录已失效，请重新登录') + '</div>';
+      if (r1 && r1.code !== 0) {
+        try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
+        setTimeout(renderLoginView, 1200);
+      }
+      return;
+    }
+    var all = (r1.data || []).slice();
+    var count = r1.count || all.length;
+    var pages = Math.ceil(count / 50);
+    var seq = Promise.resolve();
+    for (var p = 2; p <= pages; p++) {
+      seq = seq.then(function (pg) {
+        return adminPost({ event: 'COMMENT_GET_FOR_ADMIN', accessToken: adminToken, per: 50, page: pg }).then(function (r) {
+          if (r && r.code === 0) all = all.concat(r.data || []);
+        });
+      }.bind(null, p));
+    }
+    seq.then(function () { renderManageList(all, blocks, wlist, likeMap, onlineCount); });
+  }).catch(function (e) {
+    console.error('admin load error:', e);
+    document.getElementById('mainView').innerHTML = '<div class="loading">网络异常，加载失败</div>';
+  });
+}
+
+function likeInfoHtml(c, likeMap) {
+  var ups = c.ups || c.likes || [];
+  if (!ups.length) return '';
+  var ips = (likeMap && likeMap[c._id]) || [];
+  return '<div style="font-size:11px;color:var(--jp-muted);margin-top:6px">👍 ' + ups.length + ' 人' +
+    (ips.length ? ' · ' + escHtml(ips.join('、')) : '') + '</div>';
+}
+
+function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
+  var h = '';
+  h += '<div class="stat-grid">' +
+    '<div class="stat-card"><b>' + (comments.length || 0) + '</b><span>全部消息</span></div>' +
+    '<div class="stat-card"><b>' + (blocks.length || 0) + '</b><span>黑名单</span></div>' +
+    '<div class="stat-card"><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
+    '<div class="stat-card"><b><span class="dot" style="background:#34d399"></span>' + (onlineCount || 0) + '</b><span>当前在线（2分钟）</span></div>' +
+    '</div>';
+
+  h += '<div class="panel"><h3>💬 访客消息 <span class="cnt">共 ' + comments.length + ' 条</span></h3>';
+  if (!comments.length) {
+    h += '<div class="empty">暂无消息</div>';
+  } else {
+    for (var i = 0; i < comments.length; i++) {
+      var c = comments[i];
+      h += '<div class="msg-item" data-id="' + escAttr(c._id) + '">' +
+        '<div class="m-hd"><span class="m-nick">' + escHtml(c.nick || '匿名') + '</span>' +
+        (c.mail ? '<span class="m-mail">' + escHtml(c.mail) + '</span>' : '') +
+        (c.ip ? '<span class="m-ip">IP ' + escHtml(c.ip) + '</span>' : '') +
+        '<span class="m-time">' + fmtTime(c.created) + '</span></div>' +
+        '<div class="m-body">' + escHtml(stripHtml(c.comment)) + '</div>' +
+        likeInfoHtml(c, likeMap) +
+        '<div class="m-ops">' +
+        '<button class="del" data-act="del" data-id="' + escAttr(c._id) + '">删除</button>' +
+        (c.mail ? '<button class="blk" data-act="blk" data-mail="' + escAttr(c.mail) + '">拉黑邮箱</button>' : '') +
+        '</div></div>';
+    }
+  }
+  h += '</div>';
+
+  h += '<div class="panel"><h3>⛔ 黑名单 <span class="cnt">' + blocks.length + ' 条</span></h3>';
+  if (!blocks.length) {
+    h += '<div class="empty" style="padding:12px 0">暂无黑名单</div>';
+  } else {
+    for (var b = 0; b < blocks.length; b++) {
+      var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
+      h += '<div class="mgmt-row"><span>' + escHtml(bk.mail) + (bk.ip ? '<small style="color:var(--jp-muted)">（IP ' + escHtml(bk.ip) + '）</small>' : '') + '</span>' +
+        '<button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
+    }
+  }
+  h += '<div class="mgmt-add"><input type="text" id="blkInput" placeholder="输入邮箱或昵称进行拉黑"><button data-act="add-blk">拉黑</button></div></div>';
+
+  h += '<div class="panel"><h3>✅ 白名单 <span class="cnt">' + wlist.length + ' 条</span></h3>';
+  if (!wlist.length) {
+    h += '<div class="empty" style="padding:12px 0">暂无白名单</div>';
+  } else {
+    for (var w = 0; w < wlist.length; w++) {
+      var wl = typeof wlist[w] === 'string' ? { email: wlist[w] } : (wlist[w] || {});
+      h += '<div class="mgmt-row"><span>' + escHtml(wl.email || '') + '</span>' +
+        '<button data-act="unwl" data-email="' + escAttr(wl.email || '') + '">移除</button></div>';
+    }
+  }
+  h += '<div class="mgmt-add"><input type="text" id="wlInput" placeholder="输入邮箱或昵称加入白名单"><button data-act="add-wl">添加</button></div></div>';
+
+  h += '<div class="panel" id="logSection"><h3>📋 操作日志（最近100条）</h3>' + buildLogHtml(adminLogs) + '</div>';
+
+  document.getElementById('mainView').innerHTML = h;
+  enrichIps();
+  bindActions();
+}
+
+var logCats = [
+  { key: 'all', label: '全部' },
+  { key: 'account', label: '账号' },
+  { key: 'interact', label: '互动' },
+  { key: 'other', label: '其他' }
+];
+var logCatMap = {
+  '注册': 'account', '登录': 'account', '退出': 'account', '改昵称': 'account', '改密码': 'account', '改邮箱': 'account',
+  '发言': 'interact', '点赞': 'interact', '点踩': 'interact',
+  '访问聊天室': 'other'
+};
+function parseUa(ua) {
+  if (!ua) return '未知设备';
+  var s = ua;
+  var isMobile = /Mobile|Android|iPhone/i.test(s);
+  var isPad = /iPad|Tablet/i.test(s);
+  var dev = isPad ? '平板' : (isMobile ? '手机' : '电脑');
+  var os = '未知系统';
+  if (/Windows NT 10/.test(s)) os = 'Windows';
+  else if (/iPhone|iPad/.test(s)) os = 'iOS';
+  else if (/Mac OS X/.test(s)) os = 'Mac';
+  else if (/Android/.test(s)) os = 'Android';
+  else if (/Linux/.test(s)) os = 'Linux';
+  var br = '浏览器';
+  if (/Edg\//.test(s)) br = 'Edge';
+  else if (/Chrome\//.test(s) && !/OPR/.test(s)) br = 'Chrome';
+  else if (/Firefox\//.test(s)) br = 'Firefox';
+  else if (/Safari\//.test(s)) br = 'Safari';
+  else if (/OPR\//.test(s)) br = 'Opera';
+  return dev + ' · ' + os + ' · ' + br;
+}
+function buildLogHtml(logs) {
+  var h = '<div style="display:flex;gap:4px;margin-bottom:12px">';
+  for (var ci = 0; ci < logCats.length; ci++) {
+    var c = logCats[ci];
+    h += '<button data-act="set-logcat" data-cat="' + c.key + '" style="font-size:10.5px;padding:3px 11px;border:1px solid var(--jp-line);border-radius:7px;background:' + (adminLogFilter === c.key ? 'var(--jp-accent)' : 'transparent') + ';color:' + (adminLogFilter === c.key ? '#fff' : 'var(--jp-accent)') + ';cursor:pointer">' + c.label + '</button>';
+  }
+  h += '</div>';
+  if (!logs || !logs.length) {
+    h += '<div class="empty" style="padding:10px 0">暂无日志</div>';
+  } else {
+    var list = adminLogFilter === 'all' ? logs : logs.filter(function (x) { return logCatMap[x.type] === adminLogFilter; });
+    if (!list.length) h += '<div class="empty" style="padding:10px 0">暂无此类日志</div>';
+    for (var li = 0; li < list.length; li++) {
+      var lg = list[li];
+      var tstr = new Date(lg.time).toLocaleString('zh-CN');
+      h += '<div class="log-item">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') +
+        '<span class="log-sub" style="display:block;font-size:10.5px;opacity:.75">IP ' + escHtml(lg.ip || '未知') + ' · ' + parseUa(lg.ua) + '</span>' +
+        '<button class="log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除日志">✕</button></div>';
+    }
+  }
+  return h;
+}
+
+function bindActions() {
+  document.querySelectorAll('.msg-item .m-ops button, .mgmt-row button, .mgmt-add button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var act = btn.getAttribute('data-act');
+      if (act === 'del') {
+        var id = btn.getAttribute('data-id');
+        if (confirm('确定删除这条消息吗？')) {
+          adminPost({ event: 'COMMENT_DELETE_FOR_ADMIN', accessToken: adminToken, id: id }).then(function (r) {
+            if (r && r.code === 0) renderManageView();
+            else alert((r && r.message) || '删除失败');
+          });
+        }
+      } else if (act === 'blk') {
+        var mail = btn.getAttribute('data-mail');
+        if (confirm('确定拉黑 ' + mail + ' 吗？')) {
+          adminPost({ event: 'QW_BLOCK_ADD', accessToken: adminToken, mail: mail }).then(function (r) {
+            if (r && r.code === 0) renderManageView();
+            else alert((r && r.message) || '拉黑失败');
+          });
+        }
+      } else if (act === 'unblk') {
+        adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: btn.getAttribute('data-mail') }).then(function (r) {
+          if (r && r.code === 0) renderManageView();
+          else alert((r && r.message) || '操作失败');
+        });
+      } else if (act === 'add-blk') {
+        var blkVal = ((document.getElementById('blkInput') || {}).value || '').trim();
+        if (!blkVal) { alert('请输入邮箱或昵称'); return; }
+        adminPost({ event: 'QW_BLOCK_ADD', accessToken: adminToken, mail: blkVal }).then(function (r) {
+          if (r && r.code === 0) renderManageView();
+          else alert((r && r.message) || '操作失败');
+        });
+      } else if (act === 'add-wl') {
+        var wlVal = ((document.getElementById('wlInput') || {}).value || '').trim();
+        if (!wlVal) { alert('请输入邮箱或昵称'); return; }
+        adminPost({ event: 'QW_ADMIN_WHITELIST_ADD', accessToken: adminToken, email: wlVal }).then(function (r) {
+          if (r && r.code === 0) renderManageView();
+          else alert((r && r.message) || '操作失败');
+        });
+      } else if (act === 'unwl') {
+        adminPost({ event: 'QW_ADMIN_WHITELIST_DELETE', accessToken: adminToken, email: btn.getAttribute('data-email') }).then(function (r) {
+          if (r && r.code === 0) renderManageView();
+          else alert((r && r.message) || '操作失败');
+        });
+      }
+    });
+  });
+  document.querySelectorAll('#logSection [data-act="set-logcat"]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      adminLogFilter = b.getAttribute('data-cat') || 'all';
+      var sec = document.getElementById('logSection');
+      if (sec) {
+        sec.innerHTML = '<h3>📋 操作日志（最近100条）</h3>' + buildLogHtml(adminLogs);
+        bindActions();
+        enrichIps();
+      }
+    });
+  });
+  document.querySelectorAll('#logSection [data-act="del-log"]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-id');
+      if (!id) return;
+      adminPost({ event: 'QW_LOG_DELETE', accessToken: adminToken, id: id }).then(function (r) {
+        if (r && r.code === 0) {
+          adminLogs = adminLogs.filter(function (x) { return String(x._id) !== String(id); });
+          var sec = document.getElementById('logSection');
+          if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
+        } else alert((r && r.message) || '删除失败');
+      });
+    });
+  });
+}
+
+/* ===== 顶栏按钮 ===== */
+document.getElementById('btnLogout').addEventListener('click', function () {
+  try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
+  adminToken = '';
+  renderLoginView();
+});
+document.getElementById('btnRefresh').addEventListener('click', function () {
+  if (adminToken) renderManageView();
+});
+
+/* ===== 启动 ===== */
+(function () {
+  try {
+    var saved = localStorage.getItem('qw_admin_token');
+    if (saved) adminToken = saved;
+  } catch (e) {}
+  if (adminToken) renderManageView();
+  else renderLoginView();
+})();
+</script>
+</body>
+</html>
