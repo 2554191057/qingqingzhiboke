@@ -1200,6 +1200,11 @@
       var provCn = provinceMap[prov] || d.region || '';
       var cityCn = cnCity(d.city || '');
       var org = (d.connection && d.connection.org) || (d.connection && d.connection.isp) || '';
+      if (/CHINANET|China Telecom/i.test(org)) org = '电信';
+      else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
+      else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
+      else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
+      else org = org ? org.slice(0, 20) : '';
       var loc = (provCn ? provCn + ' ' : '') + cityCn + (org ? ' ' + org : '');
       loc = loc.trim();
       if (loc) {
