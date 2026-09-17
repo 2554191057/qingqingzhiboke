@@ -105,14 +105,33 @@
     '.qw-login-btn:hover{border-color:var(--jp-accent);color:var(--jp-accent);}',
     '.qw-login-btn.qw-logged-in{color:var(--jp-accent);border-color:var(--jp-accent);font-weight:600;}',
     /* 登录弹窗 */
-    '.qw-login-backdrop{position:fixed;inset:0;z-index:200;background:rgba(1,6,17,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;}',
-    '.qw-login-backdrop.qw-open{display:flex;}',
-    '.qw-login-panel{width:320px;max-width:100%;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:14px;padding:20px;box-shadow:0 12px 40px rgba(0,0,0,.4);}',
-    '.qw-login-panel h3{margin:0 0 4px;font-size:15px;color:var(--jp-ink);}',
-    '.qw-login-panel p{margin:0 0 14px;font-size:11px;color:var(--jp-muted);}',
-    '.qw-login-panel input{width:100%;box-sizing:border-box;border:1px solid var(--jp-line);background:var(--jp-paper);color:var(--jp-ink);border-radius:8px;padding:9px 11px;font-size:12px;margin-bottom:9px;outline:none;}',
-    '.qw-login-panel input:focus{border-color:var(--jp-accent);}',
-    '.qw-login-panel button{width:100%;padding:10px;border:none;border-radius:8px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:12px;font-weight:600;cursor:pointer;}',
+    '.qw-login-backdrop{position:fixed;inset:0;z-index:200;background:rgba(1,6,17,.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;}',
+    '.qw-login-backdrop.qw-open{display:flex;animation:qwFade .2s ease;}',
+    '.qw-login-panel{position:relative;width:340px;max-width:100%;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;padding:0;box-shadow:0 18px 60px rgba(0,0,0,.45),0 0 30px var(--jp-glow);overflow:hidden;animation:qwPop .25s cubic-bezier(.16,1,.3,1);}',
+    '.qw-login-head{position:relative;padding:26px 24px 18px;text-align:center;background:linear-gradient(135deg,rgba(8,127,174,.16),rgba(72,102,219,.16));border-bottom:1px solid var(--jp-line);}',
+    '.qw-login-head .qw-login-logo{width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#087fae,#4866db);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 18px rgba(8,127,174,.4);}',
+    '.qw-login-head h3{margin:0 0 3px;font-size:17px;color:var(--jp-ink);font-weight:700;}',
+    '.qw-login-head p{margin:0;font-size:11px;color:var(--jp-muted);}',
+    '.qw-login-tabs{display:flex;margin:0 24px;padding-top:14px;gap:8px;}',
+    '.qw-login-tab{flex:1;padding:9px 0;border:none;border-radius:10px;background:transparent;color:var(--jp-muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s ease;}',
+    '.qw-login-tab.qw-active{background:linear-gradient(120deg,#087fae,#4866db);color:#fff;box-shadow:0 4px 14px rgba(8,127,174,.35);}',
+    '.qw-login-body{padding:16px 24px 24px;}',
+    '.qw-login-field{position:relative;margin-bottom:10px;}',
+    '.qw-login-field .qw-f-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--jp-muted);display:flex;pointer-events:none;}',
+    '.qw-login-panel input{width:100%;box-sizing:border-box;border:1px solid var(--jp-line);background:var(--jp-paper);color:var(--jp-ink);border-radius:10px;padding:10px 11px 10px 34px;font-size:13px;outline:none;transition:border-color .15s ease,box-shadow .15s ease;}',
+    '.qw-login-panel input:focus{border-color:var(--jp-accent);box-shadow:0 0 0 3px rgba(8,127,174,.15);}',
+    '.qw-login-code-row{display:none;gap:6px;margin-bottom:10px;}',
+    '.qw-login-code-row .qw-c-input{flex:1;padding-left:11px;}',
+    '.qw-login-panel .qw-send-code{width:auto;flex-shrink:0;padding:0 12px;white-space:nowrap;border:none;border-radius:10px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:11px;cursor:pointer;transition:opacity .15s ease;}',
+    '.qw-login-panel .qw-send-code:hover{opacity:.9;}',
+    '.qw-login-panel .qw-send-code:disabled{opacity:.5;cursor:not-allowed;}',
+    '.qw-login-panel .qw-submit{width:100%;padding:11px;border:none;border-radius:10px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:2px;transition:opacity .15s ease,transform .1s ease;margin-top:2px;}',
+    '.qw-login-panel .qw-submit:hover{opacity:.92;transform:translateY(-1px);}',
+    '.qw-login-panel .qw-submit:disabled{opacity:.55;cursor:not-allowed;}',
+    '.qw-login-toggle{text-align:center;margin:12px 0 0;font-size:11px;color:var(--jp-muted);}',
+    '.qw-login-toggle b{color:var(--jp-accent);cursor:pointer;font-weight:600;}',
+    '.qw-login-msg{text-align:center;margin:8px 0 0;font-size:11px;color:#e74c3c;min-height:14px;}',
+    '.qw-login-msg.qw-ok{color:#2ecc71;}',
     /* 未登录：底部登录条（qiguangji 风格） */
     '.qw-login-bar{display:none;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;border-top:1px solid var(--jp-line);}',
     '.qw-login-mask.qw-needs-login .qw-login-bar{display:flex;}',
@@ -293,19 +312,37 @@
     '<p class="qw-set-msg" id="qw-set-msg"></p>' +
     '</div></div>' +
     '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
-    '<div class="qw-login-panel" style="position:relative">' +
-    '<div class="qw-login-x" id="qw-login-x" style="position:absolute;top:10px;right:14px;cursor:pointer;font-size:18px;line-height:1;color:#888;user-select:none;z-index:2;">&times;</div>' +
-    '<h3 id="qw-login-title">登录发言</h3><p id="qw-login-sub">已有账号？输入邮箱或昵称和密码登录</p>' +
-    '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20" style="display:none">' +
-    '<input type="text" id="qw-login-email" placeholder="邮箱或昵称">' +
-    '<div id="qw-code-row" style="display:none;gap:6px;margin-bottom:9px">' +
-    '<input type="text" id="qw-login-code" placeholder="邮箱验证码" maxlength="6" style="margin-bottom:0;flex:1">' +
-    '<button id="qw-send-code" type="button" style="width:auto;white-space:nowrap;padding:0 10px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;border:none;border-radius:8px;font-size:11px;cursor:pointer">发送验证码</button>' +
+    '<div class="qw-login-panel">' +
+    '<div class="qw-login-head">' +
+    '<div class="qw-login-logo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>' +
+    '<h3 id="qw-login-title">登录发言</h3><p id="qw-login-sub">输入邮箱或昵称和密码登录</p>' +
     '</div>' +
+    '<div class="qw-login-tabs">' +
+    '<button type="button" class="qw-login-tab qw-active" id="qw-tab-login" data-mode="login">登 录</button>' +
+    '<button type="button" class="qw-login-tab" id="qw-tab-register" data-mode="register">注 册</button>' +
+    '</div>' +
+    '<div class="qw-login-body">' +
+    '<div class="qw-login-x" id="qw-login-x" style="position:absolute;top:14px;right:16px;cursor:pointer;font-size:18px;line-height:1;color:var(--jp-muted);user-select:none;z-index:3;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s ease;">&times;</div>' +
+    '<div class="qw-login-field" id="qw-nick-field" style="display:none">' +
+    '<span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>' +
+    '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20">' +
+    '</div>' +
+    '<div class="qw-login-field">' +
+    '<span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>' +
+    '<input type="text" id="qw-login-email" placeholder="邮箱或昵称">' +
+    '</div>' +
+    '<div class="qw-login-code-row" id="qw-code-row">' +
+    '<input type="text" id="qw-login-code" class="qw-c-input" placeholder="6位验证码" maxlength="6">' +
+    '<button id="qw-send-code" type="button" class="qw-send-code">发送验证码</button>' +
+    '</div>' +
+    '<div class="qw-login-field">' +
+    '<span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>' +
     '<input type="password" id="qw-login-pwd" placeholder="密码">' +
-    '<button id="qw-login-submit">登 录</button>' +
-    '<p id="qw-login-toggle" style="text-align:center;margin:12px 0 0;font-size:11px;color:var(--jp-accent);cursor:pointer;">没有账号？点击注册</p>' +
-    '<p id="qw-login-msg" style="text-align:center;margin:8px 0 0;font-size:11px;color:#e74c3c;min-height:14px;"></p>' +
+    '</div>' +
+    '<button id="qw-login-submit" class="qw-submit">登 录</button>' +
+    '<p id="qw-login-toggle" class="qw-login-toggle"><span>没有账号？</span><b id="qw-toggle-link">点击注册</b></p>' +
+    '<p id="qw-login-msg" class="qw-login-msg"></p>' +
+    '</div>' +
     '</div></div>' +
     /* 自绘管理员面板 */
     '<div id="qw-admin-backdrop" class="qw-admin-backdrop">' +
@@ -677,8 +714,13 @@
   var loginClose = document.querySelector('#qw-login-backdrop .qw-login-panel');
   if (loginClose) loginClose.addEventListener('click', function (e) { e.stopPropagation(); });
   document.getElementById('qw-login-backdrop').addEventListener('click', function(e){ if(e.target.id==='qw-login-backdrop') closeLogin(); });
-  document.getElementById('qw-login-toggle').addEventListener('click', function(){
-    setLoginMode(loginMode === 'login' ? 'register' : 'login');
+  var tabLogin = document.getElementById('qw-tab-login');
+  var tabReg = document.getElementById('qw-tab-register');
+  if (tabLogin) tabLogin.addEventListener('click', function(){ setLoginMode('login'); });
+  if (tabReg) tabReg.addEventListener('click', function(){ setLoginMode('register'); });
+  var toggleEl2 = document.getElementById('qw-login-toggle');
+  if (toggleEl2) toggleEl2.addEventListener('click', function(e){
+    if (e.target && e.target.id === 'qw-toggle-link') setLoginMode(loginMode === 'login' ? 'register' : 'login');
   });
   closeBtn.addEventListener('click', closeChat);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
@@ -1262,12 +1304,16 @@
   function setLoginMode(mode) {
     loginMode = mode;
     var nickEl = document.getElementById('qw-login-nick');
+    var nickField = document.getElementById('qw-nick-field');
     var titleEl = document.getElementById('qw-login-title');
     var subEl = document.getElementById('qw-login-sub');
     var btnEl = document.getElementById('qw-login-submit');
     var toggleEl = document.getElementById('qw-login-toggle');
+    var tabLogin = document.getElementById('qw-tab-login');
+    var tabReg = document.getElementById('qw-tab-register');
     if (mode === 'register') {
-      nickEl.style.display = '';
+      if (nickEl) nickEl.style.display = '';
+      if (nickField) nickField.style.display = '';
       var codeRow = document.getElementById('qw-code-row');
       if (codeRow) codeRow.style.display = 'flex';
       var codeInput = document.getElementById('qw-login-code');
@@ -1275,17 +1321,23 @@
       titleEl.textContent = '注册账号';
       subEl.textContent = '设置昵称、邮箱和密码';
       btnEl.textContent = '注 册';
-      toggleEl.textContent = '已有账号？点击登录';
+      if (toggleEl) toggleEl.innerHTML = '<span>已有账号？</span><b id="qw-toggle-link">点击登录</b>';
+      if (tabLogin) tabLogin.classList.remove('qw-active');
+      if (tabReg) tabReg.classList.add('qw-active');
     } else {
-      nickEl.style.display = 'none';
+      if (nickEl) nickEl.style.display = 'none';
+      if (nickField) nickField.style.display = 'none';
       var codeRow2 = document.getElementById('qw-code-row');
       if (codeRow2) codeRow2.style.display = 'none';
       titleEl.textContent = '登录发言';
       subEl.textContent = '输入邮箱和密码登录';
       btnEl.textContent = '登 录';
-      toggleEl.textContent = '没有账号？点击注册';
+      if (toggleEl) toggleEl.innerHTML = '<span>没有账号？</span><b id="qw-toggle-link">点击注册</b>';
+      if (tabLogin) tabLogin.classList.add('qw-active');
+      if (tabReg) tabReg.classList.remove('qw-active');
     }
-    document.getElementById('qw-login-msg').textContent = '';
+    var msgEl = document.getElementById('qw-login-msg');
+    if (msgEl) { msgEl.textContent = ''; msgEl.classList.remove('qw-ok'); }
   }
   function openLogin() {
     var bd = document.getElementById('qw-login-backdrop');
