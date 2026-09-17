@@ -592,7 +592,7 @@ if (!sessionStorage.getItem('auth_ok')) {
 
 
 <script src="site-config.js"></script>
-<script src="script.js?v=74"></script>
+<script src="script.js?v=75"></script>
 <script src="chat-widget.js?v=91"></script>
 <script>
 // ?chat=1 自动打开聊天室（从 fklts.html 跳来）
@@ -788,15 +788,7 @@ window.addEventListener('load', function() {
 })();
 </script>
 <script>
-// 日夜间切换
 (function(){
-  var btn = document.getElementById('themeToggle');
-  if (!btn) return;
-  btn.addEventListener('click', function(){
-    var cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', cur);
-    try { localStorage.setItem('qw_theme', cur); } catch(e){}
-  });
   try { var saved = localStorage.getItem('qw_theme'); if (saved) document.documentElement.setAttribute('data-theme', saved); } catch(e){}
 })();
 </script>

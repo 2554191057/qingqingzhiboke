@@ -2242,14 +2242,32 @@
     const themeToggle = $('#themeToggle');
     const html = document.documentElement;
     
-    // 初始化：按时间自动判断（夜间19-7点 / 其余日间），进入网站时自动切换
+    // 初始化：优先用户手动选择，否则按时间自动判断（夜间19-7点 / 其余日间）
     function initDarkMode() {
+      // 优先读取用户保存的选择
+      let saved = null;
+      try { saved = localStorage.getItem('qw_theme'); } catch(e){}
+      if (saved === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+        themeToggle?.classList.add('dark');
+        updateThemeIcon(true);
+        return;
+      }
+      if (saved === 'light') {
+        html.setAttribute('data-theme', 'light');
+        updateThemeIcon(false);
+        return;
+      }
+      // 无保存记录则按时间判断
       const h = new Date().getHours();
       const isNight = h >= 19 || h < 7;
       if (isNight) {
         html.setAttribute('data-theme', 'dark');
         themeToggle?.classList.add('dark');
         updateThemeIcon(true);
+      } else {
+        html.setAttribute('data-theme', 'light');
+        updateThemeIcon(false);
       }
     }
     
@@ -2285,9 +2303,10 @@
           html.setAttribute('data-theme', 'dark');
           themeToggle?.classList.add('dark');
         } else {
-          html.removeAttribute('data-theme');
+          html.setAttribute('data-theme', 'light');
           themeToggle?.classList.remove('dark');
         }
+        try { localStorage.setItem('qw_theme', newIsDark ? 'dark' : 'light'); } catch(e){}
         updateThemeIcon(newIsDark);
       }
 
