@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -149,7 +149,13 @@ if (!sessionStorage.getItem('auth_ok')) {
 .nav-item:hover { color: #0ea5e9; background: rgba(14,165,233,.08); }
 .nav-item.active { color: #0ea5e9; }
 .nav-item.active::after { content: ''; position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; background: #0ea5e9; }
-@media (max-width: 900px) { .navbar-nav { display: none !important; } }
+.hamburger-btn { display: none; background: transparent; border: none; font-size: 20px; color: inherit; cursor: pointer; padding: 8px; margin-right: 8px; }
+@media (max-width: 900px) {
+  .navbar-nav { display: none !important; position: fixed; top: 60px; left: 0; right: 0; background: var(--color-card, #fff); flex-direction: column; padding: 16px; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 999; }
+  .navbar-nav.open { display: flex !important; }
+  .hamburger-btn { display: block !important; }
+  .navbar-nav { position: fixed !important; left: 0 !important; transform: none !important; }
+}
 </style>
 
 
@@ -332,7 +338,10 @@ document.addEventListener('selectstart', e => {
             <a href="#social" class="nav-item"><i class="fa-solid fa-comment-dots"></i><span>联系</span></a>
             <a href="wenzhang.html#blog" class="nav-item"><i class="fa-solid fa-book-open"></i><span>文章</span></a>
             <a href="wangpan.html#resources" class="nav-item"><i class="fa-solid fa-cloud-arrow-down"></i><span>资源</span></a>
-            <a href="fklts.html" class="nav-item"><i class="fa-solid fa-comments"></i><span>聊天室</span></a></nav><button id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式"><i class="fa-solid fa-moon icon-moon"></i><i class="fa-solid fa-sun icon-sun"></i></button>
+            <a href="fklts.html" class="nav-item"><i class="fa-solid fa-comments"></i><span>聊天室</span></a>
+        </nav>
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单"><i class="fa-solid fa-bars"></i></button>
+        <button id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式"><i class="fa-solid fa-moon icon-moon"></i><i class="fa-solid fa-sun icon-sun"></i></button>
     </div>
 </header>
 
@@ -893,6 +902,16 @@ window.addEventListener('load', function() {
     if (href.indexOf(path) !== -1) a.classList.add('active');
   });
 })();
+</script>
+<script>
+document.getElementById('hamburgerBtn').addEventListener('click', function() {
+  document.getElementById('navbarNav').classList.toggle('open');
+});
+document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    document.getElementById('navbarNav').classList.remove('open');
+  });
+});
 </script>
 </body>
 </html>
