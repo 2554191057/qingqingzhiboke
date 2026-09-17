@@ -309,15 +309,12 @@
     '<button class="qw-submit" id="qw-set-nick-save" style="margin-top:6px">保存昵称</button>' +
     '</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-pwd" style="display:none">' +
-    '<div style="display:flex;gap:6px;margin-bottom:10px">' +
-    '<button type="button" class="qw-login-tab qw-active" id="qw-pwd-mode-old" data-pwdmode="old" style="flex:1;font-size:12px;padding:7px 0">旧密码验证</button>' +
-    '<button type="button" class="qw-login-tab" id="qw-pwd-mode-code" data-pwdmode="code" style="flex:1;font-size:12px;padding:7px 0">邮箱验证码重置</button>' +
-    '</div>' +
     '<div class="qw-login-field" id="qw-pwd-old-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-pwd-old-pwd" placeholder="当前密码"></div>' +
     '<div class="qw-login-field" id="qw-pwd-code-field" style="display:none"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><div style="display:flex;gap:6px"><input type="text" id="qw-set-pwd-code" placeholder="邮箱验证码" style="flex:1;padding-left:11px"><button type="button" class="qw-send-code" id="qw-set-pwd-sendcode">发码</button></div></div>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd1" placeholder="新密码（至少4位）"></div>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd2" placeholder="确认新密码"></div>' +
     '<button class="qw-submit" id="qw-set-pwd-save" style="margin-top:6px">保存密码</button>' +
+    '<button type="button" id="qw-pwd-forgot" style="display:block;width:100%;margin-top:8px;border:none;background:none;color:var(--jp-accent);font-size:11px;cursor:pointer;text-decoration:underline;padding:4px 0;">忘记密码？通过邮箱验证码重置</button>' +
     '</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-email" style="display:none">' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><div style="display:flex;gap:6px"><input type="text" id="qw-set-email-oldcode" placeholder="原邮箱验证码" style="flex:1;padding-left:11px"><button type="button" class="qw-send-code" id="qw-set-email-sendold">发码</button></div></div>' +
@@ -1061,6 +1058,15 @@
     var panes = document.querySelectorAll('#qw-settings-modal .qw-set-pane');
     tabs.forEach(function(t){ t.classList.toggle('qw-active', t.getAttribute('data-set') === tabName); });
     panes.forEach(function(p){ p.style.display = p.id === 'qw-set-pane-' + tabName ? 'block' : 'none'; });
+    if (tabName === 'pwd') {
+      pwdMode = 'old';
+      var oldF = document.getElementById('qw-pwd-old-field');
+      var codeF = document.getElementById('qw-pwd-code-field');
+      var fBtn = document.getElementById('qw-pwd-forgot');
+      if (oldF) oldF.style.display = 'block';
+      if (codeF) codeF.style.display = 'none';
+      if (fBtn) fBtn.textContent = '忘记密码？通过邮箱验证码重置';
+    }
   }
   document.querySelectorAll('#qw-settings-modal .qw-login-tab').forEach(function(tab){
     tab.addEventListener('click', function(){ setTab(tab.getAttribute('data-set')); });
@@ -1102,16 +1108,24 @@
       } else showSetMsg(r.message || '修改失败', false);
     }).catch(function(){ setBtnRestore(btn, '保存昵称'); showSetMsg('网络错误', false); });
   });
-  // 改密码：旧密码 / 邮箱验证码 两种方式切换
+  // 改密码：旧密码 / 邮箱验证码 切换（通过"忘记密码"链接）
   var pwdMode = 'old';
-  document.querySelectorAll('#qw-settings-modal [data-pwdmode]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      pwdMode = btn.getAttribute('data-pwdmode');
-      document.querySelectorAll('#qw-settings-modal [data-pwdmode]').forEach(function(b){ b.classList.toggle('qw-active', b === btn); });
-      document.getElementById('qw-pwd-old-field').style.display = pwdMode === 'old' ? 'block' : 'none';
-      document.getElementById('qw-pwd-code-field').style.display = pwdMode === 'code' ? 'block' : 'none';
+  var forgotBtn = document.getElementById('qw-pwd-forgot');
+  if (forgotBtn) {
+    forgotBtn.addEventListener('click', function() {
+      if (pwdMode === 'old') {
+        pwdMode = 'code';
+        document.getElementById('qw-pwd-old-field').style.display = 'none';
+        document.getElementById('qw-pwd-code-field').style.display = 'block';
+        forgotBtn.textContent = '想起来了？用当前密码修改';
+      } else {
+        pwdMode = 'old';
+        document.getElementById('qw-pwd-old-field').style.display = 'block';
+        document.getElementById('qw-pwd-code-field').style.display = 'none';
+        forgotBtn.textContent = '忘记密码？通过邮箱验证码重置';
+      }
     });
-  });
+  }
   // 改密码：发 reset 验证码
   function bindSendCode(btnId, emailVal, type, msgEl) {
     var btn = document.getElementById(btnId);
