@@ -706,7 +706,9 @@ window.addEventListener('load', function() {
 [data-theme="night"] #waifu-tool button svg { fill: #cbd5e1 !important; }
 [data-theme="night"] #waifu-tool button:hover svg { fill: #38bdf8 !important; }
 /* 看板娘定位右下角 */
-#waifu { right: 0; bottom: 0; left: auto; }
+/* 看板娘定位右下角，限制尺寸对齐参考站 */
+#waifu { right: 0; bottom: 0; left: auto; width: 260px; height: 310px; }
+#live2d { width: 100% !important; height: 100% !important; }
 /* 拖动抓取手势（对齐参考站） */
 #live2d { cursor: grab !important; }
 #live2d:active { cursor: grabbing !important; }
