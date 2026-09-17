@@ -1187,16 +1187,24 @@
   else if (/Safari\//.test(s)) br = 'Safari';
   else if (/OPR\//.test(s)) br = 'Opera';
   var brand = '';
-  if (/iPhone/i.test(s)) brand = '苹果';
-  else if (/iPad/i.test(s)) brand = '苹果';
-  else if (/SM-[A-Z0-9]+|SAMSUNG|Galaxy/i.test(s)) brand = '三星';
-  else if (/Redmi|MI [0-9]|Xiaomi|POCO/i.test(s)) brand = '小米';
-  else if (/HUAWEI|ELS-|LIO-|TAS-|ANA-|VOG-/i.test(s)) brand = '华为';
-  else if (/HONOR|荣耀/i.test(s)) brand = '荣耀';
-  else if (/OPPO|CPH[0-9]{4}|PGT[0-9]{3}|PEG[0-9]{3}/i.test(s)) brand = 'OPPO';
-  else if (/vivo|V[0-9]{4}|iQOO/i.test(s)) brand = 'vivo';
+  var model = '';
+  var mAndroid = s.match(/Android [0-9.]+; ([^;)]+)/);
+  if (mAndroid) {
+    model = mAndroid[1].replace(/\s*Build[^;)]*/i, '').replace(/\s+(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*$/i, '').trim();
+  }
+  if (/Redmi/i.test(s)) brand = '红米';
+  else if (/POCO/i.test(s)) brand = 'POCO';
+  else if (/iQOO/i.test(s)) brand = 'iQOO';
   else if (/OnePlus/i.test(s)) brand = '一加';
   else if (/realme/i.test(s)) brand = 'realme';
+  else if (/HONOR|荣耀/i.test(s)) brand = '荣耀';
+  else if (/iPhone/i.test(s)) brand = '苹果';
+  else if (/iPad/i.test(s)) brand = '苹果';
+  else if (/SM-[A-Z0-9]+|SAMSUNG|Galaxy/i.test(s)) brand = '三星';
+  else if (/Xiaomi|MI [0-9]|M[0-9]{4}|2201|2210|2301/i.test(s)) brand = '小米';
+  else if (/HUAWEI|ELS-|LIO-|TAS-|ANA-|VOG-|HUAWEI/i.test(s)) brand = '华为';
+  else if (/OPPO|CPH[0-9]{4}|PGT[0-9]{3}|PEG[0-9]{3}/i.test(s)) brand = 'OPPO';
+  else if (/vivo|V[0-9]{4}/i.test(s)) brand = 'vivo';
   else if (/Pixel/i.test(s)) brand = 'Google';
   else if (/Moto|motorola/i.test(s)) brand = '摩托罗拉';
   else if (/Lenovo/i.test(s)) brand = '联想';
@@ -1205,9 +1213,6 @@
   else if (/HTC/i.test(s)) brand = 'HTC';
   else if (/ZTE/i.test(s)) brand = '中兴';
   else if (/Sony/i.test(s)) brand = '索尼';
-  var model = '';
-  var mAndroid = s.match(/Android [0-9.]+; ([^;)]+)/);
-  if (mAndroid) model = mAndroid[1].trim();
   if (!brand && model) {
     if (/SM-/.test(model)) brand = '三星';
     else if (/M[0-9]{4}|Redmi|POCO/i.test(model)) brand = '小米';
@@ -1219,7 +1224,7 @@
   var extra = [];
   if (model) extra.push(model);
   if (brand && extra.indexOf(brand) === -1) extra.unshift(brand);
-  return dev + ' · ' + os + ' · ' + br + (extra.length ? ' · ' + extra.join(' ') : '');
+  return dev + ' · ' + (os === 'Android' ? '' : os + ' · ') + br + (extra.length ? ' · ' + extra.join(' ') : '');
 }
 
   // 构建操作日志区块 HTML（含筛选按钮），配合局部刷新

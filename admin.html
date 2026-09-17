@@ -129,6 +129,13 @@ input, button { font-family: inherit; }
   background: none; border: none; color: var(--jp-muted); font-size: 12px; cursor: pointer;
 }
 .log-item .log-del:hover { color: var(--jp-danger); }
+.log-item .log-copy-ip {
+  margin-left: 6px; padding: 0 8px; font-size: 10px; line-height: 1.7;
+  border: 1px solid var(--jp-line); border-radius: 6px;
+  background: transparent; color: var(--jp-accent); cursor: pointer; vertical-align: 1px;
+}
+.log-item .log-copy-ip:hover { background: rgba(129,140,248,0.12); }
+.log-item .log-copy-ip.ok { color: var(--jp-ok); border-color: rgba(52,211,153,0.4); }
 
 /* 登录视图 */
 .login-wrap { max-width: 400px; margin: 12vh auto 0; text-align: center; }
@@ -279,7 +286,7 @@ function getIpLocation(ip, cb) {
     else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
     else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
     else org = org ? org.slice(0, 20) : '';
-    var loc = ((provCn ? provCn + ' ' : '') + cityCn + (org ? ' ' + org : '')).trim();
+    var loc = ((provCn ? provCn + ' ' : '') + ((cityCn && cityCn !== provCn) ? cityCn + ' ' : '') + (org ? ' ' + org : '')).trim();
     if (loc) { ipLocCache[ip] = loc; }
     cb(loc);
   }).catch(function () { cb(''); });
@@ -494,16 +501,24 @@ function parseUa(ua) {
   else if (/Safari\//.test(s)) br = 'Safari';
   else if (/OPR\//.test(s)) br = 'Opera';
   var brand = '';
-  if (/iPhone/i.test(s)) brand = '苹果';
-  else if (/iPad/i.test(s)) brand = '苹果';
-  else if (/SM-[A-Z0-9]+|SAMSUNG|Galaxy/i.test(s)) brand = '三星';
-  else if (/Redmi|MI [0-9]|Xiaomi|POCO/i.test(s)) brand = '小米';
-  else if (/HUAWEI|ELS-|LIO-|TAS-|ANA-|VOG-/i.test(s)) brand = '华为';
-  else if (/HONOR|荣耀/i.test(s)) brand = '荣耀';
-  else if (/OPPO|CPH[0-9]{4}|PGT[0-9]{3}|PEG[0-9]{3}/i.test(s)) brand = 'OPPO';
-  else if (/vivo|V[0-9]{4}|iQOO/i.test(s)) brand = 'vivo';
+  var model = '';
+  var mAndroid = s.match(/Android [0-9.]+; ([^;)]+)/);
+  if (mAndroid) {
+    model = mAndroid[1].replace(/\s*Build[^;)]*/i, '').replace(/\s+(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*$/i, '').trim();
+  }
+  if (/Redmi/i.test(s)) brand = '红米';
+  else if (/POCO/i.test(s)) brand = 'POCO';
+  else if (/iQOO/i.test(s)) brand = 'iQOO';
   else if (/OnePlus/i.test(s)) brand = '一加';
   else if (/realme/i.test(s)) brand = 'realme';
+  else if (/HONOR|荣耀/i.test(s)) brand = '荣耀';
+  else if (/iPhone/i.test(s)) brand = '苹果';
+  else if (/iPad/i.test(s)) brand = '苹果';
+  else if (/SM-[A-Z0-9]+|SAMSUNG|Galaxy/i.test(s)) brand = '三星';
+  else if (/Xiaomi|MI [0-9]|M[0-9]{4}|2201|2210|2301/i.test(s)) brand = '小米';
+  else if (/HUAWEI|ELS-|LIO-|TAS-|ANA-|VOG-|HUAWEI/i.test(s)) brand = '华为';
+  else if (/OPPO|CPH[0-9]{4}|PGT[0-9]{3}|PEG[0-9]{3}/i.test(s)) brand = 'OPPO';
+  else if (/vivo|V[0-9]{4}/i.test(s)) brand = 'vivo';
   else if (/Pixel/i.test(s)) brand = 'Google';
   else if (/Moto|motorola/i.test(s)) brand = '摩托罗拉';
   else if (/Lenovo/i.test(s)) brand = '联想';
@@ -512,9 +527,6 @@ function parseUa(ua) {
   else if (/HTC/i.test(s)) brand = 'HTC';
   else if (/ZTE/i.test(s)) brand = '中兴';
   else if (/Sony/i.test(s)) brand = '索尼';
-  var model = '';
-  var mAndroid = s.match(/Android [0-9.]+; ([^;)]+)/);
-  if (mAndroid) model = mAndroid[1].trim();
   if (!brand && model) {
     if (/SM-/.test(model)) brand = '三星';
     else if (/M[0-9]{4}|Redmi|POCO/i.test(model)) brand = '小米';
@@ -526,7 +538,7 @@ function parseUa(ua) {
   var extra = [];
   if (model) extra.push(model);
   if (brand && extra.indexOf(brand) === -1) extra.unshift(brand);
-  return dev + ' · ' + os + ' · ' + br + (extra.length ? ' · ' + extra.join(' ') : '');
+  return dev + ' · ' + (os === 'Android' ? '' : os + ' · ') + br + (extra.length ? ' · ' + extra.join(' ') : '');
 }
 function buildLogHtml(logs) {
   var h = '<div style="display:flex;gap:4px;margin-bottom:12px">';
@@ -544,7 +556,7 @@ function buildLogHtml(logs) {
       var lg = list[li];
       var tstr = new Date(lg.time).toLocaleString('zh-CN');
       h += '<div class="log-item">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') +
-        '<span class="log-sub" style="display:block;font-size:10.5px;opacity:.75">IP ' + escHtml(lg.ip || '未知') + ' · ' + parseUa(lg.ua) + '</span>' +
+        '<span class="log-sub" style="display:block;font-size:10.5px;opacity:.75">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span>' +
         '<button class="log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除日志">✕</button></div>';
     }
   }
@@ -623,6 +635,35 @@ function bindActions() {
     });
   });
 }
+
+/* ===== 复制日志IP ===== */
+document.addEventListener('click', function (e) {
+  var btn = e.target && e.target.closest ? e.target.closest('.log-copy-ip') : null;
+  if (!btn) return;
+  var ip = btn.getAttribute('data-ip');
+  if (!ip) return;
+  function copied() {
+    btn.textContent = '已复制';
+    btn.classList.add('ok');
+    setTimeout(function () { btn.textContent = '复制'; btn.classList.remove('ok'); }, 1500);
+  }
+  function legacyCopy() {
+    var ta = document.createElement('textarea');
+    ta.value = ip;
+    ta.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;';
+    ta.style.webkitUserSelect = 'text';
+    ta.style.userSelect = 'text';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+    document.body.removeChild(ta);
+    if (ok) copied();
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(ip).then(copied, legacyCopy);
+  } else { legacyCopy(); }
+});
 
 /* ===== 顶栏按钮 ===== */
 document.getElementById('btnLogout').addEventListener('click', function () {
