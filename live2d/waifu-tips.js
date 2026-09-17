@@ -413,7 +413,7 @@
     tools["switch-model"].callback = () => loader.loadOtherModel();
     tools["switch-texture"].callback = () => loader.loadRandModel();
 
-    const labels = { chat: "访客聊天室", hitokoto: "随机一言", asteroids: "飞船小游戏", "switch-model": "切换人物", "switch-texture": "切换服装", photo: "人物截图", info: "关于本站", quit: "收起人物" };
+    const labels = { chat: "聊天室", hitokoto: "随机一言", asteroids: "飞船小游戏", "switch-model": "切换人物", "switch-texture": "切换服装", photo: "人物截图", info: "关于本站", quit: "收起人物" };
     const toolList = Array.isArray(config.tools) ? config.tools : Object.keys(tools);
     for (const name of toolList) {
       if (!tools[name]) continue;
