@@ -291,6 +291,7 @@
     '<button class="qw-admin-btn" id="qw-admin-trigger" aria-label="聊天后台" title="聊天后台"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
     '<button class="qw-settings-btn" id="qw-settings-btn" title="账号设置"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>' +
     '<button class="qw-logout-btn" id="qw-logout-btn" title="退出登录">退出</button>' +
+    '<button class="qw-close" id="qw-chat-refresh" aria-label="刷新聊天" title="刷新聊天"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
@@ -313,10 +314,12 @@
     '<div class="qw-login-body">' +
     '<div class="qw-login-x" id="qw-settings-close-x" style="position:absolute;top:14px;right:16px;cursor:pointer;font-size:18px;line-height:1;color:var(--jp-muted);user-select:none;z-index:3;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s ease;">&times;</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-nick">' +
+    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">一周最多改3次，次日0点后才能再改；刚用过的昵称7天内不能再用</p>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><input type="text" id="qw-set-nick" placeholder="新昵称" maxlength="20" autocomplete="off"></div>' +
     '<button class="qw-submit" id="qw-set-nick-save" style="margin-top:6px">保存昵称</button>' +
     '</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-pwd" style="display:none">' +
+    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">一周最多改3次，次日0点后才能再改</p>' +
     '<div class="qw-login-field" id="qw-pwd-old-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-pwd-old-pwd" placeholder="当前密码"></div>' +
     '<div class="qw-login-field" id="qw-pwd-code-field" style="display:none"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-pwd-code" placeholder="邮箱验证码" style="flex:1"><button type="button" class="qw-send-code" id="qw-set-pwd-sendcode">发码</button></div></div>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd1" placeholder="新密码（至少4位）"></div>' +
@@ -325,6 +328,7 @@
     '<button type="button" id="qw-pwd-forgot" style="display:block;width:100%;margin-top:8px;border:none;background:none;color:var(--jp-accent);font-size:11px;cursor:pointer;text-decoration:underline;padding:4px 0;">忘记密码？通过邮箱验证码重置</button>' +
     '</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-email" style="display:none">' +
+    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">一周最多改3次，次日0点后才能再改；需验证新旧两个邮箱</p>' +
     '<div class="qw-login-field" style="padding-left:0"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-email-oldcode" placeholder="原邮箱验证码" style="flex:1"><button type="button" class="qw-send-code" id="qw-set-email-sendold">发码</button></div></div>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><input type="email" id="qw-set-new-email" placeholder="新邮箱"></div>' +
     '<div class="qw-login-field" style="padding-left:0"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-email-newcode" placeholder="新邮箱验证码" style="flex:1"><button type="button" class="qw-send-code" id="qw-set-email-sendnew">发码</button></div></div>' +
@@ -371,7 +375,8 @@
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>' +
     '<div><h2 id="qw-admin-title">聊天后台</h2><p>管理员 · 删除消息 / 拉黑邮箱</p></div>' +
-    '<button class="qw-close" data-qw-admin-close aria-label="关闭" title="关闭" style="margin-left:auto"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+    '<button class="qw-close" id="qw-admin-refresh" aria-label="刷新数据" title="刷新数据" style="margin-left:auto"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
+    '<button class="qw-close" data-qw-admin-close aria-label="关闭" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<div class="qw-admin-body" id="qw-admin-body"></div>' +
     '</div></div>';
@@ -772,6 +777,15 @@
     if (e.target && e.target.id === 'qw-toggle-link') setLoginMode(loginMode === 'login' ? 'register' : 'login');
   });
   closeBtn.addEventListener('click', closeChat);
+  var chatRefreshBtn = document.getElementById('qw-chat-refresh');
+  if (chatRefreshBtn) {
+    chatRefreshBtn.addEventListener('click', function() {
+      var ic = document.getElementById('tcomment');
+      if (ic && window.twikoo) {
+        window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
+      }
+    });
+  }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
   // 仅 X 按钮和 Esc 关闭，不响应遮罩点击
 
@@ -831,6 +845,12 @@
   }
   adminBackdrop.addEventListener('click', function (e) { if (e.target === adminBackdrop) e.stopPropagation(); });
   adminBackdrop.querySelector('[data-qw-admin-close]').addEventListener('click', closeAdmin);
+  var adminRefreshBtn = document.getElementById('qw-admin-refresh');
+  if (adminRefreshBtn) {
+    adminRefreshBtn.addEventListener('click', function() {
+      if (adminToken) renderManageView();
+    });
+  }
 
   function renderLoginView() {
     adminBody.innerHTML =
