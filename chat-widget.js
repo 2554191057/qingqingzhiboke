@@ -88,6 +88,12 @@
     '.qw-body #twikoo .tk-submit-action-icon{color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-submit-action-icon svg{width:15px;height:15px;}',
     '.qw-body #twikoo .tk-row-actions-start .tk-submit-action-icon,.qw-body #twikoo .tk-row-actions-start button{color:var(--jp-muted)!important;}',
+    '.qw-body #twikoo .tk-submit .OwO,.qw-body #twikoo .OwO,.qw-body #twikoo .OwO-logo,.qw-body #twikoo .tk-submit-action-icon.OwO{display:none!important;}',
+    '.qw-body #twikoo .tk-submit .__markdown,.qw-body #twikoo .tk-submit-action-icon.__markdown,.qw-body #twikoo .markdown-icon{display:none!important;}',
+    '.qw-body #twikoo .tk-submit .tk-preview,.qw-body #twikoo .tk-preview,.qw-body #twikoo .preview-icon,.qw-body #twikoo .tk-preview-btn{display:none!important;}',
+    '.qw-body #twikoo .qw-img-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;background:var(--jp-glow);border-radius:7px;cursor:pointer;color:var(--jp-muted);flex-shrink:0;}',
+    '.qw-body #twikoo .qw-img-btn:hover{color:var(--jp-accent);}',
+    '.qw-body #twikoo .qw-img-btn input{display:none;}',
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
     /* Twikoo 原生回复提示条隐藏（用自绘 .qw-reply-bar 替代） */
@@ -422,6 +428,34 @@
       el.remove();
     });
   }
+  // ===== 添加图片上传按钮 =====
+  function addImgButton() {
+    var submit = document.querySelector('.qw-body #twikoo .tk-submit');
+    if (!submit || submit.querySelector('.qw-img-btn')) return;
+    var sendBtn = submit.querySelector('.tk-send');
+    if (!sendBtn) return;
+    var btn = document.createElement('label');
+    btn.className = 'qw-img-btn';
+    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg><input type="file" accept="image/*">';
+    var fileInput = btn.querySelector('input');
+    fileInput.addEventListener('change', function() {
+      var file = fileInput.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { alert('图片不能超过5MB'); return; }
+      var ta = submit.querySelector('textarea');
+      var oldText = ta.value;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        // 用 base64 直接插入图片（无后端图床依赖）
+        var imgMd = '\n![图片](' + e.target.result + ')\n';
+        ta.value = oldText + imgMd;
+        ta.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+      reader.readAsDataURL(file);
+      fileInput.value = '';
+    });
+    submit.insertBefore(btn, sendBtn);
+  }
   // ===== 把点赞/回复等操作按钮从头部行移到气泡下方横排 =====
   function moveActionBelow() {
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
@@ -607,7 +641,7 @@
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
       // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
-      var steps = [removeOwO, removeSubmitExtras, setSubmitPlaceholders, moveNickTop,
+      var steps = [removeOwO, removeSubmitExtras, addImgButton, setSubmitPlaceholders, moveNickTop,
         moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, markSelf];
       try { refreshLoginUI(); } catch (eR) {}
       try { markLiked(); } catch (e0) {}
