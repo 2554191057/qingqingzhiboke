@@ -683,23 +683,28 @@ window.addEventListener('load', function() {
   width: auto !important;
 }
 #waifu-toggle span { writing-mode: horizontal-tb !important; }
-/* 工具条深色圆角卡片 */
+/* 工具条圆角卡片，跟随日夜间主题 */
 #waifu-tool {
-  background: rgba(20,30,48,.85) !important;
+  background: rgba(255,255,255,.92) !important;
   border-radius: 16px !important;
   padding: 10px !important;
   backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,.12) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   top: auto !important;
-  bottom: -70px !important;
+  bottom: -60px !important;
   display: grid !important;
   grid-template-columns: repeat(4, 1fr) !important;
   gap: 6px !important;
+  transition: background .3s !important;
 }
 #waifu-tool button { background: transparent !important; border: none !important; padding: 4px !important; }
-#waifu-tool button svg { fill: #94a3b8 !important; height: 20px !important; width: 20px !important; }
-#waifu-tool button:hover svg { fill: #38bdf8 !important; }
+#waifu-tool button svg { fill: #475569 !important; height: 20px !important; width: 20px !important; transition: fill .3s !important; }
+#waifu-tool button:hover svg { fill: #0ea5e9 !important; }
+[data-theme="night"] #waifu-tool { background: rgba(30,41,59,.92) !important; box-shadow: 0 4px 20px rgba(0,0,0,.4) !important; }
+[data-theme="night"] #waifu-tool button svg { fill: #cbd5e1 !important; }
+[data-theme="night"] #waifu-tool button:hover svg { fill: #38bdf8 !important; }
 /* 看板娘定位右下角 */
 #waifu { right: 0; bottom: 0; left: auto; }
 /* 拖动抓取手势（对齐参考站） */
