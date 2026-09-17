@@ -778,7 +778,9 @@
     if (_refreshTimer) { clearInterval(_refreshTimer); _refreshTimer = null; }
   }
 
-  launcher.addEventListener('click', openChat);
+  if(launcher) launcher.addEventListener('click', openChat);
+  window.openChatRoom = openChat;
+  window.closeChatRoom = closeChat;
   document.addEventListener('DOMContentLoaded', refreshLoginUI);
   // 打开聊天室后刷新登录态
   var _origOpen = openChat;
