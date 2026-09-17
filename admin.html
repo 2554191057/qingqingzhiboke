@@ -130,13 +130,13 @@ input, button { font-family: inherit; }
   background: none; border: none; color: var(--jp-muted); font-size: 12px; cursor: pointer;
 }
 .log-item .log-del:hover { color: var(--jp-danger); }
-.log-item .log-copy-ip {
+.log-item .log-copy-ip, .msg-item .log-copy-ip, .mgmt-row .log-copy-ip {
   margin-left: 6px; padding: 0 8px; font-size: 10px; line-height: 1.7;
   border: 1px solid var(--jp-line); border-radius: 6px;
   background: transparent; color: var(--jp-accent); cursor: pointer; vertical-align: 1px;
 }
-.log-item .log-copy-ip:hover { background: rgba(129,140,248,0.12); }
-.log-item .log-copy-ip.ok { color: var(--jp-ok); border-color: rgba(52,211,153,0.4); }
+.log-item .log-copy-ip:hover, .msg-item .log-copy-ip:hover, .mgmt-row .log-copy-ip:hover { background: rgba(129,140,248,0.12); }
+.log-item .log-copy-ip.ok, .msg-item .log-copy-ip.ok, .mgmt-row .log-copy-ip.ok { color: var(--jp-ok); border-color: rgba(52,211,153,0.4); }
 
 /* 登录视图 */
 .login-wrap { max-width: 400px; margin: 12vh auto 0; text-align: center; }
@@ -453,7 +453,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
       h += '<div class="msg-item" data-id="' + escAttr(c._id) + '">' +
         '<div class="m-hd"><span class="m-nick">' + escHtml(c.nick || '匿名') + '</span>' +
         (c.mail ? '<span class="m-mail">' + escHtml(c.mail) + '</span>' : '') +
-        (c.ip ? '<span class="m-ip">IP ' + escHtml(c.ip) + '</span>' : '') +
+        (c.ip ? '<span class="m-ip">IP ' + escHtml(c.ip) + '</span><button class="log-copy-ip" data-ip="' + escAttr(c.ip) + '" title="复制IP">复制</button>' : '') +
         '<span class="m-time">' + fmtTime(c.created) + '</span></div>' +
         '<div class="m-body">' + escHtml(stripHtml(c.comment)) + '</div>' +
         likeInfoHtml(c, likeMap) +
@@ -471,7 +471,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
   } else {
     for (var b = 0; b < blocks.length; b++) {
       var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
-      h += '<div class="mgmt-row"><span>' + escHtml(bk.mail) + (bk.ip ? '<small style="color:var(--jp-muted)">（IP ' + escHtml(bk.ip) + '）</small>' : '') + '</span>' +
+      h += '<div class="mgmt-row"><span>' + escHtml(bk.mail) + (bk.ip ? '<small style="color:var(--jp-muted)">（IP ' + escHtml(bk.ip) + '）</small>' : '') + '</span>' + (bk.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(bk.ip) + '" title="复制IP">复制</button>' : '') +
         '<button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
     }
   }

@@ -278,9 +278,9 @@
     '.qw-mgmt-item button:hover{color:#e05b5b;}',
     '.qw-log-item{padding:7px 0;border-bottom:1px dashed var(--jp-line);font-size:11px;color:var(--jp-text);line-height:1.5;word-break:break-all;}',
     '.qw-log-item .qw-log-sub{display:block;color:var(--jp-muted);font-size:10px;line-height:1.4;margin-top:2px;}',
-    '.qw-log-item .qw-log-copy{margin-left:5px;padding:0 7px;font-size:10px;line-height:1.6;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer;vertical-align:1px;}',
-    '.qw-log-item .qw-log-copy:hover{background:rgba(129,140,248,0.12);}',
-    '.qw-log-item .qw-log-copy.ok{color:#34d399;border-color:rgba(52,211,153,0.4);}',
+    '.qw-log-item .qw-log-copy,.qw-admin-item .qw-log-copy,.qw-mgmt-item .qw-log-copy{margin-left:5px;padding:0 7px;font-size:10px;line-height:1.6;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer;vertical-align:1px;}',
+    '.qw-log-item .qw-log-copy:hover,.qw-admin-item .qw-log-copy:hover,.qw-mgmt-item .qw-log-copy:hover{background:rgba(129,140,248,0.12);}',
+    '.qw-log-item .qw-log-copy.ok,.qw-admin-item .qw-log-copy.ok,.qw-mgmt-item .qw-log-copy.ok{color:#34d399;border-color:rgba(52,211,153,0.4);}',
     '.qw-mgmt-input-row{display:flex;gap:6px;margin:8px 0;}',
     '.qw-mgmt-input-row input{flex:1;border:1px solid var(--jp-line);border-radius:7px;background:var(--jp-paper);color:var(--jp-ink);padding:7px 10px;font-size:11px;outline:none;}',
     '.qw-mgmt-input-row input:focus{border-color:var(--jp-accent);}',
@@ -1081,7 +1081,7 @@
         html += '<div class="qw-admin-item" data-id="' + c._id + '">' +
           '<div class="qw-hd"><span class="qw-nick">' + escHtml(c.nick || '匿名') + '</span>' +
           (c.mail ? '<span class="qw-mail">' + escHtml(c.mail) + '</span>' : '') +
-          (c.ip ? '<span class="qw-ip">' + escHtml(c.ip) + '</span>' : '') +
+          (c.ip ? '<span class="qw-ip">' + escHtml(c.ip) + '</span><button class="qw-log-copy" data-ip="' + escAttr(c.ip) + '" title="复制IP">复制</button>' : '') +
           '<span class="qw-tm">' + fmtTime(c.created) + '</span></div>' +
           '<div class="qw-cmt">' + escHtml(stripHtml(c.comment)) + '</div>' +
           likeInfoHtml(c, likeMap) +
@@ -1101,7 +1101,7 @@
         for (var b = 0; b < blocks.length; b++) {
           var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
           var bkLabel = bk.mail + (bk.ip ? '（IP ' + bk.ip + '）' : '');
-          html += '<div class="qw-mgmt-item"><span>' + escHtml(bkLabel) + '</span><button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
+          html += '<div class="qw-mgmt-item"><span>' + escHtml(bkLabel) + '</span>' + (bk.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(bk.ip) + '" title="复制IP">复制</button>' : '') + '<button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
         }
       }
       html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-blk-input" placeholder="输入邮箱或昵称进行拉黑"><button class="qw-add-blk" data-act="add-blk">拉黑</button></div></div>';
@@ -1184,6 +1184,100 @@
     });
     bindLogToggle();
   }
+
+  // 给管理面板里所有 IP 行补上归属地
+  function enrichIps() {
+    var rows = document.querySelectorAll('#qw-admin-body .qw-log-item, #qw-admin-body .qw-admin-item');
+    rows.forEach(function (it) {
+      if (it.getAttribute('data-ip-done')) return;
+      var sub = it.querySelector('.qw-log-sub') || it.querySelector('.qw-ip');
+      var text = it.innerText || '';
+      var m = text.match(/IP\s*([0-9a-fA-F:.]+)/);
+      if (!m) return;
+      it.setAttribute('data-ip-done', '1');
+      var ip = m[1];
+      getIpLocation(ip, function (loc) {
+        if (!loc) return;
+        var target = sub || it;
+        if (target && target.textContent.indexOf(loc) < 0) {
+          target.appendChild(document.createTextNode(' · ' + loc));
+        }
+      });
+    });
+  }
+  // 局部切换日志分类：只重建日志区块，不重载整个后台管理
+  function handleSetLogCat(cat) {
+    adminLogFilter = cat;
+    var sec = document.getElementById('qw-log-section');
+    if (sec) {
+      sec.innerHTML = buildLogHtml(adminLogs);
+      bindLogToggle();
+      enrichIps();
+    }
+  }
+  function bindLogToggle() {
+    var btns = document.querySelectorAll('#qw-log-section [data-act="set-logcat"]');
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () { handleSetLogCat(b.getAttribute('data-cat') || 'all'); });
+    });
+    document.querySelectorAll('#qw-log-section [data-act="del-log"]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-id');
+        if (!id) return;
+        adminPost({ event: 'QW_LOG_DELETE', accessToken: adminToken, id: id }).then(function (r) {
+          if (r && r.code === 0) {
+            var row = btn.closest('.qw-log-item');
+            if (row) row.parentNode.removeChild(row);
+          } else {
+            alert((r && r.message) || '删除失败');
+          }
+        });
+      });
+    });
+  }
+
+  function escHtml(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function stripHtml(html) {
+    var d = document.createElement('div');
+    d.innerHTML = html || '';
+    return d.textContent || '';
+  }
+  function escAttr(s) {
+    return escHtml(s).replace(/'/g, '&#39;');
+  }
+
+  // 复制IP（事件委托，兼容日志区块局部刷新）
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.qw-log-copy') : null;
+    if (!btn) return;
+    var ip = btn.getAttribute('data-ip');
+    if (!ip) return;
+    function copied() {
+      btn.textContent = '已复制';
+      btn.classList.add('ok');
+      setTimeout(function () { btn.textContent = '复制'; btn.classList.remove('ok'); }, 1500);
+    }
+    function legacyCopy() {
+      var ta = document.createElement('textarea');
+      ta.value = ip;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;';
+      ta.style.webkitUserSelect = 'text';
+      ta.style.userSelect = 'text';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) copied();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ip).then(copied, legacyCopy);
+    } else {
+      legacyCopy();
+    }
+  });
 
   // 把浏览器 UA 翻译成人话
   function parseUa(ua) {
