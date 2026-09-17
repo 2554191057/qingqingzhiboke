@@ -775,6 +775,19 @@ window.addEventListener('load', function() {
   onScroll();
 })();
 </script>
+<script>
+// 日夜间切换
+(function(){
+  var btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', cur);
+    try { localStorage.setItem('qw_theme', cur); } catch(e){}
+  });
+  try { var saved = localStorage.getItem('qw_theme'); if (saved) document.documentElement.setAttribute('data-theme', saved); } catch(e){}
+})();
+</script>
 </body>
 </html>
 

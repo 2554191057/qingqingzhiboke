@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -126,18 +126,15 @@ if (!sessionStorage.getItem('auth_ok')) {
             <span class="logo-icon">🧑‍💻</span>
             <span class="logo-text">庆庆纸天天开心</span>
         </a>
-        <nav class="navbar-nav">
+        <nav class="navbar-nav" id="navbarNav">
             <a href="boke.html#home" class="nav-item"><i class="fa-solid fa-house"></i><span>首页</span></a>
             <a href="boke.html#about" class="nav-item"><i class="fa-solid fa-user"></i><span>关于</span></a>
             <a href="boke.html#social" class="nav-item"><i class="fa-solid fa-comment-dots"></i><span>联系</span></a>
             <a href="wenzhang.html#blog" class="nav-item"><i class="fa-solid fa-book-open"></i><span>文章</span></a>
             <a href="wangpan.html#resources" class="nav-item"><i class="fa-solid fa-cloud-arrow-down"></i><span>资源</span></a>
             <a href="fklts.html" class="nav-item"><i class="fa-solid fa-comments"></i><span>聊天室</span></a>
+            <button class="nav-item" id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式" style="margin-left:auto;border:none;background:none;cursor:pointer;color:inherit;font-size:14px;display:flex;align-items:center;gap:5px;"><i class="fa-solid fa-circle-half-stroke"></i><span>日/夜</span></button>
         </nav>
-        <button class="theme-toggle" id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式">
-            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
     </div>
 </header>
 
@@ -354,6 +351,19 @@ window.addEventListener('load', function() {
         icon.style.marginTop = '20px';
     });
 });
+</script>
+<script>
+// 日夜间切换
+(function(){
+  var btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', cur);
+    try { localStorage.setItem('qw_theme', cur); } catch(e){}
+  });
+  try { var saved = localStorage.getItem('qw_theme'); if (saved) document.documentElement.setAttribute('data-theme', saved); } catch(e){}
+})();
 </script>
 </body>
 </html>
