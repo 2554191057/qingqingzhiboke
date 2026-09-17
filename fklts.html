@@ -257,6 +257,8 @@ document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
     document.getElementById('navbarNav').classList.remove('open');
     var href = item.getAttribute('href');
     if(href && (href.indexOf('fklts.html') !== -1 || href.indexOf('chat.html') !== -1)) { e.preventDefault(); if(typeof openChat === 'function') openChat(); else setTimeout(function(){var b=document.getElementById('qw-launcher');if(b)b.click();},100); return false; }
+  });
+});
 </script></body>
 </html>
 
