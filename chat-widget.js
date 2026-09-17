@@ -1138,35 +1138,36 @@
     }
     return h + '</div>';
   }
-  // IP 归属地查询（JSONP 调 pconline，结果缓存本地）
+  // IP 归属地查询（ipwho.is，免费跨域，结果缓存本地）
   var ipLocCache = {};
   try { ipLocCache = JSON.parse(localStorage.getItem('qw_ip_loc') || '{}'); } catch (e) {}
+  var provinceMap = {
+    'beijing': '北京', 'shanghai': '上海', 'tianjin': '天津', 'chongqing': '重庆',
+    'guangdong': '广东', 'jiangsu': '江苏', 'zhejiang': '浙江', 'shandong': '山东',
+    'henan': '河南', 'hebei': '河北', 'hunan': '湖南', 'hubei': '湖北', 'sichuan': '四川',
+    'fujian': '福建', 'anhui': '安徽', 'jiangxi': '江西', 'liaoning': '辽宁',
+    'shanxi': '山西', 'shaanxi': '陕西', 'heilongjiang': '黑龙江', 'jilin': '吉林',
+    'guangxi': '广西', 'yunnan': '云南', 'guizhou': '贵州', 'gansu': '甘肃',
+    'inner mongolia': '内蒙古', 'xinjiang': '新疆', 'xizang': '西藏', 'qinghai': '青海',
+    'ningxia': '宁夏', 'hainan': '海南', 'hong kong': '香港', 'macau': '澳门', 'taiwan': '台湾'
+  };
   function getIpLocation(ip, cb) {
     if (!ip || !/^\d+\.\d+\.\d+\.\d+$/.test(ip)) return cb('');
     if (ipLocCache[ip]) return cb(ipLocCache[ip]);
-    var cbName = 'qw_ipcb_' + Math.random().toString(36).slice(2);
-    var timer = setTimeout(function () {
-      try { delete window[cbName]; } catch (e) {}
-      var s = document.getElementById(cbName); if (s && s.parentNode) s.parentNode.removeChild(s);
-      cb('');
-    }, 5000);
-    window[cbName] = function (data) {
-      clearTimeout(timer);
-      try {
-        var loc = (data.pro || '') + (data.city || '') + (data.isp ? ' ' + data.isp : '');
-        if (loc) {
-          ipLocCache[ip] = loc;
-          try { localStorage.setItem('qw_ip_loc', JSON.stringify(ipLocCache)); } catch (e) {}
-        }
-        cb(loc);
-      } catch (e) { cb(''); }
-      try { delete window[cbName]; } catch (e) {}
-      var s = document.getElementById(cbName); if (s && s.parentNode) s.parentNode.removeChild(s);
-    };
-    var s = document.createElement('script');
-    s.id = cbName;
-    s.src = 'https://whois.pconline.com.cn/ipJson.jsp?ip=' + ip + '&jsonp=' + cbName;
-    document.head.appendChild(s);
+    fetch('https://ipwho.is/' + ip).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d || d.success === false) return cb('');
+      var prov = (d.region || '').toLowerCase().replace(/\s*(sheng|province|auto autonomous|region)\s*/g, '').trim();
+      var provCn = provinceMap[prov] || d.region || '';
+      var city = d.city || '';
+      var isp = (d.connection && d.connection.isp) || '';
+      var loc = (provCn ? provCn + ' ' : '') + city + (isp ? ' ' + isp : '');
+      loc = loc.trim();
+      if (loc) {
+        ipLocCache[ip] = loc;
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify(ipLocCache)); } catch (e) {}
+      }
+      cb(loc);
+    }).catch(function () { cb(''); });
   }
   // 给管理面板里所有 IP 行补上归属地
   function enrichIps() {
