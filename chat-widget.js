@@ -1098,6 +1098,28 @@
     bindLogToggle();
   }
 
+  // 把浏览器 UA 翻译成人话
+  function parseUa(ua) {
+    if (!ua) return '未知设备';
+    var s = ua;
+    var isMobile = /Mobile|Android|iPhone/i.test(s);
+    var isPad = /iPad|Tablet/i.test(s);
+    var dev = isPad ? '平板' : (isMobile ? '手机' : '电脑');
+    var os = '未知系统';
+    if (/Windows NT 10/.test(s)) os = 'Windows';
+    else if (/iPhone|iPad/.test(s)) os = 'iOS';
+    else if (/Mac OS X/.test(s)) os = 'Mac';
+    else if (/Android/.test(s)) os = 'Android';
+    else if (/Linux/.test(s)) os = 'Linux';
+    var br = '浏览器';
+    if (/Edg\//.test(s)) br = 'Edge';
+    else if (/Chrome\//.test(s) && !/OPR/.test(s)) br = 'Chrome';
+    else if (/Firefox\//.test(s)) br = 'Firefox';
+    else if (/Safari\//.test(s)) br = 'Safari';
+    else if (/OPR\//.test(s)) br = 'Opera';
+    return dev + ' · ' + os + ' · ' + br;
+  }
+
   // 构建操作日志区块 HTML（含筛选按钮），配合局部刷新
   function buildLogHtml(logs) {
     var h = '<h4 style="display:flex;align-items:center;justify-content:space-between">操作日志（最近100条）' +
@@ -1110,7 +1132,7 @@
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
         var tstr = new Date(lg.time).toLocaleString('zh-CN');
-        h += '<div class="qw-log-item">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">' + escHtml(lg.ip || '') + ' · ' + escHtml((lg.ua || '').slice(0, 80)) + '</span></div>';
+        h += '<div class="qw-log-item">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + ' · ' + parseUa(lg.ua) + '</span></div>';
       }
     }
     return h + '</div>';
