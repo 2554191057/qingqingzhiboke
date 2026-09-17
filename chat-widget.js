@@ -435,6 +435,12 @@
         path: 'chat',
         lang: 'zh-CN',
         requiredMeta: ['nick', 'mail'],
+        avatarUrl: function(c){
+          var mail = (c && c.mail) || '';
+          var m = mail.match(/^(\d+)@qq\.com$/i);
+          if(m) return 'https://q.qlogo.cn/headimg_dl?dst_uin=' + m[1] + '&spec=100';
+          return '';
+        },
         onCommentLoaded: function () { scheduleMark(); }
         ,onCommentSubmit: function (e) { try { logAction('发言', '内容:' + String((e && e.comment) || '').slice(0, 50)); } catch (ex) {} }
       });
