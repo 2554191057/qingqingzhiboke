@@ -1046,7 +1046,7 @@
   // 管理员面板只能点 X 关闭（不响应 Esc 和遮罩点击）
 
   // 赞/踩操作：赞与踩互斥自动切换（已赞点踩=取消赞变踩，反之亦然）；再点同一个=取消；持久高亮
-  document.addEventListener('click', function (e) {
+  document.addEventListener('click', true, function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('.qw-body #twikoo .tk-comment .tk-action-link') : null;
     if (!btn) return;
     var comment = btn.closest('.tk-comment');
@@ -1058,7 +1058,11 @@
     var isLike = links.length && btn === likeBtn;
     var isDislike = links.length > 1 && btn === dislikeBtn;
     var isReply = links.length > 2 && btn === links[2];
-    if ((isLike || isDislike) && !isLoggedIn()) { openLogin(); return; }
+    if ((isLike || isDislike) && !isLoggedIn()) {
+      e.preventDefault(); e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      openLogin(); return;
+    }
     if (isReply) {
       e.preventDefault();
       e.stopPropagation();
