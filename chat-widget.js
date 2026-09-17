@@ -33,6 +33,9 @@
     '.qw-icon-btn:hover{background:var(--jp-glow);color:var(--jp-ink);}',
     '.qw-icon-btn.qw-spinning svg{animation:qwSpin .8s linear infinite;}',
     '@keyframes qwSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}',
+    '.qw-dots{display:inline-block;width:20px;text-align:left;}',
+    '.qw-dots::after{content:"";animation:qwDots 1.2s steps(4,end) infinite;}',
+    '@keyframes qwDots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}',
     '.qw-logout-btn{display:none;padding:6px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:var(--jp-paper);color:var(--jp-muted);cursor:pointer;transition:all .2s ease;}',
     '.qw-logout-btn:hover{color:#e05b5b;border-color:#e05b5b;}',
     '.qw-panel.qw-logged-in .qw-logout-btn{display:block;}',
@@ -789,10 +792,16 @@
       e.preventDefault();
       e.stopPropagation();
       chatRefreshBtn.classList.add('qw-spinning');
-      if (window.twikoo) {
-        window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
+      var tcomment = document.getElementById('tcomment');
+      if (tcomment) {
+        tcomment.innerHTML = '<div style="text-align:center;padding:50px 0;color:var(--jp-muted);font-size:13px;" class="qw-refresh-loading">正在刷新聊天数据<span class="qw-dots"></span></div>';
       }
-      setTimeout(function(){ chatRefreshBtn.classList.remove('qw-spinning'); }, 1500);
+      setTimeout(function() {
+        if (window.twikoo) {
+          window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
+        }
+      }, 500);
+      setTimeout(function(){ chatRefreshBtn.classList.remove('qw-spinning'); }, 2000);
     });
   }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
