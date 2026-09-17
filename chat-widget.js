@@ -1,23 +1,20 @@
 /* =============================================
-   庆庆纸博客 · 全站悬浮聊天室（qiguangji ChatRoom 风格 · Twikoo 后端）
-   右下角悬浮按钮 → 点击弹出 460px 居中面板；关闭后回到原页面，不跳转。
-   引用方式：<script src="chat-widget.js?v=1"></script>（放在 script.js 之后）
-   ============================================= */
+   搴嗗簡绾稿崥瀹?路 鍏ㄧ珯鎮诞鑱婂ぉ瀹わ紙qiguangji ChatRoom 椋庢牸 路 Twikoo 鍚庣锛?   鍙充笅瑙掓偓娴寜閽?鈫?鐐瑰嚮寮瑰嚭 460px 灞呬腑闈㈡澘锛涘叧闂悗鍥炲埌鍘熼〉闈紝涓嶈烦杞€?   寮曠敤鏂瑰紡锛?script src="chat-widget.js?v=1"></script>锛堟斁鍦?script.js 涔嬪悗锛?   ============================================= */
 (function () {
   'use strict';
   if (window.__chatWidgetLoaded) return;
   window.__chatWidgetLoaded = true;
 
   var CSS = [
-    '/* ===== 悬浮聊天室（qiguangji 主题色板） ===== */',
+    '/* ===== 鎮诞鑱婂ぉ瀹わ紙qiguangji 涓婚鑹叉澘锛?===== */',
     ':root { --jp-paper:#edf2fa; --jp-surface:rgba(255,255,255,.94); --jp-ink:#182641; --jp-muted:#62728e; --jp-line:#cedaed; --jp-accent:#087fa8; --jp-blue:#4c67eb; --jp-glow:rgba(16,147,195,.14); }',
     '[data-theme="dark"] { --jp-paper:#080e1c; --jp-surface:rgba(15,24,43,.96); --jp-ink:#e5edff; --jp-muted:#8a9dbd; --jp-line:#23324f; --jp-accent:#50d3f6; --jp-blue:#8291ff; --jp-glow:rgba(63,199,249,.12); }',
-    '/* 右下角悬浮按钮 */',
+    '/* 鍙充笅瑙掓偓娴寜閽?*/',
     '.qw-launcher{position:fixed;z-index:45;right:22px;bottom:340px;display:flex;gap:9px;align-items:center;border:1px solid var(--jp-accent);padding:12px 17px;background:var(--jp-surface);border-radius:10px;box-shadow:0 0 30px var(--jp-glow),0 8px 24px rgba(0,0,0,.18);font-size:12px;color:var(--jp-accent);cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}',
     '.qw-launcher:hover{transform:translateY(-3px);box-shadow:0 0 40px var(--jp-glow),0 12px 30px rgba(0,0,0,.22);}',
     '.qw-launcher svg{flex-shrink:0;}',
     '.qw-launcher .qw-dot{width:5px;height:5px;border-radius:50%;background:#3ecf6a;box-shadow:0 0 6px rgba(62,207,106,.7);}',
-    '/* 遮罩 + 面板 */',
+    '/* 閬僵 + 闈㈡澘 */',
     '.qw-backdrop{position:fixed;inset:0;z-index:100;background:rgba(1,6,17,.65);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px;}',
     '.qw-backdrop.qw-open{display:flex;animation:qwFade .25s ease;}',
     '.qw-panel{position:relative;width:620px;max-width:95vw;max-height:calc(100dvh - 40px);min-width:380px;min-height:500px;height:720px;display:flex;flex-direction:column;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;box-shadow:0 28px 100px rgba(0,0,0,.4),0 0 40px var(--jp-glow);overflow:hidden;color:var(--jp-ink);animation:qwPop .3s cubic-bezier(.16,1,.3,1);resize:none;}',
@@ -65,8 +62,8 @@
     '.qw-notice{font-size:10px;color:var(--jp-muted);padding:12px 20px;background:var(--jp-glow);}',
     '.qw-login-mask{display:flex;flex-direction:column;flex:1;min-height:0;}',
 '.qw-body{padding:0 20px 18px;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;}',
-    '/* ===== Twikoo → qiguangji 覆盖 ===== */',
-    '/* 消息流在上、输入区在底部（qiguangji 聊天室顺序） */',
+    '/* ===== Twikoo 鈫?qiguangji 瑕嗙洊 ===== */',
+    '/* 娑堟伅娴佸湪涓娿€佽緭鍏ュ尯鍦ㄥ簳閮紙qiguangji 鑱婂ぉ瀹ら『搴忥級 */',
     '.qw-body #tcomment{--twikoo-bg:transparent;--twikoo-theme-bg:transparent;display:flex;flex:1;min-height:0;}',
     '.qw-body #twikoo{background:transparent!important;display:flex!important;flex-direction:column!important;min-height:0!important;flex:1!important;}',
     '.qw-body #twikoo .tk-comments{order:1!important;flex:1 1 auto!important;min-height:0!important;display:flex!important;flex-direction:column!important;}',
@@ -87,9 +84,9 @@
     '.qw-body #twikoo .tk-input textarea{border:1px solid var(--jp-line)!important;border-radius:7px!important;background:var(--jp-paper)!important;color:var(--jp-ink)!important;font-size:12px!important;padding:9px 11px!important;resize:vertical;max-height:140px;box-shadow:none!important;width:100%!important;}',
     '.qw-body #twikoo .tk-input textarea:focus{outline:1px solid var(--jp-accent)!important;}',
     '.qw-body #twikoo .el-input__count{color:var(--jp-muted)!important;font-size:10px!important;}',
-    /* 底部输入区：常显聊天框（原"写评论"折叠按钮已移除） */
+    /* 搴曢儴杈撳叆鍖猴細甯告樉鑱婂ぉ妗嗭紙鍘?鍐欒瘎璁?鎶樺彔鎸夐挳宸茬Щ闄わ級 */
     '.qw-comment-btn{display:none!important;}',
-    /* 聊天框布局：昵称/邮箱一行 + 输入框 + 发送（紧凑） */
+    /* 鑱婂ぉ妗嗗竷灞€锛氭樀绉?閭涓€琛?+ 杈撳叆妗?+ 鍙戦€侊紙绱у噾锛?*/
     '.qw-body #twikoo .tk-meta-input{grid-template-columns:1fr 1fr;gap:8px;}',
     '.qw-body #twikoo .tk-input.el-textarea{margin-top:10px!important;}',
     '.qw-body #twikoo .tk-input textarea{min-height:44px!important;max-height:110px;resize:none!important;border-radius:10px!important;font-size:13px!important;line-height:1.6!important;}',
@@ -109,21 +106,21 @@
     '.qw-body #twikoo .tk-pagination{display:none!important;}',
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
-    /* Twikoo 原生回复提示条隐藏（用自绘 .qw-reply-bar 替代） */
+    /* Twikoo 鍘熺敓鍥炲鎻愮ず鏉￠殣钘忥紙鐢ㄨ嚜缁?.qw-reply-bar 鏇夸唬锛?*/
     '.qw-body #twikoo [class*=comment-parent]{display:none!important;}',
-    /* 微信风：发送按钮与输入框同行右侧 */
+    /* 寰俊椋庯細鍙戦€佹寜閽笌杈撳叆妗嗗悓琛屽彸渚?*/
     '.qw-body #twikoo .tk-row-actions-start{display:flex!important;justify-content:flex-end!important;margin-top:6px!important;}',
-    /* 自绘微信风回复预览条 */
+    /* 鑷粯寰俊椋庡洖澶嶉瑙堟潯 */
     '.qw-reply-bar{display:flex;align-items:center;gap:8px;background:var(--jp-paper)!important;border:1px solid var(--jp-line)!important;border-radius:8px;padding:6px 10px;margin:0 0 8px;font-size:11px;color:var(--jp-muted);}',
     '.qw-reply-bar .qw-reply-nick{color:var(--jp-accent)!important;font-weight:600;flex-shrink:0;}',
     '.qw-reply-bar .qw-reply-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}',
     '.qw-reply-bar .qw-reply-cancel{cursor:pointer;color:var(--jp-muted);flex-shrink:0;padding:0 4px;font-size:14px;line-height:1;}',
     '.qw-reply-bar .qw-reply-cancel:hover{color:var(--jp-ink);}',
-    /* 访客登录：header 登录按钮 */
+    /* 璁垮鐧诲綍锛歨eader 鐧诲綍鎸夐挳 */
     '.qw-login-btn{background:transparent;border:1px solid var(--jp-line);color:var(--jp-muted);border-radius:7px;padding:5px 11px;font-size:11px;cursor:pointer;transition:all .15s ease;}',
     '.qw-login-btn:hover{border-color:var(--jp-accent);color:var(--jp-accent);}',
     '.qw-login-btn.qw-logged-in{color:var(--jp-accent);border-color:var(--jp-accent);font-weight:600;}',
-    /* 登录弹窗 */
+    /* 鐧诲綍寮圭獥 */
     '.qw-login-backdrop{position:fixed;inset:0;z-index:200;background:rgba(1,6,17,.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;}',
     '.qw-login-backdrop.qw-open{display:flex;animation:qwFade .2s ease;}',
     '.qw-login-panel{position:relative;width:340px;max-width:100%;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;padding:0;box-shadow:0 18px 60px rgba(0,0,0,.45),0 0 30px var(--jp-glow);overflow:hidden;animation:qwPop .25s cubic-bezier(.16,1,.3,1);}',
@@ -151,7 +148,7 @@
     '.qw-login-toggle b{color:var(--jp-accent);cursor:pointer;font-weight:600;}',
     '.qw-login-msg{text-align:center;margin:8px 0 0;font-size:11px;color:#e74c3c;min-height:14px;}',
     '.qw-login-msg.qw-ok{color:#2ecc71;}',
-    /* 未登录：底部登录条（qiguangji 风格） */
+    /* 鏈櫥褰曪細搴曢儴鐧诲綍鏉★紙qiguangji 椋庢牸锛?*/
     '.qw-login-bar{display:none;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-top:1px solid var(--jp-line);flex-shrink:0;}',
     '.qw-login-mask.qw-needs-login .qw-login-bar{display:flex;}',
     '.qw-login-mask.qw-needs-login .qw-body #twikoo .tk-submit{display:none!important;}',
@@ -161,7 +158,7 @@
     '.qw-login-bar .qw-lb-btn:hover{opacity:.92;}',
     '.qw-login-bar .qw-lb-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}',
     '.qw-login-bar .qw-lb-right p{margin:0;font-size:10px;color:var(--jp-muted);}',
-    /* ===== 聊天气泡布局：自己右侧、别人左侧 ===== */
+    /* ===== 鑱婂ぉ姘旀场甯冨眬锛氳嚜宸卞彸渚с€佸埆浜哄乏渚?===== */
     '.qw-body #twikoo .tk-comment{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
     '.qw-body #twikoo .tk-comment.tk-self{flex-direction:row-reverse!important;}',
     '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;border-radius:50%!important;overflow:hidden!important;flex-shrink:0;margin:0!important;background:var(--jp-glow)!important;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--jp-accent)!important;font-weight:600;}.qw-body #twikoo .tk-comment .tk-avatar, .qw-body #twikoo .tk-comment .tk-nick a, .qw-body #twikoo .tk-comment .tk-nick{pointer-events:none!important;cursor:default!important;text-decoration:none!important;}',
@@ -173,23 +170,23 @@
     '.qw-body #twikoo .tk-meta{display:flex;align-items:baseline;gap:10px;font-size:10px!important;color:var(--jp-muted)!important;}',
     '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
     '.qw-body #twikoo .tk-time time{font-size:10px!important;color:var(--jp-muted)!important;}',
-    /* ===== 昵称移到气泡左上方 ===== */
+    /* ===== 鏄电О绉诲埌姘旀场宸︿笂鏂?===== */
     '.qw-body #twikoo .tk-comment{flex-wrap:nowrap!important;}',
     '.qw-body #twikoo .tk-comment .tk-nick{display:block!important;margin:0 0 3px!important;padding:0 4px!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-nick{text-align:right!important;}',
     '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
     '.qw-body #twikoo .tk-comment .tk-row .tk-nick,.qw-body #twikoo .tk-comment .tk-row-head .tk-nick,.qw-body #twikoo .tk-comment .tk-head .tk-nick{display:none!important;}',
     '.qw-body #twikoo .tk-comment .tk-row .tk-mail,.qw-body #twikoo .tk-comment .tk-row-head .tk-mail{display:inline!important;}',
-    /* 昵称/操作移走后，头部行只余隐藏时间，直接隐藏 */
+    /* 鏄电О/鎿嶄綔绉昏蛋鍚庯紝澶撮儴琛屽彧浣欓殣钘忔椂闂达紝鐩存帴闅愯棌 */
     '.qw-body #twikoo .tk-comment .tk-row{display:none!important;}',
-    /* ===== 气泡：自适应宽度 + 小尾巴角标，与头像平齐 ===== */
+    /* ===== 姘旀场锛氳嚜閫傚簲瀹藉害 + 灏忓熬宸磋鏍囷紝涓庡ご鍍忓钩榻?===== */
     '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:12px 12px 12px 4px!important;padding:7px 12px!important;font-size:12px!important;line-height:1.55!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;width:fit-content!important;max-width:100%!important;min-width:0!important;position:relative!important;}',
     '.qw-body #twikoo .tk-content:before{content:""!important;position:absolute!important;top:12px!important;left:-6px!important;border:6px solid transparent!important;border-left-width:0!important;border-right-color:var(--jp-surface)!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:12px 12px 4px 12px!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content:before{left:auto!important;right:-6px!important;border-right-width:0!important;border-left-width:6px!important;border-right-color:transparent!important;border-left-color:rgba(16,147,195,.16)!important;}',
-    /* ===== 操作按钮：移到气泡下方横排（常显长条） ===== */
+    /* ===== 鎿嶄綔鎸夐挳锛氱Щ鍒版皵娉′笅鏂规í鎺掞紙甯告樉闀挎潯锛?===== */
     '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:1!important;}',
-    /* 已点赞高亮（本地记录，服务端 liked 状态不可用） */
+    /* 宸茬偣璧為珮浜紙鏈湴璁板綍锛屾湇鍔＄ liked 鐘舵€佷笉鍙敤锛?*/
     '.qw-body #twikoo .tk-action-link.qw-liked{color:var(--jp-accent)!important;font-weight:600!important;}',
     '.qw-body #twikoo .tk-action-link.qw-liked .tk-action-icon{transform:scale(1.08);}',
     '.qw-body #twikoo .tk-action-link.qw-disliked{color:#e74c3c!important;font-weight:600!important;}',
@@ -201,25 +198,25 @@
     '.qw-body #twikoo .tk-action-count{font-size:10px!important;}',
     '.qw-body #twikoo .tk-content p{color:var(--jp-ink)!important;margin:0!important;}',
     '.qw-body #twikoo .tk-content a{color:var(--jp-accent)!important;}',
-    /* ===== 微信聊天流：隐藏评论区元素（统计/排序/设备/footer） ===== */
+    /* ===== 寰俊鑱婂ぉ娴侊細闅愯棌璇勮鍖哄厓绱狅紙缁熻/鎺掑簭/璁惧/footer锛?===== */
     '.qw-body #twikoo .tk-comments-title,.qw-body #twikoo .tk-action-bar,.qw-body #twikoo .tk-comments-switch,.qw-body #twikoo .tk-extra,.qw-body #twikoo .tk-extras,.qw-body #twikoo .tk-footer{display:none!important;}',
     '.qw-body #twikoo .tk-comments-container{padding-top:6px!important;}',
-    /* 时间用居中时间条显示（微信式），隐藏每条小时间 */
+    /* 鏃堕棿鐢ㄥ眳涓椂闂存潯鏄剧ず锛堝井淇″紡锛夛紝闅愯棌姣忔潯灏忔椂闂?*/
     '.qw-body #twikoo .tk-time{display:none!important;}',
     '.qw-body #twikoo .qw-time-sep{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:10px 0 6px!important;opacity:.8!important;letter-spacing:.5px!important;}',
-    /* 气泡（紧凑） */
+    /* 姘旀场锛堢揣鍑戯級 */
     '.qw-body #twikoo .tk-comment{margin-bottom:7px!important;}',
     '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;font-size:17px!important;}',
     '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 48px)!important;}',
-    /* ===== QQ式引用回复：气泡内引用栏（细淡灰条） ===== */
+    /* ===== QQ寮忓紩鐢ㄥ洖澶嶏細姘旀场鍐呭紩鐢ㄦ爮锛堢粏娣＄伆鏉★級 ===== */
     '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.1)!important;border-left:3px solid var(--jp-accent)!important;border-radius:4px!important;padding:4px 9px!important;font-size:11px!important;line-height:1.5!important;color:var(--jp-muted)!important;margin:0 0 5px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;opacity:.85;}',
     '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{display:none!important;}',
     '.qw-body #twikoo .tk-expand-wrap,.qw-body #twikoo .tk-expand{display:none!important;}',
     '.qw-body #twikoo .tk-footer{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:12px 0 0!important;background:transparent!important;}',
     '.qw-body #twikoo .tk-footer a,.qw-body #twikoo .tk-footer .tk-action-link{color:var(--jp-muted)!important;}',
-    /* Twikoo 管理抽屉（隐藏，改用自绘管理面板） */
+    /* Twikoo 绠＄悊鎶藉眽锛堥殣钘忥紝鏀圭敤鑷粯绠＄悊闈㈡澘锛?*/
     '.qw-body #twikoo .tk-admin-container{display:none!important;}',
-    /* ===== 自绘管理员面板（毛玻璃 · 日夜自适应） ===== */
+    /* ===== 鑷粯绠＄悊鍛橀潰鏉匡紙姣涚幓鐠?路 鏃ュ鑷€傚簲锛?===== */
     '.qw-admin-backdrop{position:fixed;inset:0;z-index:130;background:rgba(1,6,17,.68);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;}',
     '.qw-admin-backdrop.qw-open{display:flex;animation:qwFade .25s ease;}',
     '.qw-admin-panel{width:min(560px,100%);max-height:calc(100dvh - 40px);display:flex;flex-direction:column;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;box-shadow:0 28px 100px rgba(0,0,0,.45),0 0 40px var(--jp-glow);overflow:hidden;color:var(--jp-ink);animation:qwPop .3s cubic-bezier(.16,1,.3,1);}',
@@ -237,7 +234,7 @@
     '.qw-admin-form button.qw-login{width:100%;margin-top:12px;padding:11px;border:none;border-radius:9px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s ease,transform .2s ease;}',
     '.qw-admin-form button.qw-login:hover{opacity:.9;transform:translateY(-1px);}',
     '.qw-admin-form button.qw-login:disabled{opacity:.55;cursor:not-allowed;}',
-    /* 聊天室登录遮罩 */
+    /* 鑱婂ぉ瀹ょ櫥褰曢伄缃?*/
     '.qw-login-overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(15,20,30,.88);backdrop-filter:blur(12px);border-radius:inherit;}',
     '.qw-login-card{width:82%;max-width:300px;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:16px;padding:22px 20px;box-shadow:0 12px 40px rgba(0,0,0,.4);}',
     '.qw-login-card h3{margin:0 0 4px;font-size:16px;color:var(--jp-ink);font-weight:700;text-align:center;}',
@@ -295,62 +292,62 @@
   ].join('\n');
 
   var HTML = '' +
-    '<button id="qw-launcher" class="qw-launcher" aria-label="打开聊天室" title="聊天室">' +
+    '<button id="qw-launcher" class="qw-launcher" aria-label="鎵撳紑鑱婂ぉ瀹? title="鑱婂ぉ瀹?>' +
     '<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>' +
-    '<span>聊天室</span><i class="qw-dot"></i></button>' +
+    '<span>鑱婂ぉ瀹?/span><i class="qw-dot"></i></button>' +
     '<div id="qw-backdrop" class="qw-backdrop">' +
     '<div class="qw-panel" role="dialog" aria-modal="true" aria-labelledby="qw-title">' +
 '<div class="qw-resize-handle" id="qw-resize-handle"></div>' +
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>' +
-    '<div><h2 id="qw-title">聊天室</h2><p><span class="qw-dot"></span>实时同步 · Powered by Twikoo</p></div>' +
+    '<div><h2 id="qw-title">鑱婂ぉ瀹?/h2><p><span class="qw-dot"></span>瀹炴椂鍚屾 路 Powered by Twikoo</p></div>' +
 
-    '<button class="qw-admin-btn" id="qw-admin-trigger" aria-label="聊天后台" title="聊天后台"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
-    '<button class="qw-settings-btn" id="qw-settings-btn" title="账号设置"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>' +
-    '<button class="qw-logout-btn" id="qw-logout-btn" title="退出登录">退出</button>' +
-    '<button type="button" class="qw-icon-btn" id="qw-resize-hint" aria-label="右下角缩放" title="右下角缩放" style="font-size:10px;gap:3px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>右下角缩放</button>' +
-    '<button type="button" class="qw-icon-btn" id="qw-chat-refresh" aria-label="刷新聊天" title="刷新聊天"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
-    '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+    '<button class="qw-admin-btn" id="qw-admin-trigger" aria-label="鑱婂ぉ鍚庡彴" title="鑱婂ぉ鍚庡彴"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
+    '<button class="qw-settings-btn" id="qw-settings-btn" title="璐﹀彿璁剧疆"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>' +
+    '<button class="qw-logout-btn" id="qw-logout-btn" title="閫€鍑虹櫥褰?>閫€鍑?/button>' +
+    '<button type="button" class="qw-icon-btn" id="qw-resize-hint" aria-label="鍙充笅瑙掔缉鏀? title="鍙充笅瑙掔缉鏀? style="font-size:10px;gap:3px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>鍙充笅瑙掔缉鏀?/button>' +
+    '<button type="button" class="qw-icon-btn" id="qw-chat-refresh" aria-label="鍒锋柊鑱婂ぉ" title="鍒锋柊鑱婂ぉ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
+    '<button class="qw-close" aria-label="鍏抽棴鑱婂ぉ瀹? title="鍏抽棴"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
-    '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
+    '<p class="qw-notice">搴嗗簡绾稿崥瀹㈠叕鍏遍閬?路 鍙嚜鐢辨祻瑙堬紝鐧诲綍鍚庡嵆鍙彂瑷€銆?/p>' +
     '<div class="qw-login-mask" id="qw-login-mask">' +
-    '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div>' +
-    '<div class="qw-login-bar"><div class="qw-lb-text"><h4>身份验证</h4><p>昵称和头像使用你的邮箱公开资料</p></div><div class="qw-lb-right"><p>登录后才可以发送消息</p><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div></div></div>' +
+    '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="鍐欒瘎璁?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>鍐欒瘎璁衡€?/button></div>' +
+    '<div class="qw-login-bar"><div class="qw-lb-text"><h4>韬唤楠岃瘉</h4><p>鏄电О鍜屽ご鍍忎娇鐢ㄤ綘鐨勯偖绠卞叕寮€璧勬枡</p></div><div class="qw-lb-right"><p>鐧诲綍鍚庢墠鍙互鍙戦€佹秷鎭?/p><button class="qw-lb-btn" id="qw-login-bar-btn">鐧?褰?/button></div></div></div>' +
     '</div></div>' +
-    /* 访客登录弹窗 */
+    /* 璁垮鐧诲綍寮圭獥 */
     '<div id="qw-settings-modal" class="qw-login-backdrop">' +
     '<div class="qw-login-panel">' +
     '<div class="qw-login-head">' +
     '<div class="qw-login-logo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>' +
-    '<h3 id="qw-set-current-nick">账号设置</h3><p id="qw-set-current-email">修改昵称、密码或邮箱</p>' +
+    '<h3 id="qw-set-current-nick">璐﹀彿璁剧疆</h3><p id="qw-set-current-email">淇敼鏄电О銆佸瘑鐮佹垨閭</p>' +
     '</div>' +
     '<div class="qw-login-tabs">' +
-    '<button type="button" class="qw-login-tab qw-active" id="qw-set-tab-nick" data-set="nick">改昵称</button>' +
-    '<button type="button" class="qw-login-tab" id="qw-set-tab-pwd" data-set="pwd">改密码</button>' +
-    '<button type="button" class="qw-login-tab" id="qw-set-tab-email" data-set="email">改邮箱</button>' +
+    '<button type="button" class="qw-login-tab qw-active" id="qw-set-tab-nick" data-set="nick">鏀规樀绉?/button>' +
+    '<button type="button" class="qw-login-tab" id="qw-set-tab-pwd" data-set="pwd">鏀瑰瘑鐮?/button>' +
+    '<button type="button" class="qw-login-tab" id="qw-set-tab-email" data-set="email">鏀归偖绠?/button>' +
     '</div>' +
     '<div class="qw-login-body">' +
     '<div class="qw-login-x" id="qw-settings-close-x" style="position:absolute;top:14px;right:16px;cursor:pointer;font-size:18px;line-height:1;color:var(--jp-muted);user-select:none;z-index:3;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s ease;">&times;</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-nick">' +
-    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">一周最多改3次，次日0点后才能再改；刚用过的昵称5秒后就能改回</p>' +
-    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><input type="text" id="qw-set-nick" placeholder="新昵称" maxlength="20" autocomplete="off"></div>' +
-    '<button class="qw-submit" id="qw-set-nick-save" style="margin-top:6px">保存昵称</button>' +
+    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">涓€鍛ㄦ渶澶氭敼3娆★紝娆℃棩0鐐瑰悗鎵嶈兘鍐嶆敼锛涘垰鐢ㄨ繃鐨勬樀绉?绉掑悗灏辫兘鏀瑰洖</p>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><input type="text" id="qw-set-nick" placeholder="鏂版樀绉? maxlength="20" autocomplete="off"></div>' +
+    '<button class="qw-submit" id="qw-set-nick-save" style="margin-top:6px">淇濆瓨鏄电О</button>' +
     '</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-pwd" style="display:none">' +
-    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">一周最多改3次，次日0点后才能再改</p>' +
-    '<div class="qw-login-field" id="qw-pwd-old-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-pwd-old-pwd" placeholder="当前密码"></div>' +
-    '<div class="qw-login-field" id="qw-pwd-code-field" style="display:none"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-pwd-code" placeholder="邮箱验证码" style="flex:1"><button type="button" class="qw-send-code" id="qw-set-pwd-sendcode">发码</button></div></div>' +
-    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd1" placeholder="新密码（至少4位）"></div>' +
-    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd2" placeholder="确认新密码"></div>' +
-    '<button class="qw-submit" id="qw-set-pwd-save" style="margin-top:6px">保存密码</button>' +
-    '<button type="button" id="qw-pwd-forgot" style="display:block;width:100%;margin-top:8px;border:none;background:none;color:var(--jp-accent);font-size:11px;cursor:pointer;text-decoration:underline;padding:4px 0;">忘记密码？通过邮箱验证码重置</button>' +
+    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">涓€鍛ㄦ渶澶氭敼3娆★紝娆℃棩0鐐瑰悗鎵嶈兘鍐嶆敼</p>' +
+    '<div class="qw-login-field" id="qw-pwd-old-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-pwd-old-pwd" placeholder="褰撳墠瀵嗙爜"></div>' +
+    '<div class="qw-login-field" id="qw-pwd-code-field" style="display:none"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-pwd-code" placeholder="閭楠岃瘉鐮? style="flex:1"><button type="button" class="qw-send-code" id="qw-set-pwd-sendcode">鍙戠爜</button></div></div>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd1" placeholder="鏂板瘑鐮侊紙鑷冲皯4浣嶏級"></div>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd2" placeholder="纭鏂板瘑鐮?></div>' +
+    '<button class="qw-submit" id="qw-set-pwd-save" style="margin-top:6px">淇濆瓨瀵嗙爜</button>' +
+    '<button type="button" id="qw-pwd-forgot" style="display:block;width:100%;margin-top:8px;border:none;background:none;color:var(--jp-accent);font-size:11px;cursor:pointer;text-decoration:underline;padding:4px 0;">蹇樿瀵嗙爜锛熼€氳繃閭楠岃瘉鐮侀噸缃?/button>' +
     '</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-email" style="display:none">' +
-    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">一周最多改3次，次日0点后才能再改；需验证新旧两个邮箱</p>' +
-    '<div class="qw-login-field" style="padding-left:0"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-email-oldcode" placeholder="原邮箱验证码" style="flex:1"><button type="button" class="qw-send-code" id="qw-set-email-sendold">发码</button></div></div>' +
-    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><input type="email" id="qw-set-new-email" placeholder="新邮箱"></div>' +
-    '<div class="qw-login-field" style="padding-left:0"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-email-newcode" placeholder="新邮箱验证码" style="flex:1"><button type="button" class="qw-send-code" id="qw-set-email-sendnew">发码</button></div></div>' +
-    '<button class="qw-submit" id="qw-set-email-save" style="margin-top:6px">保存邮箱</button>' +
+    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">涓€鍛ㄦ渶澶氭敼3娆★紝娆℃棩0鐐瑰悗鎵嶈兘鍐嶆敼锛涢渶楠岃瘉鏂版棫涓や釜閭</p>' +
+    '<div class="qw-login-field" style="padding-left:0"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-email-oldcode" placeholder="鍘熼偖绠遍獙璇佺爜" style="flex:1"><button type="button" class="qw-send-code" id="qw-set-email-sendold">鍙戠爜</button></div></div>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><input type="email" id="qw-set-new-email" placeholder="鏂伴偖绠?></div>' +
+    '<div class="qw-login-field" style="padding-left:0"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-email-newcode" placeholder="鏂伴偖绠遍獙璇佺爜" style="flex:1"><button type="button" class="qw-send-code" id="qw-set-email-sendnew">鍙戠爜</button></div></div>' +
+    '<button class="qw-submit" id="qw-set-email-save" style="margin-top:6px">淇濆瓨閭</button>' +
     '</div>' +
     '<p class="qw-login-msg" id="qw-set-msg"></p>' +
     '</div></div></div>' +
@@ -358,43 +355,43 @@
     '<div class="qw-login-panel">' +
     '<div class="qw-login-head">' +
     '<div class="qw-login-logo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>' +
-    '<h3 id="qw-login-title">登录发言</h3><p id="qw-login-sub">输入邮箱或昵称和密码登录</p>' +
+    '<h3 id="qw-login-title">鐧诲綍鍙戣█</h3><p id="qw-login-sub">杈撳叆閭鎴栨樀绉板拰瀵嗙爜鐧诲綍</p>' +
     '</div>' +
     '<div class="qw-login-tabs">' +
-    '<button type="button" class="qw-login-tab qw-active" id="qw-tab-login" data-mode="login">登 录</button>' +
-    '<button type="button" class="qw-login-tab" id="qw-tab-register" data-mode="register">注 册</button>' +
+    '<button type="button" class="qw-login-tab qw-active" id="qw-tab-login" data-mode="login">鐧?褰?/button>' +
+    '<button type="button" class="qw-login-tab" id="qw-tab-register" data-mode="register">娉?鍐?/button>' +
     '</div>' +
     '<div class="qw-login-body">' +
     '<div class="qw-login-x" id="qw-login-x" style="position:absolute;top:14px;right:16px;cursor:pointer;font-size:18px;line-height:1;color:var(--jp-muted);user-select:none;z-index:3;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s ease;">&times;</div>' +
     '<div class="qw-login-field" id="qw-nick-field" style="display:none">' +
     '<span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>' +
-    '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20">' +
+    '<input type="text" id="qw-login-nick" placeholder="鏄电О锛堟€庝箞绉板懠浣狅級" maxlength="20">' +
     '</div>' +
     '<div class="qw-login-field">' +
     '<span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>' +
-    '<input type="text" id="qw-login-email" placeholder="邮箱或昵称">' +
+    '<input type="text" id="qw-login-email" placeholder="閭鎴栨樀绉?>' +
     '</div>' +
     '<div class="qw-login-code-row" id="qw-code-row">' +
-    '<input type="text" id="qw-login-code" class="qw-c-input" placeholder="6位验证码" maxlength="6">' +
-    '<button id="qw-send-code" type="button" class="qw-send-code">发送验证码</button>' +
+    '<input type="text" id="qw-login-code" class="qw-c-input" placeholder="6浣嶉獙璇佺爜" maxlength="6">' +
+    '<button id="qw-send-code" type="button" class="qw-send-code">鍙戦€侀獙璇佺爜</button>' +
     '</div>' +
     '<div class="qw-login-field">' +
     '<span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>' +
-    '<input type="password" id="qw-login-pwd" placeholder="密码">' +
+    '<input type="password" id="qw-login-pwd" placeholder="瀵嗙爜">' +
     '</div>' +
-    '<button id="qw-login-submit" class="qw-submit">登 录</button>' +
-    '<p id="qw-login-toggle" class="qw-login-toggle"><span>没有账号？</span><b id="qw-toggle-link">点击注册</b></p>' +
+    '<button id="qw-login-submit" class="qw-submit">鐧?褰?/button>' +
+    '<p id="qw-login-toggle" class="qw-login-toggle"><span>娌℃湁璐﹀彿锛?/span><b id="qw-toggle-link">鐐瑰嚮娉ㄥ唽</b></p>' +
     '<p id="qw-login-msg" class="qw-login-msg"></p>' +
     '</div>' +
     '</div></div>' +
-    /* 自绘管理员面板 */
+    /* 鑷粯绠＄悊鍛橀潰鏉?*/
     '<div id="qw-admin-backdrop" class="qw-admin-backdrop">' +
     '<div class="qw-admin-panel" role="dialog" aria-modal="true" aria-labelledby="qw-admin-title">' +
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>' +
-    '<div><h2 id="qw-admin-title">聊天后台</h2><p>管理员 · 删除消息 / 拉黑邮箱</p></div>' +
-    '<button type="button" class="qw-icon-btn" id="qw-admin-refresh" aria-label="刷新数据" title="刷新数据" style="margin-left:auto"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
-    '<button class="qw-close" data-qw-admin-close aria-label="关闭" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
+    '<div><h2 id="qw-admin-title">鑱婂ぉ鍚庡彴</h2><p>绠＄悊鍛?路 鍒犻櫎娑堟伅 / 鎷夐粦閭</p></div>' +
+    '<button type="button" class="qw-icon-btn" id="qw-admin-refresh" aria-label="鍒锋柊鏁版嵁" title="鍒锋柊鏁版嵁" style="margin-left:auto"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
+    '<button class="qw-close" data-qw-admin-close aria-label="鍏抽棴" title="鍏抽棴"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<div class="qw-admin-body" id="qw-admin-body"></div>' +
     '</div></div>';
@@ -429,7 +426,7 @@
     if (twikooInited || !window.twikoo) return;
     twikooInited = true;
     try {
-  // 头像加载失败时显示昵称首字母
+  // 澶村儚鍔犺浇澶辫触鏃舵樉绀烘樀绉伴瀛楁瘝
   function fixAvatars(){
     document.querySelectorAll('.qw-body #twikoo .tk-comment .tk-avatar').forEach(function(av){
       if(av.dataset.fixed) return;
@@ -460,8 +457,7 @@
       }
     });
   }
-  // Twikoo 评论加载后执行
-  var _origOnCommentLoaded = window.twikoo && window.twikoo.onCommentLoaded;
+  // Twikoo 璇勮鍔犺浇鍚庢墽琛?  var _origOnCommentLoaded = window.twikoo && window.twikoo.onCommentLoaded;
       twikoo.init({
         envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo',
         el: '#tcomment',
@@ -469,24 +465,24 @@
         lang: 'zh-CN',
         requiredMeta: ['nick', 'mail'],
         onCommentLoaded: function () { scheduleMark(); fixAvatars(); }
-        ,onCommentSubmit: function (e) { try { logAction('发言', '内容:' + String((e && e.comment) || '').slice(0, 50)); } catch (ex) {} }
+        ,onCommentSubmit: function (e) { try { logAction('鍙戣█', '鍐呭:' + String((e && e.comment) || '').slice(0, 50)); } catch (ex) {} }
       });
     } catch (e) { twikooInited = false; }
   }
 
-  // ===== 移除左下角表情按钮（Twikoo OwO，用不到直接删掉 DOM） =====
+  // ===== 绉婚櫎宸︿笅瑙掕〃鎯呮寜閽紙Twikoo OwO锛岀敤涓嶅埌鐩存帴鍒犳帀 DOM锛?=====
   function removeOwO() {
     document.querySelectorAll('.qw-body #twikoo .tk-submit-action-icon.OwO, .qw-body #twikoo .OwO-logo, .qw-body #twikoo .tk-submit .OwO').forEach(function (el) {
       el.remove();
     });
   }
-  // ===== 移除 M+（Markdown 按钮）和"预览"按钮（用不到直接删掉 DOM） =====
+  // ===== 绉婚櫎 M+锛圡arkdown 鎸夐挳锛夊拰"棰勮"鎸夐挳锛堢敤涓嶅埌鐩存帴鍒犳帀 DOM锛?=====
   function removeSubmitExtras() {
     document.querySelectorAll('.qw-body #twikoo .tk-submit-action-icon.__markdown, .qw-body #twikoo .tk-preview').forEach(function (el) {
       el.remove();
     });
   }
-  // ===== 添加图片上传按钮 =====
+  // ===== 娣诲姞鍥剧墖涓婁紶鎸夐挳 =====
   function addImgButton() {
     var submit = document.querySelector('.qw-body #twikoo .tk-submit');
     if (!submit || submit.querySelector('.qw-img-btn')) return;
@@ -499,13 +495,12 @@
     fileInput.addEventListener('change', function() {
       var file = fileInput.files[0];
       if (!file) return;
-      if (file.size > 5 * 1024 * 1024) { alert('图片不能超过5MB'); return; }
+      if (file.size > 5 * 1024 * 1024) { alert('鍥剧墖涓嶈兘瓒呰繃5MB'); return; }
       var ta = submit.querySelector('textarea');
       var oldText = ta.value;
       var reader = new FileReader();
       reader.onload = function(e) {
-        // 用 base64 直接插入图片（无后端图床依赖）
-        var imgMd = '\n![图片](' + e.target.result + ')\n';
+        // 鐢?base64 鐩存帴鎻掑叆鍥剧墖锛堟棤鍚庣鍥惧簥渚濊禆锛?        var imgMd = '\n![鍥剧墖](' + e.target.result + ')\n';
         ta.value = oldText + imgMd;
         ta.dispatchEvent(new Event('input', { bubbles: true }));
       };
@@ -514,7 +509,7 @@
     });
     submit.insertBefore(btn, sendBtn);
   }
-  // ===== 把点赞/回复等操作按钮从头部行移到气泡下方横排 =====
+  // ===== 鎶婄偣璧?鍥炲绛夋搷浣滄寜閽粠澶撮儴琛岀Щ鍒版皵娉′笅鏂规í鎺?=====
   function moveActionBelow() {
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
       var main = c.querySelector(':scope > .tk-main');
@@ -527,17 +522,16 @@
       }
     });
   }
-  // ===== 把昵称移到气泡左上方（.tk-main 开头，头像右侧第一行） =====
+  // ===== 鎶婃樀绉扮Щ鍒版皵娉″乏涓婃柟锛?tk-main 寮€澶达紝澶村儚鍙充晶绗竴琛岋級 =====
   function moveNickTop() {
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
       var nick = c.querySelector('.tk-nick');
       var main = c.querySelector(':scope > .tk-main');
       if (!nick || !main) return;
-      if (nick.parentNode === main) return; // 已移动
-      main.insertBefore(nick, main.firstChild);
+      if (nick.parentNode === main) return; // 宸茬Щ鍔?      main.insertBefore(nick, main.firstChild);
     });
   }
-  // ===== 聊天气泡：识别"自己"的消息（对比 localStorage 昵称）→ 右侧 =====
+  // ===== 鑱婂ぉ姘旀场锛氳瘑鍒?鑷繁"鐨勬秷鎭紙瀵规瘮 localStorage 鏄电О锛夆啋 鍙充晶 =====
   var wlEmailSet = {};
   function loadWhitelist() {
     fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
@@ -564,7 +558,7 @@
       if (cMail && wlEmailSet[cMail] && !nickEl.querySelector('.qw-admin-badge')) {
         var badge = document.createElement('span');
         badge.className = 'qw-admin-badge';
-        badge.textContent = '管理员';
+        badge.textContent = '绠＄悊鍛?;
         nickEl.appendChild(badge);
       }
     }
@@ -573,7 +567,7 @@
     var els = document.querySelectorAll('.qw-body #twikoo *');
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
-      if (el.children.length === 0 && el.textContent.trim() === '没有评论') el.textContent = '暂无消息';
+      if (el.children.length === 0 && el.textContent.trim() === '娌℃湁璇勮') el.textContent = '鏆傛棤娑堟伅';
     }
   }
   function markSelf() {
@@ -605,7 +599,7 @@
       else cc.classList.remove('tk-self');
     }
   }
-  // ===== QQ式引用回复：把嵌套子评论重组为"独立气泡 + 气泡内引用块" =====
+  // ===== QQ寮忓紩鐢ㄥ洖澶嶏細鎶婂祵濂楀瓙璇勮閲嶇粍涓?鐙珛姘旀场 + 姘旀场鍐呭紩鐢ㄥ潡" =====
   function restructureReplies() {
     var scope = document.querySelector('.qw-body #twikoo');
     if (!scope) return;
@@ -623,16 +617,15 @@
         var reply = kids[j];
         if (reply.dataset.qwQuoted) continue;
         reply.dataset.qwQuoted = '1';
-        // 移出嵌套列表 → 父评论后面的独立气泡
+        // 绉诲嚭宓屽鍒楄〃 鈫?鐖惰瘎璁哄悗闈㈢殑鐙珛姘旀场
         parentComment.parentNode.insertBefore(reply, parentComment.nextSibling);
-        // 气泡内容顶部插入引用块（被引用人的昵称 + 原文）
-        var contentEl = reply.querySelector('.tk-content');
+        // 姘旀场鍐呭椤堕儴鎻掑叆寮曠敤鍧楋紙琚紩鐢ㄤ汉鐨勬樀绉?+ 鍘熸枃锛?        var contentEl = reply.querySelector('.tk-content');
         if (contentEl && parentText) {
           var quote = document.createElement('div');
           quote.className = 'qw-quote';
-          quote.textContent = (parentNick ? parentNick + '：' : '') + parentText;
+          quote.textContent = (parentNick ? parentNick + '锛? : '') + parentText;
           contentEl.insertBefore(quote, contentEl.firstChild);
-          // 删除 Twikoo 自动加的"回复 @昵称 : "前缀（引用块已说明）
+          // 鍒犻櫎 Twikoo 鑷姩鍔犵殑"鍥炲 @鏄电О : "鍓嶇紑锛堝紩鐢ㄥ潡宸茶鏄庯級
           var preSpans = contentEl.querySelectorAll(':scope > span');
           for (var k = 0; k < preSpans.length; k++) {
             if (preSpans[k].querySelector('.tk-ruser')) { preSpans[k].remove(); break; }
@@ -642,7 +635,7 @@
       replies.style.display = 'none';
     }
   }
-  // ===== 消息时间正序（早发言在上）+ 具体时间显示 =====
+  // ===== 娑堟伅鏃堕棿姝ｅ簭锛堟棭鍙戣█鍦ㄤ笂锛? 鍏蜂綋鏃堕棿鏄剧ず =====
   function getMsgTime(c) {
     var t = c.querySelector('.tk-time time');
     if (t) {
@@ -659,7 +652,7 @@
     comments.sort(function (a, b) { return getMsgTime(a) - getMsgTime(b); });
     for (var i = 0; i < comments.length; i++) container.appendChild(comments[i]);
   }
-  // ===== 居中时间条（微信式）：相邻消息间隔超过 5 分钟时插入 =====
+  // ===== 灞呬腑鏃堕棿鏉★紙寰俊寮忥級锛氱浉閭绘秷鎭棿闅旇秴杩?5 鍒嗛挓鏃舵彃鍏?=====
   function insertTimeSep() {
     var container = document.querySelector('.qw-body #twikoo .tk-comments-container');
     if (!container) return;
@@ -698,8 +691,7 @@
   function scheduleMark() {
     if (markTimer) clearTimeout(markTimer);
     markTimer = setTimeout(function () {
-      // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
-      var steps = [removeOwO, removeSubmitExtras, addImgButton, setSubmitPlaceholders, moveNickTop,
+      // 姣忔闅旂锛氱偣璧?韪╁悗 Twikoo 灞€閮ㄩ噸娓叉煋鍙兘浜х敓涓嶅畬鏁?DOM锛屼换涓€姝ユ姤閿欎笉寰楅樆鏂珮浜仮澶?      var steps = [removeOwO, removeSubmitExtras, addImgButton, setSubmitPlaceholders, moveNickTop,
         moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, markSelf];
       try { refreshLoginUI(); } catch (eR) {}
       try { markLiked(); } catch (e0) {}
@@ -707,18 +699,17 @@
       try { markLiked(); } catch (e1) {}
     }, 250);
   }
-  // ===== 输入区占位提示（昵称/邮箱/发言框） =====
+  // ===== 杈撳叆鍖哄崰浣嶆彁绀猴紙鏄电О/閭/鍙戣█妗嗭級 =====
   function setSubmitPlaceholders() {
     var submit = document.querySelector('.qw-body #twikoo .tk-submit');
     if (!submit) return;
     var inners = submit.querySelectorAll('.tk-meta-input .el-input__inner');
-    if (inners.length >= 1) inners[0].placeholder = '昵称';
-    if (inners.length >= 2) inners[1].placeholder = '邮箱';
+    if (inners.length >= 1) inners[0].placeholder = '鏄电О';
+    if (inners.length >= 2) inners[1].placeholder = '閭';
     var ta = submit.querySelector('textarea');
-    if (ta && (!ta.placeholder || ta.placeholder === '友善交流，文明发言…')) ta.placeholder = '友善交流，文明发言…';
+    if (ta && (!ta.placeholder || ta.placeholder === '鍙嬪杽浜ゆ祦锛屾枃鏄庡彂瑷€鈥?)) ta.placeholder = '鍙嬪杽浜ゆ祦锛屾枃鏄庡彂瑷€鈥?;
   }
-  // 监听评论列表变化（新增/加载）自动重新标记
-  var tcommentEl = document.getElementById('tcomment');
+  // 鐩戝惉璇勮鍒楄〃鍙樺寲锛堟柊澧?鍔犺浇锛夎嚜鍔ㄩ噸鏂版爣璁?  var tcommentEl = document.getElementById('tcomment');
   if (tcommentEl && window.MutationObserver) {
     var mo = new MutationObserver(function () { scheduleMark(); });
     mo.observe(tcommentEl, { childList: true, subtree: true });
@@ -758,7 +749,7 @@
   }
   function openChat() {
     backdrop.classList.add('qw-open');
-    logAction('访问聊天室', '打开聊天室');
+    logAction('璁块棶鑱婂ぉ瀹?, '鎵撳紑鑱婂ぉ瀹?);
     document.body.style.overflow = 'hidden';
     loadAssets(function () {
       initTwikoo();
@@ -785,8 +776,7 @@
 
   launcher.addEventListener('click', openChat);
   document.addEventListener('DOMContentLoaded', refreshLoginUI);
-  // 打开聊天室后刷新登录态
-  var _origOpen = openChat;
+  // 鎵撳紑鑱婂ぉ瀹ゅ悗鍒锋柊鐧诲綍鎬?  var _origOpen = openChat;
   openChat = function () {
     _origOpen.apply(this, arguments);
     setTimeout(refreshLoginUI, 300);
@@ -795,24 +785,24 @@
   if (loginBarBtn) loginBarBtn.addEventListener('click', openLogin);
   var loginSubmit = document.getElementById('qw-login-submit');
   if (loginSubmit) loginSubmit.addEventListener('click', doLogin);
-  // 发送邮箱验证码（60s 倒计时）
+  // 鍙戦€侀偖绠遍獙璇佺爜锛?0s 鍊掕鏃讹級
   var sendCodeBtn = document.getElementById('qw-send-code');
   if (sendCodeBtn) sendCodeBtn.addEventListener('click', function () {
     var email = (document.getElementById('qw-login-email') || {}).value ? document.getElementById('qw-login-email').value.trim() : '';
     var msgEl = document.getElementById('qw-login-msg');
-    if (!email || email.indexOf('@') < 0) { if (msgEl) msgEl.textContent = '请先输入有效邮箱'; return; }
+    if (!email || email.indexOf('@') < 0) { if (msgEl) msgEl.textContent = '璇峰厛杈撳叆鏈夋晥閭'; return; }
     var btn = this;
-    btn.disabled = true; btn.textContent = '发送中…';
+    btn.disabled = true; btn.textContent = '鍙戦€佷腑鈥?;
     fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ event: 'QW_SEND_CODE', email: email })
     }).then(function(r){return r.json();}).then(function(r){
       btn.disabled = false;
-      if (r.code !== 0) { btn.textContent = '发送验证码'; if (msgEl) msgEl.textContent = r.message || '发送失败'; return; }
-      if (msgEl) msgEl.textContent = '验证码已发送，请查收邮箱';
-      var sec = 60; btn.disabled = true; btn.textContent = sec + 's 后重发';
-      var t = setInterval(function(){ sec--; if (sec <= 0) { clearInterval(t); btn.disabled = false; btn.textContent = '发送验证码'; } else btn.textContent = sec + 's 后重发'; }, 1000);
-    }).catch(function(){ btn.disabled = false; btn.textContent = '发送验证码'; if (msgEl) msgEl.textContent = '网络错误，请重试'; });
+      if (r.code !== 0) { btn.textContent = '鍙戦€侀獙璇佺爜'; if (msgEl) msgEl.textContent = r.message || '鍙戦€佸け璐?; return; }
+      if (msgEl) msgEl.textContent = '楠岃瘉鐮佸凡鍙戦€侊紝璇锋煡鏀堕偖绠?;
+      var sec = 60; btn.disabled = true; btn.textContent = sec + 's 鍚庨噸鍙?;
+      var t = setInterval(function(){ sec--; if (sec <= 0) { clearInterval(t); btn.disabled = false; btn.textContent = '鍙戦€侀獙璇佺爜'; } else btn.textContent = sec + 's 鍚庨噸鍙?; }, 1000);
+    }).catch(function(){ btn.disabled = false; btn.textContent = '鍙戦€侀獙璇佺爜'; if (msgEl) msgEl.textContent = '缃戠粶閿欒锛岃閲嶈瘯'; });
   });
   var loginCloseBtn = document.getElementById('qw-login-x');
   if (loginCloseBtn) loginCloseBtn.addEventListener('click', closeLogin);
@@ -829,8 +819,7 @@
   });
   closeBtn.addEventListener('click', closeChat);
 
-  // 右下角自由缩放
-  var resizeHandle = document.getElementById('qw-resize-handle');
+  // 鍙充笅瑙掕嚜鐢辩缉鏀?  var resizeHandle = document.getElementById('qw-resize-handle');
   if (resizeHandle) {
     resizeHandle.addEventListener('mousedown', startResize);
     resizeHandle.addEventListener('touchstart', startResize, {passive:false});
@@ -871,7 +860,7 @@
       if (!body) return;
       var overlay = document.createElement('div');
       overlay.style.cssText = 'position:absolute;inset:0;background:var(--jp-surface);display:flex;align-items:center;justify-content:center;z-index:10;font-size:13px;color:var(--jp-muted);';
-      overlay.innerHTML = '正在刷新聊天数据<span class="qw-dots"></span>';
+      overlay.innerHTML = '姝ｅ湪鍒锋柊鑱婂ぉ鏁版嵁<span class="qw-dots"></span>';
       body.style.position = 'relative';
       body.appendChild(overlay);
       setTimeout(function() {
@@ -883,14 +872,14 @@
     });
   }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
-  // 仅 X 按钮和 Esc 关闭，不响应遮罩点击
+  // 浠?X 鎸夐挳鍜?Esc 鍏抽棴锛屼笉鍝嶅簲閬僵鐐瑰嚮
 
-  // ===== 管理员面板（自绘：登录 → 评论管理 / 删除 / 拉黑邮箱） =====
+  // ===== 绠＄悊鍛橀潰鏉匡紙鑷粯锛氱櫥褰?鈫?璇勮绠＄悊 / 鍒犻櫎 / 鎷夐粦閭锛?=====
   var adminBtn = document.getElementById('qw-admin-trigger');
   var adminBackdrop = document.getElementById('qw-admin-backdrop');
   var adminBody = document.getElementById('qw-admin-body');
   var adminToken = '';
-  var adminLogFilter = 'all'; // 日志分类: all/account/interact/other
+  var adminLogFilter = 'all'; // 鏃ュ織鍒嗙被: all/account/interact/other
   var adminLogs = [];
   var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
 
@@ -916,7 +905,7 @@
       // Check if current user is whitelisted
       var v = getVisitor();
       if (v.email) {
-        adminBody.innerHTML = '<div class="qw-admin-loading">检查权限…</div>';
+        adminBody.innerHTML = '<div class="qw-admin-loading">妫€鏌ユ潈闄愨€?/div>';
         adminBackdrop.classList.add('qw-open');
         fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ event:'QW_ADMIN_CHECK_WHITELIST', email: v.email })
@@ -956,10 +945,10 @@
     adminBody.innerHTML =
       '<div class="qw-admin-form">' +
       '<div class="qw-lock"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>' +
-      '<h3>管理员登录</h3>' +
-      '<p class="qw-sub">登录后可删除访客评论、查看邮箱并拉黑</p>' +
-      '<input id="qw-admin-pwd" type="password" placeholder="请输入管理密码" autocomplete="off">' +
-      '<button class="qw-login" id="qw-admin-login-btn">登 录</button>' +
+      '<h3>绠＄悊鍛樼櫥褰?/h3>' +
+      '<p class="qw-sub">鐧诲綍鍚庡彲鍒犻櫎璁垮璇勮銆佹煡鐪嬮偖绠卞苟鎷夐粦</p>' +
+      '<input id="qw-admin-pwd" type="password" placeholder="璇疯緭鍏ョ鐞嗗瘑鐮? autocomplete="off">' +
+      '<button class="qw-login" id="qw-admin-login-btn">鐧?褰?/button>' +
       '<div class="qw-admin-err" id="qw-admin-err"></div>' +
       '</div>';
     var input = document.getElementById('qw-admin-pwd');
@@ -967,8 +956,8 @@
     input.focus();
     var doLogin = function () {
       var pwd = input.value.trim();
-      if (!pwd) { document.getElementById('qw-admin-err').textContent = '请输入管理密码'; return; }
-      btn.disabled = true; btn.textContent = '登录中…';
+      if (!pwd) { document.getElementById('qw-admin-err').textContent = '璇疯緭鍏ョ鐞嗗瘑鐮?; return; }
+      btn.disabled = true; btn.textContent = '鐧诲綍涓€?;
       adminPost({ event: 'LOGIN', password: pwd }).then(function (res) {
         if (res && res.code === 0) {
           try { localStorage.setItem('qw_admin_token', pwd); } catch (e) {}
@@ -976,12 +965,12 @@
           adminBtn.classList.add('qw-admin-on');
           renderManageView();
         } else {
-          document.getElementById('qw-admin-err').textContent = (res && res.message) || '登录失败';
-          btn.disabled = false; btn.textContent = '登 录';
+          document.getElementById('qw-admin-err').textContent = (res && res.message) || '鐧诲綍澶辫触';
+          btn.disabled = false; btn.textContent = '鐧?褰?;
         }
       }).catch(function () {
-        document.getElementById('qw-admin-err').textContent = '网络异常，请重试';
-        btn.disabled = false; btn.textContent = '登 录';
+        document.getElementById('qw-admin-err').textContent = '缃戠粶寮傚父锛岃閲嶈瘯';
+        btn.disabled = false; btn.textContent = '鐧?褰?;
       });
     };
     btn.addEventListener('click', doLogin);
@@ -999,7 +988,7 @@
   }
 
   function renderManageView() {
-    adminBody.innerHTML = '<div class="qw-admin-loading">加载聊天数据…</div>';
+    adminBody.innerHTML = '<div class="qw-admin-loading">鍔犺浇鑱婂ぉ鏁版嵁鈥?/div>';
     var blocks = [], wlist = [], logs = [];
     var likeMap = {};
     adminPost({ event: 'QW_LIKE_LIST', accessToken: adminToken }).then(function (lr) {
@@ -1018,7 +1007,7 @@
       return adminPost({ event: 'COMMENT_GET_FOR_ADMIN', accessToken: adminToken, per: 50, page: 1 });
     }).then(function (r1) {
       if (!r1 || r1.code !== 0) {
-        adminBody.innerHTML = '<div class="qw-admin-loading">' + ((r1 && r1.message) || '登录已失效，请重新登录') + '</div>';
+        adminBody.innerHTML = '<div class="qw-admin-loading">' + ((r1 && r1.message) || '鐧诲綍宸插け鏁堬紝璇烽噸鏂扮櫥褰?) + '</div>';
         if (r1 && r1.code !== 0) { try { localStorage.removeItem('qw_admin_token'); } catch (e) {} adminBtn.classList.remove('qw-admin-on'); }
         return;
       }
@@ -1036,75 +1025,75 @@
       seq.then(function () { renderManageList(all, blocks, wlist, likeMap, logs); });
     }).catch(function (e) {
       console.error('admin load error:', e);
-      adminBody.innerHTML = '<div class="qw-admin-loading">网络异常，加载失败<br><small style="opacity:.6">' + (e && e.message ? e.message : '') + '</small></div>';
+      adminBody.innerHTML = '<div class="qw-admin-loading">缃戠粶寮傚父锛屽姞杞藉け璐?br><small style="opacity:.6">' + (e && e.message ? e.message : '') + '</small></div>';
     });
   }
 
-  // 点赞人信息：人数以 Twikoo ups 为准，点赞人 IP 来自后端旁路记录（明文）
+  // 鐐硅禐浜轰俊鎭細浜烘暟浠?Twikoo ups 涓哄噯锛岀偣璧炰汉 IP 鏉ヨ嚜鍚庣鏃佽矾璁板綍锛堟槑鏂囷級
   function likeInfoHtml(c, likeMap) {
     var ups = c.ups || c.likes || [];
     if (!ups.length) return '';
     var ips = (likeMap && likeMap[c._id]) || [];
-    return '<div class="qw-like-info">👍 ' + ups.length + ' 人' +
-      (ips.length ? ' · ' + escHtml(ips.join('、')) : '') + '</div>';
+    return '<div class="qw-like-info">馃憤 ' + ups.length + ' 浜? +
+      (ips.length ? ' 路 ' + escHtml(ips.join('銆?)) : '') + '</div>';
   }
 
   function renderManageList(comments, blocks, wlist, likeMap, logs) {
     adminLogs = logs || [];
     var html = '';
     html += '<div class="qw-admin-stats">' +
-      '<div><b>' + (comments.length || 0) + '</b><span>全部消息</span></div>' +
-      '<div><b>' + (blocks.length || 0) + '</b><span>黑名单</span></div>' +
-      '<div><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
+      '<div><b>' + (comments.length || 0) + '</b><span>鍏ㄩ儴娑堟伅</span></div>' +
+      '<div><b>' + (blocks.length || 0) + '</b><span>榛戝悕鍗?/span></div>' +
+      '<div><b>' + (wlist.length || 0) + '</b><span>鐧藉悕鍗?/span></div>' +
       '</div>';
     html += '<div class="qw-admin-list">';
     if (!comments.length) {
-      html += '<div class="qw-admin-empty">暂无消息</div>';
+      html += '<div class="qw-admin-empty">鏆傛棤娑堟伅</div>';
     } else {
       for (var i = 0; i < comments.length; i++) {
         var c = comments[i];
         html += '<div class="qw-admin-item" data-id="' + c._id + '">' +
-          '<div class="qw-hd"><span class="qw-nick">' + escHtml(c.nick || '匿名') + '</span>' +
+          '<div class="qw-hd"><span class="qw-nick">' + escHtml(c.nick || '鍖垮悕') + '</span>' +
           (c.mail ? '<span class="qw-mail">' + escHtml(c.mail) + '</span>' : '') +
           (c.ip ? '<span class="qw-ip">' + escHtml(c.ip) + '</span>' : '') +
           '<span class="qw-tm">' + fmtTime(c.created) + '</span></div>' +
           '<div class="qw-cmt">' + escHtml(stripHtml(c.comment)) + '</div>' +
           likeInfoHtml(c, likeMap) +
           (adminReadOnly ? '' : '<div class="qw-ops">' +
-          '<button class="qw-del" data-act="del" data-id="' + c._id + '">删除</button>' +
-          (c.mail ? '<button class="qw-blk" data-act="blk" data-mail="' + escAttr(c.mail) + '">拉黑</button>' : '') +
+          '<button class="qw-del" data-act="del" data-id="' + c._id + '">鍒犻櫎</button>' +
+          (c.mail ? '<button class="qw-blk" data-act="blk" data-mail="' + escAttr(c.mail) + '">鎷夐粦</button>' : '') +
           '</div>') +
           '</div>';
       }
     }
     html += '</div>';
     if (!adminReadOnly) {
-      html += '<div class="qw-mgmt-section"><h4>黑名单（拉黑后无法发言）</h4>';
+      html += '<div class="qw-mgmt-section"><h4>榛戝悕鍗曪紙鎷夐粦鍚庢棤娉曞彂瑷€锛?/h4>';
       if (!blocks.length) {
-        html += '<div class="qw-admin-empty" style="padding:10px 0">暂无黑名单</div>';
+        html += '<div class="qw-admin-empty" style="padding:10px 0">鏆傛棤榛戝悕鍗?/div>';
       } else {
         for (var b = 0; b < blocks.length; b++) {
           var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
-          var bkLabel = bk.mail + (bk.ip ? '（IP ' + bk.ip + '）' : '');
-          html += '<div class="qw-mgmt-item"><span>' + escHtml(bkLabel) + '</span><button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
+          var bkLabel = bk.mail + (bk.ip ? '锛圛P ' + bk.ip + '锛? : '');
+          html += '<div class="qw-mgmt-item"><span>' + escHtml(bkLabel) + '</span><button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">瑙ｉ櫎</button></div>';
         }
       }
-      html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-blk-input" placeholder="输入邮箱或昵称进行拉黑"><button class="qw-add-blk" data-act="add-blk">拉黑</button></div></div>';
-      html += '<div class="qw-mgmt-section"><h4>白名单（显示管理员头衔）</h4>';
+      html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-blk-input" placeholder="杈撳叆閭鎴栨樀绉拌繘琛屾媺榛?><button class="qw-add-blk" data-act="add-blk">鎷夐粦</button></div></div>';
+      html += '<div class="qw-mgmt-section"><h4>鐧藉悕鍗曪紙鏄剧ず绠＄悊鍛樺ご琛旓級</h4>';
       if (!wlist.length) {
-        html += '<div class="qw-admin-empty" style="padding:10px 0">暂无白名单</div>';
+        html += '<div class="qw-admin-empty" style="padding:10px 0">鏆傛棤鐧藉悕鍗?/div>';
       } else {
         for (var w = 0; w < wlist.length; w++) {
           var wl = typeof wlist[w] === 'string' ? { email: wlist[w] } : (wlist[w] || {});
-          html += '<div class="qw-mgmt-item"><span>' + escHtml(wl.email || '') + '</span><button data-act="unwl" data-email="' + escAttr(wl.email || '') + '">移除</button></div>';
+          html += '<div class="qw-mgmt-item"><span>' + escHtml(wl.email || '') + '</span><button data-act="unwl" data-email="' + escAttr(wl.email || '') + '">绉婚櫎</button></div>';
         }
       }
-      html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-wl-input" placeholder="输入邮箱或昵称加入白名单"><button class="qw-add-wl" data-act="add-wl">添加</button></div></div>';
+      html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-wl-input" placeholder="杈撳叆閭鎴栨樀绉板姞鍏ョ櫧鍚嶅崟"><button class="qw-add-wl" data-act="add-wl">娣诲姞</button></div></div>';
       html += '<div class="qw-mgmt-section" id="qw-log-section">' + buildLogHtml(logs) + '</div>';
-      html += '<button class="qw-admin-logout" data-act="logout">退出登录</button>';
+      html += '<button class="qw-admin-logout" data-act="logout">閫€鍑虹櫥褰?/button>';
     } else {
-      html += '<div style="text-align:center;padding:16px 0 4px;font-size:11px;color:var(--jp-muted);">只读模式 · 可浏览，操作需验证密码</div>';
-      html += '<button class="qw-admin-logout" data-act="verify-pwd" style="color:var(--jp-accent);text-decoration:none;border:1px solid var(--jp-line);border-radius:8px;">输入管理密码进行操作</button>';
+      html += '<div style="text-align:center;padding:16px 0 4px;font-size:11px;color:var(--jp-muted);">鍙妯″紡 路 鍙祻瑙堬紝鎿嶄綔闇€楠岃瘉瀵嗙爜</div>';
+      html += '<button class="qw-admin-logout" data-act="verify-pwd" style="color:var(--jp-accent);text-decoration:none;border:1px solid var(--jp-line);border-radius:8px;">杈撳叆绠＄悊瀵嗙爜杩涜鎿嶄綔</button>';
     }
     adminBody.innerHTML = html;
     enrichIps();
@@ -1114,45 +1103,45 @@
         var act = btn.getAttribute('data-act');
         if (act === 'del') {
           var id = btn.getAttribute('data-id');
-          if (confirm('确定删除这条评论吗？')) {
+          if (confirm('纭畾鍒犻櫎杩欐潯璇勮鍚楋紵')) {
             adminPost({ event: 'COMMENT_DELETE_FOR_ADMIN', accessToken: adminToken, id: id }).then(function (r) {
               if (r && r.code === 0) renderManageView();
-              else alert((r && r.message) || '删除失败');
+              else alert((r && r.message) || '鍒犻櫎澶辫触');
             });
           }
         } else if (act === 'blk') {
           var mail = btn.getAttribute('data-mail');
-          if (confirm('确定拉黑 ' + mail + ' 吗？')) {
+          if (confirm('纭畾鎷夐粦 ' + mail + ' 鍚楋紵')) {
             adminPost({ event: 'QW_BLOCK_ADD', accessToken: adminToken, mail: mail }).then(function (r) {
               if (r && r.code === 0) renderManageView();
-              else alert((r && r.message) || '拉黑失败');
+              else alert((r && r.message) || '鎷夐粦澶辫触');
             });
           }
         } else if (act === 'unblk') {
           var umail = btn.getAttribute('data-mail');
           adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: umail }).then(function (r) {
             if (r && r.code === 0) renderManageView();
-            else alert((r && r.message) || '操作失败');
+            else alert((r && r.message) || '鎿嶄綔澶辫触');
           });
         } else if (act === 'add-blk') {
           var blkVal = ((document.getElementById('qw-blk-input') || {}).value || '').trim();
-          if (!blkVal) { alert('请输入邮箱或昵称'); return; }
+          if (!blkVal) { alert('璇疯緭鍏ラ偖绠辨垨鏄电О'); return; }
           adminPost({ event: 'QW_BLOCK_ADD', accessToken: adminToken, mail: blkVal }).then(function (r) {
             if (r && r.code === 0) renderManageView();
-            else alert((r && r.message) || '操作失败');
+            else alert((r && r.message) || '鎿嶄綔澶辫触');
           });
         } else if (act === 'add-wl') {
           var wlVal = ((document.getElementById('qw-wl-input') || {}).value || '').trim();
-          if (!wlVal) { alert('请输入邮箱或昵称'); return; }
+          if (!wlVal) { alert('璇疯緭鍏ラ偖绠辨垨鏄电О'); return; }
           adminPost({ event: 'QW_ADMIN_WHITELIST_ADD', accessToken: adminToken, email: wlVal }).then(function (r) {
             if (r && r.code === 0) renderManageView();
-            else alert((r && r.message) || '操作失败');
+            else alert((r && r.message) || '鎿嶄綔澶辫触');
           });
         } else if (act === 'unwl') {
           var uwl = btn.getAttribute('data-email');
           adminPost({ event: 'QW_ADMIN_WHITELIST_DELETE', accessToken: adminToken, email: uwl }).then(function (r) {
             if (r && r.code === 0) renderManageView();
-            else alert((r && r.message) || '操作失败');
+            else alert((r && r.message) || '鎿嶄綔澶辫触');
           });
         } else if (act === 'logout') {
           if (act === 'verify-pwd') {
@@ -1170,42 +1159,40 @@
     bindLogToggle();
   }
 
-  // 把浏览器 UA 翻译成人话
-  function parseUa(ua) {
-    if (!ua) return '未知设备';
+  // 鎶婃祻瑙堝櫒 UA 缈昏瘧鎴愪汉璇?  function parseUa(ua) {
+    if (!ua) return '鏈煡璁惧';
     var s = ua;
     var isMobile = /Mobile|Android|iPhone/i.test(s);
     var isPad = /iPad|Tablet/i.test(s);
-    var dev = isPad ? '平板' : (isMobile ? '手机' : '电脑');
-    var os = '未知系统';
+    var dev = isPad ? '骞虫澘' : (isMobile ? '鎵嬫満' : '鐢佃剳');
+    var os = '鏈煡绯荤粺';
     if (/Windows NT 10/.test(s)) os = 'Windows';
     else if (/iPhone|iPad/.test(s)) os = 'iOS';
     else if (/Mac OS X/.test(s)) os = 'Mac';
     else if (/Android/.test(s)) os = 'Android';
     else if (/Linux/.test(s)) os = 'Linux';
-    var br = '浏览器';
+    var br = '娴忚鍣?;
     if (/Edg\//.test(s)) br = 'Edge';
     else if (/Chrome\//.test(s) && !/OPR/.test(s)) br = 'Chrome';
     else if (/Firefox\//.test(s)) br = 'Firefox';
     else if (/Safari\//.test(s)) br = 'Safari';
     else if (/OPR\//.test(s)) br = 'Opera';
-    return dev + ' · ' + os + ' · ' + br;
+    return dev + ' 路 ' + os + ' 路 ' + br;
   }
 
-  // 构建操作日志区块 HTML（含筛选按钮），配合局部刷新
-  function buildLogHtml(logs) {
+  // 鏋勫缓鎿嶄綔鏃ュ織鍖哄潡 HTML锛堝惈绛涢€夋寜閽級锛岄厤鍚堝眬閮ㄥ埛鏂?  function buildLogHtml(logs) {
     var cats = [
-      { key:'all', label:'全部' },
-      { key:'account', label:'账号' },
-      { key:'interact', label:'互动' },
-      { key:'other', label:'其他' }
+      { key:'all', label:'鍏ㄩ儴' },
+      { key:'account', label:'璐﹀彿' },
+      { key:'interact', label:'浜掑姩' },
+      { key:'other', label:'鍏朵粬' }
     ];
     var catMap = {
-      '注册':'account','登录':'account','退出':'account','改昵称':'account','改密码':'account','改邮箱':'account',
-      '发言':'interact','点赞':'interact','点踩':'interact',
-      '访问聊天室':'other'
+      '娉ㄥ唽':'account','鐧诲綍':'account','閫€鍑?:'account','鏀规樀绉?:'account','鏀瑰瘑鐮?:'account','鏀归偖绠?:'account',
+      '鍙戣█':'interact','鐐硅禐':'interact','鐐硅俯':'interact',
+      '璁块棶鑱婂ぉ瀹?:'other'
     };
-    var h = '<h4 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">操作日志（最近100条）';
+    var h = '<h4 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">鎿嶄綔鏃ュ織锛堟渶杩?00鏉★級';
     h += '<div style="display:flex;gap:4px">';
     for (var ci=0;ci<cats.length;ci++) {
       var c = cats[ci];
@@ -1213,52 +1200,51 @@
     }
     h += '</div></h4>';
     if (!logs || !logs.length) {
-      h += '<div class="qw-admin-empty" style="padding:10px 0">暂无日志</div>';
+      h += '<div class="qw-admin-empty" style="padding:10px 0">鏆傛棤鏃ュ織</div>';
     } else {
       var logList = adminLogFilter === 'all' ? logs : logs.filter(function(x) { return catMap[x.type] === adminLogFilter; });
-      if (!logList.length) h += '<div class="qw-admin-empty" style="padding:10px 0">暂无此类日志</div>';
+      if (!logList.length) h += '<div class="qw-admin-empty" style="padding:10px 0">鏆傛棤姝ょ被鏃ュ織</div>';
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
         var tstr = new Date(lg.time).toLocaleString('zh-CN');
-        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除这条日志" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button></div>';
+        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '">' + escHtml(tstr) + ' 路 ' + escHtml(lg.type) + ' 路 ' + escHtml(lg.nick || lg.email || '鍖垮悕') + ' 路 ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '鏈煡') + ' 路 ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="鍒犻櫎杩欐潯鏃ュ織" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">鉁?/button></div>';
       }
     }
     return h + '</div>';
   }
-  // IP 归属地查询（ipwho.is，免费跨域，结果缓存本地）
-  var ipLocCache = {};
+  // IP 褰掑睘鍦版煡璇紙ipwho.is锛屽厤璐硅法鍩燂紝缁撴灉缂撳瓨鏈湴锛?  var ipLocCache = {};
   try {
     var rawCache = JSON.parse(localStorage.getItem('qw_ip_loc') || '{}');
     if (rawCache._v === 2) ipLocCache = rawCache.data || {};
   } catch (e) {}
   var provinceMap = {
-    'beijing': '北京', 'shanghai': '上海', 'tianjin': '天津', 'chongqing': '重庆',
-    'guangdong': '广东', 'jiangsu': '江苏', 'zhejiang': '浙江', 'shandong': '山东',
-    'henan': '河南', 'hebei': '河北', 'hunan': '湖南', 'hubei': '湖北', 'sichuan': '四川',
-    'fujian': '福建', 'anhui': '安徽', 'jiangxi': '江西', 'liaoning': '辽宁',
-    'shanxi': '山西', 'shaanxi': '陕西', 'heilongjiang': '黑龙江', 'jilin': '吉林',
-    'guangxi': '广西', 'yunnan': '云南', 'guizhou': '贵州', 'gansu': '甘肃',
-    'inner mongolia': '内蒙古', 'xinjiang': '新疆', 'xizang': '西藏', 'qinghai': '青海',
-    'ningxia': '宁夏', 'hainan': '海南', 'hong kong': '香港', 'macau': '澳门', 'taiwan': '台湾'
+    'beijing': '鍖椾含', 'shanghai': '涓婃捣', 'tianjin': '澶╂触', 'chongqing': '閲嶅簡',
+    'guangdong': '骞夸笢', 'jiangsu': '姹熻嫃', 'zhejiang': '娴欐睙', 'shandong': '灞变笢',
+    'henan': '娌冲崡', 'hebei': '娌冲寳', 'hunan': '婀栧崡', 'hubei': '婀栧寳', 'sichuan': '鍥涘窛',
+    'fujian': '绂忓缓', 'anhui': '瀹夊窘', 'jiangxi': '姹熻タ', 'liaoning': '杈藉畞',
+    'shanxi': '灞辫タ', 'shaanxi': '闄曡タ', 'heilongjiang': '榛戦緳姹?, 'jilin': '鍚夋灄',
+    'guangxi': '骞胯タ', 'yunnan': '浜戝崡', 'guizhou': '璐靛窞', 'gansu': '鐢樿們',
+    'inner mongolia': '鍐呰挋鍙?, 'xinjiang': '鏂扮枂', 'xizang': '瑗胯棌', 'qinghai': '闈掓捣',
+    'ningxia': '瀹佸', 'hainan': '娴峰崡', 'hong kong': '棣欐腐', 'macau': '婢抽棬', 'taiwan': '鍙版咕'
   };
   var cityMap = {
-    'beijing': '北京', 'shanghai': '上海', 'tianjin': '天津', 'chongqing': '重庆',
-    'guangzhou': '广州', 'shenzhen': '深圳', 'dongguan': '东莞', 'foshan': '佛山',
-    'zhuhai': '珠海', 'zhongshan': '中山', 'huizhou': '惠州', 'jiangmen': '江门',
-    'chengdu': '成都', 'hangzhou': '杭州', 'ningbo': '宁波', 'wenzhou': '温州',
-    'jiaxing': '嘉兴', 'shaoxing': '绍兴', 'suzhou': '苏州', 'nanjing': '南京',
-    'wuxi': '无锡', 'changzhou': '常州', 'nantong': '南通', 'xuzhou': '徐州',
-    'jinan': '济南', 'qingdao': '青岛', 'yantai': '烟台', 'weifang': '潍坊',
-    'zhengzhou': '郑州', 'luoyang': '洛阳', 'wuhan': '武汉', 'xiangyang': '襄阳',
-    'changsha': '长沙', 'zhuzhou': '株洲', 'xiangtan': '湘潭', 'hengyang': '衡阳',
-    'yueyang': '岳阳', 'yiyang': '益阳', 'changde': '常德', 'zhangjiajie': '张家界',
-    'nanchang': '南昌', 'jiujiang': '九江', 'hefei': '合肥', 'wuhu': '芜湖',
-    'fuzhou': '福州', 'xiamen': '厦门', 'quanzhou': '泉州', 'putian': '莆田',
-    'shenyang': '沈阳', 'dalian': '大连', 'changchun': '长春', 'harbin': '哈尔滨',
-    'shijiazhuang': '石家庄', 'taiyuan': '太原', 'xian': '西安', 'xianyang': '咸阳',
-    'kunming': '昆明', 'guiyang': '贵阳', 'nanning': '南宁', 'haikou': '海口',
-    'lanzhou': '兰州', 'xining': '西宁', 'urumqi': '乌鲁木齐', 'lhasa': '拉萨',
-    'hohhot': '呼和浩特', 'yinchuan': '银川'
+    'beijing': '鍖椾含', 'shanghai': '涓婃捣', 'tianjin': '澶╂触', 'chongqing': '閲嶅簡',
+    'guangzhou': '骞垮窞', 'shenzhen': '娣卞湷', 'dongguan': '涓滆帪', 'foshan': '浣涘北',
+    'zhuhai': '鐝犳捣', 'zhongshan': '涓北', 'huizhou': '鎯犲窞', 'jiangmen': '姹熼棬',
+    'chengdu': '鎴愰兘', 'hangzhou': '鏉窞', 'ningbo': '瀹佹尝', 'wenzhou': '娓╁窞',
+    'jiaxing': '鍢夊叴', 'shaoxing': '缁嶅叴', 'suzhou': '鑻忓窞', 'nanjing': '鍗椾含',
+    'wuxi': '鏃犻敗', 'changzhou': '甯稿窞', 'nantong': '鍗楅€?, 'xuzhou': '寰愬窞',
+    'jinan': '娴庡崡', 'qingdao': '闈掑矝', 'yantai': '鐑熷彴', 'weifang': '娼嶅潑',
+    'zhengzhou': '閮戝窞', 'luoyang': '娲涢槼', 'wuhan': '姝︽眽', 'xiangyang': '瑗勯槼',
+    'changsha': '闀挎矙', 'zhuzhou': '鏍床', 'xiangtan': '婀樻江', 'hengyang': '琛￠槼',
+    'yueyang': '宀抽槼', 'yiyang': '鐩婇槼', 'changde': '甯稿痉', 'zhangjiajie': '寮犲鐣?,
+    'nanchang': '鍗楁槍', 'jiujiang': '涔濇睙', 'hefei': '鍚堣偉', 'wuhu': '鑺滄箹',
+    'fuzhou': '绂忓窞', 'xiamen': '鍘﹂棬', 'quanzhou': '娉夊窞', 'putian': '鑾嗙敯',
+    'shenyang': '娌堥槼', 'dalian': '澶ц繛', 'changchun': '闀挎槬', 'harbin': '鍝堝皵婊?,
+    'shijiazhuang': '鐭冲搴?, 'taiyuan': '澶師', 'xian': '瑗垮畨', 'xianyang': '鍜搁槼',
+    'kunming': '鏄嗘槑', 'guiyang': '璐甸槼', 'nanning': '鍗楀畞', 'haikou': '娴峰彛',
+    'lanzhou': '鍏板窞', 'xining': '瑗垮畞', 'urumqi': '涔岄瞾鏈ㄩ綈', 'lhasa': '鎷夎惃',
+    'hohhot': '鍛煎拰娴╃壒', 'yinchuan': '閾跺窛'
   };
   function cnCity(city) {
     if (!city) return '';
@@ -1274,9 +1260,9 @@
       var provCn = provinceMap[prov] || d.region || '';
       var cityCn = cnCity(d.city || '');
       var org = (d.connection && d.connection.org) || (d.connection && d.connection.isp) || '';
-      if (/CHINANET|China Telecom/i.test(org)) org = '电信';
-      else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
-      else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
+      if (/CHINANET|China Telecom/i.test(org)) org = '鐢典俊';
+      else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '鑱旈€?;
+      else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '绉诲姩';
       else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
       else org = org ? org.slice(0, 20) : '';
       var loc = (provCn ? provCn + ' ' : '') + cityCn + (org ? ' ' + org : '');
@@ -1288,7 +1274,7 @@
       cb(loc);
     }).catch(function () { cb(''); });
   }
-  // 给管理面板里所有 IP 行补上归属地
+  // 缁欑鐞嗛潰鏉块噷鎵€鏈?IP 琛岃ˉ涓婂綊灞炲湴
   function enrichIps() {
     var rows = document.querySelectorAll('#qw-admin-body .qw-log-item, #qw-admin-body .qw-admin-item');
     rows.forEach(function (it) {
@@ -1303,14 +1289,13 @@
         if (!loc) return;
         var target = sub || it;
         if (target && target.textContent.indexOf(loc) < 0) {
-          var dot = document.createTextNode(' · ' + loc);
+          var dot = document.createTextNode(' 路 ' + loc);
           target.appendChild(dot);
         }
       });
     });
   }
-  // 局部切换日志分类：只重建日志区块，不重载整个聊天后台
-  function handleSetLogCat(cat) {
+  // 灞€閮ㄥ垏鎹㈡棩蹇楀垎绫伙細鍙噸寤烘棩蹇楀尯鍧楋紝涓嶉噸杞芥暣涓亰澶╁悗鍙?  function handleSetLogCat(cat) {
     adminLogFilter = cat;
     var sec = document.getElementById('qw-log-section');
     if (sec) {
@@ -1333,7 +1318,7 @@
             var row = btn.closest('.qw-log-item');
             if (row) row.parentNode.removeChild(row);
           } else {
-            alert((r && r.message) || '删除失败');
+            alert((r && r.message) || '鍒犻櫎澶辫触');
           }
         });
       });
@@ -1358,7 +1343,7 @@
   document.getElementById('qw-logout-btn').addEventListener('click', function () {
     logout();
   });
-  // ===== 账号设置弹窗 =====
+  // ===== 璐﹀彿璁剧疆寮圭獥 =====
   var settingsModal = document.getElementById('qw-settings-modal');
   var setMsg = document.getElementById('qw-set-msg');
   function showSetMsg(text, ok) {
@@ -1377,7 +1362,7 @@
       var fBtn = document.getElementById('qw-pwd-forgot');
       if (oldF) oldF.style.display = 'block';
       if (codeF) codeF.style.display = 'none';
-      if (fBtn) fBtn.textContent = '忘记密码？通过邮箱验证码重置';
+      if (fBtn) fBtn.textContent = '蹇樿瀵嗙爜锛熼€氳繃閭楠岃瘉鐮侀噸缃?;
     }
   }
   document.querySelectorAll('#qw-settings-modal .qw-login-tab').forEach(function(tab){
@@ -1385,7 +1370,7 @@
   });
   function openSettings() {
     var v = getVisitor();
-    document.getElementById('qw-set-current-nick').textContent = v.nick || '未设置昵称';
+    document.getElementById('qw-set-current-nick').textContent = v.nick || '鏈缃樀绉?;
     document.getElementById('qw-set-current-email').textContent = v.email || '';
     document.getElementById('qw-set-nick').value = '';
     document.getElementById('qw-set-new-pwd1').value = '';
@@ -1396,9 +1381,9 @@
     document.getElementById('qw-set-email-oldcode').value = '';
     document.getElementById('qw-set-email-newcode').value = '';
     setMsg.textContent = '';
-    // 头部显示当前登录账号
+    // 澶撮儴鏄剧ず褰撳墠鐧诲綍璐﹀彿
     var headSub = document.querySelector('#qw-settings-modal .qw-login-head p');
-    if (headSub) headSub.textContent = (v.nick || '未登录') + ' · ' + (v.email || '');
+    if (headSub) headSub.textContent = (v.nick || '鏈櫥褰?) + ' 路 ' + (v.email || '');
     setTab('nick');
     settingsModal.classList.add('qw-open');
   }
@@ -1408,26 +1393,24 @@
   document.getElementById('qw-settings-close-x').addEventListener('click', closeSettings);
   function setBtnLoading(btn, text) { btn.disabled = true; btn.textContent = text; }
   function setBtnRestore(btn, text) { btn.disabled = false; btn.textContent = text; }
-  // 改昵称：不需要密码
-  document.getElementById('qw-set-nick-save').addEventListener('click', function() {
+  // 鏀规樀绉帮細涓嶉渶瑕佸瘑鐮?  document.getElementById('qw-set-nick-save').addEventListener('click', function() {
     var v = getVisitor();
     var nick = document.getElementById('qw-set-nick').value.trim();
-    if (!nick) { showSetMsg('请输入新昵称', false); return; }
-    var btn = this; setBtnLoading(btn, '保存中…');
+    if (!nick) { showSetMsg('璇疯緭鍏ユ柊鏄电О', false); return; }
+    var btn = this; setBtnLoading(btn, '淇濆瓨涓€?);
     fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ event:'QW_USER_UPDATE', email: v.email, newNick: nick })
     }).then(function(r){return r.json();}).then(function(r){
-      setBtnRestore(btn, '保存昵称');
+      setBtnRestore(btn, '淇濆瓨鏄电О');
       if (r.code === 0) {
         localStorage.setItem(QW_NICK, nick);
-        showSetMsg('昵称已修改', true);
-        logAction('改昵称', '昵称改为: ' + nick);
+        showSetMsg('鏄电О宸蹭慨鏀?, true);
+        logAction('鏀规樀绉?, '鏄电О鏀逛负: ' + nick);
         setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
-      } else showSetMsg(r.message || '修改失败', false);
-    }).catch(function(){ setBtnRestore(btn, '保存昵称'); showSetMsg('网络错误', false); });
+      } else showSetMsg(r.message || '淇敼澶辫触', false);
+    }).catch(function(){ setBtnRestore(btn, '淇濆瓨鏄电О'); showSetMsg('缃戠粶閿欒', false); });
   });
-  // 改密码：旧密码 / 邮箱验证码 切换（通过"忘记密码"链接）
-  var pwdMode = 'old';
+  // 鏀瑰瘑鐮侊細鏃у瘑鐮?/ 閭楠岃瘉鐮?鍒囨崲锛堥€氳繃"蹇樿瀵嗙爜"閾炬帴锛?  var pwdMode = 'old';
   var forgotBtn = document.getElementById('qw-pwd-forgot');
   if (forgotBtn) {
     forgotBtn.addEventListener('click', function() {
@@ -1435,33 +1418,32 @@
         pwdMode = 'code';
         document.getElementById('qw-pwd-old-field').style.display = 'none';
         document.getElementById('qw-pwd-code-field').style.display = 'block';
-        forgotBtn.textContent = '想起来了？用当前密码修改';
+        forgotBtn.textContent = '鎯宠捣鏉ヤ簡锛熺敤褰撳墠瀵嗙爜淇敼';
       } else {
         pwdMode = 'old';
         document.getElementById('qw-pwd-old-field').style.display = 'block';
         document.getElementById('qw-pwd-code-field').style.display = 'none';
-        forgotBtn.textContent = '忘记密码？通过邮箱验证码重置';
+        forgotBtn.textContent = '蹇樿瀵嗙爜锛熼€氳繃閭楠岃瘉鐮侀噸缃?;
       }
     });
   }
-  // 改密码：发 reset 验证码
-  function bindSendCode(btnId, emailVal, type, msgEl) {
+  // 鏀瑰瘑鐮侊細鍙?reset 楠岃瘉鐮?  function bindSendCode(btnId, emailVal, type, msgEl) {
     var btn = document.getElementById(btnId);
     if (!btn) return;
     btn.addEventListener('click', function() {
       var email = typeof emailVal === 'function' ? emailVal() : emailVal;
-      if (!email || email.indexOf('@') < 0) { showSetMsg('请先填邮箱', false); return; }
+      if (!email || email.indexOf('@') < 0) { showSetMsg('璇峰厛濉偖绠?, false); return; }
       btn.disabled = true; var s = 60;
       btn.textContent = s + 's';
       var timer = setInterval(function(){
-        s--; if (s <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = '发码'; }
+        s--; if (s <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = '鍙戠爜'; }
         else btn.textContent = s + 's';
       }, 1000);
       fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ event:'QW_SEND_CODE', email: email, type: type })
       }).then(function(r){return r.json();}).then(function(r){
-        showSetMsg(r.code === 0 ? '验证码已发送' : (r.message || '发送失败'), r.code === 0);
-      }).catch(function(){ showSetMsg('网络错误', false); });
+        showSetMsg(r.code === 0 ? '楠岃瘉鐮佸凡鍙戦€? : (r.message || '鍙戦€佸け璐?), r.code === 0);
+      }).catch(function(){ showSetMsg('缃戠粶閿欒', false); });
     });
   }
   var v0 = getVisitor();
@@ -1472,54 +1454,53 @@
     var v = getVisitor();
     var p1 = document.getElementById('qw-set-new-pwd1').value;
     var p2 = document.getElementById('qw-set-new-pwd2').value;
-    if (!p1 || p1.length < 4) { showSetMsg('新密码至少4位', false); return; }
-    if (p1 !== p2) { showSetMsg('两次密码不一致', false); return; }
+    if (!p1 || p1.length < 4) { showSetMsg('鏂板瘑鐮佽嚦灏?浣?, false); return; }
+    if (p1 !== p2) { showSetMsg('涓ゆ瀵嗙爜涓嶄竴鑷?, false); return; }
     var body = { event:'QW_USER_UPDATE', email: v.email, newPassword: p1 };
     if (pwdMode === 'old') {
       var oldP = document.getElementById('qw-set-pwd-old-pwd').value;
-      if (!oldP) { showSetMsg('请输入当前密码', false); return; }
+      if (!oldP) { showSetMsg('璇疯緭鍏ュ綋鍓嶅瘑鐮?, false); return; }
       body.oldPassword = oldP;
     } else {
       var code = document.getElementById('qw-set-pwd-code').value.trim();
-      if (!code) { showSetMsg('请输入邮箱验证码', false); return; }
+      if (!code) { showSetMsg('璇疯緭鍏ラ偖绠遍獙璇佺爜', false); return; }
       body.code = code;
     }
-    var btn = this; setBtnLoading(btn, '保存中…');
+    var btn = this; setBtnLoading(btn, '淇濆瓨涓€?);
     fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) })
     .then(function(r){return r.json();}).then(function(r){
-      setBtnRestore(btn, '保存密码');
+      setBtnRestore(btn, '淇濆瓨瀵嗙爜');
       if (r.code === 0) {
-        showSetMsg('密码已修改', true);
-        logAction('改密码', '密码已修改');
+        showSetMsg('瀵嗙爜宸蹭慨鏀?, true);
+        logAction('鏀瑰瘑鐮?, '瀵嗙爜宸蹭慨鏀?);
         setTimeout(closeSettings, 800);
-      } else showSetMsg(r.message || '修改失败', false);
-    }).catch(function(){ setBtnRestore(btn, '保存密码'); showSetMsg('网络错误', false); });
+      } else showSetMsg(r.message || '淇敼澶辫触', false);
+    }).catch(function(){ setBtnRestore(btn, '淇濆瓨瀵嗙爜'); showSetMsg('缃戠粶閿欒', false); });
   });
-  // 改邮箱：旧邮箱验证码 + 新邮箱验证码
+  // 鏀归偖绠憋細鏃ч偖绠遍獙璇佺爜 + 鏂伴偖绠遍獙璇佺爜
   document.getElementById('qw-set-email-save').addEventListener('click', function() {
     var v = getVisitor();
     var ne = document.getElementById('qw-set-new-email').value.trim();
     var oc = document.getElementById('qw-set-email-oldcode').value.trim();
     var nc = document.getElementById('qw-set-email-newcode').value.trim();
-    if (!ne || ne.indexOf('@') < 0) { showSetMsg('请输入有效新邮箱', false); return; }
-    if (!oc || !nc) { showSetMsg('请输入两个邮箱的验证码', false); return; }
-    var btn = this; setBtnLoading(btn, '保存中…');
+    if (!ne || ne.indexOf('@') < 0) { showSetMsg('璇疯緭鍏ユ湁鏁堟柊閭', false); return; }
+    if (!oc || !nc) { showSetMsg('璇疯緭鍏ヤ袱涓偖绠辩殑楠岃瘉鐮?, false); return; }
+    var btn = this; setBtnLoading(btn, '淇濆瓨涓€?);
     fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ event:'QW_CHANGE_EMAIL', email: v.email, newEmail: ne, oldCode: oc, newCode: nc })
     }).then(function(r){return r.json();}).then(function(r){
-      setBtnRestore(btn, '保存邮箱');
+      setBtnRestore(btn, '淇濆瓨閭');
       if (r.code === 0) {
         localStorage.setItem(QW_EMAIL, ne);
-        showSetMsg('邮箱已修改', true);
-        logAction('改邮箱', '邮箱改为: ' + ne);
+        showSetMsg('閭宸蹭慨鏀?, true);
+        logAction('鏀归偖绠?, '閭鏀逛负: ' + ne);
         setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
-      } else showSetMsg(r.message || '修改失败', false);
-    }).catch(function(){ setBtnRestore(btn, '保存邮箱'); showSetMsg('网络错误', false); });
+      } else showSetMsg(r.message || '淇敼澶辫触', false);
+    }).catch(function(){ setBtnRestore(btn, '淇濆瓨閭'); showSetMsg('缃戠粶閿欒', false); });
   });
-  // 管理员面板只能点 X 关闭（不响应 Esc 和遮罩点击）
+  // 绠＄悊鍛橀潰鏉垮彧鑳界偣 X 鍏抽棴锛堜笉鍝嶅簲 Esc 鍜岄伄缃╃偣鍑伙級
 
-  // 赞/踩操作：赞与踩互斥自动切换（已赞点踩=取消赞变踩，反之亦然）；再点同一个=取消；持久高亮
-  document.addEventListener('click', function (e) {
+  // 璧?韪╂搷浣滐細璧炰笌韪╀簰鏂ヨ嚜鍔ㄥ垏鎹紙宸茶禐鐐硅俯=鍙栨秷璧炲彉韪╋紝鍙嶄箣浜︾劧锛夛紱鍐嶇偣鍚屼竴涓?鍙栨秷锛涙寔涔呴珮浜?  document.addEventListener('click', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('.qw-body #twikoo .tk-comment .tk-action-link') : null;
     if (!btn) return;
     var comment = btn.closest('.tk-comment');
@@ -1544,7 +1525,7 @@
       var nick = nickEl ? nickEl.textContent.trim() : '';
       var contentEl = comment.querySelector('.tk-content, .tk-row-content');
       var content = contentEl ? contentEl.textContent.trim().slice(0, 60) : '';
-      // 手动设置 Twikoo 内部 parentComment
+      // 鎵嬪姩璁剧疆 Twikoo 鍐呴儴 parentComment
       try {
         var vm = document.querySelector('#twikoo').__vue__;
         if (vm) { vm.parentComment = comment; }
@@ -1552,8 +1533,7 @@
       showReplyBar(nick, content);
       return;
     }
-    if (!isLike && !isDislike) return; // 赞/踩之外的其他按钮不处理
-    function block(ev) {
+    if (!isLike && !isDislike) return; // 璧?韪╀箣澶栫殑鍏朵粬鎸夐挳涓嶅鐞?    function block(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       if (e.stopImmediatePropagation) e.stopImmediatePropagation();
@@ -1562,7 +1542,7 @@
       try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
       try { localStorage.setItem(DK, JSON.stringify(dislikedSet)); } catch (e2) {}
     }
-    // 互斥：已赞时点踩 = 取消赞变踩；已踩时点赞 = 取消踩变赞；再点同一个 = 取消
+    // 浜掓枼锛氬凡璧炴椂鐐硅俯 = 鍙栨秷璧炲彉韪╋紱宸茶俯鏃剁偣璧?= 鍙栨秷韪╁彉璧烇紱鍐嶇偣鍚屼竴涓?= 鍙栨秷
     if (isLike && dislikedSet[id]) {
       delete dislikedSet[id];
       dislikeBtn.classList.remove('qw-disliked');
@@ -1573,8 +1553,7 @@
     }
     if (isLike) {
       if (likedSet[id]) {
-        // 已赞再点 = 取消赞（放行给 Twikoo toggle）
-        delete likedSet[id];
+        // 宸茶禐鍐嶇偣 = 鍙栨秷璧烇紙鏀捐缁?Twikoo toggle锛?        delete likedSet[id];
         likeBtn.classList.remove('qw-liked');
         saveSets();
         return;
@@ -1582,11 +1561,10 @@
       likedSet[id] = 1;
       likeBtn.classList.add('qw-liked');
       saveSets();
-      logAction('点赞', '消息ID:' + id);
+      logAction('鐐硅禐', '娑堟伅ID:' + id);
     } else if (isDislike) {
       if (dislikedSet[id]) {
-        // 已踩再点 = 取消踩
-        delete dislikedSet[id];
+        // 宸茶俯鍐嶇偣 = 鍙栨秷韪?        delete dislikedSet[id];
         dislikeBtn.classList.remove('qw-disliked');
         saveSets();
         return;
@@ -1594,23 +1572,23 @@
       dislikedSet[id] = 1;
       dislikeBtn.classList.add('qw-disliked');
       saveSets();
-      logAction('点踩', '消息ID:' + id);
+      logAction('鐐硅俯', '娑堟伅ID:' + id);
     }
   }, true);
 
-  // 拦截导航里的"聊天室"链接（fklts.html / chat.html）→ 打开悬浮弹窗，不跳转
+  // 鎷︽埅瀵艰埅閲岀殑"鑱婂ぉ瀹?閾炬帴锛坒klts.html / chat.html锛夆啋 鎵撳紑鎮诞寮圭獥锛屼笉璺宠浆
   document.addEventListener('click', function (e) {
     var a = e.target && e.target.closest ? e.target.closest('a[href$="fklts.html"], a[href$="chat.html"]') : null;
     if (a) { e.preventDefault(); openChat(); }
   }, true);
 
-  // ===== 点赞防刷：同一浏览器只能点一次赞（跨窗口共享 localStorage） =====
-  // 配合后端按 IP 去重：同 IP 多设备也刷不了；换 IP/换浏览器理论上可刷，无法根治
+  // ===== 鐐硅禐闃插埛锛氬悓涓€娴忚鍣ㄥ彧鑳界偣涓€娆¤禐锛堣法绐楀彛鍏变韩 localStorage锛?=====
+  // 閰嶅悎鍚庣鎸?IP 鍘婚噸锛氬悓 IP 澶氳澶囦篃鍒蜂笉浜嗭紱鎹?IP/鎹㈡祻瑙堝櫒鐞嗚涓婂彲鍒凤紝鏃犳硶鏍规不
   var LK = 'qw_liked_v1';
   var likedSet = {};
   try { likedSet = JSON.parse(localStorage.getItem(LK) || '{}'); } catch (e) { likedSet = {}; }
-  // ===== 已点赞高亮恢复：本地记录过的评论，点赞按钮固定显示为已赞（服务端 liked 状态因 IP 防刷不可用） =====
-  // ===== 登录门：未填昵称+邮箱不能发言 =====
+  // ===== 宸茬偣璧為珮浜仮澶嶏細鏈湴璁板綍杩囩殑璇勮锛岀偣璧炴寜閽浐瀹氭樉绀轰负宸茶禐锛堟湇鍔＄ liked 鐘舵€佸洜 IP 闃插埛涓嶅彲鐢級 =====
+  // ===== 鐧诲綍闂細鏈～鏄电О+閭涓嶈兘鍙戣█ =====
   var QW_NICK_KEY = 'qw_user_nick';
   var QW_MAIL_KEY = 'qw_user_mail';
   function getSavedUser() {
@@ -1632,7 +1610,7 @@
     setTwikooField('.qw-body .tk-meta-input input[name=nick]', u.nick);
     setTwikooField('.qw-body .tk-meta-input input[name=mail]', u.mail);
   }
-  // 微信风回复预览条
+  // 寰俊椋庡洖澶嶉瑙堟潯
   function showReplyBar(nick, text) {
     var submit = document.querySelector('.qw-body .tk-submit');
     if (!submit) return;
@@ -1640,14 +1618,13 @@
     if (old) old.remove();
     var bar = document.createElement('div');
     bar.className = 'qw-reply-bar';
-    bar.innerHTML = '<span class="qw-reply-nick">回复 ' + (nick || '') + '：</span>' +
+    bar.innerHTML = '<span class="qw-reply-nick">鍥炲 ' + (nick || '') + '锛?/span>' +
       '<span class="qw-reply-text"></span>' +
-      '<span class="qw-reply-cancel">×</span>';
+      '<span class="qw-reply-cancel">脳</span>';
     bar.querySelector('.qw-reply-text').textContent = text || '';
     bar.querySelector('.qw-reply-cancel').addEventListener('click', function () {
       bar.remove();
-      // 同时取消 Twikoo 内部 parentComment（Vue）
-      try {
+      // 鍚屾椂鍙栨秷 Twikoo 鍐呴儴 parentComment锛圴ue锛?      try {
         var vm = document.querySelector('#twikoo').__vue__;
         if (vm) { vm.parentComment = null; }
       } catch (e) {}
@@ -1661,13 +1638,12 @@
     if (bar) bar.remove();
     try { var vm = document.querySelector('#twikoo').__vue__; if (vm) vm.parentComment = null; } catch(e){}
   }
-  // 点发送后自动清除回复条
-  document.addEventListener('click', function(e) {
+  // 鐐瑰彂閫佸悗鑷姩娓呴櫎鍥炲鏉?  document.addEventListener('click', function(e) {
     var sendBtn = e.target && e.target.closest ? e.target.closest('.qw-body .tk-send') : null;
     if (sendBtn) setTimeout(clearReplyBar, 500);
   }, true);
 
-  // ===== 访客登录（邮箱+昵称，localStorage 记住） =====
+  // ===== 璁垮鐧诲綍锛堥偖绠?鏄电О锛宭ocalStorage 璁颁綇锛?=====
   var QW_NICK = 'qw_visitor_nick';
   var QW_EMAIL = 'qw_visitor_email';
   function getVisitor() {
@@ -1723,12 +1699,12 @@
       if (codeRow) codeRow.style.display = 'flex';
       var codeInput = document.getElementById('qw-login-code');
       if (codeInput) codeInput.value = '';
-      titleEl.textContent = '注册账号';
-      subEl.textContent = '设置昵称、邮箱和密码';
+      titleEl.textContent = '娉ㄥ唽璐﹀彿';
+      subEl.textContent = '璁剧疆鏄电О銆侀偖绠卞拰瀵嗙爜';
       var emailEl = document.getElementById('qw-login-email');
-      if (emailEl) emailEl.placeholder = '邮箱（用于接收验证码）';
-      btnEl.textContent = '注 册';
-      if (toggleEl) toggleEl.innerHTML = '<span>已有账号？</span><b id="qw-toggle-link">点击登录</b>';
+      if (emailEl) emailEl.placeholder = '閭锛堢敤浜庢帴鏀堕獙璇佺爜锛?;
+      btnEl.textContent = '娉?鍐?;
+      if (toggleEl) toggleEl.innerHTML = '<span>宸叉湁璐﹀彿锛?/span><b id="qw-toggle-link">鐐瑰嚮鐧诲綍</b>';
       if (tabLogin) tabLogin.classList.remove('qw-active');
       if (tabReg) tabReg.classList.add('qw-active');
     } else {
@@ -1736,12 +1712,12 @@
       if (nickField) nickField.style.display = 'none';
       var codeRow2 = document.getElementById('qw-code-row');
       if (codeRow2) codeRow2.style.display = 'none';
-      titleEl.textContent = '登录发言';
-      subEl.textContent = '输入邮箱和密码登录';
+      titleEl.textContent = '鐧诲綍鍙戣█';
+      subEl.textContent = '杈撳叆閭鍜屽瘑鐮佺櫥褰?;
       var emailEl2 = document.getElementById('qw-login-email');
-      if (emailEl2) emailEl2.placeholder = '邮箱或昵称';
-      btnEl.textContent = '登 录';
-      if (toggleEl) toggleEl.innerHTML = '<span>没有账号？</span><b id="qw-toggle-link">点击注册</b>';
+      if (emailEl2) emailEl2.placeholder = '閭鎴栨樀绉?;
+      btnEl.textContent = '鐧?褰?;
+      if (toggleEl) toggleEl.innerHTML = '<span>娌℃湁璐﹀彿锛?/span><b id="qw-toggle-link">鐐瑰嚮娉ㄥ唽</b>';
       if (tabLogin) tabLogin.classList.add('qw-active');
       if (tabReg) tabReg.classList.remove('qw-active');
     }
@@ -1768,9 +1744,9 @@
     var email = document.getElementById('qw-login-email').value.trim();
     var pwd = document.getElementById('qw-login-pwd').value || '';
     var msgEl = document.getElementById('qw-login-msg');
-    if (loginMode === 'register' && !nick) { msgEl.textContent = '请输入昵称'; return; }
-    if (!email) { msgEl.textContent = '请输入邮箱或昵称'; return; } if (loginMode === 'register' && email.indexOf('@') < 0) { msgEl.textContent = '请输入有效邮箱'; return; }
-    if (!pwd) { msgEl.textContent = '请输入密码'; return; }
+    if (loginMode === 'register' && !nick) { msgEl.textContent = '璇疯緭鍏ユ樀绉?; return; }
+    if (!email) { msgEl.textContent = '璇疯緭鍏ラ偖绠辨垨鏄电О'; return; } if (loginMode === 'register' && email.indexOf('@') < 0) { msgEl.textContent = '璇疯緭鍏ユ湁鏁堥偖绠?; return; }
+    if (!pwd) { msgEl.textContent = '璇疯緭鍏ュ瘑鐮?; return; }
     var btn = document.getElementById('qw-login-submit');
     if (btn) btn.disabled = true;
     var bodyData = { event: 'QW_USER_AUTH', email: email, password: pwd };
@@ -1780,7 +1756,7 @@
       body: JSON.stringify(bodyData)
     }).then(function(r){return r.json();}).then(function(r){
       if (btn) btn.disabled = false;
-      if (r.code !== 0) { msgEl.textContent = r.message || '操作失败'; return; }
+      if (r.code !== 0) { msgEl.textContent = r.message || '鎿嶄綔澶辫触'; return; }
       try {
         localStorage.setItem(QW_NICK, r.data.nick);
         localStorage.setItem(QW_EMAIL, (r.data.email || email).trim().toLowerCase());
@@ -1791,18 +1767,18 @@
       syncLikesByEmail();
       try {
         var act = (r.data && r.data.action) || '';
-        if (act === 'registered') logAction('注册', '新账号注册: ' + nick);
-        else if (act === 'logged_in') logAction('登录', '账号登录: ' + (r.data.nick || nick));
+        if (act === 'registered') logAction('娉ㄥ唽', '鏂拌处鍙锋敞鍐? ' + nick);
+        else if (act === 'logged_in') logAction('鐧诲綍', '璐﹀彿鐧诲綍: ' + (r.data.nick || nick));
       } catch (e2) {}
     }).catch(function(){
       if (btn) btn.disabled = false;
-      msgEl.textContent = '网络错误，请重试';
+      msgEl.textContent = '缃戠粶閿欒锛岃閲嶈瘯';
     });
   }
   function logout() {
     try {
       var lv = getVisitor();
-      if (lv.nick || lv.email) logAction('退出', '账号退出: ' + (lv.nick || lv.email));
+      if (lv.nick || lv.email) logAction('閫€鍑?, '璐﹀彿閫€鍑? ' + (lv.nick || lv.email));
       localStorage.removeItem(QW_NICK); localStorage.removeItem(QW_EMAIL);
     } catch (e) {}
     refreshLoginUI();
@@ -1836,9 +1812,8 @@
           dislikeBtn.classList.remove('qw-disliked');
         }
       }
-      // 删除/编辑按钮只显示给评论作者自己：
-      // 前3个按钮是 赞/踩/回复，第4个及以后是删除/编辑等管理按钮
-      try {
+      // 鍒犻櫎/缂栬緫鎸夐挳鍙樉绀虹粰璇勮浣滆€呰嚜宸憋細
+      // 鍓?涓寜閽槸 璧?韪?鍥炲锛岀4涓強浠ュ悗鏄垹闄?缂栬緫绛夌鐞嗘寜閽?      try {
         var cmp = c.__vue__;
         var commentMail = cmp && cmp.comment ? (cmp.comment.mail || '').trim().toLowerCase() : '';
         var isMine = myEmail && commentMail === myEmail;
@@ -1853,7 +1828,6 @@
   var dislikedSet = {};
   try { dislikedSet = JSON.parse(localStorage.getItem(DK) || '{}'); } catch (e) { dislikedSet = {}; }
 
-  // 外部可调用
-  window.openChatRoom = openChat;
+  // 澶栭儴鍙皟鐢?  window.openChatRoom = openChat;
   window.closeChatRoom = closeChat;
 })();
