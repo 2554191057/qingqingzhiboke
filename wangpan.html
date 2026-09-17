@@ -184,7 +184,7 @@ document.addEventListener('selectstart', e => {
 @media(max-width:900px){
   .hamburger-btn{display:flex!important;}
   .navbar-nav{
-    display:none!important;position:fixed!important;top:72px!important;right:12px!important;left:auto!important;transform:none!important;
+    display:none!important;position:fixed!important;transform:none!important;
     flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
     background:rgba(255,255,255,0.96)!important;-webkit-backdrop-filter:blur(20px)!important;backdrop-filter:blur(20px)!important;
     border:1px solid rgba(0,0,0,0.06)!important;border-radius:16px!important;
@@ -198,23 +198,25 @@ document.addEventListener('selectstart', e => {
   .navbar-nav .nav-item.active::after{display:none!important;}
 }
 @keyframes menuSlideDown{from{opacity:0;transform:translateY(-8px) scale(.95);}to{opacity:1;transform:translateY(0) scale(1);}}
-</style>
 /* 快速导航按钮（移动端汉堡菜单改文字按钮） */
 .hamburger-btn {
   align-items: center;
   gap: 6px;
   font-size: 13px;
   font-weight: 500;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: 10px;
   color: #64748b;
   background: rgba(255,255,255,0.85);
   border: 1px solid rgba(100,116,139,0.25);
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  transition: background .2s ease, color .2s ease;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
   white-space: nowrap;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
-.hamburger-btn:hover { background: rgba(0,0,0,0.04); color: #1e293b; }
+.hamburger-btn:hover { background: rgba(0,0,0,0.04); color: #1e293b; border-color: rgba(100,116,139,0.4); }
 [data-theme="dark"] .hamburger-btn {
   color: #e2e8f0;
   background: rgba(30,41,59,0.65);
@@ -223,6 +225,7 @@ document.addEventListener('selectstart', e => {
 }
 [data-theme="dark"] .hamburger-btn:hover { background: rgba(255,255,255,0.10); color: #fff; }
 .hamburger-btn .hamburger-label { display: inline-block; line-height: 1; }
+</style>
 </head>
 <body>
 
@@ -518,7 +521,16 @@ window.addEventListener('load', function() {
 </script>
 <script>
 document.getElementById('hamburgerBtn').addEventListener('click', function() {
-  document.getElementById('navbarNav').classList.toggle('open');
+  var nav = document.getElementById('navbarNav');
+  var open = nav.classList.contains('open');
+  if (!open) {
+    var r = this.getBoundingClientRect();
+    nav.style.top = (r.bottom + 8) + 'px';
+    nav.style.right = (window.innerWidth - r.right) + 'px';
+    nav.style.left = 'auto';
+    nav.style.transform = 'none';
+  }
+  nav.classList.toggle('open');
 });
 document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
   item.addEventListener('click', function(e) {
