@@ -1347,6 +1347,8 @@
       if (codeInput) codeInput.value = '';
       titleEl.textContent = '注册账号';
       subEl.textContent = '设置昵称、邮箱和密码';
+      var emailEl = document.getElementById('qw-login-email');
+      if (emailEl) emailEl.placeholder = '邮箱（用于接收验证码）';
       btnEl.textContent = '注 册';
       if (toggleEl) toggleEl.innerHTML = '<span>已有账号？</span><b id="qw-toggle-link">点击登录</b>';
       if (tabLogin) tabLogin.classList.remove('qw-active');
@@ -1358,6 +1360,8 @@
       if (codeRow2) codeRow2.style.display = 'none';
       titleEl.textContent = '登录发言';
       subEl.textContent = '输入邮箱和密码登录';
+      var emailEl2 = document.getElementById('qw-login-email');
+      if (emailEl2) emailEl2.placeholder = '邮箱或昵称';
       btnEl.textContent = '登 录';
       if (toggleEl) toggleEl.innerHTML = '<span>没有账号？</span><b id="qw-toggle-link">点击注册</b>';
       if (tabLogin) tabLogin.classList.add('qw-active');
