@@ -926,7 +926,7 @@
 
   function renderManageView() {
     adminBody.innerHTML = '<div class="qw-admin-loading">加载聊天数据…</div>';
-    var blocks = [], wlist = [];
+    var blocks = [], wlist = [], logs = [];
     var likeMap = {};
     adminPost({ event: 'QW_LIKE_LIST', accessToken: adminToken }).then(function (lr) {
       if (lr && lr.code === 0) {
