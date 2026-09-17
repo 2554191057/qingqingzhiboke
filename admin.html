@@ -275,20 +275,44 @@ function cnCity(city) {
 function getIpLocation(ip, cb) {
   if (!ip || !/^([0-9a-fA-F:.]*[0-9a-fA-F]|(\d{1,3}\.){3}\d{1,3})$/.test(ip)) return cb('');
   if (ipLocCache[ip]) return cb(ipLocCache[ip]);
-  fetch('https://ipwho.is/' + ip).then(function (r) { return r.json(); }).then(function (d) {
-    if (!d || d.success === false) return cb('');
-    var prov = (d.region || '').toLowerCase().replace(/\s*(sheng|province|auto autonomous|region)\s*/g, '').trim();
-    var provCn = provinceMap[prov] || d.region || '';
-    var cityCn = cnCity(d.city || '');
-    var org = (d.connection && d.connection.org) || (d.connection && d.connection.isp) || '';
-    if (/CHINANET|China Telecom|Chinatelecom/i.test(org)) org = '电信';
-    else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
-    else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
-    else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
-    else org = org ? org.slice(0, 20) : '';
-    var loc = ((provCn ? provCn + ' ' : '') + ((cityCn && cityCn !== provCn) ? cityCn + ' ' : '') + (org ? ' ' + org : '')).trim();
-    if (loc) { ipLocCache[ip] = loc; }
-    cb(loc);
+  // 优先 vore.top：免费、无需 key，返回 省/市/区 + 运营商（IPv4 到区县，IPv6 至少省+运营商）
+  fetch('https://api.vore.top/api/IPdata?ip=' + encodeURIComponent(ip)).then(function (r) { return r.json(); }).then(function (d) {
+    if (d && d.code === 200 && d.ipdata) {
+      var p = String(d.ipdata.info1 || '').replace(/省$/, '');
+      var c = String(d.ipdata.info2 || '').replace(/市$/, '');
+      var dist = String(d.ipdata.info3 || '');
+      var isp = String(d.ipdata.isp || '');
+      var parts = [];
+      if (p) parts.push(p);
+      if (c && c !== p) parts.push(c);
+      if (dist && dist !== c) parts.push(dist);
+      if (isp) parts.push(isp);
+      var loc = parts.join(' ');
+      if (loc) {
+        ipLocCache[ip] = loc;
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 3, data: ipLocCache })); } catch (e) {}
+        return cb(loc);
+      }
+    }
+    // 退回 ipwho.is（海外/IPv6 归属地）
+    return fetch('https://ipwho.is/' + ip).then(function (r2) { return r2.json(); }).then(function (d2) {
+      if (!d2 || d2.success === false) return cb('');
+      var prov = (d2.region || '').toLowerCase().replace(/\s*(sheng|province|auto autonomous|region)\s*/g, '').trim();
+      var provCn = provinceMap[prov] || d2.region || '';
+      var cityCn = cnCity(d2.city || '');
+      var org = (d2.connection && d2.connection.org) || (d2.connection && d2.connection.isp) || '';
+      if (/CHINANET|China Telecom|Chinatelecom/i.test(org)) org = '电信';
+      else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
+      else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
+      else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
+      else org = org ? org.slice(0, 20) : '';
+      var loc = ((provCn ? provCn + ' ' : '') + ((cityCn && cityCn !== provCn) ? cityCn + ' ' : '') + (org ? ' ' + org : '')).trim();
+      if (loc) {
+        ipLocCache[ip] = loc;
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 3, data: ipLocCache })); } catch (e) {}
+      }
+      cb(loc);
+    }).catch(function () { cb(''); });
   }).catch(function () { cb(''); });
 }
 function enrichIps() {

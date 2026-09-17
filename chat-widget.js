@@ -278,6 +278,9 @@
     '.qw-mgmt-item button:hover{color:#e05b5b;}',
     '.qw-log-item{padding:7px 0;border-bottom:1px dashed var(--jp-line);font-size:11px;color:var(--jp-text);line-height:1.5;word-break:break-all;}',
     '.qw-log-item .qw-log-sub{display:block;color:var(--jp-muted);font-size:10px;line-height:1.4;margin-top:2px;}',
+    '.qw-log-item .qw-log-copy{margin-left:5px;padding:0 7px;font-size:10px;line-height:1.6;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer;vertical-align:1px;}',
+    '.qw-log-item .qw-log-copy:hover{background:rgba(129,140,248,0.12);}',
+    '.qw-log-item .qw-log-copy.ok{color:#34d399;border-color:rgba(52,211,153,0.4);}',
     '.qw-mgmt-input-row{display:flex;gap:6px;margin:8px 0;}',
     '.qw-mgmt-input-row input{flex:1;border:1px solid var(--jp-line);border-radius:7px;background:var(--jp-paper);color:var(--jp-ink);padding:7px 10px;font-size:11px;outline:none;}',
     '.qw-mgmt-input-row input:focus{border-color:var(--jp-accent);}',
@@ -1255,7 +1258,7 @@
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
         var tstr = new Date(lg.time).toLocaleString('zh-CN');
-        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除这条日志" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button></div>';
+        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除这条日志" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button></div>';
       }
     }
     return h + '</div>';
@@ -1301,596 +1304,46 @@
     return cityMap[key] || city;
   }
   function getIpLocation(ip, cb) {
-    if (!ip || !/^([0-9a-fA-F:.]*[0-9a-fA-F]|(\d{1,3}\.){3}\d{1,3})$/.test(ip)) return cb('');
-    if (ipLocCache[ip]) return cb(ipLocCache[ip]);
-    fetch('https://ipwho.is/' + ip).then(function (r) { return r.json(); }).then(function (d) {
-      if (!d || d.success === false) return cb('');
-      var prov = (d.region || '').toLowerCase().replace(/\s*(sheng|province|auto autonomous|region)\s*/g, '').trim();
-      var provCn = provinceMap[prov] || d.region || '';
-      var cityCn = cnCity(d.city || '');
-      var org = (d.connection && d.connection.org) || (d.connection && d.connection.isp) || '';
+  if (!ip || !/^([0-9a-fA-F:.]*[0-9a-fA-F]|(\d{1,3}\.){3}\d{1,3})$/.test(ip)) return cb('');
+  if (ipLocCache[ip]) return cb(ipLocCache[ip]);
+  // 优先 vore.top：免费、无需 key，返回 省/市/区 + 运营商（IPv4 到区县，IPv6 至少省+运营商）
+  fetch('https://api.vore.top/api/IPdata?ip=' + encodeURIComponent(ip)).then(function (r) { return r.json(); }).then(function (d) {
+    if (d && d.code === 200 && d.ipdata) {
+      var p = String(d.ipdata.info1 || '').replace(/省$/, '');
+      var c = String(d.ipdata.info2 || '').replace(/市$/, '');
+      var dist = String(d.ipdata.info3 || '');
+      var isp = String(d.ipdata.isp || '');
+      var parts = [];
+      if (p) parts.push(p);
+      if (c && c !== p) parts.push(c);
+      if (dist && dist !== c) parts.push(dist);
+      if (isp) parts.push(isp);
+      var loc = parts.join(' ');
+      if (loc) {
+        ipLocCache[ip] = loc;
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 3, data: ipLocCache })); } catch (e) {}
+        return cb(loc);
+      }
+    }
+    // 退回 ipwho.is（海外/IPv6 归属地）
+    return fetch('https://ipwho.is/' + ip).then(function (r2) { return r2.json(); }).then(function (d2) {
+      if (!d2 || d2.success === false) return cb('');
+      var prov = (d2.region || '').toLowerCase().replace(/\s*(sheng|province|auto autonomous|region)\s*/g, '').trim();
+      var provCn = provinceMap[prov] || d2.region || '';
+      var cityCn = cnCity(d2.city || '');
+      var org = (d2.connection && d2.connection.org) || (d2.connection && d2.connection.isp) || '';
       if (/CHINANET|China Telecom|Chinatelecom/i.test(org)) org = '电信';
       else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
       else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
       else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
       else org = org ? org.slice(0, 20) : '';
-      var loc = (provCn ? provCn + ' ' : '') + ((cityCn && cityCn !== provCn) ? cityCn + ' ' : '') + (org ? ' ' + org : '');
-      loc = loc.trim();
+      var loc = ((provCn ? provCn + ' ' : '') + ((cityCn && cityCn !== provCn) ? cityCn + ' ' : '') + (org ? ' ' + org : '')).trim();
       if (loc) {
         ipLocCache[ip] = loc;
-        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 2, data: ipLocCache })); } catch (e) {}
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 3, data: ipLocCache })); } catch (e) {}
       }
       cb(loc);
     }).catch(function () { cb(''); });
-  }
-  // 给管理面板里所有 IP 行补上归属地
-  function enrichIps() {
-    var rows = document.querySelectorAll('#qw-admin-body .qw-log-item, #qw-admin-body .qw-admin-item');
-    rows.forEach(function (it) {
-      if (it.getAttribute('data-ip-done')) return;
-      var sub = it.querySelector('.qw-log-sub') || it.querySelector('.qw-ip');
-      var text = it.innerText || '';
-      var m = text.match(/IP\s*([0-9a-fA-F:.]+)/);
-      if (!m) return;
-      it.setAttribute('data-ip-done', '1');
-      var ip = m[1];
-      getIpLocation(ip, function (loc) {
-        if (!loc) return;
-        var target = sub || it;
-        if (target && target.textContent.indexOf(loc) < 0) {
-          var dot = document.createTextNode(' · ' + loc);
-          target.appendChild(dot);
-        }
-      });
-    });
-  }
-  // 局部切换日志分类：只重建日志区块，不重载整个后台管理
-  function handleSetLogCat(cat) {
-    adminLogFilter = cat;
-    var sec = document.getElementById('qw-log-section');
-    if (sec) {
-      sec.innerHTML = buildLogHtml(adminLogs);
-      bindLogToggle();
-      enrichIps();
-    }
-  }
-  function bindLogToggle() {
-    var btns = document.querySelectorAll('#qw-log-section [data-act="set-logcat"]');
-    btns.forEach(function(b){
-      b.addEventListener('click', function(){ handleSetLogCat(b.getAttribute('data-cat') || 'all'); });
-    });
-    document.querySelectorAll('#qw-log-section [data-act="del-log"]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var id = btn.getAttribute('data-id');
-        if (!id) return;
-        adminPost({ event: 'QW_LOG_DELETE', accessToken: adminToken, id: id }).then(function (r) {
-          if (r && r.code === 0) {
-            var row = btn.closest('.qw-log-item');
-            if (row) row.parentNode.removeChild(row);
-          } else {
-            alert((r && r.message) || '删除失败');
-          }
-        });
-      });
-    });
-  }
-
-  function escHtml(s) {
-    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-  function stripHtml(html) {
-    var d = document.createElement('div');
-    d.innerHTML = html || '';
-    return d.textContent || '';
-  }
-  function escAttr(s) {
-    return escHtml(s).replace(/'/g, '&#39;');
-  }
-
-  adminBtn.addEventListener('click', function () {
-    openAdmin();
-  });
-  document.getElementById('qw-logout-btn').addEventListener('click', function () {
-    logout();
-  });
-  // ===== 账号设置弹窗 =====
-  var settingsModal = document.getElementById('qw-settings-modal');
-  var setMsg = document.getElementById('qw-set-msg');
-  function showSetMsg(text, ok) {
-    setMsg.textContent = text;
-    setMsg.className = 'qw-login-msg' + (ok ? ' qw-ok' : '');
-  }
-  function setTab(tabName) {
-    var tabs = document.querySelectorAll('#qw-settings-modal .qw-login-tab');
-    var panes = document.querySelectorAll('#qw-settings-modal .qw-set-pane');
-    tabs.forEach(function(t){ t.classList.toggle('qw-active', t.getAttribute('data-set') === tabName); });
-    panes.forEach(function(p){ p.style.display = p.id === 'qw-set-pane-' + tabName ? 'block' : 'none'; });
-    if (tabName === 'pwd') {
-      pwdMode = 'old';
-      var oldF = document.getElementById('qw-pwd-old-field');
-      var codeF = document.getElementById('qw-pwd-code-field');
-      var fBtn = document.getElementById('qw-pwd-forgot');
-      if (oldF) oldF.style.display = 'block';
-      if (codeF) codeF.style.display = 'none';
-      if (fBtn) fBtn.textContent = '忘记密码？通过邮箱验证码重置';
-    }
-  }
-  document.querySelectorAll('#qw-settings-modal .qw-login-tab').forEach(function(tab){
-    tab.addEventListener('click', function(){ setTab(tab.getAttribute('data-set')); });
-  });
-  function openSettings() {
-    var v = getVisitor();
-    document.getElementById('qw-set-current-nick').textContent = v.nick || '未设置昵称';
-    document.getElementById('qw-set-current-email').textContent = v.email || '';
-    document.getElementById('qw-set-nick').value = '';
-    document.getElementById('qw-set-new-pwd1').value = '';
-    document.getElementById('qw-set-new-pwd2').value = '';
-    document.getElementById('qw-set-pwd-old-pwd').value = '';
-    document.getElementById('qw-set-pwd-code').value = '';
-    document.getElementById('qw-set-new-email').value = '';
-    document.getElementById('qw-set-email-oldcode').value = '';
-    document.getElementById('qw-set-email-newcode').value = '';
-    setMsg.textContent = '';
-    // 头部显示当前登录账号
-    var headSub = document.querySelector('#qw-settings-modal .qw-login-head p');
-    if (headSub) headSub.textContent = (v.nick || '未登录') + ' · ' + (v.email || '');
-    setTab('nick');
-    settingsModal.classList.add('qw-open');
-  }
-  function closeSettings() { settingsModal.classList.remove('qw-open'); }
-  document.getElementById('qw-settings-btn').addEventListener('click', openSettings);
-  settingsModal.addEventListener('click', function(e) { if (e.target === settingsModal) closeSettings(); });
-  document.getElementById('qw-settings-close-x').addEventListener('click', closeSettings);
-  function setBtnLoading(btn, text) { btn.disabled = true; btn.textContent = text; }
-  function setBtnRestore(btn, text) { btn.disabled = false; btn.textContent = text; }
-  // 改昵称：不需要密码
-  document.getElementById('qw-set-nick-save').addEventListener('click', function() {
-    var v = getVisitor();
-    var nick = document.getElementById('qw-set-nick').value.trim();
-    if (!nick) { showSetMsg('请输入新昵称', false); return; }
-    var btn = this; setBtnLoading(btn, '保存中…');
-    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ event:'QW_USER_UPDATE', email: v.email, newNick: nick })
-    }).then(function(r){return r.json();}).then(function(r){
-      setBtnRestore(btn, '保存昵称');
-      if (r.code === 0) {
-        localStorage.setItem(QW_NICK, nick);
-        showSetMsg('昵称已修改', true);
-        logAction('改昵称', '昵称改为: ' + nick);
-        setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
-      } else showSetMsg(r.message || '修改失败', false);
-    }).catch(function(){ setBtnRestore(btn, '保存昵称'); showSetMsg('网络错误', false); });
-  });
-  // 改密码：旧密码 / 邮箱验证码 切换（通过"忘记密码"链接）
-  var pwdMode = 'old';
-  var forgotBtn = document.getElementById('qw-pwd-forgot');
-  if (forgotBtn) {
-    forgotBtn.addEventListener('click', function() {
-      if (pwdMode === 'old') {
-        pwdMode = 'code';
-        document.getElementById('qw-pwd-old-field').style.display = 'none';
-        document.getElementById('qw-pwd-code-field').style.display = 'block';
-        forgotBtn.textContent = '想起来了？用当前密码修改';
-      } else {
-        pwdMode = 'old';
-        document.getElementById('qw-pwd-old-field').style.display = 'block';
-        document.getElementById('qw-pwd-code-field').style.display = 'none';
-        forgotBtn.textContent = '忘记密码？通过邮箱验证码重置';
-      }
-    });
-  }
-  // 改密码：发 reset 验证码
-  function bindSendCode(btnId, emailVal, type, msgEl) {
-    var btn = document.getElementById(btnId);
-    if (!btn) return;
-    btn.addEventListener('click', function() {
-      var email = typeof emailVal === 'function' ? emailVal() : emailVal;
-      if (!email || email.indexOf('@') < 0) { showSetMsg('请先填邮箱', false); return; }
-      btn.disabled = true; var s = 60;
-      btn.textContent = s + 's';
-      var timer = setInterval(function(){
-        s--; if (s <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = '发码'; }
-        else btn.textContent = s + 's';
-      }, 1000);
-      fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ event:'QW_SEND_CODE', email: email, type: type })
-      }).then(function(r){return r.json();}).then(function(r){
-        showSetMsg(r.code === 0 ? '验证码已发送' : (r.message || '发送失败'), r.code === 0);
-      }).catch(function(){ showSetMsg('网络错误', false); });
-    });
-  }
-  var v0 = getVisitor();
-  bindSendCode('qw-set-pwd-sendcode', function(){ return getVisitor().email; }, 'reset');
-  bindSendCode('qw-set-email-sendold', function(){ return getVisitor().email; }, 'changeemail');
-  bindSendCode('qw-set-email-sendnew', function(){ return document.getElementById('qw-set-new-email').value.trim(); }, 'register');
-  document.getElementById('qw-set-pwd-save').addEventListener('click', function() {
-    var v = getVisitor();
-    var p1 = document.getElementById('qw-set-new-pwd1').value;
-    var p2 = document.getElementById('qw-set-new-pwd2').value;
-    if (!p1 || p1.length < 4) { showSetMsg('新密码至少4位', false); return; }
-    if (p1 !== p2) { showSetMsg('两次密码不一致', false); return; }
-    var body = { event:'QW_USER_UPDATE', email: v.email, newPassword: p1 };
-    if (pwdMode === 'old') {
-      var oldP = document.getElementById('qw-set-pwd-old-pwd').value;
-      if (!oldP) { showSetMsg('请输入当前密码', false); return; }
-      body.oldPassword = oldP;
-    } else {
-      var code = document.getElementById('qw-set-pwd-code').value.trim();
-      if (!code) { showSetMsg('请输入邮箱验证码', false); return; }
-      body.code = code;
-    }
-    var btn = this; setBtnLoading(btn, '保存中…');
-    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) })
-    .then(function(r){return r.json();}).then(function(r){
-      setBtnRestore(btn, '保存密码');
-      if (r.code === 0) {
-        showSetMsg('密码已修改', true);
-        logAction('改密码', '密码已修改');
-        setTimeout(closeSettings, 800);
-      } else showSetMsg(r.message || '修改失败', false);
-    }).catch(function(){ setBtnRestore(btn, '保存密码'); showSetMsg('网络错误', false); });
-  });
-  // 改邮箱：旧邮箱验证码 + 新邮箱验证码
-  document.getElementById('qw-set-email-save').addEventListener('click', function() {
-    var v = getVisitor();
-    var ne = document.getElementById('qw-set-new-email').value.trim();
-    var oc = document.getElementById('qw-set-email-oldcode').value.trim();
-    var nc = document.getElementById('qw-set-email-newcode').value.trim();
-    if (!ne || ne.indexOf('@') < 0) { showSetMsg('请输入有效新邮箱', false); return; }
-    if (!oc || !nc) { showSetMsg('请输入两个邮箱的验证码', false); return; }
-    var btn = this; setBtnLoading(btn, '保存中…');
-    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ event:'QW_CHANGE_EMAIL', email: v.email, newEmail: ne, oldCode: oc, newCode: nc })
-    }).then(function(r){return r.json();}).then(function(r){
-      setBtnRestore(btn, '保存邮箱');
-      if (r.code === 0) {
-        localStorage.setItem(QW_EMAIL, ne);
-        showSetMsg('邮箱已修改', true);
-        logAction('改邮箱', '邮箱改为: ' + ne);
-        setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
-      } else showSetMsg(r.message || '修改失败', false);
-    }).catch(function(){ setBtnRestore(btn, '保存邮箱'); showSetMsg('网络错误', false); });
-  });
-  // 管理员面板只能点 X 关闭（不响应 Esc 和遮罩点击）
-
-  // 赞/踩操作：赞与踩互斥自动切换（已赞点踩=取消赞变踩，反之亦然）；再点同一个=取消；持久高亮
-  document.addEventListener('click', function (e) {
-    var btn = e.target && e.target.closest ? e.target.closest('.qw-body #twikoo .tk-comment .tk-action-link') : null;
-    if (!btn) return;
-    var comment = btn.closest('.tk-comment');
-    var id = comment && comment.id ? comment.id : '';
-    if (!id) return;
-    var links = comment.querySelectorAll('.tk-action-link');
-    var likeBtn = links[0];
-    var dislikeBtn = links[1];
-    var isLike = links.length && btn === likeBtn;
-    var isDislike = links.length > 1 && btn === dislikeBtn;
-    var isReply = links.length > 2 && btn === links[2];
-    if ((isLike || isDislike) && !isLoggedIn()) {
-      e.preventDefault(); e.stopPropagation();
-      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-      openLogin(); return;
-    }
-    if (isReply) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-      var nickEl = comment.querySelector('.tk-nick');
-      var nick = nickEl ? nickEl.textContent.trim() : '';
-      var contentEl = comment.querySelector('.tk-content, .tk-row-content');
-      var content = contentEl ? contentEl.textContent.trim().slice(0, 60) : '';
-      // 手动设置 Twikoo 内部 parentComment
-      try {
-        var vm = document.querySelector('#twikoo').__vue__;
-        if (vm) { vm.parentComment = comment; }
-      } catch (eSet) {}
-      showReplyBar(nick, content);
-      return;
-    }
-    if (!isLike && !isDislike) return; // 赞/踩之外的其他按钮不处理
-    function block(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-    }
-    function saveSets() {
-      try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
-      try { localStorage.setItem(DK, JSON.stringify(dislikedSet)); } catch (e2) {}
-    }
-    // 互斥：已赞时点踩 = 取消赞变踩；已踩时点赞 = 取消踩变赞；再点同一个 = 取消
-    if (isLike && dislikedSet[id]) {
-      delete dislikedSet[id];
-      dislikeBtn.classList.remove('qw-disliked');
-    }
-    if (isDislike && likedSet[id]) {
-      delete likedSet[id];
-      likeBtn.classList.remove('qw-liked');
-    }
-    if (isLike) {
-      if (likedSet[id]) {
-        // 已赞再点 = 取消赞（放行给 Twikoo toggle）
-        delete likedSet[id];
-        likeBtn.classList.remove('qw-liked');
-        saveSets();
-        return;
-      }
-      likedSet[id] = 1;
-      likeBtn.classList.add('qw-liked');
-      saveSets();
-      logAction('点赞', '消息ID:' + id);
-    } else if (isDislike) {
-      if (dislikedSet[id]) {
-        // 已踩再点 = 取消踩
-        delete dislikedSet[id];
-        dislikeBtn.classList.remove('qw-disliked');
-        saveSets();
-        return;
-      }
-      dislikedSet[id] = 1;
-      dislikeBtn.classList.add('qw-disliked');
-      saveSets();
-      logAction('点踩', '消息ID:' + id);
-    }
-  }, true);
-
-  // 拦截导航里的"聊天室"链接（fklts.html / chat.html）→ 打开悬浮弹窗，不跳转
-  document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href$="fklts.html"], a[href$="chat.html"]') : null;
-    if (a) { e.preventDefault(); openChat(); }
-  }, true);
-
-  // ===== 点赞防刷：同一浏览器只能点一次赞（跨窗口共享 localStorage） =====
-  // 配合后端按 IP 去重：同 IP 多设备也刷不了；换 IP/换浏览器理论上可刷，无法根治
-  var LK = 'qw_liked_v1';
-  var likedSet = {};
-  try { likedSet = JSON.parse(localStorage.getItem(LK) || '{}'); } catch (e) { likedSet = {}; }
-  // ===== 已点赞高亮恢复：本地记录过的评论，点赞按钮固定显示为已赞（服务端 liked 状态因 IP 防刷不可用） =====
-  // ===== 登录门：未填昵称+邮箱不能发言 =====
-  var QW_NICK_KEY = 'qw_user_nick';
-  var QW_MAIL_KEY = 'qw_user_mail';
-  function getSavedUser() {
-    try { return { nick: localStorage.getItem(QW_NICK_KEY) || '', mail: localStorage.getItem(QW_MAIL_KEY) || '' }; }
-    catch (e) { return { nick: '', mail: '' }; }
-  }
-  function setTwikooField(sel, val) {
-    var el = document.querySelector(sel);
-    if (!el || !val) return;
-    var proto = Object.getPrototypeOf(el);
-    var setter = Object.getOwnPropertyDescriptor(proto, 'value').set;
-    setter.call(el, val);
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-  function applySavedUser() {
-    var u = getSavedUser();
-    if (!u.nick && !u.mail) return;
-    setTwikooField('.qw-body .tk-meta-input input[name=nick]', u.nick);
-    setTwikooField('.qw-body .tk-meta-input input[name=mail]', u.mail);
-  }
-  // 微信风回复预览条
-  function showReplyBar(nick, text) {
-    var submit = document.querySelector('.qw-body .tk-submit');
-    if (!submit) return;
-    var old = submit.querySelector('.qw-reply-bar');
-    if (old) old.remove();
-    var bar = document.createElement('div');
-    bar.className = 'qw-reply-bar';
-    bar.innerHTML = '<span class="qw-reply-nick">回复 ' + (nick || '') + '：</span>' +
-      '<span class="qw-reply-text"></span>' +
-      '<span class="qw-reply-cancel">×</span>';
-    bar.querySelector('.qw-reply-text').textContent = text || '';
-    bar.querySelector('.qw-reply-cancel').addEventListener('click', function () {
-      bar.remove();
-      // 同时取消 Twikoo 内部 parentComment（Vue）
-      try {
-        var vm = document.querySelector('#twikoo').__vue__;
-        if (vm) { vm.parentComment = null; }
-      } catch (e) {}
-    });
-    var input = submit.querySelector('.tk-input');
-    submit.insertBefore(bar, input);
-    input && input.querySelector('textarea') && input.querySelector('textarea').focus();
-  }
-  function clearReplyBar() {
-    var bar = document.querySelector('.qw-reply-bar');
-    if (bar) bar.remove();
-    try { var vm = document.querySelector('#twikoo').__vue__; if (vm) vm.parentComment = null; } catch(e){}
-  }
-  // 点发送后自动清除回复条
-  document.addEventListener('click', function(e) {
-    var sendBtn = e.target && e.target.closest ? e.target.closest('.qw-body .tk-send') : null;
-    if (sendBtn) setTimeout(clearReplyBar, 500);
-  }, true);
-
-  // ===== 访客登录（邮箱+昵称，localStorage 记住） =====
-  var QW_NICK = 'qw_visitor_nick';
-  var QW_EMAIL = 'qw_visitor_email';
-  function getVisitor() {
-    try { return { nick: localStorage.getItem(QW_NICK) || '', email: localStorage.getItem(QW_EMAIL) || '' }; }
-    catch (e) { return { nick: '', email: '' }; }
-  }
-  function isLoggedIn() {
-    var v = getVisitor();
-    return !!(v.nick && v.email);
-  }
-  function setNativeValue(input, value) {
-    if (!input) return;
-    var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value', input);
-    if (setter && setter.set) setter.set.call(input, value);
-    else input.value = value;
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-  }
-  function applyVisitorToTwikoo() {
-    var v = getVisitor();
-    if (!v.nick) return;
-    document.cookie = 'twikoo-nick=' + encodeURIComponent(v.nick) + ';path=/;max-age=31536000';
-    document.cookie = 'twikoo-mail=' + encodeURIComponent(v.email || '') + ';path=/;max-age=31536000';
-    var inputs = document.querySelectorAll('.qw-body .tk-meta-input input');
-    if (inputs[0]) setNativeValue(inputs[0], v.nick);
-    if (inputs[1]) setNativeValue(inputs[1], v.email);
-  }
-  function refreshLoginUI() {
-    var mask = document.getElementById('qw-login-mask');
-    var panel = document.querySelector('.qw-panel');
-    if (!mask) return;
-    if (isLoggedIn()) {
-      mask.classList.remove('qw-needs-login');
-      if (panel) panel.classList.add('qw-logged-in');
-      applyVisitorToTwikoo();
-    } else {
-      mask.classList.add('qw-needs-login');
-      if (panel) panel.classList.remove('qw-logged-in');
-    }
-  }
-  var loginMode = 'login'; // 'login' or 'register'
-  function setLoginMode(mode) {
-    loginMode = mode;
-    var nickEl = document.getElementById('qw-login-nick');
-    var nickField = document.getElementById('qw-nick-field');
-    var titleEl = document.getElementById('qw-login-title');
-    var subEl = document.getElementById('qw-login-sub');
-    var btnEl = document.getElementById('qw-login-submit');
-    var toggleEl = document.getElementById('qw-login-toggle');
-    var tabLogin = document.getElementById('qw-tab-login');
-    var tabReg = document.getElementById('qw-tab-register');
-    if (mode === 'register') {
-      if (nickEl) nickEl.style.display = '';
-      if (nickField) nickField.style.display = '';
-      var codeRow = document.getElementById('qw-code-row');
-      if (codeRow) codeRow.style.display = 'flex';
-      var codeInput = document.getElementById('qw-login-code');
-      if (codeInput) codeInput.value = '';
-      titleEl.textContent = '注册账号';
-      subEl.textContent = '设置昵称、邮箱和密码';
-      var emailEl = document.getElementById('qw-login-email');
-      if (emailEl) emailEl.placeholder = '邮箱（用于接收验证码）';
-      btnEl.textContent = '注 册';
-      if (toggleEl) toggleEl.innerHTML = '<span>已有账号？</span><b id="qw-toggle-link">点击登录</b>';
-      if (tabLogin) tabLogin.classList.remove('qw-active');
-      if (tabReg) tabReg.classList.add('qw-active');
-    } else {
-      if (nickEl) nickEl.style.display = 'none';
-      if (nickField) nickField.style.display = 'none';
-      var codeRow2 = document.getElementById('qw-code-row');
-      if (codeRow2) codeRow2.style.display = 'none';
-      titleEl.textContent = '登录发言';
-      subEl.textContent = '输入邮箱和密码登录';
-      var emailEl2 = document.getElementById('qw-login-email');
-      if (emailEl2) emailEl2.placeholder = '邮箱或昵称';
-      btnEl.textContent = '登 录';
-      if (toggleEl) toggleEl.innerHTML = '<span>没有账号？</span><b id="qw-toggle-link">点击注册</b>';
-      if (tabLogin) tabLogin.classList.add('qw-active');
-      if (tabReg) tabReg.classList.remove('qw-active');
-    }
-    var msgEl = document.getElementById('qw-login-msg');
-    if (msgEl) { msgEl.textContent = ''; msgEl.classList.remove('qw-ok'); }
-  }
-  function openLogin() {
-    var bd = document.getElementById('qw-login-backdrop');
-    if (!bd) return;
-    var v = getVisitor();
-    setLoginMode('login');
-    document.getElementById('qw-login-nick').value = '';
-    document.getElementById('qw-login-email').value = v.email || '';
-    var pwdEl = document.getElementById('qw-login-pwd');
-    if (pwdEl) pwdEl.value = localStorage.getItem('qw_user_pwd') || '';
-    bd.classList.add('qw-open');
-    setTimeout(function(){ document.getElementById('qw-login-email').focus(); }, 100);
-  }
-  function closeLogin() {
-    document.getElementById('qw-login-backdrop').classList.remove('qw-open');
-  }
-  function doLogin() {
-    var nick = document.getElementById('qw-login-nick').value.trim();
-    var email = document.getElementById('qw-login-email').value.trim();
-    var pwd = document.getElementById('qw-login-pwd').value || '';
-    var msgEl = document.getElementById('qw-login-msg');
-    if (loginMode === 'register' && !nick) { msgEl.textContent = '请输入昵称'; return; }
-    if (!email) { msgEl.textContent = '请输入邮箱或昵称'; return; } if (loginMode === 'register' && email.indexOf('@') < 0) { msgEl.textContent = '请输入有效邮箱'; return; }
-    if (!pwd) { msgEl.textContent = '请输入密码'; return; }
-    var btn = document.getElementById('qw-login-submit');
-    if (btn) btn.disabled = true;
-    var bodyData = { event: 'QW_USER_AUTH', email: email, password: pwd };
-    if (loginMode === 'register') { bodyData.nick = nick; bodyData.code = (document.getElementById('qw-login-code') || {}).value ? document.getElementById('qw-login-code').value.trim() : ''; }
-    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(bodyData)
-    }).then(function(r){return r.json();}).then(function(r){
-      if (btn) btn.disabled = false;
-      if (r.code !== 0) { msgEl.textContent = r.message || '操作失败'; return; }
-      try {
-        localStorage.setItem(QW_NICK, r.data.nick);
-        localStorage.setItem(QW_EMAIL, (r.data.email || email).trim().toLowerCase());
-        localStorage.setItem('qw_user_pwd', pwd);
-      } catch (e) {}
-      closeLogin();
-      refreshLoginUI();
-      syncLikesByEmail();
-      try {
-        var act = (r.data && r.data.action) || '';
-        if (act === 'registered') logAction('注册', '新账号注册: ' + nick);
-        else if (act === 'logged_in') logAction('登录', '账号登录: ' + (r.data.nick || nick));
-      } catch (e2) {}
-    }).catch(function(){
-      if (btn) btn.disabled = false;
-      msgEl.textContent = '网络错误，请重试';
-    });
-  }
-  function logout() {
-    try {
-      var lv = getVisitor();
-      if (lv.nick || lv.email) logAction('退出', '账号退出: ' + (lv.nick || lv.email));
-      localStorage.removeItem(QW_NICK); localStorage.removeItem(QW_EMAIL);
-    } catch (e) {}
-    refreshLoginUI();
-  }
-
-  function recordLikeSideChannel(commentId) {
-    var v = getVisitor();
-    if (!v.email || !commentId) return;
-    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ event: 'COMMENT_LIKE', commentId: commentId, email: v.email })
-    }).catch(function(){});
-  }
-  function markLiked() {
-    var myEmail = (getVisitor().email || '').trim().toLowerCase();
-    document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
-      var id = c.id || '';
-      var links = c.querySelectorAll('.tk-action-link');
-      if (!links.length) return;
-      var likeBtn = links[0];
-      var dislikeBtn = links[1] || null;
-      if (likedSet[id]) {
-        likeBtn.classList.add('qw-liked');
-      } else {
-        likeBtn.classList.remove('qw-liked');
-      }
-      if (dislikeBtn) {
-        if (dislikedSet[id]) {
-          dislikeBtn.classList.add('qw-disliked');
-        } else {
-          dislikeBtn.classList.remove('qw-disliked');
-        }
-      }
-      // 删除/编辑按钮只显示给评论作者自己：
-      // 前3个按钮是 赞/踩/回复，第4个及以后是删除/编辑等管理按钮
-      try {
-        var cmp = c.__vue__;
-        var commentMail = cmp && cmp.comment ? (cmp.comment.mail || '').trim().toLowerCase() : '';
-        var isMine = myEmail && commentMail === myEmail;
-        for (var li = 3; li < links.length; li++) {
-          links[li].style.display = isMine ? '' : 'none';
-        }
-      } catch (eHide) {}
-    });
-  }
-
-  var DK = 'qw_disliked_v1';
-  var dislikedSet = {};
-  try { dislikedSet = JSON.parse(localStorage.getItem(DK) || '{}'); } catch (e) { dislikedSet = {}; }
-
-  // 外部可调用
-  window.openChatRoom = openChat;
-  window.closeChatRoom = closeChat;
+  }).catch(function () { cb(''); });
+}
 })();
