@@ -164,7 +164,7 @@
     /* ===== 聊天气泡布局：自己右侧、别人左侧 ===== */
     '.qw-body #twikoo .tk-comment{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
     '.qw-body #twikoo .tk-comment.tk-self{flex-direction:row-reverse!important;}',
-    '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;border-radius:50%!important;overflow:hidden!important;flex-shrink:0;margin:0!important;background:linear-gradient(135deg,#667eea,#764ba2)!important;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff!important;font-weight:600;}.qw-body #twikoo .tk-comment .tk-avatar, .qw-body #twikoo .tk-comment .tk-nick a, .qw-body #twikoo .tk-comment .tk-nick{pointer-events:none!important;cursor:default!important;text-decoration:none!important;}',
+    '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;border-radius:50%!important;overflow:hidden!important;flex-shrink:0;margin:0!important;background:var(--jp-glow)!important;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--jp-accent)!important;font-weight:600;}.qw-body #twikoo .tk-comment .tk-avatar, .qw-body #twikoo .tk-comment .tk-nick a, .qw-body #twikoo .tk-comment .tk-nick{pointer-events:none!important;cursor:default!important;text-decoration:none!important;}',
     '.qw-body #twikoo .tk-comment .tk-avatar img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important;}',
     '.qw-body #twikoo .tk-comment .tk-main{min-width:0!important;max-width:calc(100% - 48px)!important;padding:0!important;display:flex!important;flex-direction:column!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main{align-items:flex-end!important;}',
@@ -431,65 +431,8 @@
     try {
   // 头像加载失败时显示昵称首字母
   function fixAvatars(){
-    // First pass: fix QQ avatars using email from comment data
-    // Fetch comments from API to get emails
-    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        api: 'GET_COMMENTS',
-        payload: {
-          sortBy: 'created',
-          pageSize: 100,
-          page: 1,
-          path: 'chat'
-        }
-      })
-    }).then(function(r){ return r.json(); }).then(function(data){
-      if(!data || !data.data) return;
-      var comments = data.data;
-      // Build a map: objectId -> email
-      var emailMap = {};
-      function processComment(c){
-        if(c && c.objectId && c.mail){
-          emailMap[c.objectId] = c.mail;
-        }
-        if(c && c.replies){
-          c.replies.forEach(processComment);
-        }
-      }
-      comments.forEach(processComment);
-
-      // Now fix avatars
-      document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function(item){
-        var av = item.querySelector('.tk-avatar');
-        if(!av) return;
-        var nickEl = item.querySelector('.tk-nick');
-        var nick = nickEl ? nickEl.textContent.trim() : '';
-        // Try to get objectId from the comment element
-        var cid = item.getAttribute('data-id') || item.id || '';
-        var mail = emailMap[cid] || '';
-
-        var m = mail.match(/^(\d+)@qq\.com$/i);
-        if(m){
-          var qqUrl = 'https://q.qlogo.cn/headimg_dl?dst_uin=' + m[1] + '&spec=100';
-          var img = av.querySelector('img');
-          if(!img || (img.src && img.src.indexOf('q.qlogo.cn') < 0)){
-            av.innerHTML = '';
-            var newImg = document.createElement('img');
-            newImg.src = qqUrl;
-            newImg.alt = nick;
-            newImg.onerror = function(){ av.textContent = nick ? nick[0].toUpperCase() : '?'; };
-            av.appendChild(newImg);
-          }
-          return;
-        }
-      });
-    }).catch(function(){});
-
-    // Second pass: fix non-QQ avatars (keep existing behavior)
     document.querySelectorAll('.qw-body #twikoo .tk-comment .tk-avatar').forEach(function(av){
-      if(av.dataset.fixed === 'qq') return;
+      if(av.dataset.fixed) return;
       var nick = '';
       var item = av.closest('.tk-comment');
       if(item){
@@ -498,18 +441,24 @@
       }
       var img = av.querySelector('img');
       if(!img){
+        // No img - show first letter
         av.textContent = nick ? nick[0].toUpperCase() : '?';
         av.dataset.fixed = '1';
       } else {
+        // Set onerror fallback
         img.onerror = function(){
-          av.textContent = nick ? nick[0].toUpperCase() : '?';
-          img.remove();
+          if(av.contains(img)){
+            av.textContent = nick ? nick[0].toUpperCase() : '?';
+            img.remove();
+          }
         };
+        // If already broken
         if(img.complete && img.naturalWidth === 0){
           av.textContent = nick ? nick[0].toUpperCase() : '?';
           img.remove();
         }
       }
+    });
     });
   }
   // Twikoo 评论加载后执行
@@ -520,12 +469,6 @@
         path: 'chat',
         lang: 'zh-CN',
         requiredMeta: ['nick', 'mail'],
-        avatarUrl: function(c){
-          var mail = (c && c.mail) || '';
-          var m = mail.match(/^(\d+)@qq\.com$/i);
-          if(m) return 'https://q.qlogo.cn/headimg_dl?dst_uin=' + m[1] + '&spec=100';
-          return '';
-        },
         onCommentLoaded: function () { scheduleMark(); fixAvatars(); }
         ,onCommentSubmit: function (e) { try { logAction('发言', '内容:' + String((e && e.comment) || '').slice(0, 50)); } catch (ex) {} }
       });
