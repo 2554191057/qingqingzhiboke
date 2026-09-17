@@ -295,9 +295,6 @@
   ].join('\n');
 
   var HTML = '' +
-    '<button id="qw-launcher" class="qw-launcher" aria-label="打开聊天室" title="聊天室">' +
-    '<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>' +
-    '<span>聊天室</span><i class="qw-dot"></i></button>' +
     '<div id="qw-backdrop" class="qw-backdrop">' +
     '<div class="qw-panel" role="dialog" aria-modal="true" aria-labelledby="qw-title">' +
 '<div class="qw-resize-handle" id="qw-resize-handle"></div>' +
