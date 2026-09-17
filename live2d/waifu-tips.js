@@ -201,16 +201,16 @@
         localStorage.setItem("waifu-display", Date.now());
         showMessage("愿你有一天能与重要的人重逢。", 2000, 11);
         const el = document.getElementById("waifu");
-        // 切回 bottom 定位以便退场动画正常
-        el.style.transition = "transform 0.3s ease-in-out, bottom 3s ease-in-out";
-        el.style.left = "auto";
-        el.style.top = "auto";
-        el.style.right = "0";
-        el.style.bottom = "-500px";
+        // 对齐参考站：点X立刻淡出隐藏，不做3秒下滑动画
+        el.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+        el.style.opacity = "0";
+        el.style.transform = "translateY(30px)";
         setTimeout(() => {
           el.style.display = "none";
+          el.style.opacity = "1";
+          el.style.transform = "";
           document.getElementById("waifu-toggle").classList.add("waifu-toggle-active");
-        }, 3000);
+        }, 250);
       }
     }
   };
