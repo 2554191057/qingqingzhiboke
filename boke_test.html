@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head><script>try{sessionStorage.setItem("auth_ok","1");sessionStorage.setItem("welcome-shown","1")}catch(e){}
-window.addEventListener("load",function(){setTimeout(function(){function cs(el){if(!el)return null;var s=getComputedStyle(el);return {m:s.margin,p:s.padding,pos:s.position,d:s.display}}var hero=document.querySelector(".hero");var body=document.body;var d=document.createElement("div");d.id="__dbg";d.textContent=JSON.stringify({v:[innerWidth,innerHeight],st:[window.scrollX,window.scrollY],bodyCss:cs(body),heroCss:cs(hero),heroRect:hero?hero.getBoundingClientRect().toJSON():null,prev:hero?hero.previousElementSibling?hero.previousElementSibling.tagName+"."+hero.previousElementSibling.className:null:null});document.body.appendChild(d)},2500)})</script>
+window.addEventListener("load",function(){setTimeout(function(){var hero=document.querySelector(".hero");var steps=[];var prev=hero?hero.previousElementSibling:null;while(prev){prev.remove();prev=hero.previousElementSibling}steps.push("rmSiblings:"+Math.round(hero.getBoundingClientRect().top));document.body.style.paddingTop="0px";steps.push("rmBodyPad:"+Math.round(hero.getBoundingClientRect().top));hero.style.position="static";steps.push("heroStatic:"+Math.round(hero.getBoundingClientRect().top));hero.style.marginTop="0px";steps.push("heroM0:"+Math.round(hero.getBoundingClientRect().top));var d=document.createElement("div");d.id="__dbg";d.textContent=JSON.stringify({steps:steps});document.body.appendChild(d)},2500)})</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">

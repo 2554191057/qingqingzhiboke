@@ -1169,25 +1169,58 @@
 
   // 把浏览器 UA 翻译成人话
   function parseUa(ua) {
-    if (!ua) return '未知设备';
-    var s = ua;
-    var isMobile = /Mobile|Android|iPhone/i.test(s);
-    var isPad = /iPad|Tablet/i.test(s);
-    var dev = isPad ? '平板' : (isMobile ? '手机' : '电脑');
-    var os = '未知系统';
-    if (/Windows NT 10/.test(s)) os = 'Windows';
-    else if (/iPhone|iPad/.test(s)) os = 'iOS';
-    else if (/Mac OS X/.test(s)) os = 'Mac';
-    else if (/Android/.test(s)) os = 'Android';
-    else if (/Linux/.test(s)) os = 'Linux';
-    var br = '浏览器';
-    if (/Edg\//.test(s)) br = 'Edge';
-    else if (/Chrome\//.test(s) && !/OPR/.test(s)) br = 'Chrome';
-    else if (/Firefox\//.test(s)) br = 'Firefox';
-    else if (/Safari\//.test(s)) br = 'Safari';
-    else if (/OPR\//.test(s)) br = 'Opera';
-    return dev + ' · ' + os + ' · ' + br;
+  if (!ua) return '未知设备';
+  var s = ua;
+  var isMobile = /Mobile|Android|iPhone/i.test(s);
+  var isPad = /iPad|Tablet/i.test(s);
+  var dev = isPad ? '平板' : (isMobile ? '手机' : '电脑');
+  var os = '未知系统';
+  if (/Windows NT 10/.test(s)) os = 'Windows';
+  else if (/iPhone|iPad/.test(s)) os = 'iOS';
+  else if (/Mac OS X/.test(s)) os = 'Mac';
+  else if (/Android/.test(s)) os = 'Android';
+  else if (/Linux/.test(s)) os = 'Linux';
+  var br = '浏览器';
+  if (/Edg\//.test(s)) br = 'Edge';
+  else if (/Chrome\//.test(s) && !/OPR/.test(s)) br = 'Chrome';
+  else if (/Firefox\//.test(s)) br = 'Firefox';
+  else if (/Safari\//.test(s)) br = 'Safari';
+  else if (/OPR\//.test(s)) br = 'Opera';
+  var brand = '';
+  if (/iPhone/i.test(s)) brand = '苹果';
+  else if (/iPad/i.test(s)) brand = '苹果';
+  else if (/SM-[A-Z0-9]+|SAMSUNG|Galaxy/i.test(s)) brand = '三星';
+  else if (/Redmi|MI [0-9]|Xiaomi|POCO/i.test(s)) brand = '小米';
+  else if (/HUAWEI|ELS-|LIO-|TAS-|ANA-|VOG-/i.test(s)) brand = '华为';
+  else if (/HONOR|荣耀/i.test(s)) brand = '荣耀';
+  else if (/OPPO|CPH[0-9]{4}|PGT[0-9]{3}|PEG[0-9]{3}/i.test(s)) brand = 'OPPO';
+  else if (/vivo|V[0-9]{4}|iQOO/i.test(s)) brand = 'vivo';
+  else if (/OnePlus/i.test(s)) brand = '一加';
+  else if (/realme/i.test(s)) brand = 'realme';
+  else if (/Pixel/i.test(s)) brand = 'Google';
+  else if (/Moto|motorola/i.test(s)) brand = '摩托罗拉';
+  else if (/Lenovo/i.test(s)) brand = '联想';
+  else if (/Meizu/i.test(s)) brand = '魅族';
+  else if (/Nokia/i.test(s)) brand = '诺基亚';
+  else if (/HTC/i.test(s)) brand = 'HTC';
+  else if (/ZTE/i.test(s)) brand = '中兴';
+  else if (/Sony/i.test(s)) brand = '索尼';
+  var model = '';
+  var mAndroid = s.match(/Android [0-9.]+; ([^;)]+)/);
+  if (mAndroid) model = mAndroid[1].trim();
+  if (!brand && model) {
+    if (/SM-/.test(model)) brand = '三星';
+    else if (/M[0-9]{4}|Redmi|POCO/i.test(model)) brand = '小米';
+    else if (/ELS-|LIO-|TAS-|ANA-|VOG-|HUAWEI/i.test(model)) brand = '华为';
+    else if (/CPH|OPPO/i.test(model)) brand = 'OPPO';
+    else if (/V[0-9]{4}|vivo|iQOO/i.test(model)) brand = 'vivo';
+    else if (/M200|M210|2201/i.test(model)) brand = '小米';
   }
+  var extra = [];
+  if (model) extra.push(model);
+  if (brand && extra.indexOf(brand) === -1) extra.unshift(brand);
+  return dev + ' · ' + os + ' · ' + br + (extra.length ? ' · ' + extra.join(' ') : '');
+}
 
   // 构建操作日志区块 HTML（含筛选按钮），配合局部刷新
   function buildLogHtml(logs) {
@@ -1263,7 +1296,7 @@
     return cityMap[key] || city;
   }
   function getIpLocation(ip, cb) {
-    if (!ip || !/^\d+\.\d+\.\d+\.\d+$/.test(ip)) return cb('');
+    if (!ip || !/^([0-9a-fA-F:.]*[0-9a-fA-F]|(\d{1,3}\.){3}\d{1,3})$/.test(ip)) return cb('');
     if (ipLocCache[ip]) return cb(ipLocCache[ip]);
     fetch('https://ipwho.is/' + ip).then(function (r) { return r.json(); }).then(function (d) {
       if (!d || d.success === false) return cb('');
@@ -1271,12 +1304,12 @@
       var provCn = provinceMap[prov] || d.region || '';
       var cityCn = cnCity(d.city || '');
       var org = (d.connection && d.connection.org) || (d.connection && d.connection.isp) || '';
-      if (/CHINANET|China Telecom/i.test(org)) org = '电信';
+      if (/CHINANET|China Telecom|Chinatelecom/i.test(org)) org = '电信';
       else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
       else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
       else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
       else org = org ? org.slice(0, 20) : '';
-      var loc = (provCn ? provCn + ' ' : '') + cityCn + (org ? ' ' + org : '');
+      var loc = (provCn ? provCn + ' ' : '') + ((cityCn && cityCn !== provCn) ? cityCn + ' ' : '') + (org ? ' ' + org : '');
       loc = loc.trim();
       if (loc) {
         ipLocCache[ip] = loc;
@@ -1292,7 +1325,7 @@
       if (it.getAttribute('data-ip-done')) return;
       var sub = it.querySelector('.qw-log-sub') || it.querySelector('.qw-ip');
       var text = it.innerText || '';
-      var m = text.match(/IP\s*([0-9.]+)/);
+      var m = text.match(/IP\s*([0-9a-fA-F:.]+)/);
       if (!m) return;
       it.setAttribute('data-ip-done', '1');
       var ip = m[1];
