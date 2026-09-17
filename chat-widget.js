@@ -1,4 +1,4 @@
-﻿/* =============================================
+/* =============================================
    庆庆纸博客 · 全站悬浮访客聊天室（qiguangji ChatRoom 风格 · Twikoo 后端）
    右下角悬浮按钮 → 点击弹出 460px 居中面板；关闭后回到原页面，不跳转。
    引用方式：<script src="chat-widget.js?v=1"></script>（放在 script.js 之后）
@@ -760,6 +760,9 @@
       return adminPost({ event: 'QW_BLOCK_LIST', accessToken: adminToken });
     }).then(function (r) {
       if (r && r.code === 0) blocks = r.data || [];
+      return adminPost({ event: 'QW_ADMIN_WHITELIST', accessToken: adminToken });
+    }).then(function (rw) {
+      if (rw && rw.code === 0) wlist = rw.data || [];
       return adminPost({ event: 'COMMENT_GET_FOR_ADMIN', accessToken: adminToken, per: 50, page: 1 });
     }).then(function (r1) {
       if (!r1 || r1.code !== 0) {
