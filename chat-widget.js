@@ -960,8 +960,9 @@
         }.bind(null, p));
       }
       seq.then(function () { renderManageList(all, blocks, wlist, likeMap, logs); });
-    }).catch(function () {
-      adminBody.innerHTML = '<div class="qw-admin-loading">网络异常，加载失败</div>';
+    }).catch(function (e) {
+      console.error('admin load error:', e);
+      adminBody.innerHTML = '<div class="qw-admin-loading">网络异常，加载失败<br><small style="opacity:.6">' + (e && e.message ? e.message : '') + '</small></div>';
     });
   }
 
