@@ -156,12 +156,17 @@ if (!sessionStorage.getItem('auth_ok')) {
 .navbar-nav .nav-item{transition:all .2s ease!important;padding:8px 14px!important;border-radius:8px!important;text-decoration:none!important;}
 .navbar-nav .nav-item:hover{color:#0ea5e9!important;background:rgba(14,165,233,.12)!important;}
 .navbar-nav .nav-item.active{color:#0ea5e9!important;}
-#themeToggle{border:none!important;background:none!important;cursor:pointer;color:inherit;font-size:16px;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;transition:all .2s ease;padding:0!important;margin-left:auto;}
+#themeToggle{}
 #themeToggle:hover{background:rgba(14,165,233,.12)!important;color:#0ea5e9!important;}
 #themeToggle .icon-sun{display:none;}
 #themeToggle .icon-moon{display:inline;}
 [data-theme="dark"] #themeToggle .icon-sun{display:inline;}
 [data-theme="dark"] #themeToggle .icon-moon{display:none;}
+</style>
+<style>
+.nav-container{display:flex!important;align-items:center!important;}
+.navbar-nav{flex:1;display:flex!important;align-items:center!important;justify-content:center!important;}
+#themeToggle{margin-left:0!important;}
 </style>
 </head>
 <body>
