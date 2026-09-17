@@ -182,7 +182,7 @@ document.addEventListener('selectstart', e => {
 }
 /* Mobile: hide nav, show hamburger, floating menu below */
 @media(max-width:900px){
-  .hamburger-btn{display:flex!important;}
+  .hamburger-btn{display:flex!important;position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;}
   .navbar-nav{
     display:none!important;position:fixed!important;transform:none!important;
     flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
