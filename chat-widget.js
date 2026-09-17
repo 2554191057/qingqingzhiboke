@@ -1483,6 +1483,7 @@
     }).catch(function(){});
   }
   function markLiked() {
+    var myEmail = (getVisitor().email || '').trim().toLowerCase();
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
       var id = c.id || '';
       var links = c.querySelectorAll('.tk-action-link');
@@ -1501,6 +1502,15 @@
           dislikeBtn.classList.remove('qw-disliked');
         }
       }
+      // 删除按钮只显示给评论作者自己
+      try {
+        var cmp = c.__vue__;
+        var commentMail = cmp && cmp.comment ? (cmp.comment.mail || '').trim().toLowerCase() : '';
+        var delBtns = c.querySelectorAll('.tk-icon-delete, .tk-comment-delete, .tk-action-link[title*="删除"], .tk-action-link[aria-label*="删除"]');
+        delBtns.forEach(function(del){
+          del.style.display = (myEmail && commentMail === myEmail) ? '' : 'none';
+        });
+      } catch (eHide) {}
     });
   }
 
