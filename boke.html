@@ -687,7 +687,7 @@ window.addEventListener('load', function() {
 #waifu { right: 10px !important; margin-bottom: 76px !important; bottom: 0 !important; left: auto !important; width: auto !important; height: auto !important; }
 #live2d { width: 210px !important; height: 250px !important; cursor: grab !important; }
 #live2d:active { cursor: grabbing !important; }
-#waifu-tips { width: 190px !important; top: -42px !important; left: 0 !important; margin: 0 !important; padding: 10px 12px !important; border-radius: 10px !important; font-size: 11px !important; line-height: 1.7 !important; }
+#waifu-tips { width: 190px !important; top: -42px !important; left: 0 !important; margin: 0 !important; padding: 10px 12px !important; border-radius: 10px !important; font-size: 11px !important; line-height: 1.7 !important; background: rgba(255,255,255,.92) !important; color: #334155 !important; border: 1px solid rgba(0,0,0,.08) !important; box-shadow: 0 4px 16px rgba(0,0,0,.1) !important; }
 #waifu-tool {
   opacity: 1 !important;
   display: grid !important;
@@ -708,6 +708,7 @@ window.addEventListener('load', function() {
 [data-theme="night"] #waifu-tool { background: rgba(16,27,48,.92) !important; box-shadow: 0 5px 24px rgba(0,0,0,.4) !important; }
 [data-theme="night"] #waifu-tool button svg { fill: #9cafcd !important; }
 [data-theme="night"] #waifu-tool button:hover svg { fill: #50d3f6 !important; }
+[data-theme="night"] #waifu-tips { background: rgba(16,27,48,.92) !important; color: #e5edff !important; border: 1px solid rgba(255,255,255,.1) !important; box-shadow: 0 4px 16px rgba(0,0,0,.4) !important; }
 #waifu.dragging { transition: none !important; }
 #waifu.waifu-in { animation: waifuRise .6s cubic-bezier(.2,.8,.3,1.2); }
 @keyframes waifuRise {
