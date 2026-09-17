@@ -577,6 +577,15 @@
   loadWhitelist();
   }
 
+  function logAction(type, detail) {
+    var v = getVisitor();
+    try {
+      fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ event:'QW_LOG_WRITE', type:type, email: v.email||'', nick: v.nick||'', detail: detail||'' })
+      });
+    } catch(e){}
+  }
   function syncLikesByEmail() {
     var v = getVisitor();
     if (!v.email) return;
@@ -763,6 +772,9 @@
       return adminPost({ event: 'QW_ADMIN_WHITELIST', accessToken: adminToken });
     }).then(function (rw) {
       if (rw && rw.code === 0) wlist = rw.data || [];
+      return adminPost({ event: 'QW_LOG_LIST', accessToken: adminToken, per: 100 });
+    }).then(function (rl) {
+      if (rl && rl.code === 0) logs = rl.data || [];
       return adminPost({ event: 'COMMENT_GET_FOR_ADMIN', accessToken: adminToken, per: 50, page: 1 });
     }).then(function (r1) {
       if (!r1 || r1.code !== 0) {
@@ -781,7 +793,7 @@
           });
         }.bind(null, p));
       }
-      seq.then(function () { renderManageList(all, blocks, wlist, likeMap); });
+      seq.then(function () { renderManageList(all, blocks, wlist, likeMap, logs); });
     }).catch(function () {
       adminBody.innerHTML = '<div class="qw-admin-loading">网络异常，加载失败</div>';
     });
@@ -796,7 +808,7 @@
       (ips.length ? ' · ' + escHtml(ips.join('、')) : '') + '</div>';
   }
 
-  function renderManageList(comments, blocks, wlist, likeMap) {
+  function renderManageList(comments, blocks, wlist, likeMap, logs) {
     var html = '';
     html += '<div class="qw-admin-stats">' +
       '<div><b>' + (comments.length || 0) + '</b><span>全部消息</span></div>' +
@@ -846,6 +858,17 @@
         }
       }
       html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-wl-input" placeholder="输入邮箱或昵称加入白名单"><button class="qw-add-wl" data-act="add-wl">添加</button></div></div>';
+      html += '<div class="qw-mgmt-section"><h4>操作日志（最近100条）</h4>';
+      if (!logs || !logs.length) {
+        html += '<div class="qw-admin-empty" style="padding:10px 0">暂无日志</div>';
+      } else {
+        for (var li = 0; li < logs.length; li++) {
+          var lg = logs[li];
+          var tstr = new Date(lg.time).toLocaleString('zh-CN');
+          html += '<div class="qw-mgmt-item"><span>' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick||lg.email||'匿名') + ' · ' + escHtml(lg.detail||'') + '</span><small style="display:block;color:var(--jp-muted);font-size:10px">' + escHtml(lg.ip||'') + ' · ' + escHtml((lg.ua||'').slice(0,80)) + '</small></div>';
+        }
+      }
+      html += '</div>';
       html += '<button class="qw-admin-logout" data-act="logout">退出登录</button>';
     } else {
       html += '<div style="text-align:center;padding:16px 0 4px;font-size:11px;color:var(--jp-muted);">只读模式 · 可浏览，操作需验证密码</div>';
@@ -1033,6 +1056,7 @@
     var isLike = links.length && btn === likeBtn;
     var isDislike = links.length > 1 && btn === dislikeBtn;
     var isReply = links.length > 2 && btn === links[2];
+    if ((isLike || isDislike) && !isLoggedIn()) { openLogin(); return; }
     if (isReply) {
       e.preventDefault();
       e.stopPropagation();
@@ -1079,6 +1103,7 @@
       likedSet[id] = 1;
       likeBtn.classList.add('qw-liked');
       saveSets();
+      logAction('点赞', '消息ID:' + id);
     } else if (isDislike) {
       if (dislikedSet[id]) {
         // 已踩再点 = 取消踩
@@ -1090,6 +1115,7 @@
       dislikedSet[id] = 1;
       dislikeBtn.classList.add('qw-disliked');
       saveSets();
+      logAction('点踩', '消息ID:' + id);
     }
   }, true);
 
