@@ -818,6 +818,7 @@
   var adminBody = document.getElementById('qw-admin-body');
   var adminToken = '';
   var adminLogFilter = false; // 操作日志筛选：true=仅账号日志(注册/登录/退出)
+  var adminLogs = []; // 最近一次加载的操作日志，供局部切换筛选用
   var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
 
   function adminPost(data) {
@@ -976,6 +977,7 @@
   }
 
   function renderManageList(comments, blocks, wlist, likeMap, logs) {
+    adminLogs = logs || [];
     var html = '';
     html += '<div class="qw-admin-stats">' +
       '<div><b>' + (comments.length || 0) + '</b><span>全部消息</span></div>' +
@@ -1025,20 +1027,7 @@
         }
       }
       html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-wl-input" placeholder="输入邮箱或昵称加入白名单"><button class="qw-add-wl" data-act="add-wl">添加</button></div></div>';
-      html += '<div class="qw-mgmt-section"><h4 style="display:flex;align-items:center;justify-content:space-between">操作日志（最近100条）' +
-        '<button data-act="toggle-logfilter" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer">' + (adminLogFilter ? '全部日志' : '账号日志') + '</button></h4>';
-      if (!logs || !logs.length) {
-        html += '<div class="qw-admin-empty" style="padding:10px 0">暂无日志</div>';
-      } else {
-        var logList = adminLogFilter ? logs.filter(function(x){ return ['注册','登录','退出'].indexOf(x.type) >= 0; }) : logs;
-        if (!logList.length) html += '<div class="qw-admin-empty" style="padding:10px 0">暂无账号日志</div>';
-        for (var li = 0; li < logList.length; li++) {
-          var lg = logList[li];
-          var tstr = new Date(lg.time).toLocaleString('zh-CN');
-          html += '<div class="qw-mgmt-item"><span>' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick||lg.email||'匿名') + ' · ' + escHtml(lg.detail||'') + '</span><small style="display:block;color:var(--jp-muted);font-size:10px">' + escHtml(lg.ip||'') + ' · ' + escHtml((lg.ua||'').slice(0,80)) + '</small></div>';
-        }
-      }
-      html += '</div>';
+      html += '<div class="qw-mgmt-section" id="qw-log-section">' + buildLogHtml(logs) + '</div>';
       html += '<button class="qw-admin-logout" data-act="logout">退出登录</button>';
     } else {
       html += '<div style="text-align:center;padding:16px 0 4px;font-size:11px;color:var(--jp-muted);">只读模式 · 可浏览，操作需验证密码</div>';
@@ -1046,14 +1035,9 @@
     }
     adminBody.innerHTML = html;
 
-    adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-mgmt-item button, .qw-admin-logout, .qw-mgmt-input-row button, [data-act="toggle-logfilter"]').forEach(function (btn) {
+    adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-mgmt-item button, .qw-admin-logout, .qw-mgmt-input-row button').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var act = btn.getAttribute('data-act');
-        if (act === 'toggle-logfilter') {
-          adminLogFilter = !adminLogFilter;
-          renderManageView();
-          return;
-        }
         if (act === 'del') {
           var id = btn.getAttribute('data-id');
           if (confirm('确定删除这条评论吗？')) {
@@ -1109,6 +1093,38 @@
         }
       });
     });
+    bindLogToggle();
+  }
+
+  // 构建操作日志区块 HTML（含筛选按钮），配合局部刷新
+  function buildLogHtml(logs) {
+    var h = '<h4 style="display:flex;align-items:center;justify-content:space-between">操作日志（最近100条）' +
+      '<button data-act="toggle-logfilter" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer">' + (adminLogFilter ? '全部日志' : '账号日志') + '</button></h4>';
+    if (!logs || !logs.length) {
+      h += '<div class="qw-admin-empty" style="padding:10px 0">暂无日志</div>';
+    } else {
+      var logList = adminLogFilter ? logs.filter(function (x) { return ['注册', '登录', '退出'].indexOf(x.type) >= 0; }) : logs;
+      if (!logList.length) h += '<div class="qw-admin-empty" style="padding:10px 0">暂无账号日志</div>';
+      for (var li = 0; li < logList.length; li++) {
+        var lg = logList[li];
+        var tstr = new Date(lg.time).toLocaleString('zh-CN');
+        h += '<div class="qw-mgmt-item"><span>' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '</span><small style="display:block;color:var(--jp-muted);font-size:10px">' + escHtml(lg.ip || '') + ' · ' + escHtml((lg.ua || '').slice(0, 80)) + '</small></div>';
+      }
+    }
+    return h + '</div>';
+  }
+  // 局部切换日志筛选：只重建日志区块，不重载整个聊天后台
+  function handleToggleLog() {
+    adminLogFilter = !adminLogFilter;
+    var sec = document.getElementById('qw-log-section');
+    if (sec) {
+      sec.innerHTML = buildLogHtml(adminLogs);
+      bindLogToggle();
+    }
+  }
+  function bindLogToggle() {
+    var tb = document.querySelector('#qw-log-section [data-act="toggle-logfilter"]');
+    if (tb) tb.addEventListener('click', handleToggleLog);
   }
 
   function escHtml(s) {
