@@ -131,16 +131,37 @@
   const tools = {
     chat: { icon: SVG.hitokoto, callback: () => { if (window.openChatRoom) { window.openChatRoom(); } else { window.location.href = "fklts.html"; } } },
     hitokoto: {
-      icon: SVG.quote,
+      icon: '<span style="font-size:14px;font-weight:700;line-height:1;">言</span>',
       callback: function () {
-        // 重置状态，确保立刻显示
         if (tipTimer) { clearTimeout(tipTimer); tipTimer = null; }
-        sessionStorage.removeItem("waifu-text");
-        document.getElementById("waifu-tips").classList.remove("waifu-tips-active");
-        fetch("https://v1.hitokoto.cn", { cache: "no-store" })
-          .then(r => { if (!r.ok) throw new Error("request failed"); return r.json(); })
-          .then(d => showMessage(String(d.hitokoto || "保持好奇，持续创造。"), 6000, 9))
-          .catch(() => showMessage("信号暂时中断，稍后再试试吧。", 4000, 9));
+        sessionStorage.removeItem('waifu-text');
+        const tipEl = document.getElementById('waifu-tips');
+        tipEl.classList.remove('waifu-tips-active');
+        fetch('https://v1.hitokoto.cn', { cache: 'no-store' })
+          .then(r => { if (!r.ok) throw new Error('x'); return r.json(); })
+          .then(d => {
+            const text = String(d.hitokoto || '保持好奇，持续创造。');
+            tipEl.textContent = '';
+            tipEl.classList.add('waifu-tips-active');
+            tipEl.style.cursor = 'pointer';
+            tipEl.onclick = function () {
+              navigator.clipboard && navigator.clipboard.writeText(text);
+              tipEl.textContent = '已复制';
+              setTimeout(() => { tipEl.textContent = text; }, 800);
+            };
+            let i = 0;
+            const typer = setInterval(function () {
+              if (i >= text.length) { clearInterval(typer); return; }
+              tipEl.textContent += text[i++];
+            }, 60);
+            tipTimer = setTimeout(() => {
+              sessionStorage.removeItem('waifu-text');
+              tipEl.classList.remove('waifu-tips-active');
+              tipEl.onclick = null;
+              tipEl.style.cursor = '';
+            }, 8000);
+          })
+          .catch(() => showMessage('信号暂时中断，稍后再试试吧。', 4000, 9));
       }
     },
     asteroids: {
