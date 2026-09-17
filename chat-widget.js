@@ -20,7 +20,8 @@
     '/* 遮罩 + 面板 */',
     '.qw-backdrop{position:fixed;inset:0;z-index:100;background:rgba(1,6,17,.65);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px;}',
     '.qw-backdrop.qw-open{display:flex;animation:qwFade .25s ease;}',
-    '.qw-panel{width:min(680px,100%);max-width:100%;max-height:calc(100dvh - 40px);display:flex;flex-direction:column;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;box-shadow:0 28px 100px rgba(0,0,0,.4),0 0 40px var(--jp-glow);overflow:hidden;color:var(--jp-ink);animation:qwPop .3s cubic-bezier(.16,1,.3,1);}',
+    '.qw-panel{width:min(1020px,95vw);max-width:100%;max-height:calc(100dvh - 40px);min-width:380px;min-height:400px;display:flex;flex-direction:column;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;box-shadow:0 28px 100px rgba(0,0,0,.4),0 0 40px var(--jp-glow);overflow:hidden;color:var(--jp-ink);animation:qwPop .3s cubic-bezier(.16,1,.3,1);resize:none;}',
+'.qw-resize-handle{position:absolute;right:0;bottom:0;width:18px;height:18px;cursor:nwse-resize;z-index:10;background:linear-gradient(135deg,transparent 50%,var(--jp-muted) 50%,var(--jp-muted) 60%,transparent 60%,transparent 70%,var(--jp-muted) 70%,var(--jp-muted) 80%,transparent 80%,transparent 90%,var(--jp-muted) 90%,var(--jp-muted) 100%);opacity:.5;}',
     '@keyframes qwFade{from{opacity:0}to{opacity:1}}',
     '@keyframes qwPop{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}',
     '.qw-panel>header{display:flex;align-items:center;gap:13px;padding:18px 20px;border-bottom:1px solid var(--jp-line);background:linear-gradient(110deg,var(--jp-glow),transparent);}',
@@ -297,6 +298,7 @@
     '<span>聊天室</span><i class="qw-dot"></i></button>' +
     '<div id="qw-backdrop" class="qw-backdrop">' +
     '<div class="qw-panel" role="dialog" aria-modal="true" aria-labelledby="qw-title">' +
+'<div class="qw-resize-handle" id="qw-resize-handle"></div>' +
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>' +
     '<div><h2 id="qw-title">访客聊天室</h2><p><span class="qw-dot"></span>实时同步 · Powered by Twikoo</p></div>' +
@@ -304,6 +306,7 @@
     '<button class="qw-admin-btn" id="qw-admin-trigger" aria-label="聊天后台" title="聊天后台"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
     '<button class="qw-settings-btn" id="qw-settings-btn" title="账号设置"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>' +
     '<button class="qw-logout-btn" id="qw-logout-btn" title="退出登录">退出</button>' +
+    '<button type="button" class="qw-icon-btn" id="qw-resize-hint" aria-label="右下角缩放" title="右下角缩放" style="font-size:10px;gap:3px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>右下角缩放</button>' +
     '<button type="button" class="qw-icon-btn" id="qw-chat-refresh" aria-label="刷新聊天" title="刷新聊天"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
@@ -790,6 +793,39 @@
     if (e.target && e.target.id === 'qw-toggle-link') setLoginMode(loginMode === 'login' ? 'register' : 'login');
   });
   closeBtn.addEventListener('click', closeChat);
+
+  // 右下角自由缩放
+  var resizeHandle = document.getElementById('qw-resize-handle');
+  if (resizeHandle) {
+    resizeHandle.addEventListener('mousedown', startResize);
+    resizeHandle.addEventListener('touchstart', startResize, {passive:false});
+  }
+  function startResize(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var pt = e.touches ? e.touches[0] : e;
+    var startX = pt.clientX, startY = pt.clientY;
+    var startW = panel.offsetWidth, startH = panel.offsetHeight;
+    function onMove(ev) {
+      var p = ev.touches ? ev.touches[0] : ev;
+      var nw = Math.max(380, startW + (p.clientX - startX));
+      var nh = Math.max(400, startH + (p.clientY - startY));
+      var maxW = window.innerWidth - 20;
+      var maxH = window.innerHeight - 20;
+      panel.style.width = Math.min(nw, maxW) + 'px';
+      panel.style.height = Math.min(nh, maxH) + 'px';
+    }
+    function onUp() {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchmove', onMove, {passive:false});
+    document.addEventListener('touchend', onUp);
+  }
   var chatRefreshBtn = document.getElementById('qw-chat-refresh');
   if (chatRefreshBtn) {
     chatRefreshBtn.addEventListener('click', function(e) {
