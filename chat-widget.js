@@ -1156,7 +1156,10 @@
   }
   // IP 归属地查询（ipwho.is，免费跨域，结果缓存本地）
   var ipLocCache = {};
-  try { ipLocCache = JSON.parse(localStorage.getItem('qw_ip_loc') || '{}'); } catch (e) {}
+  try {
+    var rawCache = JSON.parse(localStorage.getItem('qw_ip_loc') || '{}');
+    if (rawCache._v === 2) ipLocCache = rawCache.data || {};
+  } catch (e) {}
   var provinceMap = {
     'beijing': '北京', 'shanghai': '上海', 'tianjin': '天津', 'chongqing': '重庆',
     'guangdong': '广东', 'jiangsu': '江苏', 'zhejiang': '浙江', 'shandong': '山东',
@@ -1209,7 +1212,7 @@
       loc = loc.trim();
       if (loc) {
         ipLocCache[ip] = loc;
-        try { localStorage.setItem('qw_ip_loc', JSON.stringify(ipLocCache)); } catch (e) {}
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 2, data: ipLocCache })); } catch (e) {}
       }
       cb(loc);
     }).catch(function () { cb(''); });
