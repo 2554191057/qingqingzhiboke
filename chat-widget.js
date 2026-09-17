@@ -1516,14 +1516,15 @@
           dislikeBtn.classList.remove('qw-disliked');
         }
       }
-      // 删除按钮只显示给评论作者自己
+      // 删除/编辑按钮只显示给评论作者自己：
+      // 前3个按钮是 赞/踩/回复，第4个及以后是删除/编辑等管理按钮
       try {
         var cmp = c.__vue__;
         var commentMail = cmp && cmp.comment ? (cmp.comment.mail || '').trim().toLowerCase() : '';
-        var delBtns = c.querySelectorAll('.tk-icon-delete, .tk-comment-delete, .tk-action-link[title*="删除"], .tk-action-link[aria-label*="删除"]');
-        delBtns.forEach(function(del){
-          del.style.display = (myEmail && commentMail === myEmail) ? '' : 'none';
-        });
+        var isMine = myEmail && commentMail === myEmail;
+        for (var li = 3; li < links.length; li++) {
+          links[li].style.display = isMine ? '' : 'none';
+        }
       } catch (eHide) {}
     });
   }
