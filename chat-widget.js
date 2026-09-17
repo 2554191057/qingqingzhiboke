@@ -431,8 +431,65 @@
     try {
   // 头像加载失败时显示昵称首字母
   function fixAvatars(){
+    // First pass: fix QQ avatars using email from comment data
+    // Fetch comments from API to get emails
+    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        api: 'GET_COMMENTS',
+        payload: {
+          sortBy: 'created',
+          pageSize: 100,
+          page: 1,
+          path: 'chat'
+        }
+      })
+    }).then(function(r){ return r.json(); }).then(function(data){
+      if(!data || !data.data) return;
+      var comments = data.data;
+      // Build a map: objectId -> email
+      var emailMap = {};
+      function processComment(c){
+        if(c && c.objectId && c.mail){
+          emailMap[c.objectId] = c.mail;
+        }
+        if(c && c.replies){
+          c.replies.forEach(processComment);
+        }
+      }
+      comments.forEach(processComment);
+
+      // Now fix avatars
+      document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function(item){
+        var av = item.querySelector('.tk-avatar');
+        if(!av) return;
+        var nickEl = item.querySelector('.tk-nick');
+        var nick = nickEl ? nickEl.textContent.trim() : '';
+        // Try to get objectId from the comment element
+        var cid = item.getAttribute('data-id') || item.id || '';
+        var mail = emailMap[cid] || '';
+
+        var m = mail.match(/^(\d+)@qq\.com$/i);
+        if(m){
+          var qqUrl = 'https://q.qlogo.cn/headimg_dl?dst_uin=' + m[1] + '&spec=100';
+          var img = av.querySelector('img');
+          if(!img || (img.src && img.src.indexOf('q.qlogo.cn') < 0)){
+            av.innerHTML = '';
+            var newImg = document.createElement('img');
+            newImg.src = qqUrl;
+            newImg.alt = nick;
+            newImg.onerror = function(){ av.textContent = nick ? nick[0].toUpperCase() : '?'; };
+            av.appendChild(newImg);
+          }
+          return;
+        }
+      });
+    }).catch(function(){});
+
+    // Second pass: fix non-QQ avatars (keep existing behavior)
     document.querySelectorAll('.qw-body #twikoo .tk-comment .tk-avatar').forEach(function(av){
-      if(av.dataset.fixed) return;
+      if(av.dataset.fixed === 'qq') return;
       var nick = '';
       var item = av.closest('.tk-comment');
       if(item){
@@ -448,7 +505,6 @@
           av.textContent = nick ? nick[0].toUpperCase() : '?';
           img.remove();
         };
-        // 如果已经是 broken image
         if(img.complete && img.naturalWidth === 0){
           av.textContent = nick ? nick[0].toUpperCase() : '?';
           img.remove();
