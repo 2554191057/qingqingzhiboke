@@ -913,6 +913,13 @@ document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
   });
 });
 </script>
+<script>
+fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer})
+}).catch(()=>{});
+</script>
 </body>
 </html>
 
