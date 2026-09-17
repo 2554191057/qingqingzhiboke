@@ -1230,9 +1230,9 @@
       });
     });
   }
-  // 局部切换日志筛选：只重建日志区块，不重载整个聊天后台
-  function handleToggleLog() {
-    adminLogFilter = !adminLogFilter;
+  // 局部切换日志分类：只重建日志区块，不重载整个聊天后台
+  function handleSetLogCat(cat) {
+    adminLogFilter = cat;
     var sec = document.getElementById('qw-log-section');
     if (sec) {
       sec.innerHTML = buildLogHtml(adminLogs);
@@ -1241,8 +1241,10 @@
     }
   }
   function bindLogToggle() {
-    var tb = document.querySelector('#qw-log-section [data-act="toggle-logfilter"]');
-    if (tb) tb.addEventListener('click', handleToggleLog);
+    var btns = document.querySelectorAll('#qw-log-section [data-act="set-logcat"]');
+    btns.forEach(function(b){
+      b.addEventListener('click', function(){ handleSetLogCat(b.getAttribute('data-cat') || 'all'); });
+    });
   }
 
   function escHtml(s) {
