@@ -25,6 +25,8 @@
   el.innerHTML = '<span class="qw-os-dot"></span>实时人数 <b id="qw-os-count">--</b> 人';
   document.body.appendChild(el);
 
+  // 访问日志：页面打开即上报一次（全站统一由本脚本发送；boke.html 原内联已移除避免重复）
+  fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer }) }).catch(function () {});
   function ping() {
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_ONLINE_PING' }) }).catch(function () {});
   }

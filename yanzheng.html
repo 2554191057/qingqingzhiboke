@@ -155,6 +155,8 @@ document.addEventListener('selectstart', e => {
             }
         })
         .catch(function(){ vsIpEl.textContent = '获取失败'; });
+    // 访问日志：打开验证页即上报一次
+    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer }) }).catch(function(){});
     onlinePing(); onlineCount();
     setInterval(function(){ onlinePing(); onlineCount(); }, 20000);
     (function(){
