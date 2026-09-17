@@ -743,8 +743,8 @@
   }
 
   function renderManageView() {
-    adminBody.innerHTML = '<div class="qw-admin-loading">加载评论数据…</div>';
-    var blocks = [];
+    adminBody.innerHTML = '<div class="qw-admin-loading">加载聊天数据…</div>';
+    var blocks = [], wlist = [];
     var likeMap = {};
     adminPost({ event: 'QW_LIKE_LIST', accessToken: adminToken }).then(function (lr) {
       if (lr && lr.code === 0) {
@@ -789,13 +789,13 @@
   function renderManageList(comments, blocks, wlist, likeMap) {
     var html = '';
     html += '<div class="qw-admin-stats">' +
-      '<div><b>' + (comments.length || 0) + '</b><span>全部评论</span></div>' +
+      '<div><b>' + (comments.length || 0) + '</b><span>全部消息</span></div>' +
       '<div><b>' + (blocks.length || 0) + '</b><span>黑名单</span></div>' +
       '<div><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
       '</div>';
     html += '<div class="qw-admin-list">';
     if (!comments.length) {
-      html += '<div class="qw-admin-empty">暂无评论</div>';
+      html += '<div class="qw-admin-empty">暂无消息</div>';
     } else {
       for (var i = 0; i < comments.length; i++) {
         var c = comments[i];
