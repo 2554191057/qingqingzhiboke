@@ -684,17 +684,18 @@ window.addEventListener('load', function() {
 /* 工具条深色圆角卡片 */
 #waifu-tool {
   background: rgba(20,30,48,.85) !important;
-  border-radius: 14px !important;
-  padding: 6px 8px !important;
+  border-radius: 16px !important;
+  padding: 10px !important;
   backdrop-filter: blur(10px) !important;
   left: 0 !important;
   top: auto !important;
   bottom: 10px !important;
-  display: flex !important;
-  gap: 4px !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 6px !important;
 }
 #waifu-tool button { background: transparent !important; border: none !important; padding: 4px !important; }
-#waifu-tool button svg { fill: #94a3b8 !important; }
+#waifu-tool button svg { fill: #94a3b8 !important; height: 20px !important; width: 20px !important; }
 #waifu-tool button:hover svg { fill: #38bdf8 !important; }
 /* 看板娘定位右下角 */
 #waifu { right: 0 !important; bottom: 0 !important; left: auto !important; transition: bottom .6s cubic-bezier(.2,.8,.3,1.2), opacity .4s !important; }
