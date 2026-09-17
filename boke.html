@@ -763,8 +763,28 @@ window.addEventListener('load', function() {
 <script src="js/sakura/gl-utils.js"></script>
 <script src="js/sakura/renderer.js"></script>
 <script src="js/sakura/bootstrap.js"></script>
+<script>
+(function(){
+  const items = document.querySelectorAll('.navbar-nav .nav-item');
+  const sections = ['home','about','social'];
+  function onScroll(){
+    const pos = window.scrollY + 120;
+    let current = 'home';
+    sections.forEach(id=>{
+      const el = document.getElementById(id);
+      if(el && el.offsetTop <= pos) current = id;
+    });
+    items.forEach(a=>{
+      a.classList.toggle('active', a.getAttribute('href') === '#'+current);
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>
 </body>
 </html>
+
 
 
 
