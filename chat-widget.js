@@ -103,6 +103,8 @@
     '.qw-body #twikoo .qw-img-btn input{display:none;}',
     '.qw-body #twikoo .tk-none{display:none!important;}',
     '.qw-body #twikoo .tk-comments-container:empty{display:none!important;}',
+    '.qw-body #twikoo .tk-comments-container:only-child{display:none!important;}',
+    '.qw-body #twikoo .tk-pagination{display:none!important;}',
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
     /* Twikoo 原生回复提示条隐藏（用自绘 .qw-reply-bar 替代） */
@@ -792,16 +794,19 @@
       e.preventDefault();
       e.stopPropagation();
       chatRefreshBtn.classList.add('qw-spinning');
-      var tcomment = document.getElementById('tcomment');
-      if (tcomment) {
-        tcomment.innerHTML = '<div style="text-align:center;padding:50px 0;color:var(--jp-muted);font-size:13px;" class="qw-refresh-loading">正在刷新聊天数据<span class="qw-dots"></span></div>';
-      }
+      var body = document.querySelector('.qw-body');
+      if (!body) return;
+      var overlay = document.createElement('div');
+      overlay.style.cssText = 'position:absolute;inset:0;background:var(--jp-surface);display:flex;align-items:center;justify-content:center;z-index:10;font-size:13px;color:var(--jp-muted);';
+      overlay.innerHTML = '正在刷新聊天数据<span class="qw-dots"></span>';
+      body.style.position = 'relative';
+      body.appendChild(overlay);
       setTimeout(function() {
         if (window.twikoo) {
           window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
         }
-      }, 500);
-      setTimeout(function(){ chatRefreshBtn.classList.remove('qw-spinning'); }, 2000);
+        setTimeout(function(){ overlay.remove(); chatRefreshBtn.classList.remove('qw-spinning'); }, 1500);
+      }, 800);
     });
   }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
