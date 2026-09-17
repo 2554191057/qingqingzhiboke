@@ -129,7 +129,7 @@ document.addEventListener('selectstart', e => {
             <a href="https://qqzttkx.eu.cc/" class="mirror-cf" target="_blank">Cloudflare</a>
         </div>
         <div class="visitor-stats" id="visitorStats">
-            <span class="vs-item">本机IP：<span class="vs-num" id="vsIp">获取中…</span><button type="button" class="ip-copy-btn" id="ipCopyBtn" disabled>复制</button></span>
+            <span class="vs-item">本机IP：<span class="vs-num" id="vsIp">读取中…</span><button type="button" class="ip-copy-btn" id="ipCopyBtn" disabled>复制</button></span>
             <span class="vs-item">实时人数：<span class="vs-num" id="vsCount">--</span> 人</span>
         </div>
     </div>
@@ -152,10 +152,13 @@ document.addEventListener('selectstart', e => {
     var vsCountEl = document.getElementById('vsCount');
     var ipCopyBtn = document.getElementById('ipCopyBtn');
     var ipCopyTimer = null;
+    // 本机IP：取白名单第一个 IP（站长本机公网 IP），与自动放行同一处维护，换 IP 时改 WHITELIST_IPS 即可
+    vsIpEl.textContent = WHITELIST_IPS[0] || '未配置';
+    ipCopyBtn.disabled = WHITELIST_IPS.length === 0;
     // 复制本机IP
     ipCopyBtn.addEventListener('click', function () {
         var ip = vsIpEl.textContent;
-        if (!ip || ip === '获取中…' || ip === '获取失败') return;
+        if (!ip || ip === '读取中…' || ip === '获取失败') return;
         function copied() {
             ipCopyBtn.classList.add('copied');
             ipCopyBtn.textContent = '已复制';
@@ -194,22 +197,18 @@ document.addEventListener('selectstart', e => {
         .then(function(d){ if (d && typeof d.count === 'number') vsCountEl.textContent = d.count; })
         .catch(function(){});
     }
-    // 本机IP：用 ipwho.is 获取当前设备公网 IP（站长在本机访问时即本机IP），与白名单校验共用
+    // 白名单校验：用 ipwho.is 获取访客公网 IP，命中白名单（站长本机）自动放行；该 IP 仅用于校验，不再用于页面展示
     fetch('https://ipwho.is/?fields=ip')
         .then(r => r.json())
         .then(d => {
-            if (d.ip) {
-                vsIpEl.textContent = d.ip;
-                ipCopyBtn.disabled = false;
-                if (WHITELIST_IPS.includes(d.ip)) {
-                    sessionStorage.setItem('auth_ok', '1');
-                    var back = new URLSearchParams(location.search).get('back');
-                    if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
-                    location.href = 'https://qqzttkx.eu.cc/boke.html';
-                }
+            if (d.ip && WHITELIST_IPS.includes(d.ip)) {
+                sessionStorage.setItem('auth_ok', '1');
+                var back = new URLSearchParams(location.search).get('back');
+                if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
+                location.href = 'https://qqzttkx.eu.cc/boke.html';
             }
         })
-        .catch(function(){ vsIpEl.textContent = '获取失败'; });
+        .catch(function(){});
     // 访问日志：打开验证页即上报一次
     fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer }) }).catch(function(){});
     onlinePing(); onlineCount();
