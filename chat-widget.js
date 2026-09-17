@@ -781,9 +781,8 @@
   if (chatRefreshBtn) {
     chatRefreshBtn.addEventListener('click', function(e) {
       e.preventDefault();
-      var ic = document.getElementById('tcomment');
-      if (ic && window.twikoo) {
-        ic.innerHTML = '';
+      e.stopPropagation();
+      if (window.twikoo) {
         window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
       }
     });
