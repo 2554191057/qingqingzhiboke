@@ -666,18 +666,37 @@ window.addEventListener('load', function() {
 <style>
 /* 隐藏右下角聊天室悬浮按钮 */
 .qw-launcher { display: none !important; }
-/* 展开人物按钮动画 */
-#waifu-toggle { animation: waifuPulse 2s ease-in-out infinite; }
-@keyframes waifuPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16,147,195,.35); }
-  50% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(16,147,195,0); }
+/* 展开人物按钮：双环加载动画（qiguangji 风格） */
+#waifu-toggle {
+  background: linear-gradient(135deg, rgba(16,147,195,.9), rgba(72,102,219,.9)) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+  box-shadow: 0 4px 20px rgba(16,147,195,.4) !important;
+  position: relative;
+  overflow: hidden;
 }
-/* 看板娘展开滑入动画 */
-#waifu { transition: all .5s cubic-bezier(.2,.8,.3,1.2) !important; }
-#waifu.waifu-in { animation: waifuSlideIn .6s cubic-bezier(.2,.8,.3,1.2); }
-@keyframes waifuSlideIn {
-  from { transform: translateY(40px) scale(.8); opacity: 0; }
-  to { transform: translateY(0) scale(1); opacity: 1; }
+#waifu-toggle::before, #waifu-toggle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  border: 2px solid rgba(255,255,255,.4);
+  animation: toggleRing 2s ease-out infinite;
+}
+#waifu-toggle::after { animation-delay: 1s; }
+@keyframes toggleRing {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+/* 看板娘展开/收起动画 */
+#waifu { transition: bottom .6s cubic-bezier(.2,.8,.3,1.2), opacity .4s !important; }
+#waifu.waifu-in { animation: waifuRise .6s cubic-bezier(.2,.8,.3,1.2); }
+@keyframes waifuRise {
+  from { transform: translateY(60px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 </style>
 
