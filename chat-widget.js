@@ -29,6 +29,8 @@
     '.qw-panel header p{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--jp-muted);margin:5px 0 0;}',
     '.qw-panel header p .qw-dot{width:6px;height:6px;border-radius:50%;background:#3ecf6a;box-shadow:0 0 6px rgba(62,207,106,.7);}',
     '.qw-close{padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
+    '.qw-icon-btn{padding:8px;color:var(--jp-muted);font-size:15px;cursor:pointer;border-radius:8px;background:none;border:none;display:flex;align-items:center;justify-content:center;transition:background .2s ease,color .2s ease;}',
+    '.qw-icon-btn:hover{background:var(--jp-glow);color:var(--jp-ink);}',
     '.qw-logout-btn{display:none;padding:6px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:var(--jp-paper);color:var(--jp-muted);cursor:pointer;transition:all .2s ease;}',
     '.qw-logout-btn:hover{color:#e05b5b;border-color:#e05b5b;}',
     '.qw-panel.qw-logged-in .qw-logout-btn{display:block;}',
@@ -291,7 +293,7 @@
     '<button class="qw-admin-btn" id="qw-admin-trigger" aria-label="聊天后台" title="聊天后台"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
     '<button class="qw-settings-btn" id="qw-settings-btn" title="账号设置"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>' +
     '<button class="qw-logout-btn" id="qw-logout-btn" title="退出登录">退出</button>' +
-    '<button type="button" class="qw-close" id="qw-chat-refresh" aria-label="刷新聊天" title="刷新聊天"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
+    '<button type="button" class="qw-icon-btn" id="qw-chat-refresh" aria-label="刷新聊天" title="刷新聊天"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
     '<button class="qw-close" aria-label="关闭聊天室" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
@@ -314,7 +316,7 @@
     '<div class="qw-login-body">' +
     '<div class="qw-login-x" id="qw-settings-close-x" style="position:absolute;top:14px;right:16px;cursor:pointer;font-size:18px;line-height:1;color:var(--jp-muted);user-select:none;z-index:3;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s ease;">&times;</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-nick">' +
-    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">一周最多改3次，次日0点后才能再改；刚用过的昵称7天内不能再用</p>' +
+    '<p style="font-size:11px;opacity:.6;margin:0 0 8px">一周最多改3次，次日0点后才能再改；刚用过的昵称5秒后就能改回</p>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><input type="text" id="qw-set-nick" placeholder="新昵称" maxlength="20" autocomplete="off"></div>' +
     '<button class="qw-submit" id="qw-set-nick-save" style="margin-top:6px">保存昵称</button>' +
     '</div>' +
@@ -375,7 +377,7 @@
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>' +
     '<div><h2 id="qw-admin-title">聊天后台</h2><p>管理员 · 删除消息 / 拉黑邮箱</p></div>' +
-    '<button type="button" class="qw-close" id="qw-admin-refresh" aria-label="刷新数据" title="刷新数据" style="margin-left:auto"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
+    '<button type="button" class="qw-icon-btn" id="qw-admin-refresh" aria-label="刷新数据" title="刷新数据" style="margin-left:auto"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg></button>' +
     '<button class="qw-close" data-qw-admin-close aria-label="关闭" title="关闭"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>' +
     '</header>' +
     '<div class="qw-admin-body" id="qw-admin-body"></div>' +
