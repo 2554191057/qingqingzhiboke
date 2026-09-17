@@ -429,6 +429,35 @@
     if (twikooInited || !window.twikoo) return;
     twikooInited = true;
     try {
+  // 头像加载失败时显示昵称首字母
+  function fixAvatars(){
+    document.querySelectorAll('.qw-body #twikoo .tk-comment .tk-avatar').forEach(function(av){
+      if(av.dataset.fixed) return;
+      var nick = '';
+      var item = av.closest('.tk-comment');
+      if(item){
+        var nickEl = item.querySelector('.tk-nick');
+        if(nickEl) nick = nickEl.textContent.trim();
+      }
+      var img = av.querySelector('img');
+      if(!img){
+        av.textContent = nick ? nick[0].toUpperCase() : '?';
+        av.dataset.fixed = '1';
+      } else {
+        img.onerror = function(){
+          av.textContent = nick ? nick[0].toUpperCase() : '?';
+          img.remove();
+        };
+        // 如果已经是 broken image
+        if(img.complete && img.naturalWidth === 0){
+          av.textContent = nick ? nick[0].toUpperCase() : '?';
+          img.remove();
+        }
+      }
+    });
+  }
+  // Twikoo 评论加载后执行
+  var _origOnCommentLoaded = window.twikoo && window.twikoo.onCommentLoaded;
       twikoo.init({
         envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo',
         el: '#tcomment',
@@ -441,7 +470,7 @@
           if(m) return 'https://q.qlogo.cn/headimg_dl?dst_uin=' + m[1] + '&spec=100';
           return '';
         },
-        onCommentLoaded: function () { scheduleMark(); }
+        onCommentLoaded: function () { scheduleMark(); fixAvatars(); }
         ,onCommentSubmit: function (e) { try { logAction('发言', '内容:' + String((e && e.comment) || '').slice(0, 50)); } catch (ex) {} }
       });
     } catch (e) { twikooInited = false; }
