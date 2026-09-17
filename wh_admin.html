@@ -123,7 +123,6 @@ input, button { font-family: inherit; }
 .log-item {
   font-size: 12px; padding: 8px 12px; border: 1px solid var(--jp-line); border-radius: 9px; margin-bottom: 7px;
   color: var(--jp-muted); line-height: 1.7; position: relative; padding-right: 30px;
-  word-break: break-all; overflow-wrap: anywhere;
 }
 .log-item .log-del {
   position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
@@ -529,7 +528,7 @@ function parseUa(ua) {
   var model = '';
   var mAndroid = s.match(/Android [0-9.]+; ([^;)]+)/);
   if (mAndroid) {
-    model = mAndroid[1].replace(/\s*Build[^;)]*/i, '').replace(/^\s*(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*|(\s+)(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*$/ig, '').trim();
+    model = mAndroid[1].replace(/\s*Build[^;)]*/i, '').replace(/\s+(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*$/i, '').trim();
   }
   if (/Redmi/i.test(s)) brand = '红米';
   else if (/POCO/i.test(s)) brand = 'POCO';
@@ -575,7 +574,7 @@ function buildLogHtml(logs) {
   if (!logs || !logs.length) {
     h += '<div class="empty" style="padding:10px 0">暂无日志</div>';
   } else {
-    var list = adminLogFilter === 'all' ? logs : logs.filter(function (x) { var cat = logCatMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
+    var list = adminLogFilter === 'all' ? logs : logs.filter(function (x) { return logCatMap[x.type] === adminLogFilter; });
     if (!list.length) h += '<div class="empty" style="padding:10px 0">暂无此类日志</div>';
     for (var li = 0; li < list.length; li++) {
       var lg = list[li];

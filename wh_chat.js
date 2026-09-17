@@ -785,21 +785,6 @@
   window.openChatRoom = openChat;
   window.closeChatRoom = closeChat;
   document.addEventListener('DOMContentLoaded', refreshLoginUI);
-  // 页面访问上报：记录访客访问了网站哪个页面（后端按 page 推导 visit_<页面名>）
-  (function () {
-    try {
-      var pg = (location.pathname || '').split('/').pop() || '';
-      if (!pg || pg === '/' || pg === '') pg = 'index';
-      pg = pg.replace(/\.[a-z0-9]+$/i, '');
-      if (!/^(yanzheng|boke|wenzhang|wangpan|shengri|fklts|chat|index|admin)$/i.test(pg)) return;
-      var key = 'qw_visit_sent_' + pg;
-      try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1'); } catch (e) {}
-      fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer })
-      }).catch(function(){});
-    } catch (e) {}
-  })();
   // 打开聊天室后刷新登录态
   var _origOpen = openChat;
   openChat = function () {
@@ -1208,7 +1193,7 @@
   var model = '';
   var mAndroid = s.match(/Android [0-9.]+; ([^;)]+)/);
   if (mAndroid) {
-    model = mAndroid[1].replace(/\s*Build[^;)]*/i, '').replace(/^\s*(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*|(\s+)(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*$/ig, '').trim();
+    model = mAndroid[1].replace(/\s*Build[^;)]*/i, '').replace(/\s+(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*$/i, '').trim();
   }
   if (/Redmi/i.test(s)) brand = '红米';
   else if (/POCO/i.test(s)) brand = 'POCO';
@@ -1268,7 +1253,7 @@
     if (!logs || !logs.length) {
       h += '<div class="qw-admin-empty" style="padding:10px 0">暂无日志</div>';
     } else {
-      var logList = adminLogFilter === 'all' ? logs : logs.filter(function(x) { var cat = catMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
+      var logList = adminLogFilter === 'all' ? logs : logs.filter(function(x) { return catMap[x.type] === adminLogFilter; });
       if (!logList.length) h += '<div class="qw-admin-empty" style="padding:10px 0">暂无此类日志</div>';
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
