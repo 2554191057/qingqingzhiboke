@@ -131,7 +131,7 @@
   const tools = {
     chat: { icon: SVG.hitokoto, callback: () => { if (window.openChatRoom) { window.openChatRoom(); } else { window.location.href = "fklts.html"; } } },
     hitokoto: {
-      icon: '<span style="font-size:14px;font-weight:700;line-height:1;">言</span>',
+      icon: '<span style="font-size:15px;font-weight:700;line-height:1;color:currentColor;display:inline-block;transform:translateY(1px);">言</span>',
       callback: function () {
         if (tipTimer) { clearTimeout(tipTimer); tipTimer = null; }
         sessionStorage.removeItem('waifu-text');
