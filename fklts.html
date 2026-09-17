@@ -7,66 +7,7 @@
     <link rel="icon" href="images/%E7%BD%91%E9%A1%B5%E6%A0%87%E7%AD%BE/favicon.png">
     <link rel="stylesheet" href="style.css?v=268">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
-    <style>
-        /* ===== qiguangji 主题色板（日间/夜间） ===== */
-        :root {
-            --jp-paper: #edf2fa;
-            --jp-surface: rgba(255, 255, 255, .94);
-            --jp-ink: #182641;
-            --jp-muted: #62728e;
-            --jp-line: #cedaed;
-            --jp-accent: #087fa8;
-            --jp-blue: #4c67eb;
-            --jp-glow: rgba(16, 147, 195, .14);
-        }
-        [data-theme="dark"] {
-            --jp-paper: #080e1c;
-            --jp-surface: rgba(15, 24, 43, .96);
-            --jp-ink: #e5edff;
-            --jp-muted: #8a9dbd;
-            --jp-line: #23324f;
-            --jp-accent: #50d3f6;
-            --jp-blue: #8291ff;
-            --jp-glow: rgba(63, 199, 249, .12);
-        }
-
-        /* 顶栏对齐主站：日间白毛玻璃 / 夜间深蓝毛玻璃 */
-        .navbar { background: rgba(255, 255, 255, 0.94) !important; background-image: none !important; backdrop-filter: blur(20px) !important; -webkit-backdrop-filter: blur(20px) !important; border-bottom: 1px solid rgba(206, 218, 237, 0.80) !important; box-shadow: 0 4px 20px rgba(24, 38, 65, 0.06) !important; }
-        [data-theme="dark"] .navbar { background: rgba(13, 30, 48, 0.66) !important; border-bottom-color: rgba(255, 255, 255, 0.08) !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important; }
-        .logo-text { background: linear-gradient(110deg, #087fa8, #4866db) !important; -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important; -webkit-text-fill-color: transparent !important; }
-        [data-theme="dark"] .logo-text { background: linear-gradient(110deg, #4fb3e8, #8fa8ff) !important; -webkit-background-clip: text !important; background-clip: text !important; color: transparent !important; -webkit-text-fill-color: transparent !important; }
-        .nav-dropdown-menu { background: rgba(255, 255, 255, 0.96) !important; border: 1px solid #cedaed !important; box-shadow: 0 12px 36px rgba(24, 38, 65, 0.10) !important; }
-        [data-theme="dark"] .nav-dropdown-menu { background: rgba(13, 30, 48, 0.96) !important; border: 1px solid rgba(255, 255, 255, 0.10) !important; }
-        .nav-dropdown-item:hover { background: rgba(16, 147, 195, 0.10) !important; }
-        [data-theme="dark"] .nav-dropdown-item:hover { background: rgba(16, 147, 195, 0.18) !important; }
-        .theme-toggle { background: rgba(255, 255, 255, 0.9) !important; border: 1px solid #cedaed !important; }
-        [data-theme="dark"] .theme-toggle { background: rgba(13, 30, 48, 0.8) !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; }
-
-        /* 悬浮聊天室直达页：简单欢迎底页 */
-        body { background: var(--jp-paper) !important; }
-        [data-theme="dark"] body { background: var(--jp-paper) !important; }
-        .chat-welcome { display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 84px); padding: 24px 16px; }
-        .welcome-card {
-            width: min(440px, 100%);
-            padding: 42px 32px;
-            text-align: center;
-            background: var(--jp-surface);
-            border: 1px solid var(--jp-line);
-            border-radius: 18px;
-            box-shadow: 0 28px 100px rgba(0, 0, 0, 0.28), 0 0 40px var(--jp-glow);
-            color: var(--jp-ink);
-            transition: background 0.45s ease, border-color 0.45s ease;
-        }
-        .welcome-card .icon {
-            width: 62px; height: 62px; margin: 0 auto 18px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px; color: var(--jp-accent);
-            background: var(--jp-glow); border-radius: 50%;
-        }
-        .welcome-card h1 { margin: 0 0 10px; font-size: 20px; font-weight: 650; color: var(--jp-ink); }
-        .welcome-card p { margin: 0; font-size: 12px; color: var(--jp-muted); line-height: 1.8; }
-        .welcome-card .dot { display: inline-block; width: 6px; height: 6px; margin-right: 5px; border-radius: 50%; background: #3ecf6a; box-shadow: 0 0 6px rgba(62, 207, 106, 0.7); vertical-align: middle; }
-    </style>
+    
     <script>
         // ===== 首次进入必须经过图形验证（与主站一致） =====
         if (!sessionStorage.getItem('auth_ok')) {
@@ -99,68 +40,67 @@
 
 
 
+
 <style>
-/* ===== qiguangji 同款导航栏 ===== */
+/* ===== qiguangji 同款导航栏（精确复刻） ===== */
 .navbar{
-  position:fixed;top:0;left:0;right:0;z-index:50;
-  background:rgba(255,255,255,0.4)!important;
-  -webkit-backdrop-filter:blur(12px)!important;
-  backdrop-filter:blur(12px)!important;
-  border:1px solid rgba(255,255,255,0.4)!important;
-  border-top:none!important;border-left:none!important;border-right:none!important;
-  box-shadow:0 8px 32px rgba(0,0,0,0.1)!important;
-  border-radius:0!important;
-  height:64px;
+  position:fixed!important;top:0;left:0;right:0;z-index:50!important;
+  background:rgba(255,255,255,0.94)!important;
+  -webkit-backdrop-filter:blur(20px)!important;
+  backdrop-filter:blur(20px)!important;
+  border:none!important;border-radius:0!important;
+  box-shadow:none!important;
+  height:64px!important;padding:0!important;
 }
 [data-theme="dark"] .navbar{
-  background:rgba(30,41,59,0.5)!important;
-  border-color:rgba(255,255,255,0.1)!important;
-  box-shadow:0 8px 32px rgba(0,0,0,0.3)!important;
+  background:rgba(15,24,43,0.96)!important;
 }
 .nav-container{
-  max-width:1280px;margin:0 auto;padding:0 24px;height:64px;
-  display:flex!important;align-items:center!important;justify-content:space-between;
+  max-width:1280px!important;margin:0 auto!important;padding:0 24px!important;
+  height:64px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
 }
 .navbar-nav{
-  flex:1;display:flex!important;align-items:center!important;justify-content:center!important;
-  gap:2px;list-style:none;padding:0;margin:0;
+  flex:1!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  gap:2px!important;list-style:none!important;padding:0!important;margin:0!important;
 }
 .navbar-nav .nav-item{
-  position:relative;display:flex;align-items:center;gap:6px;
-  padding:8px 12px;border-radius:8px;
-  color:#475569;text-decoration:none;font-size:14px;font-weight:500;
-  transition:background .2s ease,color .2s ease;
+  position:relative!important;display:flex!important;align-items:center!important;gap:6px!important;
+  padding:8px 9px!important;border-radius:8px!important;
+  color:#64748b!important;text-decoration:none!important;font-size:13px!important;font-weight:500!important;
+  transition:background .2s ease,color .2s ease!important;
+  background:transparent!important;
 }
-.navbar-nav .nav-item i{font-size:15px;}
+.navbar-nav .nav-item i{font-size:15px!important;}
 .navbar-nav .nav-item:hover{
-  background:rgba(0,0,0,0.04);color:#1e293b;
+  background:rgba(0,0,0,0.04)!important;color:#1e293b!important;
 }
 .navbar-nav .nav-item.active{
-  color:#0284c7;
+  color:#0284c7!important;
 }
 .navbar-nav .nav-item.active::after{
-  content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
-  width:6px;height:6px;border-radius:50%;background:#0ea5e9;
+  content:''!important;position:absolute!important;bottom:0!important;left:50%!important;transform:translateX(-50%)!important;
+  width:6px!important;height:6px!important;border-radius:50%!important;background:#0ea5e9!important;
 }
-[data-theme="dark"] .navbar-nav .nav-item{color:#94a3b8;}
-[data-theme="dark"] .navbar-nav .nav-item:hover{background:rgba(255,255,255,0.08);color:#e2e8f0;}
-[data-theme="dark"] .navbar-nav .nav-item.active{color:#38bdf8;}
-[data-theme="dark"] .navbar-nav .nav-item.active::after{background:#38bdf8;}
+[data-theme="dark"] .navbar-nav .nav-item{color:#94a3b8!important;}
+[data-theme="dark"] .navbar-nav .nav-item:hover{background:rgba(255,255,255,0.08)!important;color:#e2e8f0!important;}
+[data-theme="dark"] .navbar-nav .nav-item.active{color:#50d3f6!important;}
+[data-theme="dark"] .navbar-nav .nav-item.active::after{background:#50d3f6!important;}
 #themeToggle{
-  padding:8px!important;border-radius:8px;border:none;cursor:pointer;
-  color:#475569;background:transparent;font-size:16px;
-  display:flex;align-items:center;justify-content:center;
-  width:36px;height:36px;transition:background .2s ease;
+  padding:8px!important;border-radius:8px!important;border:none!important;cursor:pointer!important;
+  color:#64748b!important;background:transparent!important;font-size:16px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:36px!important;height:36px!important;transition:background .2s ease!important;
   position:static!important;transform:none!important;
 }
-#themeToggle:hover{background:rgba(0,0,0,0.04);}
-[data-theme="dark"] #themeToggle{color:#94a3b8;}
-[data-theme="dark"] #themeToggle:hover{background:rgba(255,255,255,0.08);}
+#themeToggle:hover{background:rgba(0,0,0,0.04)!important;}
+[data-theme="dark"] #themeToggle{color:#94a3b8!important;}
+[data-theme="dark"] #themeToggle:hover{background:rgba(255,255,255,0.08)!important;}
 #themeToggle .icon-sun{display:none!important;}
 #themeToggle .icon-moon{display:inline-block!important;}
 [data-theme="dark"] #themeToggle .icon-sun{display:inline-block!important;}
 [data-theme="dark"] #themeToggle .icon-moon{display:none!important;}
-.logo{text-decoration:none;}
+.logo{text-decoration:none!important;display:flex!important;align-items:center!important;gap:8px!important;}
+.logo-text{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:inherit!important;-webkit-text-fill-color:inherit!important;}
 </style>
 </head>
 <body>
