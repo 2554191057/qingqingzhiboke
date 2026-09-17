@@ -63,7 +63,8 @@
     '.qw-admin-btn.qw-admin-on{color:#e8a33d;}',
     '.qw-close:hover{background:var(--jp-glow);color:var(--jp-ink);}',
     '.qw-notice{font-size:10px;color:var(--jp-muted);padding:12px 20px;background:var(--jp-glow);}',
-    '.qw-body{padding:0 20px 18px;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;}',
+    '.qw-login-mask{display:flex;flex-direction:column;flex:1;min-height:0;}',
+'.qw-body{padding:0 20px 18px;overflow:hidden;display:flex;flex-direction:column;flex:1;min-height:0;}',
     '/* ===== Twikoo → qiguangji 覆盖 ===== */',
     '/* 消息流在上、输入区在底部（qiguangji 聊天室顺序） */',
     '.qw-body #tcomment{--twikoo-bg:transparent;--twikoo-theme-bg:transparent;display:flex;flex:1;min-height:0;}',
@@ -151,7 +152,7 @@
     '.qw-login-msg{text-align:center;margin:8px 0 0;font-size:11px;color:#e74c3c;min-height:14px;}',
     '.qw-login-msg.qw-ok{color:#2ecc71;}',
     /* 未登录：底部登录条（qiguangji 风格） */
-    '.qw-login-bar{display:none;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;border-top:1px solid var(--jp-line);}',
+    '.qw-login-bar{display:none;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-top:1px solid var(--jp-line);flex-shrink:0;}',
     '.qw-login-mask.qw-needs-login .qw-login-bar{display:flex;}',
     '.qw-login-mask.qw-needs-login .qw-body #twikoo .tk-submit{display:none!important;}',
     '.qw-login-bar .qw-lb-text h4{margin:0 0 3px;font-size:13px;color:var(--jp-ink);font-weight:700;}',
