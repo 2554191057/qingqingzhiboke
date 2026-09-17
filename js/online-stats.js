@@ -1,6 +1,6 @@
 /* =========================================================
- * 全站实时访客统计（2026-09-18 新增）
- * 自包含注入：左下角"在线访客 · X 人"小标签
+ * 全站实时人数统计（2026-09-18 新增）
+ * 自包含注入：左下角"实时人数 · X 人"小标签
  * 每 20 秒向 Twikoo 后端发心跳(QW_ONLINE_PING)+查询(QW_ONLINE_COUNT)
  * 在线数 = 最近 2 分钟内有心跳的去重 IP 数（后端 MongoDB 统计）
  * 样式跟随站点毛玻璃主题（--jp-* 由 chat-widget.js 注入，含后备色）
@@ -21,8 +21,8 @@
 
   var el = document.createElement('div');
   el.className = 'qw-os-tag';
-  el.setAttribute('title', '最近2分钟内的去重访客数（全站心跳统计）');
-  el.innerHTML = '<span class="qw-os-dot"></span>在线访客 <b id="qw-os-count">--</b> 人';
+  el.setAttribute('title', '实时在线人数（全站心跳去重统计）');
+  el.innerHTML = '<span class="qw-os-dot"></span>实时人数 <b id="qw-os-count">--</b> 人';
   document.body.appendChild(el);
 
   function ping() {
