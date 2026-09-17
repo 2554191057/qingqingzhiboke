@@ -32,7 +32,7 @@
 .theme-toggle::before, .theme-toggle::after { background: none !important; }
 .theme-toggle svg { width: 20px !important; height: 20px !important; stroke: currentColor !important; }
 [data-theme="dark"] .theme-toggle, html.dark .theme-toggle { background: transparent !important; border: none !important; color: rgba(255,255,255,.6) !important; }
-@media (max-width: 900px) { .navbar-nav { display: none !important; } }
+
 </style>
 
 
@@ -140,20 +140,12 @@ document.addEventListener('selectstart', e => {
 #themeToggle { margin-right: 16px !important; }
 </style>
 <style>body{padding-top:84px!important;}</style><style>
-/* Force navbar buttons to be visible */
-#themeToggle{display:flex!important;visibility:visible!important;opacity:1!important;position:static!important;}
-.hamburger-btn{display:none!important;visibility:visible!important;}
+.navbar-nav{display:flex!important;position:static!important;transform:none!important;flex-direction:row!important;}
+#themeToggle{display:flex!important;}
+.hamburger-btn{display:none!important;}
 @media(max-width:900px){
   .hamburger-btn{display:flex!important;}
-  #themeToggle{display:flex!important;}
 }
-@media(min-width:901px){
-  .hamburger-btn{display:none!important;}
-}
-</style><style>
-.navbar-nav{display:flex!important;position:static!important;transform:none!important;flex-direction:row!important;}
-.hamburger-btn{display:none!important;}
-#themeToggle{display:flex!important;}
 </style></head>
 <body>
     <!-- ========== 顶部导航 ========== -->
