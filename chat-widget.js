@@ -819,8 +819,8 @@
   var adminBackdrop = document.getElementById('qw-admin-backdrop');
   var adminBody = document.getElementById('qw-admin-body');
   var adminToken = '';
-  var adminLogFilter = false; // 操作日志筛选：true=仅账号日志(注册/登录/退出)
-  var adminLogs = []; // 最近一次加载的操作日志，供局部切换筛选用
+  var adminLogFilter = 'all'; // 日志分类: all/account/interact/other
+  var adminLogs = [];
   var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
 
   function adminPost(data) {
@@ -1123,13 +1123,29 @@
 
   // 构建操作日志区块 HTML（含筛选按钮），配合局部刷新
   function buildLogHtml(logs) {
-    var h = '<h4 style="display:flex;align-items:center;justify-content:space-between">操作日志（最近100条）' +
-      '<button data-act="toggle-logfilter" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer">' + (adminLogFilter ? '全部日志' : '账号日志') + '</button></h4>';
+    var cats = [
+      { key:'all', label:'全部' },
+      { key:'account', label:'账号' },
+      { key:'interact', label:'互动' },
+      { key:'other', label:'其他' }
+    ];
+    var catMap = {
+      '注册':'account','登录':'account','退出':'account','改昵称':'account','改密码':'account','改邮箱':'account',
+      '发言':'interact','点赞':'interact','点踩':'interact',
+      '访问聊天室':'other'
+    };
+    var h = '<h4 style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">操作日志（最近100条）';
+    h += '<div style="display:flex;gap:4px">';
+    for (var ci=0;ci<cats.length;ci++) {
+      var c = cats[ci];
+      h += '<button data-act="set-logcat" data-cat="'+c.key+'" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:'+(adminLogFilter===c.key?'var(--jp-accent)':'transparent')+';color:'+(adminLogFilter===c.key?'#fff':'var(--jp-accent)')+';cursor:pointer">'+c.label+'</button>';
+    }
+    h += '</div></h4>';
     if (!logs || !logs.length) {
       h += '<div class="qw-admin-empty" style="padding:10px 0">暂无日志</div>';
     } else {
-      var logList = adminLogFilter ? logs.filter(function (x) { return ['注册', '登录', '退出'].indexOf(x.type) >= 0; }) : logs;
-      if (!logList.length) h += '<div class="qw-admin-empty" style="padding:10px 0">暂无账号日志</div>';
+      var logList = adminLogFilter === 'all' ? logs : logs.filter(function(x) { return catMap[x.type] === adminLogFilter; });
+      if (!logList.length) h += '<div class="qw-admin-empty" style="padding:10px 0">暂无此类日志</div>';
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
         var tstr = new Date(lg.time).toLocaleString('zh-CN');
@@ -1151,6 +1167,30 @@
     'inner mongolia': '内蒙古', 'xinjiang': '新疆', 'xizang': '西藏', 'qinghai': '青海',
     'ningxia': '宁夏', 'hainan': '海南', 'hong kong': '香港', 'macau': '澳门', 'taiwan': '台湾'
   };
+  var cityMap = {
+    'beijing': '北京', 'shanghai': '上海', 'tianjin': '天津', 'chongqing': '重庆',
+    'guangzhou': '广州', 'shenzhen': '深圳', 'dongguan': '东莞', 'foshan': '佛山',
+    'zhuhai': '珠海', 'zhongshan': '中山', 'huizhou': '惠州', 'jiangmen': '江门',
+    'chengdu': '成都', 'hangzhou': '杭州', 'ningbo': '宁波', 'wenzhou': '温州',
+    'jiaxing': '嘉兴', 'shaoxing': '绍兴', 'suzhou': '苏州', 'nanjing': '南京',
+    'wuxi': '无锡', 'changzhou': '常州', 'nantong': '南通', 'xuzhou': '徐州',
+    'jinan': '济南', 'qingdao': '青岛', 'yantai': '烟台', 'weifang': '潍坊',
+    'zhengzhou': '郑州', 'luoyang': '洛阳', 'wuhan': '武汉', 'xiangyang': '襄阳',
+    'changsha': '长沙', 'zhuzhou': '株洲', 'xiangtan': '湘潭', 'hengyang': '衡阳',
+    'yueyang': '岳阳', 'yiyang': '益阳', 'changde': '常德', 'zhangjiajie': '张家界',
+    'nanchang': '南昌', 'jiujiang': '九江', 'hefei': '合肥', 'wuhu': '芜湖',
+    'fuzhou': '福州', 'xiamen': '厦门', 'quanzhou': '泉州', 'putian': '莆田',
+    'shenyang': '沈阳', 'dalian': '大连', 'changchun': '长春', 'harbin': '哈尔滨',
+    'shijiazhuang': '石家庄', 'taiyuan': '太原', 'xian': '西安', 'xianyang': '咸阳',
+    'kunming': '昆明', 'guiyang': '贵阳', 'nanning': '南宁', 'haikou': '海口',
+    'lanzhou': '兰州', 'xining': '西宁', 'urumqi': '乌鲁木齐', 'lhasa': '拉萨',
+    'hohhot': '呼和浩特', 'yinchuan': '银川'
+  };
+  function cnCity(city) {
+    if (!city) return '';
+    var key = city.toLowerCase().replace(/\s+/g, '');
+    return cityMap[key] || city;
+  }
   function getIpLocation(ip, cb) {
     if (!ip || !/^\d+\.\d+\.\d+\.\d+$/.test(ip)) return cb('');
     if (ipLocCache[ip]) return cb(ipLocCache[ip]);
@@ -1158,9 +1198,9 @@
       if (!d || d.success === false) return cb('');
       var prov = (d.region || '').toLowerCase().replace(/\s*(sheng|province|auto autonomous|region)\s*/g, '').trim();
       var provCn = provinceMap[prov] || d.region || '';
-      var city = d.city || '';
-      var isp = (d.connection && d.connection.isp) || '';
-      var loc = (provCn ? provCn + ' ' : '') + city + (isp ? ' ' + isp : '');
+      var cityCn = cnCity(d.city || '');
+      var org = (d.connection && d.connection.org) || (d.connection && d.connection.isp) || '';
+      var loc = (provCn ? provCn + ' ' : '') + cityCn + (org ? ' ' + org : '');
       loc = loc.trim();
       if (loc) {
         ipLocCache[ip] = loc;
@@ -1286,6 +1326,7 @@
       if (r.code === 0) {
         localStorage.setItem(QW_NICK, nick);
         showSetMsg('昵称已修改', true);
+        logAction('改昵称', '昵称改为: ' + nick);
         setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
       } else showSetMsg(r.message || '修改失败', false);
     }).catch(function(){ setBtnRestore(btn, '保存昵称'); showSetMsg('网络错误', false); });
@@ -1354,6 +1395,7 @@
       setBtnRestore(btn, '保存密码');
       if (r.code === 0) {
         showSetMsg('密码已修改', true);
+        logAction('改密码', '密码已修改');
         setTimeout(closeSettings, 800);
       } else showSetMsg(r.message || '修改失败', false);
     }).catch(function(){ setBtnRestore(btn, '保存密码'); showSetMsg('网络错误', false); });
@@ -1374,6 +1416,7 @@
       if (r.code === 0) {
         localStorage.setItem(QW_EMAIL, ne);
         showSetMsg('邮箱已修改', true);
+        logAction('改邮箱', '邮箱改为: ' + ne);
         setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
       } else showSetMsg(r.message || '修改失败', false);
     }).catch(function(){ setBtnRestore(btn, '保存邮箱'); showSetMsg('网络错误', false); });
