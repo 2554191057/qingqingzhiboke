@@ -291,26 +291,37 @@
     '<div class="qw-login-bar"><div class="qw-lb-text"><h4>身份验证</h4><p>昵称和头像使用你的邮箱公开资料</p></div><div class="qw-lb-right"><p>登录后才可以发送消息</p><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div></div></div>' +
     '</div></div>' +
     /* 访客登录弹窗 */
-    '<div id="qw-settings-modal" class="qw-settings-modal">' +
-    '<div class="qw-settings-panel" style="position:relative">' +
-    '<div class="qw-close-x" id="qw-settings-close-x" style="position:absolute;top:10px;right:14px;cursor:pointer;font-size:18px;line-height:1;color:#888;user-select:none;">&times;</div>' +
-    '<h3>账号设置</h3><p class="qw-set-sub">修改昵称、密码或邮箱</p>' +
-    '<input type="text" id="qw-set-nick" placeholder="新昵称" maxlength="20" autocomplete="off" value="">' +
-    '<input type="password" id="qw-set-old-pwd" placeholder="当前密码（验证身份）">' +
-    '<div class="qw-set-row"><button class="qw-set-cancel" id="qw-set-nick-cancel">关闭</button><button class="qw-set-save" id="qw-set-nick-save">改昵称</button></div>' +
-    '<div class="qw-set-section">' +
-    '<input type="password" id="qw-set-new-pwd1" placeholder="新密码">' +
-    '<input type="password" id="qw-set-new-pwd2" placeholder="确认新密码">' +
-    '<input type="password" id="qw-set-pwd-pwd" placeholder="当前密码">' +
-    '<div class="qw-set-row"><button class="qw-set-cancel" id="qw-set-pwd-cancel">关闭</button><button class="qw-set-save" id="qw-set-pwd-save">改密码</button></div>' +
+    '<div id="qw-settings-modal" class="qw-login-backdrop">' +
+    '<div class="qw-login-panel">' +
+    '<div class="qw-login-head">' +
+    '<div class="qw-login-logo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>' +
+    '<h3>账号设置</h3><p>修改昵称、密码或邮箱</p>' +
     '</div>' +
-    '<div class="qw-set-section">' +
-    '<input type="email" id="qw-set-new-email" placeholder="新邮箱">' +
-    '<input type="password" id="qw-set-email-pwd" placeholder="当前密码">' +
-    '<div class="qw-set-row"><button class="qw-set-cancel" id="qw-set-email-cancel">关闭</button><button class="qw-set-save" id="qw-set-email-save">改邮箱</button></div>' +
+    '<div class="qw-login-tabs">' +
+    '<button type="button" class="qw-login-tab qw-active" id="qw-set-tab-nick" data-set="nick">改昵称</button>' +
+    '<button type="button" class="qw-login-tab" id="qw-set-tab-pwd" data-set="pwd">改密码</button>' +
+    '<button type="button" class="qw-login-tab" id="qw-set-tab-email" data-set="email">改邮箱</button>' +
     '</div>' +
-    '<p class="qw-set-msg" id="qw-set-msg"></p>' +
-    '</div></div>' +
+    '<div class="qw-login-body">' +
+    '<div class="qw-login-x" id="qw-settings-close-x" style="position:absolute;top:14px;right:16px;cursor:pointer;font-size:18px;line-height:1;color:var(--jp-muted);user-select:none;z-index:3;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s ease;">&times;</div>' +
+    '<div class="qw-set-pane" id="qw-set-pane-nick">' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><input type="text" id="qw-set-nick" placeholder="新昵称" maxlength="20" autocomplete="off"></div>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-old-pwd" placeholder="当前密码（验证身份）"></div>' +
+    '<button class="qw-submit" id="qw-set-nick-save" style="margin-top:6px">保存昵称</button>' +
+    '</div>' +
+    '<div class="qw-set-pane" id="qw-set-pane-pwd" style="display:none">' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd1" placeholder="新密码（至少4位）"></div>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd2" placeholder="确认新密码"></div>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-pwd-pwd" placeholder="当前密码"></div>' +
+    '<button class="qw-submit" id="qw-set-pwd-save" style="margin-top:6px">保存密码</button>' +
+    '</div>' +
+    '<div class="qw-set-pane" id="qw-set-pane-email" style="display:none">' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><input type="email" id="qw-set-new-email" placeholder="新邮箱"></div>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-email-pwd" placeholder="当前密码"></div>' +
+    '<button class="qw-submit" id="qw-set-email-save" style="margin-top:6px">保存邮箱</button>' +
+    '</div>' +
+    '<p class="qw-login-msg" id="qw-set-msg"></p>' +
+    '</div></div></div>' +
     '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
     '<div class="qw-login-panel">' +
     '<div class="qw-login-head">' +
@@ -1038,8 +1049,17 @@
   var setMsg = document.getElementById('qw-set-msg');
   function showSetMsg(text, ok) {
     setMsg.textContent = text;
-    setMsg.className = 'qw-set-msg ' + (ok ? 'qw-set-ok' : 'qw-set-err');
+    setMsg.className = 'qw-login-msg' + (ok ? ' qw-ok' : '');
   }
+  function setTab(tabName) {
+    var tabs = document.querySelectorAll('#qw-settings-modal .qw-login-tab');
+    var panes = document.querySelectorAll('#qw-settings-modal .qw-set-pane');
+    tabs.forEach(function(t){ t.classList.toggle('qw-active', t.getAttribute('data-set') === tabName); });
+    panes.forEach(function(p){ p.style.display = p.id === 'qw-set-pane-' + tabName ? 'block' : 'none'; });
+  }
+  document.querySelectorAll('#qw-settings-modal .qw-login-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){ setTab(tab.getAttribute('data-set')); });
+  });
   function openSettings() {
     var v = getVisitor();
     document.getElementById('qw-set-nick').value = '';
@@ -1050,15 +1070,13 @@
     document.getElementById('qw-set-new-email').value = '';
     document.getElementById('qw-set-email-pwd').value = '';
     setMsg.textContent = '';
+    setTab('nick');
     settingsModal.classList.add('qw-open');
   }
   function closeSettings() { settingsModal.classList.remove('qw-open'); }
   document.getElementById('qw-settings-btn').addEventListener('click', openSettings);
   settingsModal.addEventListener('click', function(e) { if (e.target === settingsModal) closeSettings(); });
   document.getElementById('qw-settings-close-x').addEventListener('click', closeSettings);
-  document.getElementById('qw-set-nick-cancel').addEventListener('click', closeSettings);
-  document.getElementById('qw-set-pwd-cancel').addEventListener('click', closeSettings);
-  document.getElementById('qw-set-email-cancel').addEventListener('click', closeSettings);
   function setBtnLoading(btn, text) { btn.disabled = true; btn.textContent = text; }
   function setBtnRestore(btn, text) { btn.disabled = false; btn.textContent = text; }
   // 改昵称
