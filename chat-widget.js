@@ -459,7 +459,6 @@
         }
       }
     });
-    });
   }
   // Twikoo 评论加载后执行
   var _origOnCommentLoaded = window.twikoo && window.twikoo.onCommentLoaded;
