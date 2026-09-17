@@ -109,6 +109,12 @@
 .navbar-nav .nav-item.active::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#3b82f6;}
 [data-theme="dark"] .navbar-nav .nav-item:hover{background:rgba(255,255,255,.10)!important;}
 </style>
+<style>
+#themeToggle .icon-sun{display:none!important;}
+#themeToggle .icon-moon{display:inline-block!important;}
+[data-theme="dark"] #themeToggle .icon-sun{display:inline-block!important;}
+[data-theme="dark"] #themeToggle .icon-moon{display:none!important;}
+</style>
 </head>
 <body>
     <!-- ========== 顶部导航 ========== -->
