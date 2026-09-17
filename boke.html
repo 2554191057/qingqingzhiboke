@@ -664,17 +664,15 @@ window.addEventListener('load', function() {
 </script>
 
 <style>
-/* 隐藏右下角聊天室悬浮按钮 */
-.qw-launcher { display: none !important; }
-/* 展开人物按钮（点收起后显示） */
+/* 展开人物按钮 */
 #waifu-toggle {
-  background: linear-gradient(135deg, #1093c3, #4866db) !important;
+  background: rgba(20,30,48,.9) !important;
   color: #fff !important;
-  border: none !important;
+  border: 1px solid rgba(16,147,195,.5) !important;
   border-radius: 12px !important;
   padding: 8px 16px !important;
   font-size: 13px !important;
-  box-shadow: 0 4px 20px rgba(16,147,195,.4) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4) !important;
   bottom: 20px !important;
   right: 20px !important;
   left: auto !important;
@@ -683,6 +681,21 @@ window.addEventListener('load', function() {
   width: auto !important;
 }
 #waifu-toggle span { writing-mode: horizontal-tb !important; }
+/* 工具条深色圆角卡片 */
+#waifu-tool {
+  background: rgba(20,30,48,.85) !important;
+  border-radius: 14px !important;
+  padding: 6px 8px !important;
+  backdrop-filter: blur(10px) !important;
+  left: 0 !important;
+  top: auto !important;
+  bottom: 10px !important;
+  display: flex !important;
+  gap: 4px !important;
+}
+#waifu-tool button { background: transparent !important; border: none !important; padding: 4px !important; }
+#waifu-tool button svg { fill: #94a3b8 !important; }
+#waifu-tool button:hover svg { fill: #38bdf8 !important; }
 /* 看板娘展开/收起动画 */
 #waifu { transition: bottom .6s cubic-bezier(.2,.8,.3,1.2), opacity .4s !important; }
 #waifu.waifu-in { animation: waifuRise .6s cubic-bezier(.2,.8,.3,1.2); }
