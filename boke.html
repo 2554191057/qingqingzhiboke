@@ -399,7 +399,7 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
             <a href="wangpan.html#resources" class="nav-item"><i class="fa-solid fa-cloud-arrow-down"></i><span>资源</span></a>
             <a href="fklts.html" class="nav-item"><i class="fa-solid fa-comments"></i><span>聊天室</span></a>
         </nav>
-        <button class="hamburger-btn" id="hamburgerBtn" aria-label="快速导航" title="快速导航"><i class="fa-solid fa-bars"></i><span class="hamburger-label">快速导航</span></button>
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="快速导航" title="快速导航"><span class="hamburger-label">快速导航</span></button>
         <button id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式"><i class="fa-solid fa-moon icon-moon"></i><i class="fa-solid fa-sun icon-sun"></i></button>
         
     </div>
@@ -967,13 +967,7 @@ document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
   });
 });
 </script>
-<script>
-fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
-  method: 'POST',
-  headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify({event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer})
-}).catch(()=>{});
-</script>
+
 </body>
 </html>
 
