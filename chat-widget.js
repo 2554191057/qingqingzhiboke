@@ -306,18 +306,23 @@
     '<div class="qw-login-x" id="qw-settings-close-x" style="position:absolute;top:14px;right:16px;cursor:pointer;font-size:18px;line-height:1;color:var(--jp-muted);user-select:none;z-index:3;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s ease;">&times;</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-nick">' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><input type="text" id="qw-set-nick" placeholder="新昵称" maxlength="20" autocomplete="off"></div>' +
-    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-old-pwd" placeholder="当前密码（验证身份）"></div>' +
     '<button class="qw-submit" id="qw-set-nick-save" style="margin-top:6px">保存昵称</button>' +
     '</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-pwd" style="display:none">' +
+    '<div style="display:flex;gap:6px;margin-bottom:10px">' +
+    '<button type="button" class="qw-login-tab qw-active" id="qw-pwd-mode-old" data-pwdmode="old" style="flex:1;font-size:12px;padding:7px 0">旧密码验证</button>' +
+    '<button type="button" class="qw-login-tab" id="qw-pwd-mode-code" data-pwdmode="code" style="flex:1;font-size:12px;padding:7px 0">邮箱验证码重置</button>' +
+    '</div>' +
+    '<div class="qw-login-field" id="qw-pwd-old-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-pwd-old-pwd" placeholder="当前密码"></div>' +
+    '<div class="qw-login-field" id="qw-pwd-code-field" style="display:none"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><div style="display:flex;gap:6px"><input type="text" id="qw-set-pwd-code" placeholder="邮箱验证码" style="flex:1;padding-left:11px"><button type="button" class="qw-send-code" id="qw-set-pwd-sendcode">发码</button></div></div>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd1" placeholder="新密码（至少4位）"></div>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd2" placeholder="确认新密码"></div>' +
-    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-pwd-pwd" placeholder="当前密码"></div>' +
     '<button class="qw-submit" id="qw-set-pwd-save" style="margin-top:6px">保存密码</button>' +
     '</div>' +
     '<div class="qw-set-pane" id="qw-set-pane-email" style="display:none">' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><div style="display:flex;gap:6px"><input type="text" id="qw-set-email-oldcode" placeholder="原邮箱验证码" style="flex:1;padding-left:11px"><button type="button" class="qw-send-code" id="qw-set-email-sendold">发码</button></div></div>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><input type="email" id="qw-set-new-email" placeholder="新邮箱"></div>' +
-    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-email-pwd" placeholder="当前密码"></div>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span><div style="display:flex;gap:6px"><input type="text" id="qw-set-email-newcode" placeholder="新邮箱验证码" style="flex:1;padding-left:11px"><button type="button" class="qw-send-code" id="qw-set-email-sendnew">发码</button></div></div>' +
     '<button class="qw-submit" id="qw-set-email-save" style="margin-top:6px">保存邮箱</button>' +
     '</div>' +
     '<p class="qw-login-msg" id="qw-set-msg"></p>' +
@@ -1063,12 +1068,13 @@
   function openSettings() {
     var v = getVisitor();
     document.getElementById('qw-set-nick').value = '';
-    document.getElementById('qw-set-old-pwd').value = '';
     document.getElementById('qw-set-new-pwd1').value = '';
     document.getElementById('qw-set-new-pwd2').value = '';
-    document.getElementById('qw-set-pwd-pwd').value = '';
+    document.getElementById('qw-set-pwd-old-pwd').value = '';
+    document.getElementById('qw-set-pwd-code').value = '';
     document.getElementById('qw-set-new-email').value = '';
-    document.getElementById('qw-set-email-pwd').value = '';
+    document.getElementById('qw-set-email-oldcode').value = '';
+    document.getElementById('qw-set-email-newcode').value = '';
     setMsg.textContent = '';
     setTab('nick');
     settingsModal.classList.add('qw-open');
@@ -1079,64 +1085,102 @@
   document.getElementById('qw-settings-close-x').addEventListener('click', closeSettings);
   function setBtnLoading(btn, text) { btn.disabled = true; btn.textContent = text; }
   function setBtnRestore(btn, text) { btn.disabled = false; btn.textContent = text; }
-  // 改昵称
+  // 改昵称：不需要密码
   document.getElementById('qw-set-nick-save').addEventListener('click', function() {
     var v = getVisitor();
     var nick = document.getElementById('qw-set-nick').value.trim();
-    var pwd = document.getElementById('qw-set-old-pwd').value;
     if (!nick) { showSetMsg('请输入新昵称', false); return; }
-    if (!pwd) { showSetMsg('请输入当前密码', false); return; }
     var btn = this; setBtnLoading(btn, '保存中…');
     fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ event:'QW_USER_UPDATE', email: v.email, oldPassword: pwd, newNick: nick })
+      body: JSON.stringify({ event:'QW_USER_UPDATE', email: v.email, newNick: nick })
     }).then(function(r){return r.json();}).then(function(r){
-      setBtnRestore(btn, '改昵称');
+      setBtnRestore(btn, '保存昵称');
       if (r.code === 0) {
         localStorage.setItem(QW_NICK, nick);
         showSetMsg('昵称已修改', true);
         setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
       } else showSetMsg(r.message || '修改失败', false);
-    }).catch(function(){ setBtnRestore(btn, '改昵称'); showSetMsg('网络错误', false); });
+    }).catch(function(){ setBtnRestore(btn, '保存昵称'); showSetMsg('网络错误', false); });
   });
-  // 改密码
+  // 改密码：旧密码 / 邮箱验证码 两种方式切换
+  var pwdMode = 'old';
+  document.querySelectorAll('#qw-settings-modal [data-pwdmode]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      pwdMode = btn.getAttribute('data-pwdmode');
+      document.querySelectorAll('#qw-settings-modal [data-pwdmode]').forEach(function(b){ b.classList.toggle('qw-active', b === btn); });
+      document.getElementById('qw-pwd-old-field').style.display = pwdMode === 'old' ? 'block' : 'none';
+      document.getElementById('qw-pwd-code-field').style.display = pwdMode === 'code' ? 'block' : 'none';
+    });
+  });
+  // 改密码：发 reset 验证码
+  function bindSendCode(btnId, emailVal, type, msgEl) {
+    var btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      var email = typeof emailVal === 'function' ? emailVal() : emailVal;
+      if (!email || email.indexOf('@') < 0) { showSetMsg('请先填邮箱', false); return; }
+      btn.disabled = true; var s = 60;
+      btn.textContent = s + 's';
+      var timer = setInterval(function(){
+        s--; if (s <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = '发码'; }
+        else btn.textContent = s + 's';
+      }, 1000);
+      fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ event:'QW_SEND_CODE', email: email, type: type })
+      }).then(function(r){return r.json();}).then(function(r){
+        showSetMsg(r.code === 0 ? '验证码已发送' : (r.message || '发送失败'), r.code === 0);
+      }).catch(function(){ showSetMsg('网络错误', false); });
+    });
+  }
+  var v0 = getVisitor();
+  bindSendCode('qw-set-pwd-sendcode', function(){ return getVisitor().email; }, 'reset');
+  bindSendCode('qw-set-email-sendold', function(){ return getVisitor().email; }, 'changeemail');
+  bindSendCode('qw-set-email-sendnew', function(){ return document.getElementById('qw-set-new-email').value.trim(); }, 'register');
   document.getElementById('qw-set-pwd-save').addEventListener('click', function() {
     var v = getVisitor();
     var p1 = document.getElementById('qw-set-new-pwd1').value;
     var p2 = document.getElementById('qw-set-new-pwd2').value;
-    var pwd = document.getElementById('qw-set-pwd-pwd').value;
     if (!p1 || p1.length < 4) { showSetMsg('新密码至少4位', false); return; }
     if (p1 !== p2) { showSetMsg('两次密码不一致', false); return; }
-    if (!pwd) { showSetMsg('请输入当前密码', false); return; }
+    var body = { event:'QW_USER_UPDATE', email: v.email, newPassword: p1 };
+    if (pwdMode === 'old') {
+      var oldP = document.getElementById('qw-set-pwd-old-pwd').value;
+      if (!oldP) { showSetMsg('请输入当前密码', false); return; }
+      body.oldPassword = oldP;
+    } else {
+      var code = document.getElementById('qw-set-pwd-code').value.trim();
+      if (!code) { showSetMsg('请输入邮箱验证码', false); return; }
+      body.code = code;
+    }
     var btn = this; setBtnLoading(btn, '保存中…');
-    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ event:'QW_USER_UPDATE', email: v.email, oldPassword: pwd, newPassword: p1 })
-    }).then(function(r){return r.json();}).then(function(r){
-      setBtnRestore(btn, '改密码');
+    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) })
+    .then(function(r){return r.json();}).then(function(r){
+      setBtnRestore(btn, '保存密码');
       if (r.code === 0) {
-        localStorage.setItem('qw_user_pwd', p1);
         showSetMsg('密码已修改', true);
         setTimeout(closeSettings, 800);
       } else showSetMsg(r.message || '修改失败', false);
-    }).catch(function(){ setBtnRestore(btn, '改密码'); showSetMsg('网络错误', false); });
+    }).catch(function(){ setBtnRestore(btn, '保存密码'); showSetMsg('网络错误', false); });
   });
-  // 改邮箱
+  // 改邮箱：旧邮箱验证码 + 新邮箱验证码
   document.getElementById('qw-set-email-save').addEventListener('click', function() {
     var v = getVisitor();
     var ne = document.getElementById('qw-set-new-email').value.trim();
-    var pwd = document.getElementById('qw-set-email-pwd').value;
-    if (!ne || ne.indexOf('@') < 0) { showSetMsg('请输入有效邮箱', false); return; }
-    if (!pwd) { showSetMsg('请输入当前密码', false); return; }
+    var oc = document.getElementById('qw-set-email-oldcode').value.trim();
+    var nc = document.getElementById('qw-set-email-newcode').value.trim();
+    if (!ne || ne.indexOf('@') < 0) { showSetMsg('请输入有效新邮箱', false); return; }
+    if (!oc || !nc) { showSetMsg('请输入两个邮箱的验证码', false); return; }
     var btn = this; setBtnLoading(btn, '保存中…');
     fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ event:'QW_CHANGE_EMAIL', email: v.email, newEmail: ne, password: pwd })
+      body: JSON.stringify({ event:'QW_CHANGE_EMAIL', email: v.email, newEmail: ne, oldCode: oc, newCode: nc })
     }).then(function(r){return r.json();}).then(function(r){
-      setBtnRestore(btn, '改邮箱');
+      setBtnRestore(btn, '保存邮箱');
       if (r.code === 0) {
         localStorage.setItem(QW_EMAIL, ne);
         showSetMsg('邮箱已修改', true);
         setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
       } else showSetMsg(r.message || '修改失败', false);
-    }).catch(function(){ setBtnRestore(btn, '改邮箱'); showSetMsg('网络错误', false); });
+    }).catch(function(){ setBtnRestore(btn, '保存邮箱'); showSetMsg('网络错误', false); });
   });
   // 管理员面板只能点 X 关闭（不响应 Esc 和遮罩点击）
 
