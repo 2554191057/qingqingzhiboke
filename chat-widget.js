@@ -98,6 +98,8 @@
     '.qw-body #twikoo .qw-img-btn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;background:var(--jp-glow);border-radius:7px;cursor:pointer;color:var(--jp-muted);flex-shrink:0;}',
     '.qw-body #twikoo .qw-img-btn:hover{color:var(--jp-accent);}',
     '.qw-body #twikoo .qw-img-btn input{display:none;}',
+    '.qw-body #twikoo .tk-none{display:none!important;}',
+    '.qw-body #twikoo .tk-comments-container:empty{display:none!important;}',
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
     /* Twikoo 原生回复提示条隐藏（用自绘 .qw-reply-bar 替代） */
@@ -789,12 +791,13 @@
       chatRefreshBtn.classList.add('qw-spinning');
       var tcomment = document.getElementById('tcomment');
       if (tcomment) {
-        var oldHtml = tcomment.innerHTML;
         tcomment.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--jp-muted);font-size:13px;">正在刷新聊天数据…</div>';
       }
-      if (window.twikoo) {
-        window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
-      }
+      setTimeout(function() {
+        if (window.twikoo) {
+          window.twikoo.init({ envId: 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', el: '#tcomment', path: 'chat', lang: 'zh-CN' });
+        }
+      }, 600);
       setTimeout(function(){ chatRefreshBtn.classList.remove('qw-spinning'); }, 2000);
     });
   }
