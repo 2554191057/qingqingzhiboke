@@ -293,7 +293,8 @@
     '<p class="qw-set-msg" id="qw-set-msg"></p>' +
     '</div></div>' +
     '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
-    '<div class="qw-login-panel">' +
+    '<div class="qw-login-panel" style="position:relative">' +
+    '<div class="qw-login-x" id="qw-login-x" style="position:absolute;top:10px;right:14px;cursor:pointer;font-size:18px;line-height:1;color:#888;user-select:none;z-index:2;">&times;</div>' +
     '<h3 id="qw-login-title">登录发言</h3><p id="qw-login-sub">已有账号？输入邮箱或昵称和密码登录</p>' +
     '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20" style="display:none">' +
     '<input type="text" id="qw-login-email" placeholder="邮箱或昵称">' +
@@ -648,6 +649,8 @@
   if (loginBarBtn) loginBarBtn.addEventListener('click', openLogin);
   var loginSubmit = document.getElementById('qw-login-submit');
   if (loginSubmit) loginSubmit.addEventListener('click', doLogin);
+  var loginCloseBtn = document.getElementById('qw-login-x');
+  if (loginCloseBtn) loginCloseBtn.addEventListener('click', closeLogin);
   var loginClose = document.querySelector('#qw-login-backdrop .qw-login-panel');
   if (loginClose) loginClose.addEventListener('click', function (e) { e.stopPropagation(); });
   document.getElementById('qw-login-backdrop').addEventListener('click', function(e){ if(e.target.id==='qw-login-backdrop') closeLogin(); });
@@ -1046,7 +1049,7 @@
   // 管理员面板只能点 X 关闭（不响应 Esc 和遮罩点击）
 
   // 赞/踩操作：赞与踩互斥自动切换（已赞点踩=取消赞变踩，反之亦然）；再点同一个=取消；持久高亮
-  document.addEventListener('click', true, function (e) {
+  document.addEventListener('click', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('.qw-body #twikoo .tk-comment .tk-action-link') : null;
     if (!btn) return;
     var comment = btn.closest('.tk-comment');
