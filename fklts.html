@@ -157,6 +157,17 @@ document.addEventListener('selectstart', e => {
   .hamburger-btn{display:none!important;}
   .navbar-nav{display:flex!important;}
 }
+</style><style>
+/* Force navbar buttons to be visible */
+#themeToggle{display:flex!important;visibility:visible!important;opacity:1!important;position:static!important;}
+.hamburger-btn{display:none!important;visibility:visible!important;}
+@media(max-width:900px){
+  .hamburger-btn{display:flex!important;}
+  #themeToggle{display:flex!important;}
+}
+@media(min-width:901px){
+  .hamburger-btn{display:none!important;}
+}
 </style></head>
 <body>
     <!-- ========== 顶部导航 ========== -->
