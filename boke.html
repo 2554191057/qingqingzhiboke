@@ -666,16 +666,8 @@ window.addEventListener('load', function() {
 <style>
 /* 隐藏右下角聊天室悬浮按钮 */
 .qw-launcher { display: none !important; }
-/* 展开人物按钮 */
-#waifu-toggle {
-  background: linear-gradient(135deg, rgba(16,147,195,.9), rgba(72,102,219,.9)) !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 12px !important;
-  padding: 8px 16px !important;
-  font-size: 13px !important;
-  box-shadow: 0 4px 20px rgba(16,147,195,.4) !important;
-}
+/* 进入网站直接显示看板娘，不显示展开按钮 */
+#waifu-toggle { display: none !important; }
 /* 看板娘展开/收起动画 */
 #waifu { transition: bottom .6s cubic-bezier(.2,.8,.3,1.2), opacity .4s !important; }
 #waifu.waifu-in { animation: waifuRise .6s cubic-bezier(.2,.8,.3,1.2); }
