@@ -350,6 +350,7 @@
         lang: 'zh-CN',
         requiredMeta: ['nick', 'mail'],
         onCommentLoaded: function () { scheduleMark(); }
+        ,onCommentSubmit: function (e) { try { logAction('发言', '内容:' + String((e && e.comment) || '').slice(0, 50)); } catch (ex) {} }
       });
     } catch (e) { twikooInited = false; }
   }
@@ -610,6 +611,7 @@
   }
   function openChat() {
     backdrop.classList.add('qw-open');
+    logAction('访问聊天室', '打开聊天室');
     document.body.style.overflow = 'hidden';
     loadAssets(function () {
       initTwikoo();
