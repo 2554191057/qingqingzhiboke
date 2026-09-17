@@ -1149,7 +1149,7 @@
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
         var tstr = new Date(lg.time).toLocaleString('zh-CN');
-        h += '<div class="qw-log-item">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + ' · ' + parseUa(lg.ua) + '</span></div>';
+        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除这条日志" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button></div>';
       }
     }
     return h + '</div>';
@@ -1252,6 +1252,20 @@
     var btns = document.querySelectorAll('#qw-log-section [data-act="set-logcat"]');
     btns.forEach(function(b){
       b.addEventListener('click', function(){ handleSetLogCat(b.getAttribute('data-cat') || 'all'); });
+    });
+    document.querySelectorAll('#qw-log-section [data-act="del-log"]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-id');
+        if (!id) return;
+        adminPost({ event: 'QW_LOG_DELETE', accessToken: adminToken, id: id }).then(function (r) {
+          if (r && r.code === 0) {
+            var row = btn.closest('.qw-log-item');
+            if (row) row.parentNode.removeChild(row);
+          } else {
+            alert((r && r.message) || '删除失败');
+          }
+        });
+      });
     });
   }
 
