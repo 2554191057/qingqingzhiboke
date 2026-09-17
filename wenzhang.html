@@ -155,6 +155,12 @@ document.addEventListener('selectstart', e => {
   if(!e.target.closest('.quote-text, .hitokoto-text, .hitokoto-content, .live2d-quote')) e.preventDefault();
 });
 </script>
+<style>
+.navbar .nav-container { display: flex !important; align-items: center !important; position: relative !important; }
+.navbar .logo, .navbar-brand { margin-left: 0 !important; padding-left: 0 !important; }
+.navbar-nav { position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; }
+.theme-toggle { margin-left: auto !important; }
+</style>
 </head>
 <body>
 
