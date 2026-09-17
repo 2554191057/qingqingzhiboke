@@ -165,6 +165,8 @@
     '.qw-body #twikoo .tk-comment .tk-nick{display:block!important;margin:0 0 3px!important;padding:0 4px!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-nick{text-align:right!important;}',
     '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-row .tk-nick,.qw-body #twikoo .tk-comment .tk-row-head .tk-nick,.qw-body #twikoo .tk-comment .tk-head .tk-nick{display:none!important;}',
+    '.qw-body #twikoo .tk-comment .tk-row .tk-mail,.qw-body #twikoo .tk-comment .tk-row-head .tk-mail{display:inline!important;}',
     /* 昵称/操作移走后，头部行只余隐藏时间，直接隐藏 */
     '.qw-body #twikoo .tk-comment .tk-row{display:none!important;}',
     /* ===== 气泡：自适应宽度 + 小尾巴角标，与头像平齐 ===== */
