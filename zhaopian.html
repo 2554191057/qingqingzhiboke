@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>照片墙 - 庆庆纸天天开心</title>
+<link rel="stylesheet" href="style.css?v=281">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { background: #06111f; color: #e5edff; min-height: 100vh; }
+.gallery-wrap { max-width: 1200px; margin: 80px auto 40px; padding: 20px; }
+.gallery-title { text-align: center; margin-bottom: 30px; }
+.gallery-title h1 { font-size: 32px; color: #fff; margin-bottom: 8px; }
+.gallery-title p { color: rgba(255,255,255,.5); }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+.gallery-item { aspect-ratio: 4/3; border-radius: 12px; overflow: hidden; background: rgba(255,255,255,.05); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.3); font-size: 14px; }
+</style>
+</head>
+<body>
+<header class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="boke.html" class="logo">
+            <span class="logo-icon">🧑‍💻</span>
+            <span class="logo-text">庆庆纸天天开心</span>
+        </a>
+        <nav class="navbar-nav">
+            <a href="boke.html" class="nav-item"><i class="fa-solid fa-house"></i><span>首页</span></a>
+            <a href="boke.html#about" class="nav-item"><i class="fa-solid fa-user"></i><span>关于</span></a>
+            <a href="boke.html#social" class="nav-item"><i class="fa-solid fa-comment-dots"></i><span>联系</span></a>
+            <a href="wenzhang.html" class="nav-item"><i class="fa-solid fa-book-open"></i><span>文章</span></a>
+            <a href="wangpan.html" class="nav-item"><i class="fa-solid fa-cloud-arrow-down"></i><span>资源</span></a>
+            <a href="fklts.html" class="nav-item"><i class="fa-solid fa-comments"></i><span>聊天室</span></a>
+            <a href="zhaopian.html" class="nav-item active"><i class="fa-solid fa-camera-retro"></i><span>照片墙</span></a>
+            <a href="music.html" class="nav-item"><i class="fa-solid fa-music"></i><span>音乐</span></a>
+        </nav>
+    </div>
+</header>
+<div class="gallery-wrap">
+    <div class="gallery-title">
+        <h1>📷 照片墙</h1>
+        <p>记录生活中的美好瞬间</p>
+    </div>
+    <div class="gallery-grid" id="galleryGrid">
+        <div class="gallery-item">照片上传后显示在这里</div>
+    </div>
+</div>
+</body>
+</html>
