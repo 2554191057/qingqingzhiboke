@@ -1060,9 +1060,15 @@
       try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
       try { localStorage.setItem(DK, JSON.stringify(dislikedSet)); } catch (e2) {}
     }
-    // 互斥：已赞时点踩 / 已踩时点赞 = 静默拦截（不提示）；再点同一个 = 取消
-    if (isLike && dislikedSet[id]) { block(e); return; }
-    if (isDislike && likedSet[id]) { block(e); return; }
+    // 互斥：已赞时点踩 = 取消赞变踩；已踩时点赞 = 取消踩变赞；再点同一个 = 取消
+    if (isLike && dislikedSet[id]) {
+      delete dislikedSet[id];
+      dislikeBtn.classList.remove('qw-disliked');
+    }
+    if (isDislike && likedSet[id]) {
+      delete likedSet[id];
+      likeBtn.classList.remove('qw-liked');
+    }
     if (isLike) {
       if (likedSet[id]) {
         // 已赞再点 = 取消赞（放行给 Twikoo toggle）
