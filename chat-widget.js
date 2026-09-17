@@ -295,7 +295,7 @@
     '<div class="qw-login-panel">' +
     '<div class="qw-login-head">' +
     '<div class="qw-login-logo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>' +
-    '<h3>账号设置</h3><p>修改昵称、密码或邮箱</p>' +
+    '<h3 id="qw-set-current-nick">账号设置</h3><p id="qw-set-current-email">修改昵称、密码或邮箱</p>' +
     '</div>' +
     '<div class="qw-login-tabs">' +
     '<button type="button" class="qw-login-tab qw-active" id="qw-set-tab-nick" data-set="nick">改昵称</button>' +
@@ -1073,6 +1073,8 @@
   });
   function openSettings() {
     var v = getVisitor();
+    document.getElementById('qw-set-current-nick').textContent = v.nick || '未设置昵称';
+    document.getElementById('qw-set-current-email').textContent = v.email || '';
     document.getElementById('qw-set-nick').value = '';
     document.getElementById('qw-set-new-pwd1').value = '';
     document.getElementById('qw-set-new-pwd2').value = '';
@@ -1082,6 +1084,9 @@
     document.getElementById('qw-set-email-oldcode').value = '';
     document.getElementById('qw-set-email-newcode').value = '';
     setMsg.textContent = '';
+    // 头部显示当前登录账号
+    var headSub = document.querySelector('#qw-settings-modal .qw-login-head p');
+    if (headSub) headSub.textContent = (v.nick || '未登录') + ' · ' + (v.email || '');
     setTab('nick');
     settingsModal.classList.add('qw-open');
   }
@@ -1463,7 +1468,7 @@
       if (r.code !== 0) { msgEl.textContent = r.message || '操作失败'; return; }
       try {
         localStorage.setItem(QW_NICK, r.data.nick);
-        localStorage.setItem(QW_EMAIL, email);
+        localStorage.setItem(QW_EMAIL, (r.data.email || email).trim().toLowerCase());
         localStorage.setItem('qw_user_pwd', pwd);
       } catch (e) {}
       closeLogin();
