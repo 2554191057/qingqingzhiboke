@@ -163,10 +163,12 @@ if (!sessionStorage.getItem('auth_ok')) {
 [data-theme="dark"] #themeToggle .icon-sun{display:inline;}
 [data-theme="dark"] #themeToggle .icon-moon{display:none;}
 </style>
+
 <style>
 .nav-container{display:flex!important;align-items:center!important;}
-.navbar-nav{flex:1;display:flex!important;align-items:center!important;justify-content:center!important;}
-#themeToggle{margin-left:0!important;}
+.navbar-nav{flex:1;display:flex!important;align-items:center!important;justify-content:center!important;margin-right:48px;}
+#themeToggle{position:absolute;right:20px;top:50%;transform:translateY(-50%);}
+.navbar{position:relative;}
 </style>
 </head>
 <body>
