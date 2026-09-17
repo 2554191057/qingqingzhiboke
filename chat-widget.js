@@ -298,6 +298,10 @@
     '<h3 id="qw-login-title">登录发言</h3><p id="qw-login-sub">已有账号？输入邮箱或昵称和密码登录</p>' +
     '<input type="text" id="qw-login-nick" placeholder="昵称（怎么称呼你）" maxlength="20" style="display:none">' +
     '<input type="text" id="qw-login-email" placeholder="邮箱或昵称">' +
+    '<div id="qw-code-row" style="display:none;gap:6px;margin-bottom:9px">' +
+    '<input type="text" id="qw-login-code" placeholder="邮箱验证码" maxlength="6" style="margin-bottom:0;flex:1">' +
+    '<button id="qw-send-code" type="button" style="width:auto;white-space:nowrap;padding:0 10px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;border:none;border-radius:8px;font-size:11px;cursor:pointer">发送验证码</button>' +
+    '</div>' +
     '<input type="password" id="qw-login-pwd" placeholder="密码">' +
     '<button id="qw-login-submit">登 录</button>' +
     '<p id="qw-login-toggle" style="text-align:center;margin:12px 0 0;font-size:11px;color:var(--jp-accent);cursor:pointer;">没有账号？点击注册</p>' +
@@ -649,6 +653,25 @@
   if (loginBarBtn) loginBarBtn.addEventListener('click', openLogin);
   var loginSubmit = document.getElementById('qw-login-submit');
   if (loginSubmit) loginSubmit.addEventListener('click', doLogin);
+  // 发送邮箱验证码（60s 倒计时）
+  var sendCodeBtn = document.getElementById('qw-send-code');
+  if (sendCodeBtn) sendCodeBtn.addEventListener('click', function () {
+    var email = (document.getElementById('qw-login-email') || {}).value ? document.getElementById('qw-login-email').value.trim() : '';
+    var msgEl = document.getElementById('qw-login-msg');
+    if (!email || email.indexOf('@') < 0) { if (msgEl) msgEl.textContent = '请先输入有效邮箱'; return; }
+    var btn = this;
+    btn.disabled = true; btn.textContent = '发送中…';
+    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ event: 'QW_SEND_CODE', email: email })
+    }).then(function(r){return r.json();}).then(function(r){
+      btn.disabled = false;
+      if (r.code !== 0) { btn.textContent = '发送验证码'; if (msgEl) msgEl.textContent = r.message || '发送失败'; return; }
+      if (msgEl) msgEl.textContent = '验证码已发送，请查收邮箱';
+      var sec = 60; btn.disabled = true; btn.textContent = sec + 's 后重发';
+      var t = setInterval(function(){ sec--; if (sec <= 0) { clearInterval(t); btn.disabled = false; btn.textContent = '发送验证码'; } else btn.textContent = sec + 's 后重发'; }, 1000);
+    }).catch(function(){ btn.disabled = false; btn.textContent = '发送验证码'; if (msgEl) msgEl.textContent = '网络错误，请重试'; });
+  });
   var loginCloseBtn = document.getElementById('qw-login-x');
   if (loginCloseBtn) loginCloseBtn.addEventListener('click', closeLogin);
   var loginClose = document.querySelector('#qw-login-backdrop .qw-login-panel');
@@ -1245,12 +1268,18 @@
     var toggleEl = document.getElementById('qw-login-toggle');
     if (mode === 'register') {
       nickEl.style.display = '';
+      var codeRow = document.getElementById('qw-code-row');
+      if (codeRow) codeRow.style.display = 'flex';
+      var codeInput = document.getElementById('qw-login-code');
+      if (codeInput) codeInput.value = '';
       titleEl.textContent = '注册账号';
       subEl.textContent = '设置昵称、邮箱和密码';
       btnEl.textContent = '注 册';
       toggleEl.textContent = '已有账号？点击登录';
     } else {
       nickEl.style.display = 'none';
+      var codeRow2 = document.getElementById('qw-code-row');
+      if (codeRow2) codeRow2.style.display = 'none';
       titleEl.textContent = '登录发言';
       subEl.textContent = '输入邮箱和密码登录';
       btnEl.textContent = '登 录';
@@ -1284,7 +1313,7 @@
     var btn = document.getElementById('qw-login-submit');
     if (btn) btn.disabled = true;
     var bodyData = { event: 'QW_USER_AUTH', email: email, password: pwd };
-    if (loginMode === 'register') bodyData.nick = nick;
+    if (loginMode === 'register') { bodyData.nick = nick; bodyData.code = (document.getElementById('qw-login-code') || {}).value ? document.getElementById('qw-login-code').value.trim() : ''; }
     fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify(bodyData)
