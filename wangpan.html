@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -173,7 +173,20 @@ document.addEventListener('selectstart', e => {
 .navbar .nav-container { padding-right: 0 !important; }
 #themeToggle { margin-right: 16px !important; }
 </style>
-</head>
+<style>
+@media (max-width: 900px) {
+  .hamburger-btn{display:flex!important;margin-left:0!important;}
+  .navbar-nav{display:none!important;position:fixed!important;top:72px!important;right:12px!important;left:auto!important;transform:none!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;background:rgba(255,255,255,0.96)!important;-webkit-backdrop-filter:blur(20px)!important;backdrop-filter:blur(20px)!important;border:1px solid rgba(0,0,0,0.06)!important;border-radius:16px!important;padding:8px!important;gap:2px!important;min-width:180px!important;box-shadow:0 12px 40px rgba(0,0,0,0.15)!important;z-index:9999!important;}
+  [data-theme="dark"] .navbar-nav{background:rgba(20,30,50,0.96)!important;border-color:rgba(255,255,255,0.08)!important;}
+  .navbar-nav.open{display:flex!important;animation:menuSlideDown .25s cubic-bezier(.16,1,.3,1);}
+  .navbar-nav .nav-item{padding:10px 16px!important;font-size:13px!important;border-radius:10px!important;}
+  .navbar-nav .nav-item.active::after{display:none!important;}
+  .nav-container{justify-content:space-between!important;}
+  #themeToggle{margin-left:auto!important;margin-right:4px!important;}
+  .hamburger-btn{margin-left:0!important;}
+}
+@keyframes menuSlideDown { from { opacity: 0; transform: translateY(-8px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+</style></head>
 <body>
 
 <!-- 全局彩色渐变背景层 -->
@@ -239,6 +252,7 @@ document.addEventListener('selectstart', e => {
             <a href="wangpan.html#resources" class="nav-item"><i class="fa-solid fa-cloud-arrow-down"></i><span>资源</span></a>
             <a href="fklts.html" class="nav-item"><i class="fa-solid fa-comments"></i><span>聊天室</span></a>
             <button id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式"><i class="fa-solid fa-moon icon-moon"></i><i class="fa-solid fa-sun icon-sun"></i></button>
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单"><i class="fa-solid fa-bars"></i></button>
         </nav>
     </div>
 </header>
@@ -473,7 +487,16 @@ window.addEventListener('load', function() {
   });
 })();
 </script>
-</body>
+<script>
+document.getElementById('hamburgerBtn').addEventListener('click', function() {
+  document.getElementById('navbarNav').classList.toggle('open');
+});
+document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    document.getElementById('navbarNav').classList.remove('open');
+  });
+});
+</script></body>
 </html>
 
 
