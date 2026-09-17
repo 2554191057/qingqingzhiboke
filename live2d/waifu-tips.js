@@ -524,6 +524,11 @@
         localStorage.removeItem("waifu-display");
         const el = document.getElementById("waifu");
         el.style.display = "";
+        el.style.bottom = "0";
+        el.style.left = "auto";
+        el.classList.remove("waifu-in");
+        void el.offsetWidth;
+        el.classList.add("waifu-in");
         const pos = localStorage.getItem("waifu-pos");
         if (pos) {
           try {
