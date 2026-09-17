@@ -1036,6 +1036,7 @@
       html += '<button class="qw-admin-logout" data-act="verify-pwd" style="color:var(--jp-accent);text-decoration:none;border:1px solid var(--jp-line);border-radius:8px;">输入管理密码进行操作</button>';
     }
     adminBody.innerHTML = html;
+    enrichIps();
 
     adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-mgmt-item button, .qw-admin-logout, .qw-mgmt-input-row button').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -1137,6 +1138,57 @@
     }
     return h + '</div>';
   }
+  // IP 归属地查询（JSONP 调 pconline，结果缓存本地）
+  var ipLocCache = {};
+  try { ipLocCache = JSON.parse(localStorage.getItem('qw_ip_loc') || '{}'); } catch (e) {}
+  function getIpLocation(ip, cb) {
+    if (!ip || !/^\d+\.\d+\.\d+\.\d+$/.test(ip)) return cb('');
+    if (ipLocCache[ip]) return cb(ipLocCache[ip]);
+    var cbName = 'qw_ipcb_' + Math.random().toString(36).slice(2);
+    var timer = setTimeout(function () {
+      try { delete window[cbName]; } catch (e) {}
+      var s = document.getElementById(cbName); if (s && s.parentNode) s.parentNode.removeChild(s);
+      cb('');
+    }, 5000);
+    window[cbName] = function (data) {
+      clearTimeout(timer);
+      try {
+        var loc = (data.pro || '') + (data.city || '') + (data.isp ? ' ' + data.isp : '');
+        if (loc) {
+          ipLocCache[ip] = loc;
+          try { localStorage.setItem('qw_ip_loc', JSON.stringify(ipLocCache)); } catch (e) {}
+        }
+        cb(loc);
+      } catch (e) { cb(''); }
+      try { delete window[cbName]; } catch (e) {}
+      var s = document.getElementById(cbName); if (s && s.parentNode) s.parentNode.removeChild(s);
+    };
+    var s = document.createElement('script');
+    s.id = cbName;
+    s.src = 'https://whois.pconline.com.cn/ipJson.jsp?ip=' + ip + '&jsonp=' + cbName;
+    document.head.appendChild(s);
+  }
+  // 给管理面板里所有 IP 行补上归属地
+  function enrichIps() {
+    var rows = document.querySelectorAll('#qw-admin-body .qw-log-item, #qw-admin-body .qw-admin-item');
+    rows.forEach(function (it) {
+      if (it.getAttribute('data-ip-done')) return;
+      var sub = it.querySelector('.qw-log-sub') || it.querySelector('.qw-ip');
+      var text = it.innerText || '';
+      var m = text.match(/IP\s*([0-9.]+)/);
+      if (!m) return;
+      it.setAttribute('data-ip-done', '1');
+      var ip = m[1];
+      getIpLocation(ip, function (loc) {
+        if (!loc) return;
+        var target = sub || it;
+        if (target && target.textContent.indexOf(loc) < 0) {
+          var dot = document.createTextNode(' · ' + loc);
+          target.appendChild(dot);
+        }
+      });
+    });
+  }
   // 局部切换日志筛选：只重建日志区块，不重载整个聊天后台
   function handleToggleLog() {
     adminLogFilter = !adminLogFilter;
@@ -1144,6 +1196,7 @@
     if (sec) {
       sec.innerHTML = buildLogHtml(adminLogs);
       bindLogToggle();
+      enrichIps();
     }
   }
   function bindLogToggle() {
