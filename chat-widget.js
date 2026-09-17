@@ -731,6 +731,7 @@
   var adminBackdrop = document.getElementById('qw-admin-backdrop');
   var adminBody = document.getElementById('qw-admin-body');
   var adminToken = '';
+  var adminLogFilter = false; // 操作日志筛选：true=仅账号日志(注册/登录/退出)
   var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
 
   function adminPost(data) {
@@ -928,12 +929,15 @@
         }
       }
       html += '<div class="qw-mgmt-input-row"><input type="text" id="qw-wl-input" placeholder="输入邮箱或昵称加入白名单"><button class="qw-add-wl" data-act="add-wl">添加</button></div></div>';
-      html += '<div class="qw-mgmt-section"><h4>操作日志（最近100条）</h4>';
+      html += '<div class="qw-mgmt-section"><h4 style="display:flex;align-items:center;justify-content:space-between">操作日志（最近100条）' +
+        '<button data-act="toggle-logfilter" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer">' + (adminLogFilter ? '全部日志' : '账号日志') + '</button></h4>';
       if (!logs || !logs.length) {
         html += '<div class="qw-admin-empty" style="padding:10px 0">暂无日志</div>';
       } else {
-        for (var li = 0; li < logs.length; li++) {
-          var lg = logs[li];
+        var logList = adminLogFilter ? logs.filter(function(x){ return ['注册','登录','退出'].indexOf(x.type) >= 0; }) : logs;
+        if (!logList.length) html += '<div class="qw-admin-empty" style="padding:10px 0">暂无账号日志</div>';
+        for (var li = 0; li < logList.length; li++) {
+          var lg = logList[li];
           var tstr = new Date(lg.time).toLocaleString('zh-CN');
           html += '<div class="qw-mgmt-item"><span>' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick||lg.email||'匿名') + ' · ' + escHtml(lg.detail||'') + '</span><small style="display:block;color:var(--jp-muted);font-size:10px">' + escHtml(lg.ip||'') + ' · ' + escHtml((lg.ua||'').slice(0,80)) + '</small></div>';
         }
@@ -946,9 +950,14 @@
     }
     adminBody.innerHTML = html;
 
-    adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-mgmt-item button, .qw-admin-logout, .qw-mgmt-input-row button').forEach(function (btn) {
+    adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-mgmt-item button, .qw-admin-logout, .qw-mgmt-input-row button, [data-act="toggle-logfilter"]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var act = btn.getAttribute('data-act');
+        if (act === 'toggle-logfilter') {
+          adminLogFilter = !adminLogFilter;
+          renderManageView();
+          return;
+        }
         if (act === 'del') {
           var id = btn.getAttribute('data-id');
           if (confirm('确定删除这条评论吗？')) {
@@ -1380,13 +1389,22 @@
       closeLogin();
       refreshLoginUI();
       syncLikesByEmail();
+      try {
+        var act = (r.data && r.data.action) || '';
+        if (act === 'registered') logAction('注册', '新账号注册: ' + nick);
+        else if (act === 'logged_in') logAction('登录', '账号登录: ' + (r.data.nick || nick));
+      } catch (e2) {}
     }).catch(function(){
       if (btn) btn.disabled = false;
       msgEl.textContent = '网络错误，请重试';
     });
   }
   function logout() {
-    try { localStorage.removeItem(QW_NICK); localStorage.removeItem(QW_EMAIL); } catch (e) {}
+    try {
+      var lv = getVisitor();
+      if (lv.nick || lv.email) logAction('退出', '账号退出: ' + (lv.nick || lv.email));
+      localStorage.removeItem(QW_NICK); localStorage.removeItem(QW_EMAIL);
+    } catch (e) {}
     refreshLoginUI();
   }
 
