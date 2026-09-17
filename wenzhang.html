@@ -188,7 +188,7 @@ document.addEventListener('selectstart', e => {
     flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
     background:rgba(255,255,255,0.96)!important;-webkit-backdrop-filter:blur(20px)!important;backdrop-filter:blur(20px)!important;
     border:1px solid rgba(0,0,0,0.06)!important;border-radius:16px!important;
-    padding:8px!important;gap:2px!important;min-width:180px!important;
+    padding:8px!important;gap:2px!important;min-width:0!important;
     box-shadow:0 12px 40px rgba(0,0,0,0.15)!important;z-index:9999!important;
   }
   [data-theme="dark"] .navbar-nav{background:rgba(20,30,50,0.96)!important;border-color:rgba(255,255,255,0.08)!important;}
@@ -532,6 +532,8 @@ document.getElementById('hamburgerBtn').addEventListener('click', function() {
     var r = this.getBoundingClientRect();
     nav.style.top = (r.bottom + 8) + 'px';
     nav.style.right = (window.innerWidth - r.right) + 'px';
+    nav.style.width = r.width + 'px';
+    nav.style.minWidth = r.width + 'px';
     nav.style.left = 'auto';
     nav.style.transform = 'none';
   }

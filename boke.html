@@ -154,7 +154,7 @@ if (!sessionStorage.getItem('auth_ok')) {
   .navbar-nav { display: none !important; position: fixed; top: 60px; left: 0; right: 0; background: var(--color-card, #fff); flex-direction: column; padding: 16px; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 999; }
   .navbar-nav.open { display: flex !important; }
   .hamburger-btn { display: block !important; }
-  .navbar-nav { position: fixed !important; left: 0 !important; transform: none !important; }
+  .navbar-nav { position: fixed !important; transform: none !important; }
 }
 canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
 
@@ -265,8 +265,8 @@ document.addEventListener('selectstart', e => {
 <style>
 .navbar .nav-container { display: flex !important; align-items: center !important; position: relative !important; }
 .navbar .logo, .navbar-brand { margin-left: 0 !important; padding-left: 0 !important; }
-.navbar-nav { position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; }
-@media (max-width: 900px) { .navbar-nav { position: fixed !important; left: 0 !important; transform: none !important; } }
+@media (min-width: 901px) { .navbar-nav { position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; } }
+@media (max-width: 900px) { .navbar-nav { position: fixed !important; transform: none !important; } }
 .theme-toggle { margin-left: auto !important; }
 canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
 
@@ -296,7 +296,7 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
     flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
     background:rgba(255,255,255,0.96)!important;-webkit-backdrop-filter:blur(20px)!important;backdrop-filter:blur(20px)!important;
     border:1px solid rgba(0,0,0,0.06)!important;border-radius:16px!important;
-    padding:8px!important;gap:2px!important;min-width:180px!important;
+    padding:8px!important;gap:2px!important;min-width:0!important;
     box-shadow:0 12px 40px rgba(0,0,0,0.15)!important;z-index:9999!important;
   }
   [data-theme="dark"] .navbar-nav{background:rgba(20,30,50,0.96)!important;border-color:rgba(255,255,255,0.08)!important;}
@@ -966,6 +966,8 @@ document.getElementById('hamburgerBtn').addEventListener('click', function() {
     var r = this.getBoundingClientRect();
     nav.style.top = (r.bottom + 8) + 'px';
     nav.style.right = (window.innerWidth - r.right) + 'px';
+    nav.style.width = r.width + 'px';
+    nav.style.minWidth = r.width + 'px';
     nav.style.left = 'auto';
     nav.style.transform = 'none';
   }
