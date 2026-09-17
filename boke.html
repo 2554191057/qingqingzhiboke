@@ -696,8 +696,8 @@ window.addEventListener('load', function() {
 #waifu-tool button { background: transparent !important; border: none !important; padding: 4px !important; }
 #waifu-tool button svg { fill: #94a3b8 !important; }
 #waifu-tool button:hover svg { fill: #38bdf8 !important; }
-/* 看板娘展开/收起动画 */
-#waifu { transition: bottom .6s cubic-bezier(.2,.8,.3,1.2), opacity .4s !important; }
+/* 看板娘定位右下角 */
+#waifu { right: 0 !important; bottom: 0 !important; left: auto !important; transition: bottom .6s cubic-bezier(.2,.8,.3,1.2), opacity .4s !important; }
 #waifu.waifu-in { animation: waifuRise .6s cubic-bezier(.2,.8,.3,1.2); }
 @keyframes waifuRise {
   from { transform: translateY(60px); opacity: 0; }
