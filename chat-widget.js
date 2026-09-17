@@ -274,6 +274,8 @@
     '.qw-mgmt-item span{color:var(--jp-accent);word-break:break-all;flex:1;}',
     '.qw-mgmt-item button{border:none;background:none;color:var(--jp-muted);font-size:10px;cursor:pointer;text-decoration:underline;padding:2px 6px;}',
     '.qw-mgmt-item button:hover{color:#e05b5b;}',
+    '.qw-log-item{padding:7px 0;border-bottom:1px dashed var(--jp-line);font-size:11px;color:var(--jp-text);line-height:1.5;word-break:break-all;}',
+    '.qw-log-item .qw-log-sub{display:block;color:var(--jp-muted);font-size:10px;line-height:1.4;margin-top:2px;}',
     '.qw-mgmt-input-row{display:flex;gap:6px;margin:8px 0;}',
     '.qw-mgmt-input-row input{flex:1;border:1px solid var(--jp-line);border-radius:7px;background:var(--jp-paper);color:var(--jp-ink);padding:7px 10px;font-size:11px;outline:none;}',
     '.qw-mgmt-input-row input:focus{border-color:var(--jp-accent);}',
@@ -1108,7 +1110,7 @@
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
         var tstr = new Date(lg.time).toLocaleString('zh-CN');
-        h += '<div class="qw-mgmt-item"><span>' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '</span><small style="display:block;color:var(--jp-muted);font-size:10px">' + escHtml(lg.ip || '') + ' · ' + escHtml((lg.ua || '').slice(0, 80)) + '</small></div>';
+        h += '<div class="qw-log-item">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">' + escHtml(lg.ip || '') + ' · ' + escHtml((lg.ua || '').slice(0, 80)) + '</span></div>';
       }
     }
     return h + '</div>';
