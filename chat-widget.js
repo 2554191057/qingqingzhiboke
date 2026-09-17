@@ -226,7 +226,8 @@
     '.qw-admin-panel>header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--jp-line);background:linear-gradient(110deg,var(--jp-glow),transparent);}',
     '.qw-admin-panel h2{margin:0;font-weight:650;font-size:17px;color:var(--jp-ink);}',
     '.qw-admin-panel header p{margin:4px 0 0;font-size:10px;color:var(--jp-muted);}',
-    '.qw-admin-body{padding:18px 20px 20px;overflow-y:auto;flex:1;min-height:0;}',
+    '.qw-admin-body{padding:18px 20px 20px;overflow-y:auto;flex:1;min-height:0;scrollbar-width:none;-ms-overflow-style:none;}
+    .qw-admin-body::-webkit-scrollbar{display:none;}',
     '.qw-admin-form{max-width:320px;margin:40px auto;text-align:center;}',
     '.qw-admin-form .qw-lock{width:58px;height:58px;margin:0 auto 14px;border-radius:50%;background:var(--jp-glow);color:var(--jp-accent);display:flex;align-items:center;justify-content:center;}',
     '.qw-admin-form h3{margin:0 0 6px;font-size:17px;color:var(--jp-ink);}',
