@@ -1,0 +1,45 @@
+/* =========================================================
+ * 全站实时访客统计（2026-09-18 新增）
+ * 自包含注入：左下角"在线访客 · X 人"小标签
+ * 每 20 秒向 Twikoo 后端发心跳(QW_ONLINE_PING)+查询(QW_ONLINE_COUNT)
+ * 在线数 = 最近 2 分钟内有心跳的去重 IP 数（后端 MongoDB 统计）
+ * 样式跟随站点毛玻璃主题（--jp-* 由 chat-widget.js 注入，含后备色）
+ * ========================================================= */
+(function () {
+  if (window.__qwOnlineStats) return; window.__qwOnlineStats = true;
+  var API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
+
+  var style = document.createElement('style');
+  style.textContent =
+    '.qw-os-tag{position:fixed;left:16px;bottom:16px;z-index:90;display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;font-size:12px;line-height:1;color:var(--jp-text,#94a3b8);background:var(--jp-surface,rgba(255,255,255,.85));border:1px solid var(--jp-line,rgba(148,163,184,.28));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 4px 14px rgba(0,0,0,.12);pointer-events:none;user-select:none;opacity:.92;transition:opacity .3s ease;}' +
+    '.qw-os-tag:hover{opacity:1;}' +
+    '.qw-os-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.85);animation:qwOsPulse 2s ease-in-out infinite;}' +
+    '.qw-os-tag b{font-weight:700;color:var(--jp-accent,#0ea5e9);font-size:13px;}' +
+    '@keyframes qwOsPulse{0%,100%{opacity:1;}50%{opacity:.4;}}' +
+    '@media(max-width:640px){.qw-os-tag{left:12px;bottom:14px;padding:6px 11px;font-size:11px;}}';
+  document.head.appendChild(style);
+
+  var el = document.createElement('div');
+  el.className = 'qw-os-tag';
+  el.setAttribute('title', '最近2分钟内的去重访客数（全站心跳统计）');
+  el.innerHTML = '<span class="qw-os-dot"></span>在线访客 <b id="qw-os-count">--</b> 人';
+  document.body.appendChild(el);
+
+  function ping() {
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_ONLINE_PING' }) }).catch(function () {});
+  }
+  function count() {
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_ONLINE_COUNT' }) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && typeof d.count === 'number') {
+          var c = document.getElementById('qw-os-count');
+          if (c) c.textContent = d.count;
+        }
+      })
+      .catch(function () {});
+  }
+  ping();
+  count();
+  setInterval(function () { ping(); count(); }, 20000);
+})();
