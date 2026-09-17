@@ -16,7 +16,7 @@
             50%  { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-    </style>
+    canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
     <style>
         /* 随机热评打字机光标（仿栖光集 DAILY SIGNAL 逐字效果） */
         .hot-comment-text.typing::after {
@@ -31,7 +31,7 @@
             animation: hotCommentBlink 0.8s step-end infinite;
         }
         @keyframes hotCommentBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-    </style>
+    canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
     <!-- 图标字体 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
     <script>
@@ -140,7 +140,7 @@ if (!sessionStorage.getItem('auth_ok')) {
             from { width: 0; opacity: 0; }
             to   { width: 160px; opacity: 1; }
         }
-    </style>
+    canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
 <style>
 .navbar-nav { gap: 4px; align-items: center; flex: 1; justify-content: center; flex-wrap: nowrap; }
 .nav-item { display: flex !important; align-items: center; gap: 6px; color: rgba(255,255,255,.6); text-decoration: none; font-size: 14px; font-weight: 500; padding: 8px 12px; border-radius: 8px; transition: all .2s; position: relative; }
@@ -156,7 +156,7 @@ if (!sessionStorage.getItem('auth_ok')) {
   .hamburger-btn { display: block !important; }
   .navbar-nav { position: fixed !important; left: 0 !important; transform: none !important; }
 }
-</style>
+canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
 
 
 
@@ -224,7 +224,7 @@ if (!sessionStorage.getItem('auth_ok')) {
 [data-theme="dark"] #themeToggle .icon-moon{display:none!important;}
 .logo{text-decoration:none!important;display:flex!important;align-items:center!important;gap:8px!important;}
 .logo-text{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:inherit!important;-webkit-text-fill-color:inherit!important;}
-</style>
+canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
 /* Mobile hamburger menu */
 @media (max-width: 900px) {
   .hamburger-btn{display:flex!important;}
@@ -246,7 +246,7 @@ if (!sessionStorage.getItem('auth_ok')) {
 <style>
 * { -webkit-user-select: none !important; -moz-user-select: none !important; -ms-user-select: none !important; user-select: none !important; }
 .quote-text, .hitokoto-text, .hitokoto-content, .live2d-quote { -webkit-user-select: text !important; -moz-user-select: text !important; user-select: text !important; }
-</style>
+canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
 <script>
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('copy', e => {
@@ -268,20 +268,20 @@ document.addEventListener('selectstart', e => {
 .navbar-nav { position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; }
 @media (max-width: 900px) { .navbar-nav { position: fixed !important; left: 0 !important; transform: none !important; } }
 .theme-toggle { margin-left: auto !important; }
-</style>
+canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
 
 
 <style>
 #themeToggle { margin-right: 0 !important; padding-right: 20px !important; }
 .navbar .nav-container { padding-right: 0 !important; }
-</style>
+canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
 
 <style>
 .navbar { padding-right: 0 !important; }
 .navbar .nav-container { padding-right: 0 !important; }
 #themeToggle { margin-right: 16px !important; }
-</style>
-<style>body{padding-top:84px!important;}</style><style>
+canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
+<style>body{padding-top:84px!important;}canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style><style>
 #themeToggle{display:flex!important;}
 .hamburger-btn{display:none!important;}
 /* Desktop: show nav inline */
@@ -306,7 +306,7 @@ document.addEventListener('selectstart', e => {
   .navbar-nav .nav-item.active::after{display:none!important;}
 }
 @keyframes menuSlideDown{from{opacity:0;transform:translateY(-8px) scale(.95);}to{opacity:1;transform:translateY(0) scale(1);}}
-</style></head>
+canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style></head>
 <body>
 
 <!-- 进入欢迎动画（参考栖光集 WelcomeScreen） -->
@@ -872,7 +872,7 @@ window.addEventListener('load', function() {
   from { transform: translateY(60px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-</style>
+canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }</style>
 
 <script src="js/html2canvas.min.js"></script>
 <script src="js/liquidGL.js"></script>
