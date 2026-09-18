@@ -1303,6 +1303,124 @@
   }
 
   // 复制IP（事件委托，兼容日志区块局部刷新）
+  // ===== 点赞防刷：同一浏览器只能点一次赞（跨窗口共享 localStorage） =====
+  var LK = 'qw_liked_v1';
+  var likedSet = {};
+  try { likedSet = JSON.parse(localStorage.getItem(LK) || '{}'); } catch (e) { likedSet = {}; }
+  // ===== 登录门：未填昵称+邮箱不能发言 =====
+  var QW_NICK_KEY = 'qw_user_nick';
+  var QW_MAIL_KEY = 'qw_user_mail';
+  // ===== 访客登录（邮箱+昵称，localStorage 记住） =====
+  var QW_NICK = 'qw_visitor_nick';
+  var QW_EMAIL = 'qw_visitor_email';
+
+  adminBtn.addEventListener('click', function () {
+    openAdmin();
+  });
+  document.getElementById('qw-logout-btn').addEventListener('click', function () {
+    logout();
+  });
+  // ===== 账号设置弹窗 =====
+  var settingsModal = document.getElementById('qw-settings-modal');
+  var setMsg = document.getElementById('qw-set-msg');
+  document.querySelectorAll('#qw-settings-modal .qw-login-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){ setTab(tab.getAttribute('data-set')); });
+  });
+  document.getElementById('qw-settings-btn').addEventListener('click', openSettings);
+  settingsModal.addEventListener('click', function(e) { if (e.target === settingsModal) closeSettings(); });
+  document.getElementById('qw-settings-close-x').addEventListener('click', closeSettings);
+  // 改昵称：不需要密码
+  document.getElementById('qw-set-nick-save').addEventListener('click', function() {
+    var v = getVisitor();
+    var nick = document.getElementById('qw-set-nick').value.trim();
+    if (!nick) { showSetMsg('请输入新昵称', false); return; }
+    var btn = this; setBtnLoading(btn, '保存中…');
+    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ event:'QW_USER_UPDATE', email: v.email, newNick: nick })
+    }).then(function(r){return r.json();}).then(function(r){
+      setBtnRestore(btn, '保存昵称');
+      if (r.code === 0) {
+        localStorage.setItem(QW_NICK, nick);
+        showSetMsg('昵称已修改', true);
+        logAction('改昵称', '昵称改为: ' + nick);
+        setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
+      } else showSetMsg(r.message || '修改失败', false);
+    }).catch(function(){ setBtnRestore(btn, '保存昵称'); showSetMsg('网络错误', false); });
+  });
+  // 改密码：旧密码 / 邮箱验证码 切换（通过"忘记密码"链接）
+  var pwdMode = 'old';
+  var forgotBtn = document.getElementById('qw-pwd-forgot');
+  if (forgotBtn) {
+    forgotBtn.addEventListener('click', function() {
+      if (pwdMode === 'old') {
+        pwdMode = 'code';
+        document.getElementById('qw-pwd-old-field').style.display = 'none';
+        document.getElementById('qw-pwd-code-field').style.display = 'block';
+        forgotBtn.textContent = '想起来了？用当前密码修改';
+      } else {
+        pwdMode = 'old';
+        document.getElementById('qw-pwd-old-field').style.display = 'block';
+        document.getElementById('qw-pwd-code-field').style.display = 'none';
+        forgotBtn.textContent = '忘记密码？通过邮箱验证码重置';
+      }
+    });
+  }
+  // 改密码/改邮箱：发验证码
+  bindSendCode('qw-set-pwd-sendcode', function(){ return getVisitor().email; }, 'reset');
+  bindSendCode('qw-set-email-sendold', function(){ return getVisitor().email; }, 'changeemail');
+  bindSendCode('qw-set-email-sendnew', function(){ return document.getElementById('qw-set-new-email').value.trim(); }, 'register');
+  document.getElementById('qw-set-pwd-save').addEventListener('click', function() {
+    var v = getVisitor();
+    var p1 = document.getElementById('qw-set-new-pwd1').value;
+    var p2 = document.getElementById('qw-set-new-pwd2').value;
+    if (!p1 || p1.length < 4) { showSetMsg('新密码至少4位', false); return; }
+    if (p1 !== p2) { showSetMsg('两次密码不一致', false); return; }
+    var body = { event:'QW_USER_UPDATE', email: v.email, newPassword: p1 };
+    if (pwdMode === 'old') {
+      var oldP = document.getElementById('qw-set-pwd-old-pwd').value;
+      if (!oldP) { showSetMsg('请输入当前密码', false); return; }
+      body.oldPassword = oldP;
+    } else {
+      var code = document.getElementById('qw-set-pwd-code').value.trim();
+      if (!code) { showSetMsg('请输入邮箱验证码', false); return; }
+      body.code = code;
+    }
+    var btn = this; setBtnLoading(btn, '保存中…');
+    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) })
+    .then(function(r){return r.json();}).then(function(r){
+      setBtnRestore(btn, '保存密码');
+      if (r.code === 0) {
+        showSetMsg('密码已修改', true);
+        logAction('改密码', '密码已修改');
+        setTimeout(closeSettings, 800);
+      } else showSetMsg(r.message || '修改失败', false);
+    }).catch(function(){ setBtnRestore(btn, '保存密码'); showSetMsg('网络错误', false); });
+  });
+  // 改邮箱：旧邮箱验证码 + 新邮箱验证码
+  document.getElementById('qw-set-email-save').addEventListener('click', function() {
+    var v = getVisitor();
+    var ne = document.getElementById('qw-set-new-email').value.trim();
+    var oc = document.getElementById('qw-set-email-oldcode').value.trim();
+    var nc = document.getElementById('qw-set-email-newcode').value.trim();
+    if (!ne || ne.indexOf('@') < 0) { showSetMsg('请输入有效新邮箱', false); return; }
+    if (!oc || !nc) { showSetMsg('请输入两个邮箱的验证码', false); return; }
+    var btn = this; setBtnLoading(btn, '保存中…');
+    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ event:'QW_CHANGE_EMAIL', email: v.email, newEmail: ne, oldCode: oc, newCode: nc })
+    }).then(function(r){return r.json();}).then(function(r){
+      setBtnRestore(btn, '保存邮箱');
+      if (r.code === 0) {
+        localStorage.setItem(QW_EMAIL, ne);
+        showSetMsg('邮箱已修改', true);
+        logAction('改邮箱', '邮箱改为: ' + ne);
+        setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
+      } else showSetMsg(r.message || '修改失败', false);
+    }).catch(function(){ setBtnRestore(btn, '保存邮箱'); showSetMsg('网络错误', false); });
+  });
+
+  var DK = 'qw_disliked_v1';
+  var dislikedSet = {};
+  try { dislikedSet = JSON.parse(localStorage.getItem(DK) || '{}'); } catch (e) { dislikedSet = {}; }
   document.addEventListener('click', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('.qw-log-copy') : null;
     if (!btn) return;
@@ -1523,6 +1641,7 @@
     }
   function setBtnLoading(btn, text) { btn.disabled = true; btn.textContent = text; }
   function setBtnRestore(btn, text) { btn.disabled = false; btn.textContent = text; }
+  var loginMode = 'login'; // 'login' or 'register'
   function setLoginMode(mode) {
     loginMode = mode;
     var nickEl = document.getElementById('qw-login-nick');
