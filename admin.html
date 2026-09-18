@@ -1178,8 +1178,9 @@ function bindActions() {
           if (r && r.code === 0) renderManageView();
           else alert((r && r.message) || '操作失败');
         });
-      } else if (act === 'add-blk') {
-        var blkVal = ((document.getElementById('blkInput') || {}).value || '').trim();
+      } else if (act === 'add-blk' || act === 'chat-add-blk' || act === 'user-add-blk') {
+        var inputId = act === 'chat-add-blk' ? 'chatBlkInput' : (act === 'user-add-blk' ? 'userBlkInput' : 'blkInput');
+        var blkVal = ((document.getElementById(inputId) || {}).value || '').trim();
         if (!blkVal) { alert('请输入邮箱、昵称或 IP'); return; }
         var blkPayload = { event: 'QW_BLOCK_ADD', accessToken: adminToken };
         if (blkVal.indexOf('@') >= 0) blkPayload.mail = blkVal;
