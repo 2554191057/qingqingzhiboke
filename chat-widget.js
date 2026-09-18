@@ -897,6 +897,7 @@
   var adminBody = document.getElementById('qw-admin-body');
   var adminToken = '';
   var adminLogFilter = 'all'; // 日志分类: all/account/interact/other
+  var adminLogSearch = ''; // 日志搜索关键字
   var adminLogs = [];
   var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
 
@@ -1210,6 +1211,23 @@
     var btns = document.querySelectorAll('#qw-log-section [data-act="set-logcat"]');
     btns.forEach(function (b) {
       b.addEventListener('click', function () { handleSetLogCat(b.getAttribute('data-cat') || 'all'); });
+    });
+    function qwRebuildLogSection() {
+      var sec = document.getElementById('qw-log-section');
+      if (sec) { sec.innerHTML = buildLogHtml(adminLogs); bindLogToggle(); enrichIps(); }
+    }
+    var qwSearchBtn = document.querySelector('#qw-log-section [data-act="qw-log-search"]');
+    if (qwSearchBtn) qwSearchBtn.addEventListener('click', function () {
+      var inp = document.getElementById('qw-log-search-input');
+      adminLogSearch = ((inp && inp.value) || '').trim();
+      qwRebuildLogSection();
+    });
+    document.querySelectorAll('#qw-log-section [data-act="qw-log-search-clear"]').forEach(function (b) {
+      b.addEventListener('click', function () { adminLogSearch = ''; qwRebuildLogSection(); });
+    });
+    var qwSearchInput = document.getElementById('qw-log-search-input');
+    if (qwSearchInput) qwSearchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { adminLogSearch = (this.value || '').trim(); qwRebuildLogSection(); }
     });
     function updateSelBtn() {
       var boxes = document.querySelectorAll('#qw-log-section .qw-log-chk');
@@ -1957,8 +1975,18 @@
       h += '<button data-act="set-logcat" data-cat="'+c.key+'" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:'+(adminLogFilter===c.key?'var(--jp-accent)':'transparent')+';color:'+(adminLogFilter===c.key?'#fff':'var(--jp-accent)')+';cursor:pointer">'+c.label+'</button>';
     }
     h += '</div></h4>';
+    h += '<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center">';
+    h += '<input id="qw-log-search-input" type="text" placeholder="搜索日志（昵称/类型/IP/详情/设备）" value="' + escAttr(adminLogSearch) + '" style="flex:1;min-width:120px;padding:3px 9px;font-size:10.5px;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-text);outline:none">';
+    h += '<button data-act="qw-log-search" style="font-size:10.5px;padding:3px 13px;border:1px solid var(--jp-accent);border-radius:6px;background:var(--jp-accent);color:#fff;cursor:pointer">搜索</button>';
+    if (adminLogSearch) h += '<button data-act="qw-log-search-clear" style="font-size:10.5px;padding:3px 9px;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-muted);cursor:pointer">清除</button>';
+    h += '</div>';
+    function qwLogMatch(x, q) {
+      var uap = parseUa(x.ua);
+      return (String(x.nick || '') + ' ' + String(x.email || '') + ' ' + typeCn(x.type) + ' ' + String(x.detail || '') + ' ' + String(x.ip || '') + ' ' + uap).toLowerCase().indexOf(q) >= 0;
+    }
     var logList = (logs || []).slice().sort(function (a, b) { return (b.time || 0) - (a.time || 0); }); // 最新在上
     if (adminLogFilter !== 'all') logList = logList.filter(function(x) { var cat = catMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
+    if (adminLogSearch) logList = logList.filter(function (x) { return qwLogMatch(x, adminLogSearch); });
     h += '<div class="qw-log-toolbar" style="display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap">';
     h += '<button data-act="toggle-all-log" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer">全选</button>';
     h += '<button data-act="del-selected-log" disabled style="font-size:10px;padding:3px 10px;border:1px solid rgba(224,91,91,.45);border-radius:6px;background:transparent;color:#e05b5b;cursor:pointer;opacity:.4">删除选中(0)</button>';

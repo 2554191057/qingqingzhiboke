@@ -232,6 +232,7 @@ var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
 var adminToken = '';
 var adminLogs = [];
 var adminLogFilter = 'all';
+var adminLogSearch = ''; // 日志搜索关键字
 var ipLocCache = {};
 var autoRefreshOn = true;
 var autoRefreshTimer = null;
@@ -754,9 +755,14 @@ function parseUa(ua) {
   return p.dev + (p.br !== '未知浏览器' ? ' · ' + p.br : '');
 }
 // 当前筛选下的日志条数（与 buildLogHtml 过滤逻辑一致：排除 online 快照 + 按分类 tab）
+function logMatch(x, q) {
+  var uap = parseUaParts(x.ua);
+  return (String(x.nick || '') + ' ' + String(x.email || '') + ' ' + typeCn(x.type) + ' ' + String(x.detail || '') + ' ' + String(x.ip || '') + ' ' + uap.dev + ' ' + uap.br).toLowerCase().indexOf(q) >= 0;
+}
 function currentLogCount() {
   var arr = (adminLogs || []).filter(function (x) { return x.type !== 'online'; });
   if (adminLogFilter !== 'all') arr = arr.filter(function (x) { var cat = logCatMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
+  if (adminLogSearch) arr = arr.filter(function (x) { return logMatch(x, adminLogSearch); });
   return arr.length;
 }
 function logToolbarHtml() {
@@ -769,8 +775,14 @@ function buildLogHtml(logs) {
     h += '<button data-act="set-logcat" data-cat="' + c.key + '" style="font-size:10.5px;padding:3px 11px;border:1px solid var(--jp-line);border-radius:7px;background:' + (adminLogFilter === c.key ? 'var(--jp-accent)' : 'transparent') + ';color:' + (adminLogFilter === c.key ? '#fff' : 'var(--jp-accent)') + ';cursor:pointer">' + c.label + '</button>';
   }
   h += '</div>';
+  h += '<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">';
+  h += '<input id="log-search-input" type="text" placeholder="搜索日志（昵称/类型/IP/详情/设备）" value="' + escAttr(adminLogSearch) + '" style="flex:1;min-width:140px;padding:4px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-text);outline:none">';
+  h += '<button data-act="log-search" style="font-size:11px;padding:4px 14px;border:1px solid var(--jp-accent);border-radius:7px;background:var(--jp-accent);color:#fff;cursor:pointer">搜索</button>';
+  if (adminLogSearch) h += '<button data-act="log-search-clear" style="font-size:11px;padding:4px 10px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-muted);cursor:pointer">清除</button>';
+  h += '</div>';
   var list = (logs || []).slice().sort(function (a, b) { return (b.time || 0) - (a.time || 0); }).filter(function (x) { return x.type !== 'online'; }); // 最新在上；在线快照日志不展示
   if (adminLogFilter !== 'all') list = list.filter(function (x) { var cat = logCatMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
+  if (adminLogSearch) list = list.filter(function (x) { return logMatch(x, adminLogSearch); });
   if (!list.length) {
     h += '<div class="empty" style="padding:10px 0">暂无日志</div>';
   } else {
@@ -844,6 +856,27 @@ function bindActions() {
         enrichIps();
       }
     });
+  });
+  function rebuildLogSection() {
+    var sec = document.getElementById('logSection');
+    if (sec) {
+      sec.innerHTML = '<h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs);
+      bindActions();
+      enrichIps();
+    }
+  }
+  var logSearchBtn = document.querySelector('#logSection [data-act="log-search"]');
+  if (logSearchBtn) logSearchBtn.addEventListener('click', function () {
+    var inp = document.getElementById('log-search-input');
+    adminLogSearch = ((inp && inp.value) || '').trim();
+    rebuildLogSection();
+  });
+  document.querySelectorAll('#logSection [data-act="log-search-clear"]').forEach(function (b) {
+    b.addEventListener('click', function () { adminLogSearch = ''; rebuildLogSection(); });
+  });
+  var logSearchInput = document.getElementById('log-search-input');
+  if (logSearchInput) logSearchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { adminLogSearch = (this.value || '').trim(); rebuildLogSection(); }
   });
   document.querySelectorAll('#logSection [data-act="del-log"]').forEach(function (btn) {
     btn.addEventListener('click', function () {
