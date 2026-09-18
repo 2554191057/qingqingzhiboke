@@ -231,7 +231,6 @@ document.addEventListener('selectstart', e => {
 
     function onTurnstileSuccess(token) {
         var wrap = document.querySelector('.turnstile-wrap');
-        if (wrap) wrap.style.display = 'none';
         var tsTip = document.getElementById('tsStatus');
         if (tsTip) { tsTip.textContent = '正在验证您的身份…'; tsTip.style.color = ''; }
         // 后端二次验证
@@ -245,6 +244,7 @@ document.addEventListener('selectstart', e => {
                 if (tsTip) { tsTip.textContent = '验证成功，正在进入…'; tsTip.style.color = '#2e9e5b'; }
                 var back = new URLSearchParams(location.search).get('back');
                 setTimeout(function () {
+                    if (wrap) wrap.style.display = 'none';
                     if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
                     location.replace('boke.html');
                 }, 500);
