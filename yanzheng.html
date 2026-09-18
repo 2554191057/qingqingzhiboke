@@ -272,21 +272,32 @@ document.addEventListener('selectstart', e => {
         .then(function(d){ return d && d.ip ? d.ip : null; })
         .catch(function(){ return null; });
     }
+    // 动态 IP 白名单：本地兜底数组 + 后端 QW_IP_WHITELIST_CHECK 查询（后台管理页可添加/删除）
+    function isIpWhitelisted(ip, cb) {
+      if (!ip) { cb(false); return; }
+      if (WHITELIST_IPS.indexOf(ip) >= 0) { cb(true); return; }
+      fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_IP_WHITELIST_CHECK', ip: ip }) })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { cb(!!(d && d.data && d.data.whitelisted)); })
+        .catch(function () { cb(false); });
+    }
     fetchCfTraceIp().then(function(ip){
       return ip || fetchFallbackIp();
     }).then(function(ip){
       vsIpEl.textContent = ip || '获取失败';
       ipCopyBtn.disabled = !ip;
-      if (ip && WHITELIST_IPS.includes(ip)) {
-        sessionStorage.setItem('auth_ok', '1');
-        var tsTip = document.getElementById('tsStatus');
-        if (tsTip) { tsTip.textContent = '已自动放行（本机IP命中白名单），即将进入…'; tsTip.style.color = '#2e9e5b'; }
-        var back = new URLSearchParams(location.search).get('back');
-        setTimeout(function () {
-          if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
-          location.href = 'https://qqzttkx.eu.cc/boke.html';
-        }, 2600);
-      }
+      isIpWhitelisted(ip, function (hit) {
+        if (hit) {
+          sessionStorage.setItem('auth_ok', '1');
+          var tsTip = document.getElementById('tsStatus');
+          if (tsTip) { tsTip.textContent = '已自动放行（本机IP命中白名单），即将进入…'; tsTip.style.color = '#2e9e5b'; }
+          var back = new URLSearchParams(location.search).get('back');
+          setTimeout(function () {
+            if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
+            location.href = 'https://qqzttkx.eu.cc/boke.html';
+          }, 2600);
+        }
+      });
     });
     // 访问日志：打开验证页即上报一次
     fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer }) }).catch(function(){});
