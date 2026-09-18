@@ -164,12 +164,13 @@ input, button { font-family: inherit; }
 .log-item .log-loc:empty { display: none; }
 .log-item .log-loc:not(:empty)::after { content: ' · '; }
 .log-item .log-copy-ip, .msg-item .log-copy-ip, .mgmt-row .log-copy-ip {
-  margin-left: 6px; padding: 0 8px; font-size: 10px; line-height: 1.7;
-  border: 1px solid var(--jp-line); border-radius: 6px;
-  background: transparent; color: var(--jp-accent); cursor: pointer; vertical-align: 1px;
+  margin-left: 4px; padding: 0; font-size: 10px; line-height: 1.6;
+  border: none; border-radius: 0; background: none;
+  color: var(--jp-muted); cursor: pointer; vertical-align: 1px;
+  text-decoration: underline dotted; text-underline-offset: 2px;
 }
-.log-item .log-copy-ip:hover, .msg-item .log-copy-ip:hover, .mgmt-row .log-copy-ip:hover { background: rgba(129,140,248,0.12); }
-.log-item .log-copy-ip.ok, .msg-item .log-copy-ip.ok, .mgmt-row .log-copy-ip.ok { color: var(--jp-ok); border-color: rgba(52,211,153,0.4); }
+.log-item .log-copy-ip:hover, .msg-item .log-copy-ip:hover, .mgmt-row .log-copy-ip:hover { color: var(--jp-accent); background: none; text-decoration: underline solid; }
+.log-item .log-copy-ip.ok, .msg-item .log-copy-ip.ok, .mgmt-row .log-copy-ip.ok { color: var(--jp-ok); text-decoration: none; }
 
 /* 登录视图 */
 .login-wrap { max-width: 400px; margin: 12vh auto 0; text-align: center; }
