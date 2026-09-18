@@ -723,6 +723,10 @@
   loadWhitelist();
   }
 
+  function getVisitor() {
+    try { return { nick: localStorage.getItem('qw_visitor_nick') || '', email: localStorage.getItem('qw_visitor_email') || '' }; }
+    catch (e) { return { nick: '', email: '' }; }
+  }
   function logAction(type, detail) {
     var v = getVisitor();
     try {
@@ -1220,6 +1224,56 @@
     btns.forEach(function (b) {
       b.addEventListener('click', function () { handleSetLogCat(b.getAttribute('data-cat') || 'all'); });
     });
+    function updateSelBtn() {
+      var boxes = document.querySelectorAll('#qw-log-section .qw-log-chk');
+      var n = 0;
+      boxes.forEach(function (x) { if (x.checked) n++; });
+      var btn = document.querySelector('#qw-log-section [data-act="del-selected-log"]');
+      if (btn) {
+        btn.disabled = n === 0;
+        btn.textContent = '删除选中(' + n + ')';
+        btn.style.opacity = n === 0 ? '.4' : '1';
+      }
+    }
+    document.querySelectorAll('#qw-log-section .qw-log-chk').forEach(function (box) {
+      box.addEventListener('change', updateSelBtn);
+    });
+    var toggleBtn = document.querySelector('#qw-log-section [data-act="toggle-all-log"]');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function () {
+        var boxes = document.querySelectorAll('#qw-log-section .qw-log-chk');
+        var allOn = true;
+        boxes.forEach(function (x) { if (!x.checked) allOn = false; });
+        boxes.forEach(function (x) { x.checked = !allOn; });
+        this.textContent = allOn ? '全选' : '取消全选';
+        updateSelBtn();
+      });
+    }
+    var delSelBtn = document.querySelector('#qw-log-section [data-act="del-selected-log"]');
+    if (delSelBtn) {
+      delSelBtn.addEventListener('click', function () {
+        var ids = [];
+        document.querySelectorAll('#qw-log-section .qw-log-chk:checked').forEach(function (x) {
+          var id = x.getAttribute('data-id');
+          if (id) ids.push(id);
+        });
+        if (!ids.length) return;
+        if (!confirm('确定删除选中的 ' + ids.length + ' 条日志吗？此操作不可恢复。')) return;
+        var remain = ids.length, done = 0;
+        ids.forEach(function (id) {
+          adminPost({ event: 'QW_LOG_DELETE', accessToken: adminToken, id: id }).then(function (r) {
+            done++;
+            if (r && r.code === 0) {
+              adminLogs = (adminLogs || []).filter(function (x) { return String(x._id) !== String(id); });
+            }
+            if (done >= remain) {
+              var sec = document.getElementById('qw-log-section');
+              if (sec) { sec.innerHTML = buildLogHtml(adminLogs); bindLogToggle(); enrichIps(); }
+            }
+          }).catch(function () { done++; });
+        });
+      });
+    }
     document.querySelectorAll('#qw-log-section [data-act="del-log"]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var id = btn.getAttribute('data-id');
@@ -1369,15 +1423,19 @@
       h += '<button data-act="set-logcat" data-cat="'+c.key+'" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:'+(adminLogFilter===c.key?'var(--jp-accent)':'transparent')+';color:'+(adminLogFilter===c.key?'#fff':'var(--jp-accent)')+';cursor:pointer">'+c.label+'</button>';
     }
     h += '</div></h4>';
-    if (!logs || !logs.length) {
+    var logList = logs || [];
+    if (adminLogFilter !== 'all') logList = logList.filter(function(x) { var cat = catMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
+    h += '<div class="qw-log-toolbar" style="display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap">';
+    h += '<button data-act="toggle-all-log" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer">全选</button>';
+    h += '<button data-act="del-selected-log" disabled style="font-size:10px;padding:3px 10px;border:1px solid rgba(224,91,91,.45);border-radius:6px;background:transparent;color:#e05b5b;cursor:pointer;opacity:.4">删除选中(0)</button>';
+    h += '</div>';
+    if (!logList.length) {
       h += '<div class="qw-admin-empty" style="padding:10px 0">暂无日志</div>';
     } else {
-      var logList = adminLogFilter === 'all' ? logs : logs.filter(function(x) { var cat = catMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
-      if (!logList.length) h += '<div class="qw-admin-empty" style="padding:10px 0">暂无此类日志</div>';
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
         var tstr = new Date(lg.time).toLocaleString('zh-CN');
-        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '">' + escHtml(tstr) + ' · ' + escHtml(typeCn(lg.type)) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除这条日志" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button></div>';
+        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '"><input type="checkbox" class="qw-log-chk" data-id="' + escAttr(lg._id || '') + '" title="选择删除" style="margin-right:5px;accent-color:var(--jp-accent);vertical-align:-1px">' + escHtml(tstr) + ' · ' + escHtml(typeCn(lg.type)) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除这条日志" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button></div>';
       }
     }
     return h + '</div>';
