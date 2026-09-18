@@ -1286,7 +1286,15 @@
         if (curNickEl) curNickEl.textContent = nick;
         showSetMsg('昵称已修改', true);
         logAction('改昵称', '昵称改为: ' + nick);
-        setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
+        setTimeout(function(){
+          closeSettings();
+          refreshLoginUI();
+          // 重新加载聊天室评论列表，实时刷新消息气泡的昵称和头像
+          twikooInited = false;
+          var tc = document.getElementById('tcomment');
+          if (tc) tc.innerHTML = '';
+          initTwikoo();
+        }, 800);
       } else showSetMsg(r.message || '修改失败', false);
     }).catch(function(){ setBtnRestore(btn, '保存昵称'); showSetMsg('网络错误', false); });
   });

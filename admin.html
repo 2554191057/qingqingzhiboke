@@ -847,10 +847,16 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
   } else {
     for (var b = 0; b < blocks.length; b++) {
       var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
-      h += '<div class="mgmt-row" data-block-search="' + escAttr((bk.mail || '') + ' ' + (bk.ip || '')) + '">' +
-        '<input type="checkbox" class="log-chk block-chk" data-mail="' + escAttr(bk.mail) + '" data-ip="' + escAttr(bk.ip || '') + '" title="选择">' +
-        '<span>' + (bk.mail ? escHtml(bk.mail) + (bk.ip ? '<small style="color:var(--jp-muted)">（IP ' + escHtml(bk.ip) + '）</small>' : '') : 'IP ' + escHtml(bk.ip || '')) + '</span>' + (bk.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(bk.ip) + '" title="复制IP">复制</button>' : '') +
-        '<button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
+      var bkNick = bk.nick || '';
+      var bkLabel = bk.mail
+        ? ('<span style="color:#818cf8">邮箱</span> <b>' + escHtml(bk.mail) + '</b>' + (bk.ip ? ' <small style="color:var(--jp-muted)">（IP ' + escHtml(bk.ip) + '）</small>' : ''))
+        : (bkNick
+          ? ('<span style="color:#f39c12">昵称</span> <b>' + escHtml(bkNick) + '</b>')
+          : ('<span style="color:#10b981">IP</span> <b>' + escHtml(bk.ip || '') + '</b>'));
+      h += '<div class="mgmt-row" data-block-search="' + escAttr((bk.mail || '') + ' ' + bkNick + ' ' + (bk.ip || '')) + '">' +
+        '<input type="checkbox" class="log-chk block-chk" data-mail="' + escAttr(bk.mail || '') + '" data-nick="' + escAttr(bkNick) + '" data-ip="' + escAttr(bk.ip || '') + '" title="选择">' +
+        '<span>' + bkLabel + '</span>' + (bk.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(bk.ip) + '" title="复制IP">复制</button>' : '') +
+        '<button data-act="unblk" data-mail="' + escAttr(bk.mail || '') + '" data-nick="' + escAttr(bkNick) + '" data-ip="' + escAttr(bk.ip || '') + '">解除</button></div>';
     }
   }
   h += '<div class="mgmt-add"><input type="text" id="blkInput" placeholder="输入邮箱或昵称进行拉黑"><button data-act="add-blk">拉黑</button></div></div>';
