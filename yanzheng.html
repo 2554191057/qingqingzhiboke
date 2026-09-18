@@ -159,6 +159,11 @@
 .quote-text, .hitokoto-text, .hitokoto-content, .live2d-quote { -webkit-user-select: text !important; -moz-user-select: text !important; user-select: text !important; }
 </style>
 <script>
+// 已验证过直接跳转，避免重复验证
+if (sessionStorage.getItem('auth_ok') === '1') {
+  var __b = new URLSearchParams(location.search).get('back');
+  if (__b && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(__b)) { location.replace(__b); } else { location.replace('boke.html'); }
+}
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('copy', e => {
   const sel = window.getSelection().toString();
