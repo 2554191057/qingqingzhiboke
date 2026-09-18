@@ -73,19 +73,21 @@ input, button { font-family: inherit; }
 /* ===== 主体 ===== */
 .admin-main { flex: 1; padding: 22px; max-width: 1060px; width: 100%; margin: 0 auto; }
 
-/* 统计卡片 */
-.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+/* 标签导航 */
+.stat-grid { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
 .stat-card {
-  background: var(--jp-surface); border: 1px solid var(--jp-line); border-radius: 16px;
-  padding: 16px 18px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+  background: var(--jp-surface); border: 1px solid var(--jp-line); border-radius: 12px;
+  padding: 10px 16px; cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; gap: 8px;
 }
-.stat-card b { font-size: 26px; font-weight: 700; display: block; line-height: 1.2; }
-.stat-card span { font-size: 11.5px; color: var(--jp-muted); }
+.stat-card b { font-size: 16px; font-weight: 700; line-height: 1; }
+.stat-card span { font-size: 12px; color: var(--jp-muted); }
 .stat-card .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
-.stat-tab { cursor: pointer; transition: box-shadow .2s ease, transform .2s ease; }
-.stat-tab:hover { transform: translateY(-2px); }
-.stat-tab.on { box-shadow: 0 0 0 2px var(--jp-accent) inset; }
+.stat-tab { cursor: pointer; transition: all .2s; }
+.stat-tab:hover { border-color: var(--jp-accent); }
+.stat-tab.on { background: var(--jp-accent); border-color: var(--jp-accent); }
+.stat-tab.on b, .stat-tab.on span { color: #fff; }
+.stat-tab.on span { color: rgba(255,255,255,0.8); }
 
 /* 面板 */
 .panel {
@@ -217,7 +219,7 @@ input, button { font-family: inherit; }
 @media (max-width: 640px) {
   .admin-main { padding: 14px; }
   .panel { padding: 14px; border-radius: 15px; }
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-card { padding: 8px 12px; } .stat-card span { font-size: 11px; }
   .admin-topbar { padding: 12px 14px; }
 }
 </style>
@@ -283,7 +285,7 @@ var adminToken = '';
 var adminLogs = [];
 var adminWlist = []; // IP 白名单列表（验证页自动放行）
 var adminLogFilter = 'all';
-var adminActiveTab = ''; // 顶部卡片 Tab 当前展开的面板（''=全部收起），自动刷新后保持
+var adminActiveTab = 'chat'; // 顶部卡片 Tab 当前展开的面板（''=全部收起），自动刷新后保持
 var adminChatSearch = '', adminUserSearch = '', adminBlockSearch = '', adminWlistSearch = ''; // 聊天信息 / 账号管理 / 黑名单 / 白名单 搜索词
 var adminLogSearch = ''; // 日志搜索关键字
 var ipLocCache = {};
@@ -779,6 +781,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
     '<div class="stat-card stat-tab' + (adminActiveTab === 'users' ? ' on' : '') + '" data-act="tab" data-tab="users"><b>' + (accounts.length || 0) + '</b><span>账号管理</span></div>' +
     '<div class="stat-card stat-tab' + (adminActiveTab === 'block' ? ' on' : '') + '" data-act="tab" data-tab="block"><b>' + (blocks.length || 0) + '</b><span>黑名单</span></div>' +
     '<div class="stat-card stat-tab' + (adminActiveTab === 'wlist' ? ' on' : '') + '" data-act="tab" data-tab="wlist"><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
+    '<div class="stat-card stat-tab' + (adminActiveTab === 'logs' ? ' on' : '') + '" data-act="tab" data-tab="logs"><b>' + currentLogCount() + '</b><span>操作日志</span></div>' +
     '</div>';
 
   h += '<div class="panel" id="panel-chat" style="display:' + (adminActiveTab === 'chat' ? 'block' : 'none') + '"><h3>💬 聊天信息 <span class="cnt">共 ' + comments.length + ' 条</span>' +
@@ -874,7 +877,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
   h += '<div class="mgmt-add"><input type="text" id="wlInput" placeholder="输入 IP 加入白名单，如 222.245.15.167"><button data-act="add-wl">添加</button></div></div>';
 
 
-  h += '<div class="panel" id="logSection"><h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs) + '</div>';
+  h += '<div class="panel" id="logSection" style="display:' + (adminActiveTab === 'logs' ? 'block' : 'none') + '"><h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs) + '</div>';
 
   var _st = window.scrollY || document.documentElement.scrollTop || 0;
   var _mv = document.getElementById('mainView');
@@ -1147,6 +1150,8 @@ function bindActions() {
         var p = document.getElementById('panel-' + k);
         if (p) p.style.display = (k === adminActiveTab) ? 'block' : 'none';
       });
+      var lp = document.getElementById('logSection');
+      if (lp) lp.style.display = (adminActiveTab === 'logs') ? 'block' : 'none';
       document.querySelectorAll('.stat-tab').forEach(function (c) {
         c.classList.toggle('on', c === card && wantOpen);
       });
