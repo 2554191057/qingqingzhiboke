@@ -581,6 +581,7 @@ function renderManageView(silent) {
   if (!silent) document.getElementById('mainView').innerHTML = '<div class="loading"><div class="spin"></div><br>加载聊天数据…</div>';
   var blocks = [], wlist = [], likeMap = {};
   var onlineCount = 0;
+  var accounts = [];
   adminPost({ event: 'QW_LIKE_LIST', accessToken: adminToken }).then(function (lr) {
     if (lr && lr.code === 0) {
       (lr.data || []).forEach(function (x) { likeMap[x.commentId] = x.ips || []; });
@@ -597,6 +598,9 @@ function renderManageView(silent) {
     return adminPost({ event: 'QW_ONLINE_COUNT' });
   }).then(function (ro) {
     if (ro && ro.code === 0) onlineCount = (ro.data && ro.data.count) || 0;
+    return adminPost({ event: 'QW_USER_LIST', accessToken: adminToken });
+  }).then(function (ru) {
+    if (ru && ru.code === 0) accounts = ru.data || [];
     return adminPost({ event: 'COMMENT_GET_FOR_ADMIN', accessToken: adminToken, per: 50, page: 1 });
   }).then(function (r1) {
     if (!r1 || r1.code !== 0) {
@@ -619,7 +623,7 @@ function renderManageView(silent) {
         });
       }.bind(null, p));
     }
-    seq.then(function () { adminRefreshing = false; renderManageList(all, blocks, wlist, likeMap, onlineCount); });
+    seq.then(function () { adminRefreshing = false; renderManageList(all, blocks, wlist, likeMap, onlineCount, accounts); });
   }).catch(function (e) {
     adminRefreshing = false;
     console.error('admin load error:', e);
@@ -635,12 +639,13 @@ function likeInfoHtml(c, likeMap) {
     (ips.length ? ' · ' + escHtml(ips.join('、')) : '') + '</div>';
 }
 
-function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
+function renderManageList(comments, blocks, wlist, likeMap, onlineCount, accounts) {
   var h = '';
   h += '<div class="stat-grid">' +
     '<div class="stat-card stat-tab' + (adminActiveTab === 'chat' ? ' on' : '') + '" data-act="tab" data-tab="chat"><b>' + (comments.length || 0) + '</b><span>全部聊天</span></div>' +
     '<div class="stat-card stat-tab' + (adminActiveTab === 'block' ? ' on' : '') + '" data-act="tab" data-tab="block"><b>' + (blocks.length || 0) + '</b><span>黑名单</span></div>' +
     '<div class="stat-card stat-tab' + (adminActiveTab === 'wlist' ? ' on' : '') + '" data-act="tab" data-tab="wlist"><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
+    '<div class="stat-card stat-tab' + (adminActiveTab === 'users' ? ' on' : '') + '" data-act="tab" data-tab="users"><b>' + (accounts.length || 0) + '</b><span>账号管理</span></div>' +
     '</div>';
 
   h += '<div class="panel" id="panel-chat" style="display:' + (adminActiveTab === 'chat' ? 'block' : 'none') + '"><h3>💬 聊天信息 <span class="cnt">共 ' + comments.length + ' 条</span></h3>';
@@ -686,6 +691,21 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
     }
   }
   h += '<div class="mgmt-add"><input type="text" id="wlInput" placeholder="输入 IP 加入白名单，如 222.245.15.167"><button data-act="add-wl">添加</button></div></div>';
+
+  h += '<div class="panel" id="panel-users" style="display:' + (adminActiveTab === 'users' ? 'block' : 'none') + '"><h3>👤 账号管理 <span class="cnt">' + accounts.length + ' 个注册账号</span></h3>';
+  if (!accounts.length) {
+    h += '<div class="empty" style="padding:12px 0">暂无注册账号</div>';
+  } else {
+    for (var u = 0; u < accounts.length; u++) {
+      var ac = accounts[u];
+      var acReg = ac.created ? new Date(Number(ac.created) < 1e12 ? Number(ac.created) * 1000 : Number(ac.created)).toLocaleString('zh-CN') : '未知';
+      var acLast = ac.lastLogin ? new Date(Number(ac.lastLogin) < 1e12 ? Number(ac.lastLogin) * 1000 : Number(ac.lastLogin)).toLocaleString('zh-CN') : '从未登录';
+      h += '<div class="mgmt-row" style="align-items:flex-start"><span><b>' + escHtml(ac.nick || '未设昵称') + '</b> <small style="color:var(--jp-muted)">' + escHtml(ac.email) + '</small><br><small style="color:var(--jp-muted)">注册 ' + escHtml(acReg) + ' · 最后登录 ' + escHtml(acLast) + ' · 评论 ' + (ac.comments || 0) + ' 条</small></span>' +
+        '<button data-act="blk" data-mail="' + escAttr(ac.email) + '" data-ip="" title="拉黑该账号邮箱">拉黑</button>' +
+        '<button data-act="del-user" data-mail="' + escAttr(ac.email) + '" title="删除账号及其全部评论" style="background:var(--jp-danger,#e05b5b)">删除</button></div>';
+    }
+  }
+  h += '</div>';
 
   h += '<div class="panel" id="logSection"><h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs) + '</div>';
 
@@ -945,7 +965,7 @@ function bindActions() {
       var tab = card.getAttribute('data-tab');
       var wantOpen = adminActiveTab !== tab;
       adminActiveTab = wantOpen ? tab : '';
-      ['chat', 'block', 'wlist'].forEach(function (k) {
+      ['chat', 'block', 'wlist', 'users'].forEach(function (k) {
         var p = document.getElementById('panel-' + k);
         if (p) p.style.display = (k === adminActiveTab) ? 'block' : 'none';
       });
@@ -999,6 +1019,14 @@ function bindActions() {
           if (r && r.code === 0) renderManageView();
           else alert((r && r.message) || '操作失败');
         });
+      } else if (act === 'del-user') {
+        var umail = btn.getAttribute('data-mail');
+        if (confirm('确定删除账号 ' + umail + ' 及其全部评论吗？此操作不可恢复！')) {
+          adminPost({ event: 'QW_USER_DELETE', accessToken: adminToken, email: umail }).then(function (r) {
+            if (r && r.code === 0) renderManageView();
+            else alert((r && r.message) || '操作失败');
+          });
+        }
       }
     });
   });
