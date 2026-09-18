@@ -597,6 +597,7 @@
     }
   }
   function markSelf() {
+    var loggedIn = isLoggedIn();
     var info = {};
     try { info = JSON.parse(localStorage.getItem('twikoo') || '{}'); } catch (e) {}
     var myNick = (info.nick || '').trim();
@@ -610,6 +611,7 @@
     var list = document.querySelectorAll('.qw-body #twikoo .tk-comment');
     for (var i = 0; i < list.length; i++) {
       var cc = list[i];
+      if (!loggedIn) { cc.classList.remove('tk-self'); continue; }
       var nickEl = cc.querySelector('.tk-nick');
       var nick = nickEl ? nickEl.textContent.trim() : '';
       var isSelf = false;
