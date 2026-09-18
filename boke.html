@@ -967,6 +967,17 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
   .container { padding-right: 124px !important; }
   .social-grid, .resources-grid, .blog-grid { grid-template-columns: 1fr !important; }
 }
+/* 手机小屏 ≤480px：进一步紧凑 */
+@media (max-width: 480px) {
+  .container { padding-right: 118px !important; }
+  #live2d { width: 90px !important; height: 115px !important; }
+  #waifu { margin-bottom: 48px !important; }
+  #waifu-toggle { font-size: 11px !important; padding: 5px 10px !important; }
+  .hero-title { font-size: 2rem !important; }
+  .hero-subtitle { font-size: 13px !important; }
+  .about-card, .social-card, .blog-card, .resource-card { padding: 16px !important; }
+  .section-title { font-size: 1.5rem !important; }
+}
 /* 快速导航按钮（移动端汉堡菜单改文字按钮） */
 .hamburger-btn {
   align-items: center;
