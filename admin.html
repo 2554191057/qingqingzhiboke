@@ -859,7 +859,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
         '<button data-act="unblk" data-mail="' + escAttr(bk.mail || '') + '" data-nick="' + escAttr(bkNick) + '" data-ip="' + escAttr(bk.ip || '') + '">解除</button></div>';
     }
   }
-  h += '<div class="mgmt-add"><input type="text" id="blkInput" placeholder="输入邮箱或昵称进行拉黑"><button data-act="add-blk">拉黑</button></div></div>';
+  h += '<div class="mgmt-add"><input type="text" id="blkInput" placeholder="输入邮箱、昵称或 IP（自动识别）"><button data-act="add-blk">拉黑</button></div></div>';
 
   h += '<div class="panel" id="panel-wlist" style="display:' + (adminActiveTab === 'wlist' ? 'block' : 'none') + '"><h3>✅ IP 白名单 <span class="cnt">共 ' + wlist.length + ' 条</span>' +
     '<span class="log-toolbar" style="float:right">' +
@@ -1177,14 +1177,18 @@ function bindActions() {
           });
         }
       } else if (act === 'unblk') {
-        adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: btn.getAttribute('data-mail') }).then(function (r) {
+        adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: btn.getAttribute('data-mail') || '', nick: btn.getAttribute('data-nick') || '', ip: btn.getAttribute('data-ip') || '' }).then(function (r) {
           if (r && r.code === 0) renderManageView();
           else alert((r && r.message) || '操作失败');
         });
       } else if (act === 'add-blk') {
         var blkVal = ((document.getElementById('blkInput') || {}).value || '').trim();
-        if (!blkVal) { alert('请输入邮箱或昵称'); return; }
-        adminPost({ event: 'QW_BLOCK_ADD', accessToken: adminToken, mail: blkVal }).then(function (r) {
+        if (!blkVal) { alert('请输入邮箱、昵称或 IP'); return; }
+        var blkPayload = { event: 'QW_BLOCK_ADD', accessToken: adminToken };
+        if (blkVal.indexOf('@') >= 0) blkPayload.mail = blkVal;
+        else if (/^\d{1,3}(\.\d{1,3}){3}$/.test(blkVal)) blkPayload.ip = blkVal;
+        else blkPayload.nick = blkVal;
+        adminPost(blkPayload).then(function (r) {
           if (r && r.code === 0) renderManageView();
           else alert((r && r.message) || '操作失败');
         });
@@ -1265,14 +1269,14 @@ function bindActions() {
   if (blockDel) blockDel.addEventListener('click', function () {
     var items = [];
     document.querySelectorAll('#panel-block .block-chk:checked').forEach(function (b) {
-      items.push({ mail: b.getAttribute('data-mail') || '', ip: b.getAttribute('data-ip') || '' });
+      items.push({ mail: b.getAttribute('data-mail') || '', nick: b.getAttribute('data-nick') || '', ip: b.getAttribute('data-ip') || '' });
     });
     if (!items.length) return;
     if (!confirm('确定解除选中的 ' + items.length + ' 条黑名单吗？')) return;
     showQwLoading('处理中…');
     var seq = Promise.resolve();
     items.forEach(function (it) {
-      seq = seq.then(function () { return adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: it.mail }); });
+      seq = seq.then(function () { return adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: it.mail || '', nick: it.nick || '', ip: it.ip || '' }); });
     });
     seq.then(function () { hideQwLoading(); renderManageView(); }).catch(function () { hideQwLoading(); alert('网络异常，操作失败'); });
   });
