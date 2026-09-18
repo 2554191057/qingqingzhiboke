@@ -1265,8 +1265,8 @@
               var nickEl = item.querySelector('.tk-nick');
               if (!nickEl) return;
               var rawNick = nickEl.textContent.trim();
-              // 匹配自己的旧昵称消息（忽略管理badge等附加元素）
-              var baseNick = rawNick.replace(/\s*管理员\s*$/, '').trim();
+              // 匹配自己的旧昵称消息
+              var baseNick = rawNick.trim();
               if (baseNick === oldNick) {
                 nickEl.childNodes.forEach(function(n){ if (n.nodeType === 3) n.remove(); });
                 if (nickEl.firstChild) nickEl.firstChild.textContent = nick;
