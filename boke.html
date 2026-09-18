@@ -603,6 +603,7 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
             </div>
             <p>© <span id="yearNow"></span> 庆庆纸博客. 欢迎您的到来.</p>
             <p class="footer-motto">访问网站浏览总数：<b id="totalVisits">--</b> 次</p>
+<p class="footer-motto">本机 IP：<b id="myIp" title="加载中…">--</b></p>
         </div>
     </div>
 </footer>
@@ -742,6 +743,34 @@ window.addEventListener('load', function() {
       if (el && d && typeof d.count === 'number') el.textContent = d.count.toLocaleString();
     })
     .catch(function () {});
+  // 本机 IP 显示 + 点击复制（优先 Cloudflare cdn-cgi/trace，失败降级 ipwho.is）
+  function traceToIp(txt) { var m = /^ip=([0-9a-fA-F.:]+)/m.exec(txt || ''); return m ? m[1] : null; }
+  fetch((/\.eu\.cc$/.test(location.hostname) ? location.origin : 'https://www.cloudflare.com') + '/cdn-cgi/trace', { cache: 'no-store' })
+    .then(function (r) { return r.text(); })
+    .then(function (t) { return traceToIp(t); })
+    .catch(function () { return null; })
+    .then(function (ip) {
+      if (ip) return ip;
+      return fetch('https://ipwho.is/?fields=ip')
+        .then(function (r) { return r.json(); })
+        .then(function (d) { return d && d.ip ? d.ip : null; })
+        .catch(function () { return null; });
+    })
+    .then(function (ip) {
+      var el = document.getElementById('myIp');
+      if (!el) return;
+      el.textContent = ip || '获取失败';
+      if (ip) {
+        el.style.cursor = 'pointer';
+        el.title = '点击复制 IP';
+        el.addEventListener('click', function () {
+          navigator.clipboard.writeText(ip).then(function () {
+            el.textContent = '已复制';
+            setTimeout(function () { el.textContent = ip; }, 1500);
+          }).catch(function () {});
+        });
+      }
+    });
 });
 </script>
 <script>
