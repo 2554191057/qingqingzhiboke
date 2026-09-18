@@ -1300,6 +1300,8 @@
       window.visualViewport.addEventListener('resize', updateNavH);
     }
     const sections = $$('section[id]').reverse();
+    // 有序板块（section[id] + footer[id]，按文档顺序）：下滑按钮→下一板块，上滑按钮→上一板块
+    const navOrder = $$('section[id]').concat($$('footer[id]')).filter((el, i, arr) => arr.indexOf(el) === i);
     const linkMap = new Map();
     $$('.nav-link[href^="#"]').forEach(a => linkMap.set(a.getAttribute('href').slice(1), a));
     let lastScrollY = 0;
@@ -1372,6 +1374,17 @@
         if (activeId) {
           $$('.nav-link').forEach(a => a.classList.remove('active'));
           linkMap.get(activeId)?.classList.add('active');
+        }
+
+        // 滚动按钮动态指向下一板块/上一板块：下滑到下一个、上滑到上一个
+        const activeIdx = navOrder.findIndex(s => s.id === activeId);
+        if (activeIdx >= 0) {
+          const nxt = navOrder[activeIdx + 1];
+          const prv = navOrder[activeIdx - 1];
+          $$('.section-scroll-down, .hero-scroll-hint').forEach(btn => {
+            if (nxt) btn.dataset.next = nxt.id;
+            if (prv) btn.dataset.prev = prv.id;
+          });
         }
       });
     }

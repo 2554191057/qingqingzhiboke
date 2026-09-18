@@ -297,7 +297,7 @@ document.addEventListener('selectstart', e => {
         <h1 class="hero-title">文章</h1>
         <p class="hero-subtitle">精选每日资讯与实用工具，持续更新</p>
     </div>
-    <div class="hero-scroll-hint" onclick="scrollToSection('blog')" data-next="blog" data-prev="home" aria-label="向下滚动">
+    <div class="hero-scroll-hint" data-next="blog" data-prev="home" aria-label="向下滚动" style="position:fixed;bottom:96px;left:50%;transform:translateX(-50%);z-index:80;">
         <i class="fa-solid fa-arrow-down dir-down"></i>
         <i class="fa-solid fa-arrow-up dir-up"></i>
     </div>

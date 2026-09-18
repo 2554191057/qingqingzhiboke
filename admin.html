@@ -727,23 +727,13 @@ function chatToolbarHtml() {
   return '<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">' +
     '<input id="chat-search-input" type="text" placeholder="搜索聊天（昵称/内容/IP）" value="' + escAttr(adminChatSearch) + '" style="flex:1;min-width:120px;padding:4px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-text);outline:none">' +
     '<button data-act="chat-search" style="font-size:11px;padding:4px 14px;border:1px solid var(--jp-accent);border-radius:7px;background:var(--jp-accent);color:#fff;cursor:pointer">搜索</button>' +
-    (adminChatSearch ? '<button data-act="chat-search-clear" style="font-size:11px;padding:4px 10px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-muted);cursor:pointer">清除</button>' : '') +
-    '<span class="log-toolbar" style="margin-left:auto">' +
-    '<button class="t-btn" data-act="chat-all">全选</button>' +
-    '<button class="t-btn" data-act="chat-invert">反选</button>' +
-    '<button class="t-btn" data-act="chat-clear">取消</button>' +
-    '<button class="t-btn danger" data-act="chat-del-sel" disabled>删除(0)</button></span></div>';
+    (adminChatSearch ? '<button data-act="chat-search-clear" style="font-size:11px;padding:4px 10px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-muted);cursor:pointer">清除</button>' : '') + '</div>';
 }
 function userToolbarHtml() {
   return '<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">' +
     '<input id="user-search-input" type="text" placeholder="搜索账号（昵称/邮箱）" value="' + escAttr(adminUserSearch) + '" style="flex:1;min-width:120px;padding:4px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-text);outline:none">' +
     '<button data-act="user-search" style="font-size:11px;padding:4px 14px;border:1px solid var(--jp-accent);border-radius:7px;background:var(--jp-accent);color:#fff;cursor:pointer">搜索</button>' +
-    (adminUserSearch ? '<button data-act="user-search-clear" style="font-size:11px;padding:4px 10px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-muted);cursor:pointer">清除</button>' : '') +
-    '<span class="log-toolbar" style="margin-left:auto">' +
-    '<button class="t-btn" data-act="user-all">全选</button>' +
-    '<button class="t-btn" data-act="user-invert">反选</button>' +
-    '<button class="t-btn" data-act="user-clear">取消</button>' +
-    '<button class="t-btn danger" data-act="user-del-sel" disabled>删除(0)</button></span></div>';
+    (adminUserSearch ? '<button data-act="user-search-clear" style="font-size:11px;padding:4px 10px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-muted);cursor:pointer">清除</button>' : '') + '</div>';
 }
 function applyChatFilter() {
   var q = adminChatSearch.toLowerCase();
@@ -802,7 +792,12 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
     '<div class="stat-card stat-tab' + (adminActiveTab === 'wlist' ? ' on' : '') + '" data-act="tab" data-tab="wlist"><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
     '</div>';
 
-  h += '<div class="panel" id="panel-chat" style="display:' + (adminActiveTab === 'chat' ? 'block' : 'none') + '"><h3>💬 聊天信息 <span class="cnt">共 ' + comments.length + ' 条</span></h3>' + chatToolbarHtml();
+  h += '<div class="panel" id="panel-chat" style="display:' + (adminActiveTab === 'chat' ? 'block' : 'none') + '"><h3>💬 聊天信息 <span class="cnt">共 ' + comments.length + ' 条</span>' +
+    '<span class="log-toolbar" style="float:right">' +
+    '<button class="t-btn" data-act="chat-all">全选</button>' +
+    '<button class="t-btn" data-act="chat-invert">反选</button>' +
+    '<button class="t-btn" data-act="chat-clear">取消</button>' +
+    '<button class="t-btn danger" data-act="chat-del-sel" disabled>删除(0)</button></span></h3>' + chatToolbarHtml();
   if (!comments.length) {
     h += '<div class="empty">暂无消息</div>';
   } else {
@@ -821,7 +816,12 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
   }
   h += '</div>';
 
-  h += '<div class="panel" id="panel-users" style="display:' + (adminActiveTab === 'users' ? 'block' : 'none') + '"><h3>👤 账号管理 <span class="cnt">' + accounts.length + ' 个注册账号</span></h3>' + userToolbarHtml();
+  h += '<div class="panel" id="panel-users" style="display:' + (adminActiveTab === 'users' ? 'block' : 'none') + '"><h3>👤 账号管理 <span class="cnt">' + accounts.length + ' 个注册账号</span>' +
+    '<span class="log-toolbar" style="float:right">' +
+    '<button class="t-btn" data-act="user-all">全选</button>' +
+    '<button class="t-btn" data-act="user-invert">反选</button>' +
+    '<button class="t-btn" data-act="user-clear">取消</button>' +
+    '<button class="t-btn danger" data-act="user-del-sel" disabled>删除(0)</button></span></h3>' + userToolbarHtml();
   if (!accounts.length) {
     h += '<div class="empty" style="padding:12px 0">暂无注册账号</div>';
   } else {
