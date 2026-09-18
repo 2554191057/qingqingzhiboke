@@ -93,13 +93,21 @@
         .ip-id-rows { padding-top: 0; }
         .ip-id-row {
             display: flex; justify-content: space-between; align-items: baseline;
+            gap: 8px;
             margin: 6px 0; font-size: 11px; color: #8a8477;
+        }
+        .ip-id-row > span:first-child {
+            flex: none;
+            white-space: nowrap;
         }
         .ip-id-row b { color: #3a3a3a; font-weight: 600; }
         .ip-id-ip {
             font-family: Consolas, "Courier New", monospace;
             font-size: 17px; font-weight: 700;
             color: #087fae; letter-spacing: .5px;
+            min-width: 0;
+            word-break: break-all;
+            text-align: right;
         }
         .ip-id-actions { margin-top: 12px; text-align: center; }
         .ip-id-stats {
@@ -129,6 +137,20 @@
             border-color: transparent;
             background: none;
             text-decoration: none;
+        }
+        /* 手机竖屏窄屏适配（全面屏 9:19 等比例） */
+        @media (max-width: 480px) {
+            .box {
+                padding: 28px 20px;
+                border-radius: 16px;
+            }
+            .box h2 { font-size: 1.15rem; }
+            .ip-id-card {
+                padding: 14px 14px 10px;
+            }
+            .ip-id-ip { font-size: 14px; }
+            .ip-id-row { font-size: 10px; gap: 6px; }
+            .ip-id-stats { gap: 12px; font-size: 9px; }
         }
     </style>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
