@@ -264,11 +264,6 @@
     '.qw-login-card .qw-login-btn{width:100%;padding:11px;border:none;border-radius:9px;background:linear-gradient(120deg,#087fae,#4866db);color:#fff;font-size:13px;font-weight:600;cursor:pointer;}',
     '.qw-login-card .qw-login-err{color:#e74c3c;font-size:11px;text-align:center;margin-top:6px;min-height:14px;}',
     '.qw-admin-err{font-size:11px;color:#e05b5b;margin-top:10px;min-height:15px;}',
-    '.qw-admin-hint{margin-top:14px;font-size:11px;color:var(--jp-muted);}',
-    '.qw-admin-hint a{color:var(--jp-accent);text-decoration:none;cursor:pointer;}',
-    '.qw-admin-form .qw-row{display:flex;gap:8px;margin-bottom:12px;}',
-    '.qw-admin-form .qw-row input{flex:1;margin:0;}',
-    '.qw-admin-form button.qw-send{width:auto;margin-top:0;padding:11px 12px;white-space:nowrap;flex-shrink:0;font-size:12px;}',
     '.qw-admin-stats{display:flex;gap:10px;margin-bottom:14px;}',
     '.qw-admin-stats div{flex:1;text-align:center;padding:12px 8px;border:1px solid var(--jp-line);border-radius:10px;background:var(--jp-paper);}',
     '.qw-admin-stats b{display:block;font-size:20px;color:var(--jp-accent);}',
@@ -1344,7 +1339,6 @@
       '<input id="qw-admin-pwd" type="password" placeholder="请输入管理密码" autocomplete="off">' +
       '<button class="qw-login" id="qw-admin-login-btn">登 录</button>' +
       '<div class="qw-admin-err" id="qw-admin-err"></div>' +
-      '<div class="qw-admin-hint"><a href="javascript:void(0)" id="qw-forgot-link">忘记密码？</a></div>' +
       '</div>';
     var input = document.getElementById('qw-admin-pwd');
     var btn = document.getElementById('qw-admin-login-btn');
@@ -1370,65 +1364,7 @@
     };
     btn.addEventListener('click', doLogin);
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
-    var forgotLink = document.getElementById('qw-forgot-link');
-    if (forgotLink) forgotLink.addEventListener('click', renderForgotView);
   }
-  var _qwForgotCd = null;
-  function renderForgotView() {
-    adminBody.innerHTML =
-      '<div class="qw-admin-form">' +
-      '<div class="qw-lock"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>' +
-      '<h3>找回管理密码</h3>' +
-      '<p class="qw-sub">通过管理员邮箱验证码重置后台密码</p>' +
-      '<input id="qw-f-email" type="email" placeholder="请输入管理员邮箱" autocomplete="off" style="margin-bottom:12px">' +
-      '<div class="qw-row">' +
-      '<input id="qw-f-code" type="text" placeholder="邮箱验证码" autocomplete="off">' +
-      '<button class="qw-login qw-send" id="qw-f-send">发送验证码</button>' +
-      '</div>' +
-      '<input id="qw-f-np" type="password" placeholder="新密码" autocomplete="off" style="margin-bottom:12px">' +
-      '<input id="qw-f-np2" type="password" placeholder="确认新密码" autocomplete="off" style="margin-bottom:12px">' +
-      '<button class="qw-login" id="qw-f-reset">重置密码</button>' +
-      '<div class="qw-admin-err" id="qw-f-msg"></div>' +
-      '<div class="qw-admin-hint"><a href="javascript:void(0)" id="qw-f-back">← 返回登录</a></div>' +
-      '</div>';
-    var email = document.getElementById('qw-f-email');
-    var code = document.getElementById('qw-f-code');
-    var np = document.getElementById('qw-f-np');
-    var np2 = document.getElementById('qw-f-np2');
-    var msg = document.getElementById('qw-f-msg');
-    var sendBtn = document.getElementById('qw-f-send');
-    var resetBtn = document.getElementById('qw-f-reset');
-    var setMsg = function (t, ok) { msg.textContent = t; msg.style.color = ok ? '#16a34a' : ''; };
-    var cd = 0;
-    function tick() {
-      if (cd <= 0) { sendBtn.disabled = false; sendBtn.textContent = '发送验证码'; return; }
-      sendBtn.disabled = true; sendBtn.textContent = cd + 's 后重发';
-      cd--; _qwForgotCd = setTimeout(tick, 1000);
-    }
-    sendBtn.addEventListener('click', function () {
-      var e = email.value.trim();
-      if (!e) { setMsg('请输入管理员邮箱'); return; }
-      sendBtn.disabled = true; sendBtn.textContent = '发送中…';
-      adminPost({ event: 'QW_FORGOT_SEND_CODE', email: e }).then(function (r) {
-        if (r && r.code === 0) { setMsg(r.message || '验证码已发送', true); cd = 60; tick(); }
-        else { setMsg((r && r.message) || '发送失败'); sendBtn.disabled = false; sendBtn.textContent = '发送验证码'; }
-      }).catch(function () { setMsg('网络异常，请重试'); sendBtn.disabled = false; sendBtn.textContent = '发送验证码'; });
-    });
-    var doReset = function () {
-      var e = email.value.trim(), c = code.value.trim(), p1 = np.value, p2 = np2.value;
-      if (!e || !c || !p1) { setMsg('请填写完整信息'); return; }
-      if (p1 !== p2) { setMsg('两次输入的新密码不一致'); return; }
-      resetBtn.disabled = true; resetBtn.textContent = '重置中…';
-      adminPost({ event: 'QW_FORGOT_RESET_PASSWORD', email: e, code: c, newPass: p1 }).then(function (r) {
-        if (r && r.code === 0) { setMsg(r.message || '密码已重置', true); resetBtn.textContent = '完成'; setTimeout(renderLoginView, 1500); }
-        else { setMsg((r && r.message) || '重置失败'); resetBtn.disabled = false; resetBtn.textContent = '重置密码'; }
-      }).catch(function () { setMsg('网络异常，请重试'); resetBtn.disabled = false; resetBtn.textContent = '重置密码'; });
-    };
-    resetBtn.addEventListener('click', doReset);
-    document.getElementById('qw-f-back').addEventListener('click', function () { if (_qwForgotCd) clearTimeout(_qwForgotCd); renderLoginView(); });
-    email.focus();
-  }
-
   function fmtTime(ts) {
     if (!ts) return '';
     var d = new Date(Number(ts));
