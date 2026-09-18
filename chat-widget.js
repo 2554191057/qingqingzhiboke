@@ -1563,9 +1563,9 @@
       var id = c.id || '';
       var links = c.querySelectorAll('.tk-action-link');
       if (!links.length) return;
-      // 未登录：隐藏赞/踩/回复（前3个操作按钮），防止游客刷赞/踩
+      // 未登录：隐藏全部操作按钮（赞/踩/回复/删除/编辑），防止游客刷赞/踩和误触管理
       if (!loggedIn) {
-        for (var li = 0; li < 3 && li < links.length; li++) links[li].style.display = 'none';
+        for (var li = 0; li < links.length; li++) links[li].style.display = 'none';
         return;
       }
       var likeBtn = links[0];
