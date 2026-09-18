@@ -1376,11 +1376,16 @@
           linkMap.get(activeId)?.classList.add('active');
         }
 
-        // 滚动按钮动态指向下一板块/上一板块：下滑到下一个、上滑到上一个
-        const activeIdx = navOrder.findIndex(s => s.id === activeId);
-        if (activeIdx >= 0) {
-          const nxt = navOrder[activeIdx + 1];
-          const prv = navOrder[activeIdx - 1];
+        // 滚动按钮动态指向下一板块/上一板块：下滑到下一个、上滑到上一个（正序遍历 offsetTop 判定当前板块）
+        let curSec = null;
+        for (const sec of navOrder) {
+          if (sec.offsetTop - 120 <= st) curSec = sec;
+          else break;
+        }
+        if (curSec) {
+          const nidx = navOrder.indexOf(curSec);
+          const nxt = navOrder[nidx + 1];
+          const prv = navOrder[nidx - 1];
           $$('.section-scroll-down, .hero-scroll-hint').forEach(btn => {
             if (nxt) btn.dataset.next = nxt.id;
             if (prv) btn.dataset.prev = prv.id;
