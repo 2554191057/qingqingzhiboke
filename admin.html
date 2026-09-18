@@ -232,7 +232,7 @@ if (sessionStorage.getItem('auth_ok') !== '1') {
   </div>
   <div class="t-right">
     <button class="t-btn" id="btnTheme" title="切换日间/夜间模式" style="font-size:12px;padding:7px 11px">☀️ 日间</button>
-    <button class="t-btn" id="btnBack" onclick="if(history.length>1){history.back()}else{location.href='boke.html'}">← 返回</button>
+    <button class="t-btn" id="btnQuit" onclick="quitAdmin()">退出</button>
     <button class="t-btn" id="btnAuto" style="display:none" title="每10秒自动刷新统计/消息/日志">自动刷新：开</button>
     <button class="t-btn" id="btnLogout" style="display:none">退出登录</button>
   </div>
@@ -1060,6 +1060,14 @@ document.addEventListener('visibilitychange', function () {
 });
 
 /* ===== 顶栏按钮 ===== */
+// 退出：清登录态并返回来源页；无历史记录时留在后台显示未登录（不回首页）
+function quitAdmin() {
+  stopAutoRefresh();
+  try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
+  adminToken = '';
+  if (history.length > 1) history.back();
+  else renderLoginView();
+}
 document.getElementById('btnLogout').addEventListener('click', function () {
   stopAutoRefresh();
   try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
