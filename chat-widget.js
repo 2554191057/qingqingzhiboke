@@ -1264,6 +1264,11 @@
       setBtnRestore(btn, '保存昵称');
       if (r.code === 0) {
         localStorage.setItem(QW_NICK, nick);
+        // 同步 Twikoo 昵称字段，否则发新评论和聊天室显示仍用旧昵称
+        applyVisitorToTwikoo();
+        // 同步账号设置弹窗里显示的当前昵称
+        var curNickEl = document.getElementById('qw-set-current-nick');
+        if (curNickEl) curNickEl.textContent = nick;
         showSetMsg('昵称已修改', true);
         logAction('改昵称', '昵称改为: ' + nick);
         setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
