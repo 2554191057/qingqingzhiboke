@@ -276,14 +276,9 @@ function adminGoBack() {
     var d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   }
-  var saved = null, savedDate = null;
-  try { saved = localStorage.getItem('qw_theme'); savedDate = localStorage.getItem('qw_theme_date'); } catch (e) {}
-  if (saved === 'dark' && savedDate === themeDateStr()) html.setAttribute('data-theme', 'dark');
-  else if (saved === 'light' && savedDate === themeDateStr()) html.setAttribute('data-theme', 'light');
-  else {
-    var h = new Date().getHours();
-    html.setAttribute('data-theme', (h >= 19 || h < 7) ? 'dark' : 'light');
-  }
+  // 每次进入页面始终按智能时间判断（夜间19-7点）；手动切换仅当前访问生效，下次进入自动恢复
+  var h = new Date().getHours();
+  html.setAttribute('data-theme', (h >= 19 || h < 7) ? 'dark' : 'light');
   var btn = document.getElementById('btnTheme');
   if (btn) {
     function updateThemeBtn() {
@@ -293,10 +288,7 @@ function adminGoBack() {
     btn.addEventListener('click', function () {
       var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', next);
-      try {
-        localStorage.setItem('qw_theme', next);
-        localStorage.setItem('qw_theme_date', themeDateStr());
-      } catch (e) {}
+      // 手动切换仅当前访问生效，不持久化（下次进入按智能时间判断）
       updateThemeBtn();
     });
   }
