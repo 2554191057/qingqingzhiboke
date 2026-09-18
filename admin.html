@@ -365,6 +365,15 @@ function getIpLocation(ip, cb) {
     cb('');
   }).catch(function () { cb(''); });
 }
+var ipQueue = [], ipBusy = 0, IP_MAX_CONC = 6;
+function pumpIpQueue() {
+  while (ipBusy < IP_MAX_CONC && ipQueue.length) {
+    var t = ipQueue.shift();
+    ipBusy++;
+    getIpLocation(t.ip, function (loc) { ipBusy--; t.cb(loc); pumpIpQueue(); });
+  }
+}
+function enqueueIp(ip, cb) { ipQueue.push({ ip: ip, cb: cb }); pumpIpQueue(); }
 function enrichIps() {
   var rows = document.querySelectorAll('.msg-item, .log-item');
   rows.forEach(function (it) {
@@ -373,7 +382,7 @@ function enrichIps() {
     var m = text.match(/IP\s*([0-9a-fA-F:.]+)/);
     if (!m) return;
     it.setAttribute('data-ip-done', '1');
-    getIpLocation(m[1], function (loc) {
+    enqueueIp(m[1], function (loc) {
       if (!loc) return;
       var locEl = it.querySelector('.log-loc'); // 日志：省市区县插到 IP 前
       if (locEl) { locEl.textContent = loc; return; }
@@ -447,7 +456,7 @@ function renderManageView(silent) {
     return adminPost({ event: 'QW_ADMIN_WHITELIST', accessToken: adminToken });
   }).then(function (rw) {
     if (rw && rw.code === 0) wlist = rw.data || [];
-    return adminPost({ event: 'QW_LOG_LIST', accessToken: adminToken, per: 100 });
+    return adminPost({ event: 'QW_LOG_LIST', accessToken: adminToken, per: 10000 });
   }).then(function (rl) {
     if (rl && rl.code === 0) adminLogs = rl.data || [];
     return adminPost({ event: 'QW_ONLINE_COUNT' });
@@ -545,7 +554,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
   }
   h += '<div class="mgmt-add"><input type="text" id="wlInput" placeholder="输入邮箱或昵称加入白名单"><button data-act="add-wl">添加</button></div></div>';
 
-  h += '<div class="panel" id="logSection"><h3>📋 操作日志（最近100条）<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs) + '</div>';
+  h += '<div class="panel" id="logSection"><h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs) + '</div>';
 
   document.getElementById('mainView').innerHTML = h;
   enrichIps();
@@ -727,7 +736,7 @@ function bindActions() {
       adminLogFilter = b.getAttribute('data-cat') || 'all';
       var sec = document.getElementById('logSection');
       if (sec) {
-        sec.innerHTML = '<h3>📋 操作日志（最近100条）<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs);
+        sec.innerHTML = '<h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs);
         bindActions();
         enrichIps();
       }
@@ -741,7 +750,7 @@ function bindActions() {
         if (r && r.code === 0) {
           adminLogs = adminLogs.filter(function (x) { return String(x._id) !== String(id); });
           var sec = document.getElementById('logSection');
-          if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
+          if (sec) { sec.innerHTML = '<h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
         } else alert((r && r.message) || '删除失败');
       });
     });
@@ -790,7 +799,7 @@ function bindActions() {
           }
           if (done >= remain) {
             var sec = document.getElementById('logSection');
-            if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
+            if (sec) { sec.innerHTML = '<h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
           }
         }).catch(function () { done++; });
       });
