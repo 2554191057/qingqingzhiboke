@@ -1711,6 +1711,7 @@
     closeChat();
     // 聊天室锁图标 → 跳转独立后台管理页（admin.html 与聊天室共用 qw_admin_token，登录态自动带入）；先记来源页供后台返回按钮使用
     try { sessionStorage.setItem('qw_admin_from', location.href); } catch (e) {}
+    try { sessionStorage.setItem('qw_admin_from_chat', '1'); } catch (e) {}
     location.href = 'admin.html';
   });
   document.getElementById('qw-logout-btn').addEventListener('click', function () {

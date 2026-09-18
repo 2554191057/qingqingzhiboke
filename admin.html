@@ -226,6 +226,13 @@ if (!sessionStorage.getItem('auth_ok') && !localStorage.getItem('qw_auth_ok')) {
 }
 // 返回：优先用进入后台时保存的来源页（聊天室锁图标/导航logo），回来源页并自动打开聊天室（?chat=1）；无记录时回上一页
 function adminGoBack() {
+  var fromChat = '';
+  try { fromChat = sessionStorage.getItem('qw_admin_from_chat') || ''; } catch (e) {}
+  if (fromChat) {
+    try { sessionStorage.removeItem('qw_admin_from_chat'); } catch (e) {}
+    location.href = 'fklts.html';
+    return;
+  }
   var from = '';
   try { from = sessionStorage.getItem('qw_admin_from') || ''; } catch (e) {}
   var m = from.match(/^https?:\/\/[^\/]+\/(boke|wenzhang|wangpan|shengri)(\.html)?/);
