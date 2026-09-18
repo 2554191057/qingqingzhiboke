@@ -638,6 +638,16 @@
   }
   // ===== 清理气泡结尾换行符（<p>x</p>\n 在 pre-wrap 下产生空行，气泡被撑成竖条） =====
   function trimBubbleText() {
+    var contents = document.querySelectorAll('.qw-body #twikoo .tk-content');
+    for (var k = 0; k < contents.length; k++) {
+      var cn = contents[k].childNodes;
+      for (var ci = 0; ci < cn.length; ci++) {
+        var cn0 = cn[ci];
+        if (cn0 && cn0.nodeType === 3 && /^\s*$/.test(cn0.nodeValue || '')) {
+          cn0.parentNode.removeChild(cn0);
+        }
+      }
+    }
     var spans = document.querySelectorAll('.qw-body #twikoo .tk-content span');
     for (var i = 0; i < spans.length; i++) {
       var sp = spans[i];
