@@ -767,6 +767,7 @@
       initTwikoo();
       setTimeout(function(){
         refreshLoginUI();
+        verifyLoginState();
         syncLikesByEmail();
         refreshComments();
       }, 200);
@@ -796,8 +797,9 @@
   var _origOpen = openChat;
   openChat = function () {
     _origOpen.apply(this, arguments);
-    setTimeout(function(){ refreshLoginUI(); verifyLoginState(); }, 300);
+    setTimeout(refreshLoginUI, 300);
   };
+  window.openChatRoom = openChat;
   var loginBarBtn = document.getElementById('qw-login-bar-btn');
   if (loginBarBtn) loginBarBtn.addEventListener('click', openLogin);
   var loginSubmit = document.getElementById('qw-login-submit');
