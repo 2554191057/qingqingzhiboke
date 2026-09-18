@@ -24,3 +24,5 @@ node_modules/
 # macOS metadata
 ._*
 .DS_Store
+
+boke_test*.html
