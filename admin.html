@@ -212,7 +212,6 @@ input, button { font-family: inherit; }
   </div>
   <div class="t-right">
     <button class="t-btn" id="btnBack" onclick="location.href='boke.html'">← 返回首页</button>
-    <button class="t-btn" id="btnRefresh" style="display:none">刷新数据</button>
     <button class="t-btn" id="btnAuto" style="display:none" title="每10秒自动刷新统计/消息/日志">自动刷新：开</button>
     <button class="t-btn" id="btnLogout" style="display:none">退出登录</button>
   </div>
@@ -391,7 +390,6 @@ function enrichIps() {
 function renderLoginView() {
   document.getElementById('topSub').textContent = '未登录';
   document.getElementById('btnLogout').style.display = 'none';
-  document.getElementById('btnRefresh').style.display = 'none';
   document.getElementById('btnAuto').style.display = 'none';
   stopAutoRefresh();
   document.getElementById('mainView').innerHTML =
@@ -433,7 +431,6 @@ function renderLoginView() {
 function renderManageView(silent) {
   document.getElementById('topSub').textContent = '已登录';
   document.getElementById('btnLogout').style.display = '';
-  document.getElementById('btnRefresh').style.display = '';
   document.getElementById('btnAuto').style.display = '';
   adminRefreshing = true;
   startAutoRefresh();
@@ -865,9 +862,6 @@ document.getElementById('btnLogout').addEventListener('click', function () {
   try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
   adminToken = '';
   renderLoginView();
-});
-document.getElementById('btnRefresh').addEventListener('click', function () {
-  if (adminToken) renderManageView();
 });
 
 /* ===== 启动 ===== */
