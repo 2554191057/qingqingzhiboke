@@ -785,7 +785,8 @@
     if (ta && (!ta.placeholder || ta.placeholder === '友善交流，文明发言…')) ta.placeholder = '发消息…';
   }
   // 监听评论列表变化（新增/加载）自动重新标记
-  var tcommentEl = document.getElementById('tcomment');
+  // 注意：Twikoo init 会把 #tcomment 替换成 #twikoo 根节点，观察器必须挂在稳定的 .qw-body 上
+  var tcommentEl = document.querySelector('.qw-body');
   if (tcommentEl && window.MutationObserver) {
     var mo = new MutationObserver(function () { scheduleMark(); });
     mo.observe(tcommentEl, { childList: true, subtree: true });
@@ -2074,6 +2075,7 @@
       if (panel) panel.classList.remove('qw-logged-in');
       hideMetaInput(false);
     }
+    try { markLiked(); } catch (eM) {}
   }
   // 已登录时只留发言框：隐藏昵称/邮箱输入行（JS 强制，CSS 双保险）
   function hideMetaInput(hide) {
