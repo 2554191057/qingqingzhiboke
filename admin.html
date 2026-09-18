@@ -201,6 +201,12 @@ input, button { font-family: inherit; }
   .admin-topbar { padding: 12px 14px; }
 }
 </style>
+<script>
+// 管理后台同样走验证页 yanzheng.html：无验证标记时先过验证，通过后带 back 参数跳回本页
+if (sessionStorage.getItem('auth_ok') !== '1') {
+  location.replace('yanzheng.html?back=admin.html');
+}
+</script>
 </head>
 <body>
 
@@ -211,7 +217,7 @@ input, button { font-family: inherit; }
     <div class="t-sub" id="topSub">未登录</div>
   </div>
   <div class="t-right">
-    <button class="t-btn" id="btnBack" onclick="location.href='boke.html'">← 返回首页</button>
+    <button class="t-btn" id="btnBack" onclick="if(history.length>1){history.back()}else{location.href='boke.html'}">← 返回</button>
     <button class="t-btn" id="btnAuto" style="display:none" title="每10秒自动刷新统计/消息/日志">自动刷新：开</button>
     <button class="t-btn" id="btnLogout" style="display:none">退出登录</button>
   </div>
