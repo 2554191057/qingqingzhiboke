@@ -1558,10 +1558,16 @@
   }
   function markLiked() {
     var myEmail = (getVisitor().email || '').trim().toLowerCase();
+    var loggedIn = isLoggedIn();
     document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
       var id = c.id || '';
       var links = c.querySelectorAll('.tk-action-link');
       if (!links.length) return;
+      // 未登录：隐藏赞/踩/回复（前3个操作按钮），防止游客刷赞/踩
+      if (!loggedIn) {
+        for (var li = 0; li < 3 && li < links.length; li++) links[li].style.display = 'none';
+        return;
+      }
       var likeBtn = links[0];
       var dislikeBtn = links[1] || null;
       if (likedSet[id]) {
@@ -1783,7 +1789,7 @@
   else if (/OPR\//.test(s)) br = 'Opera';
   var brand = '';
   var model = '';
-  var mAndroid = s.match(/Android [0-9.]+; ([^;)]+)/);
+  var mAndroid = s.match(/Android [0-9.]+(?:; [^;]+)*; ([^;)]+)/); // 跨过语言标签(zh-cn等)提取真实认证型号
   if (mAndroid) {
     model = mAndroid[1].replace(/\s*Build[^;)]*/i, '').replace(/^\s*(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*|(\s+)(zh-cn|zh-tw|zh-hk|en-us|en-gb|en|ja|ko|fr|de|es|ru|it|pt|vi|th|id|in|ar|tr)\s*$/ig, '').trim();
   }
@@ -1831,10 +1837,92 @@
     else if (/V[0-9]{4}|vivo|iQOO/i.test(model)) brand = 'vivo';
     else if (/M200|M210|2201/i.test(model)) brand = '小米';
   }
+
+  // 认证型号 → 机型名映射（按 UA 中真实型号输出具体设备；未收录的退回品牌+型号）
+  var MODEL_NAMES = {
+    // 红米
+    '23078RKD5C': '红米 K60 至尊版',
+    '23117RK66C': '红米 K60',
+    '23013RK75C': '红米 Note 12 Turbo',
+    '22127RK46C': '红米 K50 至尊版',
+    '22122RK93C': '红米 K50',
+    '2112123AC': '红米 K40',
+    '22041216C': '红米 Note 11T Pro',
+    '23090RA98C': '红米 Note 13 Pro+',
+    '22101320C': '红米 Note 12 Pro',
+    '23049RAD8C': '红米 Note 12T Pro',
+    // 小米
+    '2312DRA50C': '小米 14',
+    '23127PN0CC': '小米 14 Pro',
+    '2304FPN6DC': '小米 13',
+    '2211133C': '小米 13 Pro',
+    '2308CPXD0C': '小米 13 Ultra',
+    '24031PN0DC': '小米 14 Ultra',
+    '24069RA21C': '红米 K70 至尊版',
+    '2311DRK48C': '红米 K70',
+    '2407FRK8EC': '红米 K70 Pro',
+    // 小米平板
+    '23046RP50C': '小米平板 6',
+    '23043RP34C': '小米平板 6 Pro',
+    '23078KB12C': '小米平板 6 Max',
+    'M2105K81AC': '小米平板 5',
+    '21051182G': '小米平板 5 Pro 12.4',
+    // 华为
+    'ELS-AN00': '华为 Mate 40 Pro',
+    'LIO-AL00': '华为 P40 Pro',
+    'ANA-AN00': '华为 P40',
+    'ALT-AL00': '华为 P50 Pro',
+    'ALN-AL00': '华为 Mate 50',
+    'DBR-W09': '华为 MatePad 11',
+    'DBY-W09': '华为 MatePad 10.4',
+    'AGS3-W09': '华为 MatePad 10.4 2022',
+    'BAH3-W59': '华为 MatePad SE',
+    // 荣耀
+    'PGT-AN10': '荣耀 Magic5',
+    'PTP-AN00': '荣耀 Magic5 Pro',
+    'MAA-AN00': '荣耀 90',
+    'LGE-AN00': '荣耀 80 GT',
+    'AGM3-W09HN': '荣耀平板 V8 Pro',
+    // OPPO
+    'PHZ110': 'OPPO Find X7',
+    'PJD110': 'OPPO Find X7 Ultra',
+    'PGT110': 'OPPO Reno11',
+    'CPH2600': 'OPPO Find X8',
+    'CPH2449': 'OPPO Reno10 Pro+',
+    // vivo
+    'V2309A': 'vivo X100',
+    'V2329A': 'vivo X100 Pro',
+    'V2303A': 'vivo S17',
+    'V2241A': 'vivo X90 Pro+',
+    'V2183A': 'iQOO 10',
+    // 三星
+    'SM-S9280': '三星 Galaxy S24 Ultra',
+    'SM-S9180': '三星 Galaxy S23 Ultra',
+    'SM-S9110': '三星 Galaxy S23',
+    'SM-A5360': '三星 Galaxy A53',
+    'SM-T500': '三星 Galaxy Tab A7',
+    'SM-T870': '三星 Galaxy Tab S7',
+    'SM-T970': '三星 Galaxy Tab S7+',
+    // 联想 / 拯救者
+    'TB-9707F': '联想拯救者 Y700',
+    'TB-9707X': '联想拯救者 Y700',
+    'TB-321FC': '联想拯救者 Y700 二代',
+    'TB-J606F': '联想小新 Pad Pro 2021',
+    // 其他
+    'GM1910': '一加 7 Pro',
+    'LE2120': '一加 9 Pro',
+    'PGZ110': '一加 12',
+    'RMX3350': 'realme GT Neo2',
+    'RMX3820': 'realme GT 5 Pro'
+  };
+
   var extra = [];
-  if (model) extra.push(model);
-  if (brand && extra.indexOf(brand) === -1) extra.unshift(brand);
-  return dev + ' · ' + (os === 'Android' ? '' : os + ' · ') + br + (extra.length ? ' · ' + extra.join(' ') : '');
+  if (model) {
+    var mn = MODEL_NAMES[String(model).toUpperCase().trim()] || '';
+    extra.push(mn || model); // 命中映射输出机型名，否则输出认证型号
+  }
+  if (!mn && brand && extra.indexOf(brand) === -1) extra.unshift(brand);
+  return dev + ' · ' + (os === '安卓' ? '' : os + ' · ') + br + (extra.length ? ' · ' + extra.join(' ') : '');
 }
 
   // 事件类型中文化：visit_<页面> → 访问<中文页名>（兼容历史英文日志）
