@@ -338,7 +338,7 @@
     '<p style="font-size:11px;opacity:.6;margin:0 0 8px">一周最多改3次，次日0点后才能再改</p>' +
     '<div class="qw-login-field" id="qw-pwd-old-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-pwd-old-pwd" placeholder="当前密码"></div>' +
     '<div class="qw-login-field" id="qw-pwd-code-field" style="display:none"><div style="display:flex;gap:6px;width:100%"><input type="text" id="qw-set-pwd-code" placeholder="邮箱验证码" style="flex:1"><button type="button" class="qw-send-code" id="qw-set-pwd-sendcode">发码</button></div></div>' +
-    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd1" placeholder="新密码（至少4位）"></div>' +
+    '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd1" placeholder="新密码（至少8位，需含字母和数字/符号）"></div>' +
     '<div class="qw-login-field"><span class="qw-f-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><input type="password" id="qw-set-new-pwd2" placeholder="确认新密码"></div>' +
     '<button class="qw-submit" id="qw-set-pwd-save" style="margin-top:6px">保存密码</button>' +
     '<button type="button" id="qw-pwd-forgot" style="display:block;width:100%;margin-top:8px;border:none;background:none;color:var(--jp-accent);font-size:11px;cursor:pointer;text-decoration:underline;padding:4px 0;">忘记密码？通过邮箱验证码重置</button>' +
@@ -355,7 +355,7 @@
     '<div id="qw-login-backdrop" class="qw-login-backdrop">' +
     '<div class="qw-login-panel">' +
     '<div class="qw-login-head">' +
-    '<div class="qw-login-logo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>' +
+    '<div class="qw-login-logo"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>' +
     '<h3 id="qw-login-title">登录发言</h3><p id="qw-login-sub">输入邮箱或昵称和密码登录</p>' +
     '</div>' +
     '<div class="qw-login-tabs">' +
@@ -1373,7 +1373,7 @@
     var v = getVisitor();
     var p1 = document.getElementById('qw-set-new-pwd1').value;
     var p2 = document.getElementById('qw-set-new-pwd2').value;
-    if (!p1 || p1.length < 4) { showSetMsg('新密码至少4位', false); return; }
+    if (!qwPwdOk(p1)) { showSetMsg('密码至少8位，且需包含字母和数字/符号（不能纯数字）', false); return; }
     if (p1 !== p2) { showSetMsg('两次密码不一致', false); return; }
     var body = { event:'QW_USER_UPDATE', email: v.email, newPassword: p1 };
     if (pwdMode === 'old') {
@@ -1507,6 +1507,7 @@
     if (loginMode === 'register' && !nick) { msgEl.textContent = '请输入昵称'; return; }
     if (!email) { msgEl.textContent = '请输入邮箱或昵称'; return; } if (loginMode === 'register' && email.indexOf('@') < 0) { msgEl.textContent = '请输入有效邮箱'; return; }
     if (!pwd) { msgEl.textContent = '请输入密码'; return; }
+    if (loginMode === 'register' && !qwPwdOk(pwd)) { msgEl.textContent = '密码至少8位，且需包含字母和数字/符号（不能纯数字）'; return; }
     var btn = document.getElementById('qw-login-submit');
     if (btn) btn.disabled = true;
     var bodyData = { event: 'QW_USER_AUTH', email: email, password: pwd };
@@ -1642,6 +1643,13 @@
   function setBtnLoading(btn, text) { btn.disabled = true; btn.textContent = text; }
   function setBtnRestore(btn, text) { btn.disabled = false; btn.textContent = text; }
   var loginMode = 'login'; // 'login' or 'register'
+  function qwPwdOk(pw) {
+    if (!pw || pw.length < 8) return false;
+    var hasDigit = /\d/.test(pw);
+    var hasLetter = /[A-Za-z]/.test(pw);
+    var hasSym = /[^A-Za-z0-9]/.test(pw);
+    return (hasDigit && hasLetter) || (hasDigit && hasSym) || (hasLetter && hasSym);
+  }
   function setLoginMode(mode) {
     loginMode = mode;
     var nickEl = document.getElementById('qw-login-nick');
