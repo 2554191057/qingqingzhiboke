@@ -127,7 +127,8 @@
     '.qw-login-backdrop.qw-open{display:flex;animation:qwFade .2s ease;}',
     '.qw-login-panel{position:relative;width:340px;max-width:100%;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;padding:0;box-shadow:0 18px 60px rgba(0,0,0,.45),0 0 30px var(--jp-glow);overflow:hidden;animation:qwPop .25s cubic-bezier(.16,1,.3,1);}',
     '.qw-login-head{position:relative;padding:26px 24px 18px;text-align:center;background:linear-gradient(135deg,rgba(8,127,174,.16),rgba(72,102,219,.16));border-bottom:1px solid var(--jp-line);}',
-    '.qw-login-head .qw-login-logo{width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#087fae,#4866db);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 18px rgba(8,127,174,.4);}',
+    '.qw-login-head .qw-login-logo{width:44px;height:44px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#087fae,#4866db);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 18px rgba(8,127,174,.4);overflow:hidden;font-weight:700;font-size:19px;text-transform:uppercase;}',
+    '.qw-login-head .qw-login-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;border:none;}',
     '.qw-login-head h3{margin:0 0 3px;font-size:17px;color:var(--jp-ink);font-weight:700;}',
     '.qw-login-head p{margin:0;font-size:11px;color:var(--jp-muted);}',
     '.qw-login-tabs{display:flex;margin:0 24px;padding-top:14px;gap:8px;}',
@@ -313,7 +314,7 @@
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
     '<div class="qw-login-mask" id="qw-login-mask">' +
     '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div>' +
-    '<div class="qw-login-bar"><div class="qw-lb-text"><h4>加入聊天</h4><p>使用邮箱登录，昵称与头像取自邮箱公开资料</p></div><div class="qw-lb-right"><p>登录后即可发言</p><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div></div></div>' +
+    '<div class="qw-login-bar"><div class="qw-lb-text"><h4>加入聊天</h4><p>注册账号后即可发言，支持QQ邮箱头像</p></div><div class="qw-lb-right"><p>登录后即可发言</p><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div></div></div>' +
     '</div></div>' +
     /* 访客登录弹窗 */
     '<div id="qw-settings-modal" class="qw-login-backdrop">' +
@@ -795,7 +796,7 @@
   var _origOpen = openChat;
   openChat = function () {
     _origOpen.apply(this, arguments);
-    setTimeout(refreshLoginUI, 300);
+    setTimeout(function(){ refreshLoginUI(); verifyLoginState(); }, 300);
   };
   var loginBarBtn = document.getElementById('qw-login-bar-btn');
   if (loginBarBtn) loginBarBtn.addEventListener('click', openLogin);
@@ -1488,6 +1489,48 @@
     if (inputs[0]) setNativeValue(inputs[0], v.nick);
     if (inputs[1]) setNativeValue(inputs[1], v.email);
   }
+  // ===== 注册态核验：本地登录态仅凭 localStorage 昵称+邮箱，需向后端确认邮箱确实注册过账号 =====
+  function checkRegistered(email, cb) {
+    if (!email || email.indexOf('@') < 0) { cb(false); return; }
+    fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ event: 'QW_USER_CHECK', email: email })
+    }).then(function(r){ return r.json(); }).then(function(r){
+      cb(!!(r && r.code === 0 && r.data && r.data.registered));
+    }).catch(function(){ cb(null); });
+  }
+  // 打开聊天室/登录后核验：邮箱未注册则清除残留登录态并回到登录门，避免"看得到聊天框却发不出"的假登录态
+  function verifyLoginState() {
+    var v = getVisitor();
+    if (!v.email) return;
+    checkRegistered(v.email, function (reg) {
+      if (reg === false) {
+        try {
+          localStorage.removeItem(QW_NICK);
+          localStorage.removeItem(QW_EMAIL);
+          localStorage.removeItem('qw_user_pwd');
+        } catch (e) {}
+        refreshLoginUI();
+        var tip = document.querySelector('.qw-login-bar .qw-lb-text p');
+        if (tip) {
+          tip.textContent = '该邮箱未注册账号，请注册或登录后发言';
+          setTimeout(function(){ tip.textContent = '注册账号后即可发言，支持QQ邮箱头像'; }, 6000);
+        }
+      }
+    });
+  }
+  // 账号设置弹窗头部头像：QQ 邮箱显示 QQ 头像，其他邮箱显示昵称首字
+  function renderAccountAvatar(el, nick, email) {
+    if (!el) return;
+    var m = String(email || '').trim().toLowerCase().match(/^(\d+)@qq\.com$/);
+    var ch = nick && nick.trim() ? nick.trim()[0].toUpperCase() : '?';
+    if (m) {
+      var qq = m[1];
+      el.innerHTML = '<img src="https://q1.qlogo.cn/g?b=qq&nk=' + qq + '&s=100" alt="" onerror="this.style.display=\'none\';this.parentNode.textContent=\'' + ch + '\'">';
+    } else {
+      el.textContent = ch;
+    }
+  }
   function bindSendCode(btnId, emailVal, type, msgEl) {
     var btn = document.getElementById(btnId);
     if (!btn) return;
@@ -1547,6 +1590,7 @@
       } catch (e) {}
       closeLogin();
       refreshLoginUI();
+      verifyLoginState();
       syncLikesByEmail();
       try {
         var act = (r.data && r.data.action) || '';
@@ -1640,6 +1684,7 @@
     // 头部显示当前登录账号
     var headSub = document.querySelector('#qw-settings-modal .qw-login-head p');
     if (headSub) headSub.textContent = (v.nick || '未登录') + ' · ' + (v.email || '');
+    renderAccountAvatar(document.querySelector('#qw-settings-modal .qw-login-logo'), v.nick, v.email);
     setTab('nick');
     settingsModal.classList.add('qw-open');
   }
@@ -1799,7 +1844,25 @@
   else if (/Android/.test(s)) os = '安卓';
   else if (/Linux/.test(s)) os = 'Linux';
   var br = '浏览器';
-  if (/LenovoBrowser|LBBROWSER/i.test(s)) br = '联想浏览器';
+  if (/MicroMessenger|wxwork/i.test(s)) br = /wxwork/i.test(s) ? '企业微信' : '微信内置浏览器';
+  else if (/AlipayClient/i.test(s)) br = '支付宝内置浏览器';
+  else if (/XiaoMi|MiuiBrowser|MiuiBrower/i.test(s)) br = '小米浏览器';
+  else if (/HuaweiBrowser|HiBrowser/i.test(s)) br = '华为浏览器';
+  else if (/HonorBrowser/i.test(s)) br = '荣耀浏览器';
+  else if (/OPPOBrowser|HeyTapBrowser/i.test(s)) br = 'OPPO浏览器';
+  else if (/VivoBrowser|vivobrowser/i.test(s)) br = 'vivo浏览器';
+  else if (/SamsungBrowser/i.test(s)) br = '三星浏览器';
+  else if (/UCBrowser|UCWEB|UBrowser/i.test(s)) br = 'UC浏览器';
+  else if (/QQBrowser|MQQBrowser/i.test(s)) br = 'QQ浏览器';
+  else if (/Quark/i.test(s)) br = '夸克浏览器';
+  else if (/baiduboxapp|BaiduBrowser/i.test(s)) br = '百度浏览器';
+  else if (/SogouMobileBrowser|SogouBrowser/i.test(s)) br = '搜狗浏览器';
+  else if (/360 ?Aphone ?Browser|360browser|QIHU 360EE/i.test(s)) br = '360浏览器';
+  else if (/LieBao|Liebao/i.test(s)) br = '猎豹浏览器';
+  else if (/Maxthon/i.test(s)) br = '傲游浏览器';
+  else if (/VIA\//i.test(s)) br = 'VIA浏览器';
+  else if (/XBrowser/i.test(s)) br = 'X浏览器';
+  else if (/LenovoBrowser|LBBROWSER/i.test(s)) br = '联想浏览器';
   else if (/Edg\//.test(s)) br = 'Edge';
   else if (/Chrome\//.test(s) && !/OPR/.test(s)) br = 'Chrome';
   else if (/Firefox\//.test(s)) br = '火狐';
