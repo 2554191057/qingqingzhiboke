@@ -466,7 +466,7 @@ function renderLoginView() {
     '<input id="adminPwd" type="password" placeholder="请输入管理密码" autocomplete="off">' +
     '<button class="login-btn" id="loginBtn">登 录</button>' +
     '<div class="login-err" id="loginErr"></div>' +
-    '<div class="login-hint">登录后可管理访客消息、拉黑、维护 IP 白名单、查看操作日志与在线访客</div>' +
+    '<div class="login-hint">登录后可管理访客消息、拉黑、维护 IP 白名单、查看操作日志与在线访客 · <a href="javascript:void(0)" id="forgotLink" style="color:var(--jp-accent)">忘记密码？</a></div>' +
     '</div></div>';
   var input = document.getElementById('adminPwd');
   var btn = document.getElementById('loginBtn');
@@ -491,6 +491,65 @@ function renderLoginView() {
   };
   btn.addEventListener('click', doLogin);
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter') doLogin(); });
+  var forgotLink = document.getElementById('forgotLink');
+  if (forgotLink) forgotLink.addEventListener('click', renderForgotView);
+}
+
+/* ===== 找回密码视图 ===== */
+var _forgotCdTimer = null;
+function renderForgotView() {
+  document.getElementById('mainView').innerHTML =
+    '<div class="login-wrap"><div class="login-card">' +
+    '<div class="lock"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>' +
+    '<h2>找回管理密码</h2>' +
+    '<p>通过管理员邮箱验证码重置后台密码</p>' +
+    '<input id="fEmail" type="email" placeholder="请输入管理员邮箱" autocomplete="off">' +
+    '<div style="display:flex;gap:8px;margin-bottom:14px">' +
+    '<input id="fCode" type="text" placeholder="邮箱验证码" style="flex:1;margin:0" autocomplete="off">' +
+    '<button class="login-btn" id="fSendCode" style="padding:10px 14px;white-space:nowrap;width:auto">发送验证码</button>' +
+    '</div>' +
+    '<input id="fNewPwd" type="password" placeholder="新密码" autocomplete="off">' +
+    '<input id="fNewPwd2" type="password" placeholder="确认新密码" autocomplete="off">' +
+    '<button class="login-btn" id="fResetBtn">重置密码</button>' +
+    '<div class="login-err" id="fMsg"></div>' +
+    '<div class="login-hint"><a href="javascript:void(0)" id="fBack" style="color:var(--jp-accent)">← 返回登录</a></div>' +
+    '</div></div>';
+  var email = document.getElementById('fEmail');
+  var code = document.getElementById('fCode');
+  var np = document.getElementById('fNewPwd');
+  var np2 = document.getElementById('fNewPwd2');
+  var msg = document.getElementById('fMsg');
+  var sendBtn = document.getElementById('fSendCode');
+  var resetBtn = document.getElementById('fResetBtn');
+  var setMsg = function (t, ok) { msg.textContent = t; msg.style.color = ok ? '#16a34a' : 'var(--jp-danger)'; };
+  var cd = 0;
+  function tick() {
+    if (cd <= 0) { sendBtn.disabled = false; sendBtn.textContent = '发送验证码'; return; }
+    sendBtn.disabled = true; sendBtn.textContent = cd + 's 后重发';
+    cd--; _forgotCdTimer = setTimeout(tick, 1000);
+  }
+  sendBtn.addEventListener('click', function () {
+    var e = email.value.trim();
+    if (!e) { setMsg('请输入管理员邮箱'); return; }
+    sendBtn.disabled = true; sendBtn.textContent = '发送中…';
+    adminPost({ event: 'QW_FORGOT_SEND_CODE', email: e }).then(function (r) {
+      if (r && r.code === 0) { setMsg(r.message || '验证码已发送', true); cd = 60; tick(); }
+      else { setMsg((r && r.message) || '发送失败'); sendBtn.disabled = false; sendBtn.textContent = '发送验证码'; }
+    }).catch(function () { setMsg('网络异常，请重试'); sendBtn.disabled = false; sendBtn.textContent = '发送验证码'; });
+  });
+  var doReset = function () {
+    var e = email.value.trim(), c = code.value.trim(), p1 = np.value, p2 = np2.value;
+    if (!e || !c || !p1) { setMsg('请填写完整信息'); return; }
+    if (p1 !== p2) { setMsg('两次输入的新密码不一致'); return; }
+    resetBtn.disabled = true; resetBtn.textContent = '重置中…';
+    adminPost({ event: 'QW_FORGOT_RESET_PASSWORD', email: e, code: c, newPass: p1 }).then(function (r) {
+      if (r && r.code === 0) { setMsg(r.message || '密码已重置', true); resetBtn.textContent = '完成'; setTimeout(renderLoginView, 1500); }
+      else { setMsg((r && r.message) || '重置失败'); resetBtn.disabled = false; resetBtn.textContent = '重置密码'; }
+    }).catch(function () { setMsg('网络异常，请重试'); resetBtn.disabled = false; resetBtn.textContent = '重置密码'; });
+  };
+  resetBtn.addEventListener('click', doReset);
+  document.getElementById('fBack').addEventListener('click', function () { if (_forgotCdTimer) clearTimeout(_forgotCdTimer); renderLoginView(); });
+  email.focus();
 }
 
 /* ===== 管理视图 ===== */
