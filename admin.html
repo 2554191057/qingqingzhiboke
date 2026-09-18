@@ -222,7 +222,7 @@ input, button { font-family: inherit; }
 </style>
 <script>
 // 管理后台同样走验证页 yanzheng.html（与其他页面一致）：无验证标记时先过验证，通过后带 back 参数跳回本页
-if (!sessionStorage.getItem('auth_ok') && !localStorage.getItem('qw_auth_ok')) {
+if (!sessionStorage.getItem('auth_ok')) {
   location.replace('yanzheng.html?back=admin.html');
 }
 // 返回：优先用进入后台时保存的来源页（聊天室锁图标/导航logo），回来源页并自动打开聊天室（?chat=1）；无记录时回上一页
