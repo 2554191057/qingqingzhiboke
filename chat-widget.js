@@ -1785,12 +1785,12 @@
   if (/Windows NT 10/.test(s)) os = 'Windows';
   else if (/iPhone|iPad/.test(s)) os = 'iOS';
   else if (/Mac OS X/.test(s)) os = 'Mac';
-  else if (/Android/.test(s)) os = 'Android';
+  else if (/Android/.test(s)) os = '安卓';
   else if (/Linux/.test(s)) os = 'Linux';
   var br = '浏览器';
   if (/Edg\//.test(s)) br = 'Edge';
   else if (/Chrome\//.test(s) && !/OPR/.test(s)) br = 'Chrome';
-  else if (/Firefox\//.test(s)) br = 'Firefox';
+  else if (/Firefox\//.test(s)) br = '火狐';
   else if (/Safari\//.test(s)) br = 'Safari';
   else if (/OPR\//.test(s)) br = 'Opera';
   var brand = '';
@@ -1812,7 +1812,7 @@
   else if (/HUAWEI|ELS-|LIO-|TAS-|ANA-|VOG-|HUAWEI/i.test(s)) brand = '华为';
   else if (/OPPO|CPH[0-9]{4}|PGT[0-9]{3}|PEG[0-9]{3}/i.test(s)) brand = 'OPPO';
   else if (/vivo|V[0-9]{4}/i.test(s)) brand = 'vivo';
-  else if (/Pixel/i.test(s)) brand = 'Google';
+  else if (/Pixel/i.test(s)) brand = '谷歌';
   else if (/Moto|motorola/i.test(s)) brand = '摩托罗拉';
   else if (/Lenovo/i.test(s)) brand = '联想';
   else if (/Meizu/i.test(s)) brand = '魅族';
@@ -1837,6 +1837,8 @@
   // 事件类型中文化：visit_<页面> → 访问<中文页名>（兼容历史英文日志）
   function typeCn(t) {
     if (!t) return t;
+    if (/^online$/i.test(t)) return '上线';
+    if (/^offline$/i.test(t)) return '下线';
     var m = String(t).match(/^visit_(.+)$/i);
     if (m) {
       var pageMap = { yanzheng:'验证页', boke:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', fklts:'聊天室', chat:'聊天室', index:'首页', admin:'后台' };
@@ -1934,6 +1936,7 @@
       var dist = String(d.ipdata.info3 || '');
       if (dist === '基站' || dist === '街道' || dist === '区县') dist = ''; // 基站等占位，无实际区县
       var isp = String(d.ipdata.isp || '');
+      if (/Amazon|AWS|EC2/i.test(isp)) isp = '亚马逊云';
       var parts = [];
       if (p) parts.push(p);
       if (c && c !== p) parts.push(c);
@@ -1953,6 +1956,7 @@
         if (/CHINANET|China Telecom|Chinatelecom/i.test(org)) org = '电信';
         else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
         else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
+        else if (/Amazon|AWS|EC2/i.test(org)) org = '亚马逊云';
         else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
         else org = org ? org.slice(0, 20) : '';
         var parts2 = [];
