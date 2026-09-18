@@ -153,7 +153,7 @@
             .ip-id-stats { gap: 12px; font-size: 9px; }
         }
     </style>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <style>
 * { -webkit-user-select: none !important; -moz-user-select: none !important; -ms-user-select: none !important; user-select: none !important; }
 .quote-text, .hitokoto-text, .hitokoto-content, .live2d-quote { -webkit-user-select: text !important; -moz-user-select: text !important; user-select: text !important; }
@@ -180,8 +180,9 @@ document.addEventListener('selectstart', e => {
     <div class="box">
         <h2>欢迎来到庆庆纸博客</h2>
         <p class="tip">完成验证后自动进入</p>
-        <div class="turnstile-wrap">
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess"></div>
+        <div class="turnstile-wrap" id="tsWrap">
+            <button id="tsStartBtn" style="padding:12px 32px;font-size:14px;border:none;border-radius:10px;background:var(--jp-accent,#087fae);color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(8,127,174,.3)">点击完成验证</button>
+            <div id="tsContainer" style="display:none"></div>
         </div>
         <div id="wvTip" style="display:none; margin:12px auto 0; max-width:420px; padding:12px 14px; border-radius:10px; background:rgba(248,113,113,.12); border:1px solid rgba(248,113,113,.45); color:#fca5a5; font-size:.82rem; line-height:1.7; text-align:left;">
           <b>检测到微信/QQ 内置浏览器</b>，人机验证可能无法通过。<br>请点右上角 <b>「···」</b> → 选择 <b>「在浏览器打开」</b>（或复制链接到系统浏览器）后访问。
@@ -223,6 +224,28 @@ document.addEventListener('selectstart', e => {
         if (st) { st.textContent = '内置浏览器，自动验证可能失败，请用系统浏览器打开'; st.style.color = '#fca5a5'; }
       }
     })();
+    // 点击按钮后才渲染 Turnstile（避免自动验证一直转圈）
+    var tsStarted = false;
+    document.getElementById('tsStartBtn').addEventListener('click', function () {
+      if (tsStarted) return;
+      tsStarted = true;
+      var btn = document.getElementById('tsStartBtn');
+      btn.style.display = 'none';
+      var container = document.getElementById('tsContainer');
+      container.style.display = '';
+      var doRender = function () {
+        if (typeof turnstile === 'undefined') { setTimeout(doRender, 200); return; }
+        turnstile.render('#tsContainer', {
+          sitekey: '0x4AAAAAAE5EV0SxdrUKYa70',
+          callback: onTurnstileSuccess,
+          'error-callback': function () {
+            var st = document.getElementById('tsStatus');
+            if (st) { st.textContent = '验证加载失败，请刷新页面重试'; st.style.color = '#fca5a5'; }
+          }
+        });
+      };
+      doRender();
+    });
     function onTurnstileSuccess(token) {
         sessionStorage.setItem('auth_ok', '1');
         var tsTip = document.getElementById('tsStatus');
