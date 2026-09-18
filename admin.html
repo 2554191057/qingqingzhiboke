@@ -548,7 +548,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
   }
   h += '<div class="mgmt-add"><input type="text" id="wlInput" placeholder="输入邮箱或昵称加入白名单"><button data-act="add-wl">添加</button></div></div>';
 
-  h += '<div class="panel" id="logSection"><h3>📋 操作日志（最近100条）' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs) + '</div>';
+  h += '<div class="panel" id="logSection"><h3>📋 操作日志（最近100条）<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs) + '</div>';
 
   document.getElementById('mainView').innerHTML = h;
   enrichIps();
@@ -644,6 +644,12 @@ function parseUa(ua) {
   var p = parseUaParts(ua);
   return p.dev + (p.br !== '未知浏览器' ? ' · ' + p.br : '');
 }
+// 当前筛选下的日志条数（与 buildLogHtml 过滤逻辑一致：排除 online 快照 + 按分类 tab）
+function currentLogCount() {
+  var arr = (adminLogs || []).filter(function (x) { return x.type !== 'online'; });
+  if (adminLogFilter !== 'all') arr = arr.filter(function (x) { var cat = logCatMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
+  return arr.length;
+}
 function logToolbarHtml() {
   return '<span class="log-toolbar"><button class="t-btn" data-act="toggle-all-log">全选</button><button class="t-btn danger" data-act="del-selected-log" disabled>删除选中(0)</button></span>';
 }
@@ -724,7 +730,7 @@ function bindActions() {
       adminLogFilter = b.getAttribute('data-cat') || 'all';
       var sec = document.getElementById('logSection');
       if (sec) {
-        sec.innerHTML = '<h3>📋 操作日志（最近100条）' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs);
+        sec.innerHTML = '<h3>📋 操作日志（最近100条）<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs);
         bindActions();
         enrichIps();
       }
@@ -738,7 +744,7 @@ function bindActions() {
         if (r && r.code === 0) {
           adminLogs = adminLogs.filter(function (x) { return String(x._id) !== String(id); });
           var sec = document.getElementById('logSection');
-          if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
+          if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
         } else alert((r && r.message) || '删除失败');
       });
     });
@@ -787,7 +793,7 @@ function bindActions() {
           }
           if (done >= remain) {
             var sec = document.getElementById('logSection');
-            if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
+            if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
           }
         }).catch(function () { done++; });
       });
