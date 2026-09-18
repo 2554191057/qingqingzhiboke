@@ -86,7 +86,7 @@
 
     </script>
 <script>
-if (!sessionStorage.getItem('auth_ok')) {
+var __authTime = parseInt(localStorage.getItem('auth_ok_time') || '0', 10); if (__authTime <= 0 || (Date.now() - __authTime >= 1800000)) {
   var __p = (location.pathname.split('/').pop() || '');
   var __q = (__p && __p !== 'yanzheng.html') ? '?back=' + encodeURIComponent(__p) : '';
   window.location.replace('yanzheng.html' + __q);
