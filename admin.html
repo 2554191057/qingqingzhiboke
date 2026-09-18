@@ -473,11 +473,7 @@ function getIpLocation(ip, cb) {
   }
 
   // 首选：后端代理（Netlify 函数在美国，访问 vore.top 稳定，无 CORS 问题，到区县）
-  fetch('/api/ip-loc', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ip: ip })
-  }).then(function (r) { return r.json(); }).then(function (d) {
+  fetch('/api/ip-loc?ip=' + encodeURIComponent(ip)).then(function (r) { return r.json(); }).then(function (d) {
     if (d && d.code === 0 && d.loc) { save(d.loc); }
     else { fromVoreDirect(); }
   }).catch(function () { fromVoreDirect(); });

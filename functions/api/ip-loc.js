@@ -1,4 +1,4 @@
-// Cloudflare Pages Function: IP 归属地代理
+// Cloudflare Pages Function: IP 归属地代理（GET ?ip=xxx）
 const PROV_MAP = {
   'beijing':'北京','shanghai':'上海','tianjin':'天津','chongqing':'重庆',
   'guangdong':'广东','jiangsu':'江苏','zhejiang':'浙江','shandong':'山东',
@@ -32,21 +32,13 @@ const CITY_MAP = {
 function cnCity(c) { return CITY_MAP[String(c||'').toLowerCase().replace(/\s+/g,'')] || c || ''; }
 function json(o) { return new Response(JSON.stringify(o), { headers: { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' } }); }
 
-export async function onRequestPost(context) {
-  const { request } = context;
-  let body = {};
-  try { body = await request.json(); } catch (e) {}
-  const ip = String(body.ip || '').trim();
+export async function onRequestGet(context) {
+  const url = new URL(context.request.url);
+  const ip = url.searchParams.get('ip') || '';
   if (!ip || !/^([0-9a-fA-F:.]*[0-9a-fA-F]|(\d{1,3}\.){3}\d{1,3})$/.test(ip)) return json({ code: 0, loc: '' });
-
-  // vore.top：带浏览器 UA 头，确保 ?ip= 参数被正确处理
   try {
     const resp = await fetch('https://api.vore.top/api/IPdata?ip=' + encodeURIComponent(ip), {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/json',
-        'Referer': 'https://api.vore.top/'
-      },
+      headers: { 'User-Agent': 'Mozilla/5.0', 'Accept': 'application/json' },
       signal: AbortSignal.timeout(5000)
     });
     const d = await resp.json();
@@ -66,7 +58,4 @@ export async function onRequestPost(context) {
     }
   } catch (e) {}
   return json({ code: 0, loc: '' });
-}
-export async function onRequestOptions() {
-  return new Response('', { headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' } });
 }
