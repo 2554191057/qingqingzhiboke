@@ -870,7 +870,9 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
 
   h += '<div class="panel" id="logSection"><h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs) + '</div>';
 
+  var _st = window.scrollY || document.documentElement.scrollTop || 0;
   document.getElementById('mainView').innerHTML = h;
+  window.scrollTo(0, _st);
   applyChatFilter();
   applyUserFilter();
   applyBlockFilter();
