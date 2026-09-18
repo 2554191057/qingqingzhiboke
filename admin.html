@@ -418,7 +418,7 @@ function getIpLocation(ip, cb) {
   function save(loc) {
     if (loc) {
       ipLocCache[ip] = loc;
-      try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 6, data: ipLocCache })); } catch (e) {}
+      try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 7, data: ipLocCache })); } catch (e) {}
     }
     cb(loc);
   }
@@ -473,10 +473,10 @@ function getIpLocation(ip, cb) {
   }
 
   // 首选：后端代理（Netlify 函数在美国，访问 vore.top 稳定，无 CORS 问题，到区县）
-  fetch(TWIKOO_API, {
+  fetch('/api/ip-loc', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ event: 'QW_IP_LOC', ip: ip })
+    body: JSON.stringify({ ip: ip })
   }).then(function (r) { return r.json(); }).then(function (d) {
     if (d && d.code === 0 && d.loc) { save(d.loc); }
     else { fromVoreDirect(); }
