@@ -28,9 +28,9 @@
 - 本仓库的 git 提交身份（local 级 user.name / user.email）已配置，请勿改动。
 
 ## 在线部署（每次修改后必须执行）
-**用户固定要求（2026-09-15 确认）：部署链接一律为 `https://qqzttkx.ficp.fun/`。免费档资源二次更新返回 403（update function is disabled），故每次部署=新建资源 + 花生壳控制台删旧绑主域名（用户已接受该方案）。**
+**部署规则（2026-09-18 用户最新确认）：每次完成代码修改后，一律先备份推送 Gitee + GitHub，再部署 Cloudflare Pages（wrangler pages deploy，线上 https://qqzttkx.eu.cc）——这三项是自动必做项。花生壳（hsk-cli file-hosting，主域名 https://qqzttkx.ficp.fun）暂停自动部署：除非用户明确说"更新花生壳"，否则一律不执行 hsk-cli 部署。**
 
-- 公网入口为 `yanzheng.html`（图形验证码，验证通过跳 boke.html；背景已改为樱花引导页 NianBroken/Personal_Sakura_Guide_Page 同款 WebGL 樱花飘落：深色 #1b1f22 背景 + 全屏 #sakura canvas，脚本在 `js/sakura/`，按 config→math→shaders→gl-utils→renderer→bootstrap 顺序引入）；主域名 `https://qqzttkx.ficp.fun/` 仍绑定旧资源 `hxa7wt`（2026-09-18 窄屏修复前部署，旧内容待切换）；**最新部署资源 `xv981i`（resource_id 1789694816829608302，临时 https://xv981i.gicp.fun，2026-09-18 验证页实时IP部署：本机IP改为实时显示——优先 Cloudflare cdn-cgi/trace（eu.cc 等 Cloudflare 代理域名下走同源 /cdn-cgi/trace 无 CORS 限制），失败降级 ipwho.is；白名单 WHITELIST_IPS 更新为当前公网 IP 222.245.15.167（站长 IP 已从 222.245.15.120 变化，Cloudflare 白名单需同步更新）；此前 z9kdqu(1789693678278208929) 登录弹窗头像+密码规则部署、riq9gj(1789693097500127875) 聊天室修复部署，主域名切换见资源链）**。Cloudflare 镜像 `qqzttkx.eu.cc` 与 GitHub Pages 由 git push 自动同步（2026-09-18 实测已更新，本次部署 https://6fb02516.qingqingzhiboke.pages.dev）。部署后立即 curl 验证时可能因 CDN 分发显示短内容/404，需稍候重试；curl 长输出用 `-o 文件` 方式读，避免 PowerShell 管道截断误报。
+- 公网入口为 `yanzheng.html`（图形验证码，验证通过跳 boke.html；背景已改为樱花引导页 NianBroken/Personal_Sakura_Guide_Page 同款 WebGL 樱花飘落：深色 #1b1f22 背景 + 全屏 #sakura canvas，脚本在 `js/sakura/`，按 config→math→shaders→gl-utils→renderer→bootstrap 顺序引入）；主域名 `https://qqzttkx.ficp.fun/` 仍绑定旧资源 `hxa7wt`（2026-09-18 窄屏修复前部署，旧内容待切换）；**最新部署资源 `xv981i`（resource_id 1789694816829608302，临时 https://xv981i.gicp.fun，2026-09-18 验证页实时IP部署：本机IP改为实时显示——优先 Cloudflare cdn-cgi/trace（eu.cc 等 Cloudflare 代理域名下走同源 /cdn-cgi/trace 无 CORS 限制），失败降级 ipwho.is；白名单 WHITELIST_IPS 更新为当前公网 IP 222.245.15.167（站长 IP 已从 222.245.15.120 变化，Cloudflare 白名单需同步更新）；此前 z9kdqu(1789693678278208929) 登录弹窗头像+密码规则部署、riq9gj(1789693097500127875) 聊天室修复部署，主域名切换见资源链）。**花生壳自 2026-09-18 起暂停自动部署（新规则：每次修改只推 Gitee+GitHub+Cloudflare），需用户明确指示才执行 hsk-cli。**。Cloudflare 镜像 `qqzttkx.eu.cc` 与 GitHub Pages 由 git push 自动同步（2026-09-18 实测已更新，本次部署 https://6fb02516.qingqingzhiboke.pages.dev）。部署后立即 curl 验证时可能因 CDN 分发显示短内容/404，需稍候重试；curl 长输出用 `-o 文件` 方式读，避免 PowerShell 管道截断误报。
 - 页面：boke（首页）/ wenzhang（文章）/ wangpan（资源）/ fklts（访客聊天室独立页，Twikoo path 仍为 'chat' 保证旧评论不丢；可直接访问）/ shengri（生日）/ yanzheng（验证入口）。
 - **全站悬浮访客聊天室（2026-09-16 改造，用户要求"悬浮在页面上不跳转"）**：`chat-widget.js`（新文件）自包含注入 CSS+HTML+Twikoo 资源，实现 qiguangji ChatRoom 形态——右下角悬浮按钮 `.qw-launcher`（毛玻璃、accent 边框、绿点）→ 点击打开 `.qw-backdrop` 遮罩（blur）+ `.qw-panel` 460px 居中面板（--jp-surface、圆角 18px、--jp-glow 辉光），关闭走 X/遮罩/Esc，不跳转回原页面；已接入 boke/wenzhang/wangpan/shengri（script.js 或 site-config.js 之后一行引用）；导航里指向 fklts.html/chat.html 的链接被拦截为打开弹窗；Twikoo init 首次打开时懒加载（envId=Netlify 端点、el:'#tcomment'、path:'chat'）；色板 --jp-* 由 chat-widget.js 注入，日夜跟随页面 data-theme。fklts.html 保留为独立页（整页 qiguangji 布局），直接访问可用。
 
@@ -43,7 +43,13 @@
 - **管理员功能（2026-09-16 新增，自绘面板）**：聊天室面板右上角锁图标 → 自绘毛玻璃管理弹窗（`.qw-admin-panel`）→ 输入管理密码登录 → 评论列表（昵称/邮箱/IP/时间/纯文本内容）+ [删除]（`COMMENT_DELETE_FOR_ADMIN`）+ [拉黑邮箱]（自定义 `QW_BLOCK_ADD`）+ 黑名单管理（`QW_BLOCK_LIST`/`QW_BLOCK_DELETE`）+ 退出登录。**管理密码：`庆庆纸天天开心`**（Twikoo LOGIN 校验 `config.ADMIN_PASS === md5(password)`，支持中文；管理员 accessToken=密码明文；前端存 `localStorage.qw_admin_token`）。Twikoo 自带管理抽屉 `.tk-admin-container` 已隐藏。**后端 `D:\Download\twikoo-netlify\netlify\functions\twikoo.js` 已扩展**：`QW_BLOCK_*` 自定义 action（黑名单存 MongoDB `qw_blocklist` collection，鉴权=md5(accessToken)===ADMIN_PASS）+ `COMMENT_SUBMIT` 前黑名单邮箱拦截（返回 code 403"该邮箱已被拉黑"）；改函数后需 `netlify deploy --prod --dir . --functions netlify/functions` 重部署。管理员 token 判断来源：LOGIN/SET_PASSWORD 返回的 accessToken 是匿名 uuid 非管理员 token，管理员请求必须把**密码明文**放入 body.accessToken。
 - 资源链（每代删旧绑新）：…→ qjilkz(1789559015959763669，已删) → 12yc24(1789559631103832987，已删) → s153hj(1789561790374324000，已删) → yddmph(1789561940361694110，已删) → **0z9rsw(1789562364912581163，2026-09-16 20:39 部署，主域名暂仍绑定它，待删)** → **o7xke8(1789667613866793004，2026-09-18 部署，已过时，待删)** → **gmjvgg(1789669025212101233，2026-09-18 部署，已过时，待删)** → **hb8llj(1789669749695351806，2026-09-18 部署，临时 https://hb8llj.gicp.fun，主域名当前仍绑它=旧内容，待删)** → **hxa7wt(1789671297244903532，2026-09-18 部署，临时 https://hxa7wt.gicp.fun，验证页本机IP+复制按钮，已过时，待删)** → **whbe3i(1789673155477040451，2026-09-18 部署，临时 https://whbe3i.gicp.fun，窄屏修复+vore.top区县，已过时，待删)** → **9missw(1789673925894477725，2026-09-18 部署，临时 https://9missw.gicp.fun，visit页面事件类型，已过时，待删)** → **h5im6n(1789674464887216645，2026-09-18 部署，临时 https://h5im6n.gicp.fun，复制IP功能，已过时，待删)** → **qxnx3c(1789691922162287749，2026-09-18 部署，临时 https://qxnx3c.gicp.fun，IP归属地区县修复，已过时，待删)** → **k7flxm(1789692085980926686，2026-09-18 部署，临时 https://k7flxm.gicp.fun，事件类型中文化+区县修复，已过时，待删)** → **iq5n66(1789692415162841464，2026-09-18 部署，临时 https://iq5n66.gicp.fun，日志多选删除，已过时，待删)** → **riq9gj(1789693097500127875，2026-09-18 部署，临时 https://riq9gj.gicp.fun，聊天室修复(25函数+绑定+常量)，已过时，待删)** → **z9kdqu(1789693678278208929，2026-09-18 部署，临时 https://z9kdqu.gicp.fun，登录弹窗头像+密码规则8位非纯数字，已过时，待删)** → **xv981i(1789694816829608302，2026-09-18 部署，临时 https://xv981i.gicp.fun，验证页实时IP显示+白名单167，最新；待控制台删 0z9rsw+o7xke8+gmjvgg+hb8llj+hxa7wt+whbe3i+9missw+h5im6n+qxnx3c+k7flxm+iq5n66+riq9gj+z9kdqu 并把主域名 qqzttkx.ficp.fun 绑到本资源)**。**注意：用户手动"删除资源"可能一次性删光所有资源（2026-09-16 实测），删除前务必确认只删目标行；删光后 hsk-cli 重新 file-hosting 部署，api_key 认领会自动绑定主域名。**控制台"分配自定义域名"弹窗：选闲置域名下拉选 qqzttkx.ficp.fun → 自动绑定生效（可用 bu.select 或 JS 设 select.value+dispatch change；若 JS 查询 selVal 显示 none 但弹窗已变"已生效"即成功；点"添加"有时需 JS 精确 dispatch pointer 事件链到行内 <a>）。注意：控制台"删除资源"按钮（Vue 组件）自动化点击/键盘均无法触发，需用户接管手动删除（2026-09-16 实测）。
 
-**每次 git 提交后必须同步执行一次在线部署（新建资源）：**
+**每次 git 提交后必做（自动三连）：**
+
+1. `git push origin master`（Gitee 主备份）
+2. `git push github master`（GitHub Pages，国内网络可能不稳，失败稍后重试）
+3. `wrangler pages deploy . --project-name qingqingzhiboke --branch main --commit-dirty=true`（Cloudflare，线上 https://qqzttkx.eu.cc）
+
+**花生壳部署（仅用户明确说"更新花生壳"时才执行）：**
 
 ```bash
 hsk-cli file-hosting "D:\Download\qingqingzhiboke" --entry-file yanzheng.html --format json
@@ -52,7 +58,7 @@ hsk-cli file-hosting "D:\Download\qingqingzhiboke" --entry-file yanzheng.html --
 - 返回 `data.resource_id` 与 `data.public_url`（临时域名）。随后在花生壳控制台（console-hsk-ng.oray.com → 静态托管应用）删除旧资源并给新资源绑定主域名 `qqzttkx.ficp.fun`（bu 自动化序列：点行内"删除资源"→弹窗"确定"→刷新→点新资源行"添加"→select 选 qqzttkx.ficp.fun 不含 qqzttkxpd → dispatch change，弹窗显示"已生效"即成功）。
 - hsk-cli 已全局安装（@aweray/hsk-cli，当前版本 0.7.13），API Key 已保存在 `~/.hsk/api_key.json`（file_hosting 场景），无需重复配置；找不到 `hsk-cli` 命令时先 `npm install -g @aweray/hsk-cli` 并 `hsk-cli update`。业务命令前须先跑 `hsk-cli context wizard --format json` 建立画像（见 https://hsk.oray.com/doc/cli-setup.md）。
 - 部署成功后用 `curl https://qqzttkx.ficp.fun/yanzheng.html` 和 `curl https://qqzttkx.ficp.fun/boke.html` 验证线上内容与本地一致（boke.html 应含"看板娘"集成标记）。
-- 每次部署完成后更新本文件"当前绑定资源"为新 resource_id，并提交推送。
+- 花生壳部署完成后更新本文件"最新部署资源"为新 resource_id，并提交推送。
 
 
 
