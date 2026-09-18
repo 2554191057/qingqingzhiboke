@@ -187,9 +187,13 @@ document.addEventListener('selectstart', e => {
     <script>
     function onTurnstileSuccess(token) {
         sessionStorage.setItem('auth_ok', '1');
+        var tsTip = document.getElementById('tsStatus');
+        if (tsTip) { tsTip.textContent = '验证成功，即将自动进入…'; tsTip.style.color = '#2e9e5b'; }
         var back = new URLSearchParams(location.search).get('back');
-        if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
-        location.href = 'https://qqzttkx.eu.cc/boke.html';
+        setTimeout(function () {
+            if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
+            location.href = 'https://qqzttkx.eu.cc/boke.html';
+        }, 1500);
     }
     var WHITELIST_IPS = ['222.245.15.167'];
     var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
