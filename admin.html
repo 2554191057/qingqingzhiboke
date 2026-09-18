@@ -595,7 +595,7 @@ function parseUaParts(ua) {
   if (!ua) return out;
   var s = ua;
   var isMobile = /Mobile|Android|iPhone/i.test(s);
-  var isPad = /iPad|Tablet/i.test(s) || /SM-T[0-9]|TB[0-9]{4}|KF[A-Z]{1,2}|M(?:2105|2106|2206|2208|2217|2304)|2304[0-9]RP|23078KB|(?:DBR|DBY|AGS|BAH|BTV|JDN|KOB|JKM|WGR|DBT|AGM|BDT|HEY)-W/i.test(s) || (/Android/.test(s) && !/Mobile/i.test(s));
+  var isPad = /iPad|Tablet/i.test(s) || /SM-T[0-9]|TB[0-9]{4}|KF[A-Z]{1,2}|M(?:2105|2106|2206|2208|2217|2304)|2304[0-9]RP|23078KB|Legion[ _-]?Y[0-9]{3}|(?:DBR|DBY|AGS|BAH|BTV|JDN|KOB|JKM|WGR|DBT|AGM|BDT|HEY)-W/i.test(s) || (/Android/.test(s) && !/Mobile/i.test(s));
   var dev = isPad ? '平板' : (isMobile ? '手机' : '电脑');
   var os = '未知系统';
   if (/Windows NT 10/.test(s)) os = 'Windows';
@@ -631,12 +631,27 @@ function parseUaParts(ua) {
   else if (/vivo|V[0-9]{4}/i.test(s)) brand = 'vivo';
   else if (/Pixel/i.test(s)) brand = '谷歌';
   else if (/Moto|motorola/i.test(s)) brand = '摩托罗拉';
+  else if (/Legion/i.test(s)) brand = '联想拯救者';
   else if (/Lenovo/i.test(s)) brand = '联想';
   else if (/Meizu/i.test(s)) brand = '魅族';
   else if (/Nokia/i.test(s)) brand = '诺基亚';
   else if (/HTC/i.test(s)) brand = 'HTC';
   else if (/ZTE/i.test(s)) brand = '中兴';
   else if (/Sony/i.test(s)) brand = '索尼';
+  else if (/RedMagic/i.test(s)) brand = '红魔';
+  else if (/nubia|NX[0-9]{3}/i.test(s)) brand = '努比亚';
+  else if (/SHARK|Black ?Shark/i.test(s)) brand = '黑鲨';
+  else if (/ASUS|ROG/i.test(s)) brand = '华硕';
+  else if (/Smartisan/i.test(s)) brand = '锤子';
+  else if (/GIONEE/i.test(s)) brand = '金立';
+  else if (/Coolpad/i.test(s)) brand = '酷派';
+  else if (/QIKU/i.test(s)) brand = '360';
+  else if (/Infinix|TECNO|itel/i.test(s)) brand = '传音';
+  else if (/SHARP/i.test(s)) brand = '夏普';
+  else if (/LG-|LGE/i.test(s)) brand = 'LG';
+  else if (/Nothing|A063|A065/i.test(s)) brand = 'Nothing';
+  else if (/TCL|Alcatel/i.test(s)) brand = 'TCL';
+  else if (/Meitu/i.test(s)) brand = '美图';
   if (!brand && model) {
     if (/SM-/.test(model)) brand = '三星';
     else if (/M[0-9]{4}|Redmi|POCO/i.test(model)) brand = '小米';
