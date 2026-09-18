@@ -1327,7 +1327,7 @@
         scrollRafId = null;
         const st = window.scrollY || document.documentElement.scrollTop;
         nav.classList.toggle('scrolled', st > 20);
-        back.classList.toggle('show', st > 400);
+        if (back) back.classList.toggle('show', st > 400);
 
         const delta = st - lastScrollY;
 
@@ -1408,7 +1408,7 @@
       }, ms);
     };
 
-    back.addEventListener('click', () => {
+    if (back) back.addEventListener('click', () => {
       // 从资源区等底部位置回到顶部，滚动距离很长 → 统一用4秒兜底
       window.__navJumpLock?.(4000);
       window.scrollTo({ top: 0, behavior: 'smooth' });
