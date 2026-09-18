@@ -279,9 +279,13 @@ document.addEventListener('selectstart', e => {
       ipCopyBtn.disabled = !ip;
       if (ip && WHITELIST_IPS.includes(ip)) {
         sessionStorage.setItem('auth_ok', '1');
+        var tsTip = document.getElementById('tsStatus');
+        if (tsTip) { tsTip.textContent = '已自动放行（本机IP命中白名单），即将进入…'; tsTip.style.color = '#2e9e5b'; }
         var back = new URLSearchParams(location.search).get('back');
-        if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
-        location.href = 'https://qqzttkx.eu.cc/boke.html';
+        setTimeout(function () {
+          if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
+          location.href = 'https://qqzttkx.eu.cc/boke.html';
+        }, 2600);
       }
     });
     // 访问日志：打开验证页即上报一次

@@ -1631,10 +1631,17 @@
       mask.classList.remove('qw-needs-login');
       if (panel) panel.classList.add('qw-logged-in');
       applyVisitorToTwikoo();
+      hideMetaInput(true);
     } else {
       mask.classList.add('qw-needs-login');
       if (panel) panel.classList.remove('qw-logged-in');
+      hideMetaInput(false);
     }
+  }
+  // 已登录时只留发言框：隐藏昵称/邮箱输入行（JS 强制，CSS 双保险）
+  function hideMetaInput(hide) {
+    var mi = document.querySelector('.qw-body #twikoo .tk-meta-input');
+    if (mi) mi.style.display = hide ? 'none' : '';
   }
   function saveSets() {
       try { localStorage.setItem(LK, JSON.stringify(likedSet)); } catch (e2) {}
