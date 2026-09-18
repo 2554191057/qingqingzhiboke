@@ -1339,7 +1339,17 @@
   return dev + ' · ' + (os === 'Android' ? '' : os + ' · ') + br + (extra.length ? ' · ' + extra.join(' ') : '');
 }
 
-  // 构建操作日志区块 HTML（含筛选按钮），配合局部刷新
+  // 事件类型中文化：visit_<页面> → 访问<中文页名>（兼容历史英文日志）
+  function typeCn(t) {
+    if (!t) return t;
+    var m = String(t).match(/^visit_(.+)$/i);
+    if (m) {
+      var pageMap = { yanzheng:'验证页', boke:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', fklts:'聊天室', chat:'聊天室', index:'首页', admin:'后台' };
+      var k = String(m[1]).toLowerCase();
+      return '访问' + (pageMap[k] || m[1]);
+    }
+    return t;
+  }  // 构建操作日志区块 HTML（含筛选按钮），配合局部刷新
   function buildLogHtml(logs) {
     var cats = [
       { key:'all', label:'全部' },
@@ -1367,7 +1377,7 @@
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
         var tstr = new Date(lg.time).toLocaleString('zh-CN');
-        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除这条日志" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button></div>';
+        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '">' + escHtml(tstr) + ' · ' + escHtml(typeCn(lg.type)) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除这条日志" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button></div>';
       }
     }
     return h + '</div>';

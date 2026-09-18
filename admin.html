@@ -542,7 +542,16 @@ var logCats = [
   { key: 'interact', label: '互动' },
   { key: 'other', label: '其他' }
 ];
-var logCatMap = {
+function typeCn(t) {
+  if (!t) return t;
+  var m = String(t).match(/^visit_(.+)$/i);
+  if (m) {
+    var pageMap = { yanzheng:'验证页', boke:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', fklts:'聊天室', chat:'聊天室', index:'首页', admin:'后台' };
+    var k = String(m[1]).toLowerCase();
+    return '访问' + (pageMap[k] || m[1]);
+  }
+  return t;
+}var logCatMap = {
   '注册': 'account', '登录': 'account', '退出': 'account', '改昵称': 'account', '改密码': 'account', '改邮箱': 'account',
   '发言': 'interact', '点赞': 'interact', '点踩': 'interact',
   '访问聊天室': 'other'
@@ -606,23 +615,28 @@ function parseUa(ua) {
   return dev + ' · ' + (os === 'Android' ? '' : os + ' · ') + br + (extra.length ? ' · ' + extra.join(' ') : '');
 }
 function buildLogHtml(logs) {
-  var h = '<div style="display:flex;gap:4px;margin-bottom:12px">';
+  var h = '<div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">';
   for (var ci = 0; ci < logCats.length; ci++) {
     var c = logCats[ci];
     h += '<button data-act="set-logcat" data-cat="' + c.key + '" style="font-size:10.5px;padding:3px 11px;border:1px solid var(--jp-line);border-radius:7px;background:' + (adminLogFilter === c.key ? 'var(--jp-accent)' : 'transparent') + ';color:' + (adminLogFilter === c.key ? '#fff' : 'var(--jp-accent)') + ';cursor:pointer">' + c.label + '</button>';
   }
   h += '</div>';
-  if (!logs || !logs.length) {
+  var list = logs || [];
+  if (adminLogFilter !== 'all') list = list.filter(function (x) { var cat = logCatMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
+  h += '<div class="log-toolbar">';
+  h += '<button class="t-btn" data-act="toggle-all-log">全选</button>';
+  h += '<button class="t-btn danger" data-act="del-selected-log" disabled>删除选中(0)</button>';
+  h += '</div>';
+  if (!list.length) {
     h += '<div class="empty" style="padding:10px 0">暂无日志</div>';
   } else {
-    var list = adminLogFilter === 'all' ? logs : logs.filter(function (x) { var cat = logCatMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
-    if (!list.length) h += '<div class="empty" style="padding:10px 0">暂无此类日志</div>';
     for (var li = 0; li < list.length; li++) {
       var lg = list[li];
       var tstr = new Date(lg.time).toLocaleString('zh-CN');
-      h += '<div class="log-item">' + escHtml(tstr) + ' · ' + escHtml(lg.type) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') +
+      h += '<div class="log-item"><input type="checkbox" class="log-chk" data-id="' + escAttr(lg._id || '') + '" title="选择删除">' +
+        '<div class="log-main">' + escHtml(tstr) + ' · ' + escHtml(typeCn(lg.type)) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') +
         '<span class="log-sub" style="display:block;font-size:10.5px;opacity:.75">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span>' +
-        '<button class="log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除日志">✕</button></div>';
+        '</div><button class="log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除日志">✕</button></div>';
     }
   }
   return h;
@@ -699,6 +713,56 @@ function bindActions() {
       });
     });
   });
+  // 多选删除：复选框状态 → 更新删除选中按钮
+  function updateSelLogBtn() {
+    var boxes = document.querySelectorAll('#logSection .log-chk');
+    var n = 0;
+    boxes.forEach(function (b) { if (b.checked) n++; });
+    var btn = document.querySelector('#logSection [data-act="del-selected-log"]');
+    if (btn) { btn.disabled = n === 0; btn.textContent = '删除选中(' + n + ')'; }
+  }
+  document.querySelectorAll('#logSection .log-chk').forEach(function (box) {
+    box.addEventListener('change', updateSelLogBtn);
+  });
+  // 全选/取消全选
+  var toggleBtn = document.querySelector('#logSection [data-act="toggle-all-log"]');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', function () {
+      var boxes = document.querySelectorAll('#logSection .log-chk');
+      var allOn = true;
+      boxes.forEach(function (b) { if (!b.checked) allOn = false; });
+      boxes.forEach(function (b) { b.checked = !allOn; });
+      this.textContent = allOn ? '全选' : '取消全选';
+      updateSelLogBtn();
+    });
+  }
+  // 批量删除选中
+  var delSelBtn = document.querySelector('#logSection [data-act="del-selected-log"]');
+  if (delSelBtn) {
+    delSelBtn.addEventListener('click', function () {
+      var ids = [];
+      document.querySelectorAll('#logSection .log-chk:checked').forEach(function (b) {
+        var id = b.getAttribute('data-id');
+        if (id) ids.push(id);
+      });
+      if (!ids.length) return;
+      if (!confirm('确定删除选中的 ' + ids.length + ' 条日志吗？此操作不可恢复。')) return;
+      var remain = ids.length;
+      var done = 0;
+      ids.forEach(function (id) {
+        adminPost({ event: 'QW_LOG_DELETE', accessToken: adminToken, id: id }).then(function (r) {
+          done++;
+          if (r && r.code === 0) {
+            adminLogs = adminLogs.filter(function (x) { return String(x._id) !== String(id); });
+          }
+          if (done >= remain) {
+            var sec = document.getElementById('logSection');
+            if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
+          }
+        }).catch(function () { done++; });
+      });
+    });
+  }
 }
 
 /* ===== 复制日志IP ===== */
