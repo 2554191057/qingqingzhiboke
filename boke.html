@@ -955,12 +955,12 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
 /* === 769-1100px：缩小waifu模型但保持工具栏跟随模型 === */
 @media (min-width: 769px) and (max-width: 1100px) {
   #live2d { width: 150px !important; height: 180px !important; }
-  #waifu { right: 5px !important; margin-bottom: 70px !important; }
+  #waifu { right: 5px !important; left: auto !important; margin-bottom: 70px !important; }
 }
 /* === 窄屏waifu适配：仅真正手机宽度才缩小，桌面/平板保持原样 === */
 @media (max-width: 768px) {
   #live2d { width: 110px !important; height: 140px !important; }
-  #waifu { right: 2px !important; margin-bottom: 58px !important; }
+  #waifu { right: 2px !important; left: auto !important; margin-bottom: 58px !important; }
   #waifu-toggle { right: 10px !important; bottom: 10px !important; padding: 6px 12px !important; font-size: 12px !important; }
   .social-grid, .resources-grid, .blog-grid { grid-template-columns: 1fr !important; }
 }
