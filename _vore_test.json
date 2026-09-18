@@ -1,0 +1,26 @@
+﻿{
+    "code": 200,
+    "msg": "SUCCESS",
+    "ipinfo": {
+        "type": "ipv4",
+        "text": "223.152.124.15",
+        "cnip": true
+    },
+    "ipdata": {
+        "info1": "湖南省",
+        "info2": "郴州市",
+        "info3": "嘉禾",
+        "isp": "移动"
+    },
+    "adcode": {
+        "o": "湖南省郴州市嘉禾 - 移动",
+        "p": "湖南",
+        "c": "郴州",
+        "n": "湖南-郴州",
+        "r": "湖南-郴州",
+        "a": "431000",
+        "i": true
+    },
+    "tips": "接口由VORE-API(https:\/\/api.vore.top\/)免费提供",
+    "time": 1789741667
+}
