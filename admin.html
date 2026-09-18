@@ -278,8 +278,9 @@ function adminGoBack() {
   }
   var saved = null, savedDate = null;
   try { saved = localStorage.getItem('qw_theme'); savedDate = localStorage.getItem('qw_theme_date'); } catch (e) {}
-  if (saved === 'dark' && savedDate === themeDateStr()) html.setAttribute('data-theme', 'dark');
-  else if (saved === 'light' && savedDate === themeDateStr()) html.setAttribute('data-theme', 'light');
+  // 手动选择永久生效；仅未手动切换过的访客按时间判断（夜间19-7点）
+  if (saved === 'dark') html.setAttribute('data-theme', 'dark');
+  else if (saved === 'light') html.setAttribute('data-theme', 'light');
   else {
     var h = new Date().getHours();
     html.setAttribute('data-theme', (h >= 19 || h < 7) ? 'dark' : 'light');
