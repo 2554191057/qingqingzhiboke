@@ -247,7 +247,7 @@ document.addEventListener('selectstart', e => {
                 setTimeout(function () {
                     if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
                     location.replace('boke.html');
-                }, 300);
+                }, 500);
             } else {
                 if (tsTip) { tsTip.textContent = '验证失败，请刷新重试'; tsTip.style.color = '#fca5a5'; }
                 if (wrap) wrap.style.display = '';
@@ -260,7 +260,7 @@ document.addEventListener('selectstart', e => {
             setTimeout(function () {
                 if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
                 location.replace('boke.html');
-            }, 300);
+            }, 500);
         });
     }
     function onTurnstileError() {
@@ -361,7 +361,7 @@ document.addEventListener('selectstart', e => {
           setTimeout(function () {
             if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
             location.replace('boke.html');
-          }, 1000);
+          }, 500);
         }
       });
     });
