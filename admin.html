@@ -305,6 +305,43 @@ var autoRefreshOn = true;
 var autoRefreshTimer = null;
 var adminRefreshing = false;
 
+function showQwLoading() {
+  var dlg = document.createElement('div');
+  dlg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:flex;align-items:center;justify-content:center;flex-direction:column';
+  dlg.innerHTML =
+    '<div style="width:104px;height:104px;position:relative">' +
+    '<svg viewBox="0 0 104 104" width="104" height="104">' +
+    '<circle cx="52" cy="52" r="44" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="7"/>' +
+    '<circle id="qwLoadRing" cx="52" cy="52" r="44" fill="none" stroke="#4f9cf9" stroke-width="7" stroke-linecap="round" stroke-dasharray="276.46" stroke-dashoffset="276.46" transform="rotate(-90 52 52)" style="transition:stroke-dashoffset .25s linear"/>' +
+    '</svg>' +
+    '<span id="qwLoadNum" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700">0%</span>' +
+    '</div>' +
+    '<p id="qwLoadText" style="color:#fff;font-size:13px;margin:14px 0 0">加载中…</p>';
+  document.body.appendChild(dlg);
+  var ring = dlg.querySelector('#qwLoadRing');
+  var numEl = dlg.querySelector('#qwLoadNum');
+  var total = 276.46;
+  var pct = 0;
+  var anim = setInterval(function () {
+    pct = Math.min(pct + 4, 90);
+    ring.style.strokeDashoffset = (total * (1 - pct / 100)).toFixed(2);
+    numEl.textContent = pct + '%';
+    if (pct >= 90) clearInterval(anim);
+  }, 50);
+  window.__qwLoadDlg = dlg;
+  window.__qwLoadAnim = anim;
+}
+function hideQwLoading() {
+  if (!window.__qwLoadDlg) return;
+  var d = document.getElementById('qwLoadText');
+  if (d) d.textContent = '加载完成';
+  var r = document.getElementById('qwLoadRing');
+  var n = document.getElementById('qwLoadNum');
+  if (r) r.style.strokeDashoffset = 0;
+  if (n) n.textContent = '100%';
+  clearInterval(window.__qwLoadAnim);
+  setTimeout(function () { try { window.__qwLoadDlg.remove(); } catch (e) {} window.__qwLoadDlg = null; }, 400);
+}
 function adminPost(data) {
   return fetch(TWIKOO_API, {
     method: 'POST',
@@ -578,7 +615,7 @@ function renderManageView(silent) {
   document.getElementById('btnAuto').style.display = '';
   adminRefreshing = true;
   startAutoRefresh();
-  if (!silent) document.getElementById('mainView').innerHTML = '<div class="loading"><div class="spin"></div><br>加载聊天数据…</div>';
+  if (!silent) showQwLoading();
   var blocks = [], wlist = [], likeMap = {};
   var onlineCount = 0;
   var accounts = [];
@@ -605,6 +642,7 @@ function renderManageView(silent) {
   }).then(function (r1) {
     if (!r1 || r1.code !== 0) {
       adminRefreshing = false;
+      hideQwLoading();
       document.getElementById('mainView').innerHTML = '<div class="loading">' + escHtml((r1 && r1.message) || '登录已失效，请重新登录') + '</div>';
       if (r1 && r1.code !== 0) {
         try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
@@ -623,9 +661,10 @@ function renderManageView(silent) {
         });
       }.bind(null, p));
     }
-    seq.then(function () { adminRefreshing = false; renderManageList(all, blocks, wlist, likeMap, onlineCount, accounts); });
+    seq.then(function () { adminRefreshing = false; hideQwLoading(); renderManageList(all, blocks, wlist, likeMap, onlineCount, accounts); });
   }).catch(function (e) {
     adminRefreshing = false;
+    hideQwLoading();
     console.error('admin load error:', e);
     document.getElementById('mainView').innerHTML = '<div class="loading">网络异常，加载失败</div>';
   });
