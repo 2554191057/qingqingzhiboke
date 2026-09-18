@@ -194,7 +194,28 @@
         Live2D.captureFrame = true;
       }
     },
-    info: { icon: SVG.info, callback: () => { window.location.href = "/about"; } },
+    info: {
+      icon: SVG.info,
+      callback: () => {
+        const existing = document.getElementById("waifu-about");
+        if (existing) { existing.remove(); return; }
+        const panel = document.createElement("div");
+        panel.id = "waifu-about";
+        panel.innerHTML =
+          '<div class="waifu-about-title">庆庆纸博客</div>' +
+          '<div class="waifu-about-text">欢迎来到庆庆纸的小窝～<br>聊天 · 文章 · 资源 · 生日，一网打尽</div>' +
+          '<button type="button" class="waifu-about-admin" id="waifu-about-admin">后台管理</button>';
+        document.body.appendChild(panel);
+        document.getElementById("waifu-about-admin").addEventListener("click", () => {
+          window.location.href = "admin.html";
+        });
+        setTimeout(() => {
+          document.addEventListener("click", function handler(ev) {
+            if (!panel.contains(ev.target)) { panel.remove(); document.removeEventListener("click", handler); }
+          });
+        }, 0);
+      }
+    },
     quit: {
       icon: SVG.quit,
       callback: () => {

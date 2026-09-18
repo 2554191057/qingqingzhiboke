@@ -829,7 +829,7 @@ window.addEventListener('load', function() {
     Promise.all([
         loadRes(CDN + 'css/right.css?v=8', 'css'),
         loadRes(CDN + 'live2d.min.js?v=8', 'js'),
-        loadRes('live2d/waifu-tips.js?v=5', 'js')
+        loadRes('live2d/waifu-tips.js?v=6', 'js')
     ]).then(function() {
         window.UtDebug = window.UtDebug || {};
         ['error', 'log', 'warn'].forEach(function(m) {
@@ -867,6 +867,38 @@ window.addEventListener('load', function() {
   width: auto !important;
   z-index: 95 !important;
 }
+/* 看板娘-关于本站面板（含后台管理入口） */
+#waifu-about {
+  position: fixed;
+  right: 20px;
+  bottom: 130px;
+  z-index: 96;
+  width: 210px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.95);
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 8px 30px rgba(0,0,0,.18);
+  backdrop-filter: blur(10px);
+  font-size: 12px;
+  color: #334155;
+}
+#waifu-about .waifu-about-title { font-size: 14px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
+#waifu-about .waifu-about-text { line-height: 1.7; color: #64748b; margin-bottom: 10px; }
+#waifu-about .waifu-about-admin {
+  width: 100%;
+  padding: 7px 0;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+#waifu-about .waifu-about-admin:hover { opacity: .9; }
+[data-theme="dark"] #waifu-about { background: rgba(16,27,48,.95); border-color: rgba(255,255,255,.1); color: #e2e8f0; }
+[data-theme="dark"] #waifu-about .waifu-about-title { color: #f1f5f9; }
+[data-theme="dark"] #waifu-about .waifu-about-text { color: #94a3b8; }
 #waifu-toggle span { writing-mode: horizontal-tb !important; }
 /* 看板娘工具条——直接对齐参考站 right.css 布局 */
 #waifu { right: 10px; margin-bottom: 76px; bottom: 0; left: auto; width: auto; height: auto; }
