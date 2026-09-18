@@ -201,7 +201,7 @@
     '.qw-body #twikoo .tk-content p{color:var(--jp-ink)!important;margin:0!important;}',
     '.qw-body #twikoo .tk-content a{color:var(--jp-accent)!important;}',
     /* ===== 微信聊天流：隐藏评论区元素（统计/排序/设备/footer） ===== */
-    '.qw-body #twikoo .tk-comments-title,.qw-body #twikoo .tk-action-bar,.qw-body #twikoo .tk-comments-switch,.qw-body #twikoo .tk-extra,.qw-body #twikoo .tk-extras,.qw-body #twikoo .tk-footer{display:none!important;}',
+    '.qw-body #twikoo .tk-comments-title,.qw-body #twikoo .tk-action-bar,.qw-body #twikoo .tk-comments-switch,.qw-body #twikoo .tk-extra,.qw-body #twikoo .tk-extras,.qw-body #twikoo .tk-footer,.qw-body #twikoo .tk-comments-actions,.qw-body #twikoo .tk-comments-sort,.qw-body #twikoo .tk-comments-search,.qw-body #twikoo .tk-comments-count{display:none!important;}',
     '.qw-body #twikoo .tk-comments-container{padding-top:6px!important;}',
     /* 时间用居中时间条显示（微信式），隐藏每条小时间 */
     '.qw-body #twikoo .tk-time{display:none!important;}',
@@ -302,7 +302,7 @@
 '<div class="qw-resize-handle" id="qw-resize-handle"></div>' +
     '<header>' +
     '<div class="qw-head-icon"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div>' +
-    '<div><h2 id="qw-title">聊天室</h2><p><span class="qw-dot"></span>实时同步 · Powered by Twikoo</p></div>' +
+    '<div><h2 id="qw-title">聊天室</h2><p><span class="qw-dot"></span>实时同步</p></div>' +
 
     '<button class="qw-admin-btn" id="qw-admin-trigger" aria-label="后台管理" title="后台管理"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></button>' +
     '<button class="qw-settings-btn" id="qw-settings-btn" title="账号设置"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>' +
@@ -313,7 +313,7 @@
     '<p class="qw-notice">庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。</p>' +
     '<div class="qw-login-mask" id="qw-login-mask">' +
     '<div class="qw-body"><div id="tcomment"></div><button id="qw-comment-btn" class="qw-comment-btn" aria-label="写评论"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>写评论…</button></div>' +
-    '<div class="qw-login-bar"><div class="qw-lb-text"><h4>身份验证</h4><p>昵称和头像使用你的邮箱公开资料</p></div><div class="qw-lb-right"><p>登录后才可以发送消息</p><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div></div></div>' +
+    '<div class="qw-login-bar"><div class="qw-lb-text"><h4>加入聊天</h4><p>使用邮箱登录，昵称与头像取自邮箱公开资料</p></div><div class="qw-lb-right"><p>登录后即可发言</p><button class="qw-lb-btn" id="qw-login-bar-btn">登 录</button></div></div></div>' +
     '</div></div>' +
     /* 访客登录弹窗 */
     '<div id="qw-settings-modal" class="qw-login-backdrop">' +
@@ -713,7 +713,7 @@
     if (inners.length >= 1) inners[0].placeholder = '昵称';
     if (inners.length >= 2) inners[1].placeholder = '邮箱';
     var ta = submit.querySelector('textarea');
-    if (ta && (!ta.placeholder || ta.placeholder === '友善交流，文明发言…')) ta.placeholder = '友善交流，文明发言…';
+    if (ta && (!ta.placeholder || ta.placeholder === '友善交流，文明发言…')) ta.placeholder = '发消息…';
   }
   // 监听评论列表变化（新增/加载）自动重新标记
   var tcommentEl = document.getElementById('tcomment');
