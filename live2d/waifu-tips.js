@@ -81,6 +81,19 @@
       showMessage(msg, 4000, 10);
       if (this.useCDN) {
         if (!this.modelList) await this.loadModelList();
+        // 每次进入网站（新会话首次加载）随机切换人物或服装
+        if (!sessionStorage.getItem("waifuRandDone")) {
+          sessionStorage.setItem("waifuRandDone", "1");
+          if (Math.random() < 0.5) {
+            id = Math.floor(Math.random() * this.modelList.models.length);
+            tid = 0;
+          } else {
+            const cur = this.modelList.models[id] || this.modelList.models[0] || [];
+            if (cur.length > 1) tid = Math.floor(Math.random() * cur.length);
+          }
+          localStorage.setItem("modelId", id);
+          localStorage.setItem("modelTexturesId", tid);
+        }
         const variants = this.modelList.models[id] || this.modelList.models[20] || this.modelList.models[0];
         const path = variants[Number(tid)] || variants[0];
         loadlive2d("live2d", `${this.cdnPath}model/${path}/index.json`);
