@@ -216,7 +216,12 @@ document.addEventListener('selectstart', e => {
     </header>
 
     <!-- ========== 悬浮聊天室直达页（聊天室以悬浮面板形式打开） ========== -->
-    <script>window.location.replace('boke.html?chat=1');</script>
+    <script>
+      // 从后台管理返回（?direct=1）时停留在本页显示聊天室；其他直达访问跳首页+聊天室弹窗
+      if (location.search.indexOf('direct=1') === -1) {
+        window.location.replace('boke.html?chat=1');
+      }
+    </script>
 
     <!-- 全站悬浮聊天室组件（自包含 CSS/HTML/Twikoo） -->
     <script src="chat-widget.js?v=131"></script>
