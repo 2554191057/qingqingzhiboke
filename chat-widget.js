@@ -1814,9 +1814,34 @@
     if (!v.nick) return;
     document.cookie = 'twikoo-nick=' + encodeURIComponent(v.nick) + ';path=/;max-age=31536000';
     document.cookie = 'twikoo-mail=' + encodeURIComponent(v.email || '') + ';path=/;max-age=31536000';
+    // Twikoo 的 tk-meta-input 从 localStorage('twikoo') 初始化，且 3 秒刷新会重建组件；
+    // 必须直接写入，否则重建后 metaData 为空、发送按钮永久禁用
+    try { localStorage.setItem('twikoo', JSON.stringify({ nick: v.nick, mail: v.email || '', link: '' })); } catch (eLS) {}
     var inputs = document.querySelectorAll('.qw-body .tk-meta-input input');
     if (inputs[0]) setNativeValue(inputs[0], v.nick);
     if (inputs[1]) setNativeValue(inputs[1], v.email);
+    // 直接驱动 tk-meta-input 组件完成 updateMeta 事件链（绕开输入事件与重建的时序竞态）
+    try {
+      var tw = document.getElementById('twikoo');
+      var vm = tw && tw.__vue__;
+      if (vm) {
+        var queue = [vm], seen = {}, mi = null;
+        for (var qi = 0; qi < queue.length && qi < 60; qi++) {
+          var cur = queue[qi];
+          if (!cur || seen[cur._uid]) continue;
+          seen[cur._uid] = 1;
+          var d = cur.$data || {};
+          if (d.metaInputs !== undefined && d.metaData !== undefined) { mi = cur; break; }
+          if (cur.$children) for (var ci = 0; ci < cur.$children.length; ci++) queue.push(cur.$children[ci]);
+        }
+        if (mi) {
+          mi.metaData.nick = v.nick;
+          mi.metaData.mail = v.email || '';
+          if (mi.metaData.link === undefined) mi.metaData.link = '';
+          if (mi.updateMeta) mi.updateMeta();
+        }
+      }
+    } catch (eA) {}
   }
   // ===== 注册态核验：本地登录态仅凭 localStorage 昵称+邮箱，需向后端确认邮箱确实注册过账号 =====
   function checkRegistered(email, cb) {
