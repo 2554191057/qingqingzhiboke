@@ -804,6 +804,28 @@
       }).catch(function(){});
     } catch (e) {}
   })();
+  // 锚点区块访问上报：点击导航里的"关于/联系"等锚点，记录 visit_about / visit_contact 日志（会话内每个锚点一次）
+  window.qwReportBlockVisit = function (anchor) {
+    try {
+      if (!anchor) return;
+      var key = 'qw_visit_sent_anchor_' + anchor;
+      try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1'); } catch (e) {}
+      fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + '#' + anchor, referrer: document.referrer })
+      }).catch(function(){});
+    } catch (e) {}
+  };
+  document.addEventListener('click', function (e) {
+    try {
+      var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      var h = (a.getAttribute('href') || '').replace('#', '').trim().toLowerCase();
+      if (h === 'about' || h === 'social' || h === 'contact' || h === 'gy' || h === 'lx') {
+        if (window.qwReportBlockVisit) qwReportBlockVisit(h);
+      }
+    } catch (e2) {}
+  });
   // 打开聊天室后刷新登录态
   var _origOpen = openChat;
   openChat = function () {
@@ -1779,7 +1801,7 @@
   if (!ua) return '未知设备';
   var s = ua;
   var isMobile = /Mobile|Android|iPhone/i.test(s);
-  var isPad = /iPad|Tablet/i.test(s);
+  var isPad = /iPad|Tablet/i.test(s) || /SM-T[0-9]|TB[0-9]{4}|KF[A-Z]{1,2}|M(?:2105|2106|2206|2208|2217|2304)/i.test(s) || (/Android/.test(s) && !/Mobile/i.test(s));
   var dev = isPad ? '平板' : (isMobile ? '手机' : '电脑');
   var os = '未知系统';
   if (/Windows NT 10/.test(s)) os = 'Windows';
@@ -1788,7 +1810,8 @@
   else if (/Android/.test(s)) os = '安卓';
   else if (/Linux/.test(s)) os = 'Linux';
   var br = '浏览器';
-  if (/Edg\//.test(s)) br = 'Edge';
+  if (/LenovoBrowser|LBBROWSER/i.test(s)) br = '联想浏览器';
+  else if (/Edg\//.test(s)) br = 'Edge';
   else if (/Chrome\//.test(s) && !/OPR/.test(s)) br = 'Chrome';
   else if (/Firefox\//.test(s)) br = '火狐';
   else if (/Safari\//.test(s)) br = 'Safari';
@@ -1841,7 +1864,7 @@
     if (/^offline$/i.test(t)) return '下线';
     var m = String(t).match(/^visit_(.+)$/i);
     if (m) {
-      var pageMap = { yanzheng:'验证页', boke:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', fklts:'聊天室', chat:'聊天室', index:'首页', admin:'后台' };
+      var pageMap = { yanzheng:'验证页', boke:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', fklts:'聊天室', chat:'聊天室', index:'首页', admin:'后台', about:'关于页', social:'联系页', contact:'联系页', gy:'关于页', lx:'联系页', birthdaycard:'生日卡' };
       var k = String(m[1]).toLowerCase();
       return '访问' + (pageMap[k] || m[1]);
     }
