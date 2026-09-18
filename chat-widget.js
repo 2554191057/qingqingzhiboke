@@ -528,37 +528,7 @@
     });
   }
   // ===== 聊天气泡：识别"自己"的消息（对比 localStorage 昵称）→ 右侧 =====
-  var wlEmailSet = {};
-  function loadWhitelist() {
-    fetch(TWIKOO_API, { method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ event:'QW_ADMIN_CHECK_WHITELIST', email: (function(){try{return localStorage.getItem('qw_visitor_email')||'';}catch(e){return '';}})() })
-    }).then(function(r){return r.json();}).then(function(r){
-      if (r && r.code === 0 && r.data.whitelisted) {
-        var v = getVisitor();
-        if (v.email) wlEmailSet[v.email] = 1;
-        addWlBadges();
-      }
-    }).catch(function(){});
-  }
-  function addWlBadges() {
-    var list = document.querySelectorAll('.qw-body #twikoo .tk-comment');
-    for (var i = 0; i < list.length; i++) {
-      var cc = list[i];
-      var nickEl = cc.querySelector('.tk-nick');
-      if (!nickEl) continue;
-      var cMail = '';
-      try {
-        var vue = cc.__vue__;
-        if (vue && vue.comment) cMail = (vue.comment.mail || '').trim().toLowerCase();
-      } catch(e) {}
-      if (cMail && wlEmailSet[cMail] && !nickEl.querySelector('.qw-admin-badge')) {
-        var badge = document.createElement('span');
-        badge.className = 'qw-admin-badge';
-        badge.textContent = '管理员';
-        nickEl.appendChild(badge);
-      }
-    }
-  }
+
   function renameEmpty() {
     var els = document.querySelectorAll('.qw-body #twikoo *');
     for (var i = 0; i < els.length; i++) {
@@ -752,7 +722,6 @@
   if (tcommentEl && window.MutationObserver) {
     var mo = new MutationObserver(function () { scheduleMark(); });
     mo.observe(tcommentEl, { childList: true, subtree: true });
-  loadWhitelist();
   }
 
   function getVisitor() {

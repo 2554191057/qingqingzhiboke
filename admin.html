@@ -1097,7 +1097,7 @@ function parseUa(ua) {
 // 当前筛选下的日志条数（与 buildLogHtml 过滤逻辑一致：排除 online 快照 + 按分类 tab）
 function logMatch(x, q) {
   var uap = parseUaParts(x.ua);
-  var hay = (String(x.nick || '') + ' ' + String(x.email || '') + ' ' + typeCn(x.type) + ' ' + String(x.detail || '') + ' ' + String(x.page || '') + ' ' + String(x.referrer || '') + ' ' + String(x.ip || '') + ' ' + uap.dev + ' ' + uap.br).toLowerCase();
+  var hay = (String(x.nick || '') + ' ' + String(x.email || '') + ' ' + typeCn(x.type) + ' ' + String(x.detail || '') + ' ' + String(x.page || '') + ' ' + String(x.referrer || '') + ' ' + String(x.ip || '') + ' ' + (ipLocCache[x.ip] || '') + ' ' + uap.dev + ' ' + uap.br).toLowerCase();
   return hay.indexOf(String(q || '').toLowerCase()) >= 0;
 }
 function currentLogCount() {
