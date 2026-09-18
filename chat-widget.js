@@ -204,6 +204,10 @@
     '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:#fff!important;border:1px solid rgba(120,140,170,.14)!important;border-radius:8px!important;padding:6px 10px!important;font-size:12.5px!important;line-height:1.5!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.05)!important;width:fit-content!important;max-width:100%!important;min-width:0!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.15),rgba(72,102,219,.13))!important;border-color:rgba(16,147,195,.26)!important;}',
     '.qw-body #twikoo .tk-content:before,.qw-body #twikoo .tk-content:after{display:none!important;}',
+    '/* ===== 夜间模式气泡适配：对方深灰、自己深蓝，避免纯白刺眼 ===== */',
+    '[data-theme="dark"] .qw-body #twikoo .tk-content{background:rgba(30,41,59,.92)!important;border-color:rgba(148,163,184,.16)!important;box-shadow:0 1px 3px rgba(0,0,0,.25)!important;}',
+    '[data-theme="dark"] .qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(8,145,178,.28),rgba(79,70,229,.24))!important;border-color:rgba(56,189,248,.26)!important;}',
+    '[data-theme="dark"] .qw-body #twikoo .qw-quote{background:rgba(148,163,184,.08)!important;border-left-color:rgba(56,189,248,.7)!important;}',
     /* ===== 操作按钮：移到气泡下方横排（常显长条） ===== */
     '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:1!important;}',
     /* 已点赞高亮（本地记录，服务端 liked 状态不可用） */
