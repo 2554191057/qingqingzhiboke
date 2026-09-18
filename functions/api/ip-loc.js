@@ -45,14 +45,11 @@ export async function onRequestGet(context) {
     if (d && d.code === 200 && d.ipdata) {
       let p = String(d.ipdata.info1 || '').replace(/省$/, '');
       let c = String(d.ipdata.info2 || '').replace(/市$/, '');
-      let dist = String(d.ipdata.info3 || '');
-      if (dist === '基站' || dist === '街道' || dist === '区县') dist = '';
       let isp = String(d.ipdata.isp || '');
       if (/Amazon|AWS|EC2/i.test(isp)) isp = '亚马逊云';
       const parts = [];
       if (p) parts.push(p);
       if (c && c !== p) parts.push(c);
-      if (dist && dist !== c) parts.push(dist);
       if (isp) parts.push(isp);
       if (parts.length) return json({ code: 0, loc: parts.join(' ') });
     }

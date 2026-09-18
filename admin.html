@@ -418,7 +418,7 @@ function getIpLocation(ip, cb) {
   function save(loc) {
     if (loc) {
       ipLocCache[ip] = loc;
-      try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 7, data: ipLocCache })); } catch (e) {}
+      try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 8, data: ipLocCache })); } catch (e) {}
     }
     cb(loc);
   }
