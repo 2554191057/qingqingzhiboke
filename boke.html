@@ -1120,6 +1120,20 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
   #live2d { width: 90px !important; height: 115px !important; }
 }
 
+/* 看板娘响应式缩放 */
+@media (min-width: 769px) and (max-width: 1100px) {
+  #waifu { width: 150px !important; right: 5px !important; }
+  #live2d { width: 150px !important; height: 180px !important; }
+}
+@media (max-width: 768px) {
+  #waifu { width: 110px !important; right: 2px !important; margin-bottom: 58px !important; }
+  #live2d { width: 110px !important; height: 140px !important; }
+}
+@media (max-width: 480px) {
+  #waifu { width: 90px !important; margin-bottom: 48px !important; }
+  #live2d { width: 90px !important; height: 115px !important; }
+}
+
 /* 快速导航按钮（移动端汉堡菜单改文字按钮） */
 .hamburger-btn {
   align-items: center;
