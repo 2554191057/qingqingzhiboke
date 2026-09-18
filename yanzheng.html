@@ -160,7 +160,7 @@
 </style>
 <script>
 // 已验证过直接跳转，避免重复验证
-if (sessionStorage.getItem('auth_ok') === '1') {
+var __authTime = parseInt(localStorage.getItem('auth_ok_time') || '0', 10); if (__authTime > 0 && (Date.now() - __authTime < 1800000)) {
   var __b = new URLSearchParams(location.search).get('back');
   if (__b && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(__b)) { location.replace(__b); } else { location.replace('boke.html'); }
 }
@@ -240,7 +240,7 @@ document.addEventListener('selectstart', e => {
             body: JSON.stringify({ token: token })
         }).then(function(r){ return r.json(); }).then(function(d) {
             if (d && d.success) {
-                sessionStorage.setItem('auth_ok', '1');
+                localStorage.setItem('auth_ok_time', Date.now().toString());
                 if (tsTip) { tsTip.textContent = '验证成功，正在进入…'; tsTip.style.color = '#2e9e5b'; }
                 var back = new URLSearchParams(location.search).get('back');
                 setTimeout(function () {
@@ -254,7 +254,7 @@ document.addEventListener('selectstart', e => {
             }
         }).catch(function() {
             // 后端验证失败但前端 token 已通过，放行（容错）
-            sessionStorage.setItem('auth_ok', '1');
+            localStorage.setItem('auth_ok_time', Date.now().toString());
             if (tsTip) { tsTip.textContent = '验证成功，正在进入…'; tsTip.style.color = '#2e9e5b'; }
             var back = new URLSearchParams(location.search).get('back');
             setTimeout(function () {
@@ -354,7 +354,7 @@ document.addEventListener('selectstart', e => {
       ipCopyBtn.disabled = !ip;
       isIpWhitelisted(ip, function (hit) {
         if (hit) {
-          sessionStorage.setItem('auth_ok', '1');
+          localStorage.setItem('auth_ok_time', Date.now().toString());
           var tsTip = document.getElementById('tsStatus');
           if (tsTip) { tsTip.textContent = '已自动放行（本机IP命中白名单），即将进入…'; tsTip.style.color = '#2e9e5b'; }
           var back = new URLSearchParams(location.search).get('back');
