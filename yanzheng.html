@@ -186,7 +186,7 @@ document.addEventListener('selectstart', e => {
         <h2>欢迎来到庆庆纸博客</h2>
         <p class="tip">完成验证后自动进入</p>
         <div class="turnstile-wrap">
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess" data-size="normal" data-appearance="always"></div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError" data-theme="light"></div>
         </div>
         <div id="wvTip" style="display:none; margin:12px auto 0; max-width:420px; padding:12px 14px; border-radius:10px; background:rgba(248,113,113,.12); border:1px solid rgba(248,113,113,.45); color:#fca5a5; font-size:.82rem; line-height:1.7; text-align:left;">
           <b>检测到微信/QQ 内置浏览器</b>，人机验证可能无法通过。<br>请点右上角 <b>「···」</b> → 选择 <b>「在浏览器打开」</b>（或复制链接到系统浏览器）后访问。
@@ -231,13 +231,19 @@ document.addEventListener('selectstart', e => {
 
     function onTurnstileSuccess(token) {
         sessionStorage.setItem('auth_ok', '1');
+        var wrap = document.querySelector('.turnstile-wrap');
+        if (wrap) wrap.style.display = 'none';
         var tsTip = document.getElementById('tsStatus');
-        if (tsTip) { tsTip.textContent = '验证成功，即将自动进入…'; tsTip.style.color = '#2e9e5b'; }
+        if (tsTip) { tsTip.textContent = '验证成功，正在进入…'; tsTip.style.color = '#2e9e5b'; }
         var back = new URLSearchParams(location.search).get('back');
         setTimeout(function () {
             if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
             location.replace('boke.html');
         }, 1500);
+    }
+    function onTurnstileError() {
+        var tsTip = document.getElementById('tsStatus');
+        if (tsTip) { tsTip.textContent = '验证加载失败，请刷新页面重试'; tsTip.style.color = '#fca5a5'; }
     }
     var WHITELIST_IPS = ['222.245.15.167'];
     var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
