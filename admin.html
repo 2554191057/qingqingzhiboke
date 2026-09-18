@@ -978,7 +978,7 @@ function bindActions() {
       updateSelLogBtn();
     });
   }
-  // 批量删除选中
+  // 批量删除选中（后端一次删除 + 圆形删除进度条）
   var delSelBtn = document.querySelector('#logSection [data-act="del-selected-log"]');
   if (delSelBtn) {
     delSelBtn.addEventListener('click', function () {
@@ -989,19 +989,53 @@ function bindActions() {
       });
       if (!ids.length) return;
       if (!confirm('确定删除选中的 ' + ids.length + ' 条日志吗？此操作不可恢复。')) return;
-      var remain = ids.length;
-      var done = 0;
-      ids.forEach(function (id) {
-        adminPost({ event: 'QW_LOG_DELETE', accessToken: adminToken, id: id }).then(function (r) {
-          done++;
-          if (r && r.code === 0) {
-            adminLogs = adminLogs.filter(function (x) { return String(x._id) !== String(id); });
-          }
-          if (done >= remain) {
+      // 圆形删除进度条浮层
+      var dlg = document.createElement('div');
+      dlg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:flex;align-items:center;justify-content:center;flex-direction:column';
+      dlg.innerHTML =
+        '<div style="width:104px;height:104px;position:relative">' +
+        '<svg viewBox="0 0 104 104" width="104" height="104">' +
+        '<circle cx="52" cy="52" r="44" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="7"/>' +
+        '<circle id="dpRing" cx="52" cy="52" r="44" fill="none" stroke="#4f9cf9" stroke-width="7" stroke-linecap="round" stroke-dasharray="276.46" stroke-dashoffset="276.46" transform="rotate(-90 52 52)" style="transition:stroke-dashoffset .25s linear"/>' +
+        '</svg>' +
+        '<span id="dpNum" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700">0%</span>' +
+        '</div>' +
+        '<p id="dpText" style="color:#fff;font-size:13px;margin:14px 0 0">正在删除 ' + ids.length + ' 条日志…</p>';
+      document.body.appendChild(dlg);
+      var ring = dlg.querySelector('#dpRing');
+      var numEl = dlg.querySelector('#dpNum');
+      var total = 276.46;
+      var pct = 0;
+      var anim = setInterval(function () {
+        pct = Math.min(pct + 4, 95);
+        ring.style.strokeDashoffset = (total * (1 - pct / 100)).toFixed(2);
+        numEl.textContent = pct + '%';
+        if (pct >= 95) clearInterval(anim);
+      }, 50);
+      adminPost({ event: 'QW_LOG_DELETE_MANY', accessToken: adminToken, ids: ids }).then(function (r) {
+        clearInterval(anim);
+        if (r && r.code === 0) {
+          pct = 100;
+          ring.style.strokeDashoffset = 0;
+          numEl.textContent = '100%';
+          dlg.querySelector('#dpText').textContent = '已删除 ' + (r.deleted || ids.length) + ' 条';
+          // 本地移除已删除
+          var removed = {};
+          ids.forEach(function (id) { removed[String(id)] = 1; });
+          adminLogs = adminLogs.filter(function (x) { return !removed[String(x._id)]; });
+          setTimeout(function () {
+            dlg.remove();
             var sec = document.getElementById('logSection');
             if (sec) { sec.innerHTML = '<h3>📋 操作日志<span class="cnt">共 ' + currentLogCount() + ' 条</span>' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
-          }
-        }).catch(function () { done++; });
+          }, 600);
+        } else {
+          dlg.remove();
+          alert((r && r.message) || '删除失败');
+        }
+      }).catch(function () {
+        clearInterval(anim);
+        dlg.remove();
+        alert('网络异常，删除失败');
       });
     });
   }
