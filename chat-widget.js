@@ -1063,7 +1063,7 @@
     adminLogs = logs || [];
     var html = '';
     html += '<div class="qw-admin-stats">' +
-      '<div><b>' + (comments.length || 0) + '</b><span>全部消息</span></div>' +
+      '<div><b>' + (comments.length || 0) + '</b><span>全部聊天</span></div>' +
       '<div><b>' + (blocks.length || 0) + '</b><span>黑名单</span></div>' +
       '<div><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
       '</div>';
@@ -1073,17 +1073,12 @@
     } else {
       for (var i = 0; i < comments.length; i++) {
         var c = comments[i];
-        html += '<div class="qw-admin-item" data-id="' + c._id + '">' +
-          '<div class="qw-hd"><span class="qw-nick">' + escHtml(c.nick || '匿名') + '</span>' +
-          (c.mail ? '<span class="qw-mail">' + escHtml(c.mail) + '</span>' : '') +
-          (c.ip ? '<span class="qw-ip">' + escHtml(c.ip) + '</span><button class="qw-log-copy" data-ip="' + escAttr(c.ip) + '" title="复制IP">复制</button>' : '') +
-          '<span class="qw-tm">' + fmtTime(c.created) + '</span></div>' +
-          '<div class="qw-cmt">' + escHtml(stripHtml(c.comment)) + '</div>' +
-          likeInfoHtml(c, likeMap) +
-          (adminReadOnly ? '' : '<div class="qw-ops">' +
-          '<button class="qw-del" data-act="del" data-id="' + c._id + '">删除</button>' +
-          (c.mail ? '<button class="qw-blk" data-act="blk" data-mail="' + escAttr(c.mail) + '">拉黑</button>' : '') +
-          '</div>') +
+        var ctime = new Date(Number(c.created) < 1e12 ? Number(c.created) * 1000 : Number(c.created)).toLocaleString('zh-CN');
+        html += '<div class="qw-log-item" data-id="' + c._id + '">' + escHtml(ctime) + ' · ' + escHtml(c.nick || '匿名') + ' · ' + escHtml(stripHtml(c.comment)) +
+          '<span class="qw-log-sub">IP ' + escHtml(c.ip || '未知') + (c.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(c.ip) + '" title="复制IP">复制</button>' : '') + (c.ua ? ' · ' + parseUa(c.ua) : '') + '</span>' +
+          (adminReadOnly ? '' :
+          (c.mail ? '<button class="qw-log-del" data-act="blk" data-mail="' + escAttr(c.mail) + '" title="拉黑邮箱" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">🚫</button>' : '') +
+          '<button class="qw-log-del" data-act="del" data-id="' + c._id + '" title="删除这条消息" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button>') +
           '</div>';
       }
     }
@@ -1119,7 +1114,7 @@
     adminBody.innerHTML = html;
     enrichIps();
 
-    adminBody.querySelectorAll('.qw-admin-item .qw-ops button, .qw-mgmt-item button, .qw-admin-logout, .qw-mgmt-input-row button').forEach(function (btn) {
+    adminBody.querySelectorAll('.qw-log-item [data-act="del"], .qw-log-item [data-act="blk"], .qw-mgmt-item button, .qw-admin-logout, .qw-mgmt-input-row button').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var act = btn.getAttribute('data-act');
         if (act === 'del') {
