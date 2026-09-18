@@ -952,25 +952,15 @@ window.addEventListener('load', function() {
 }
 canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='position:fixed'] { display: none !important; }
 
-/* === 窄屏布局修复：waifu 缩小 + 主内容区避开右下角遮挡 === */
-@media (max-width: 1100px) {
-  #live2d { width: 120px !important; height: 150px !important; }
-  #waifu { right: 2px !important; margin-bottom: 60px !important; }
-  #waifu-toggle { right: 10px !important; bottom: 10px !important; padding: 6px 12px !important; font-size: 12px !important; }
-  #waifu-tool { left: 6px !important; right: 6px !important; padding: 4px !important; gap: 2px !important; }
-  #waifu-tool button { width: 28px !important; height: 26px !important; padding: 4px !important; }
-  /* 恢复居中，不加右padding */
-}
+/* === 窄屏waifu适配：仅真正手机宽度才缩小，桌面/平板保持原样 === */
 @media (max-width: 768px) {
-  #live2d { width: 95px !important; height: 120px !important; }
-  #waifu { right: 1px !important; margin-bottom: 48px !important; }
-  /* 恢复居中 */
+  #live2d { width: 110px !important; height: 140px !important; }
+  #waifu { right: 2px !important; margin-bottom: 58px !important; }
+  #waifu-toggle { right: 10px !important; bottom: 10px !important; padding: 6px 12px !important; font-size: 12px !important; }
   .social-grid, .resources-grid, .blog-grid { grid-template-columns: 1fr !important; }
 }
-/* 手机小屏 ≤480px：进一步紧凑 */
 @media (max-width: 480px) {
-  /* 恢复居中 */
-  #live2d { width: 80px !important; height: 100px !important; }
+  #live2d { width: 90px !important; height: 115px !important; }
   #waifu { margin-bottom: 48px !important; }
   #waifu-toggle { font-size: 11px !important; padding: 5px 10px !important; }
   .hero-title { font-size: 2rem !important; }
