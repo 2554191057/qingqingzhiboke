@@ -2244,22 +2244,25 @@
     
     // 初始化：优先用户手动选择，否则按时间自动判断（夜间19-7点 / 其余日间）
     function initDarkMode() {
-      // 手动选择永久生效（不再受智能时间判断影响）；仅从未手动切换过的访客按时间判断（夜间19-7点）
+      // 优先读取用户当天保存的选择（手动选择仅当天有效，次日自动回到时间判断）
       let saved = null;
       let savedDate = null;
       try { saved = localStorage.getItem('qw_theme'); savedDate = localStorage.getItem('qw_theme_date'); } catch(e){}
-      if (saved === 'dark') {
+      const _d = new Date();
+      const today = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0') + '-' + String(_d.getDate()).padStart(2, '0');
+      const valid = saved && savedDate === today;
+      if (valid && saved === 'dark') {
         html.setAttribute('data-theme', 'dark');
         themeToggle?.classList.add('dark');
         updateThemeIcon(true);
         return;
       }
-      if (saved === 'light') {
+      if (valid && saved === 'light') {
         html.setAttribute('data-theme', 'light');
         updateThemeIcon(false);
         return;
       }
-      // 无手动选择则按时间判断
+      // 无当天选择则按时间判断
       const h = new Date().getHours();
       const isNight = h >= 19 || h < 7;
       if (isNight) {
