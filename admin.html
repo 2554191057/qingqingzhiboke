@@ -243,12 +243,21 @@ if (sessionStorage.getItem('auth_ok') !== '1') {
 <div class="admin-foot">庆庆纸博客 · 后台管理与聊天室为同一后台，密码一致，数据互通</div>
 
 <script>
-// 日夜间主题切换（localStorage 持久化）
+// 日夜间主题切换（与全站统一：读写 qw_theme / qw_theme_date，当天手动选择优先，否则按时间自动判断：19-7 夜间）
 (function initTheme() {
   var html = document.documentElement;
-  var saved = '';
-  try { saved = localStorage.getItem('admin_theme') || ''; } catch (e) {}
-  if (saved === 'light' || saved === 'dark') html.setAttribute('data-theme', saved);
+  function themeDateStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  var saved = null, savedDate = null;
+  try { saved = localStorage.getItem('qw_theme'); savedDate = localStorage.getItem('qw_theme_date'); } catch (e) {}
+  if (saved === 'dark' && savedDate === themeDateStr()) html.setAttribute('data-theme', 'dark');
+  else if (saved === 'light' && savedDate === themeDateStr()) html.setAttribute('data-theme', 'light');
+  else {
+    var h = new Date().getHours();
+    html.setAttribute('data-theme', (h >= 19 || h < 7) ? 'dark' : 'light');
+  }
   var btn = document.getElementById('btnTheme');
   if (btn) {
     function updateThemeBtn() {
@@ -258,7 +267,10 @@ if (sessionStorage.getItem('auth_ok') !== '1') {
     btn.addEventListener('click', function () {
       var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', next);
-      try { localStorage.setItem('admin_theme', next); } catch (e) {}
+      try {
+        localStorage.setItem('qw_theme', next);
+        localStorage.setItem('qw_theme_date', themeDateStr());
+      } catch (e) {}
       updateThemeBtn();
     });
   }
