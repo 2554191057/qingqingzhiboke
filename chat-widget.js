@@ -1648,7 +1648,9 @@
   }
 
   adminBtn.addEventListener('click', function () {
-    openAdmin();
+    closeChat();
+    // 聊天室锁图标 → 跳转独立后台管理页（admin.html 与聊天室共用 qw_admin_token，登录态自动带入）
+    location.href = 'admin.html';
   });
   document.getElementById('qw-logout-btn').addEventListener('click', function () {
     logout();
