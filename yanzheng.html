@@ -181,7 +181,12 @@ document.addEventListener('selectstart', e => {
         <h2>欢迎来到庆庆纸博客</h2>
         <p class="tip">完成验证后自动进入</p>
         <div class="turnstile-wrap">
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess" data-size="normal" data-appearance="always"></div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError" data-timeout-callback="onTurnstileTimeout" data-size="normal" data-appearance="always"></div>
+        </div>
+        <div id="tsStatus" style="display:none; margin:10px auto 0; text-align:center; font-size:.85rem;"></div>
+        <div id="tsRetryBox" style="display:none; margin:12px auto 0; text-align:center;">
+          <button type="button" id="tsRetryBtn" style="padding:8px 22px; border:none; border-radius:10px; background:linear-gradient(120deg,#087fae,#4866d6); color:#fff; font-size:.85rem; cursor:pointer;">重新验证</button>
+          <button type="button" id="tsSkipBtn" style="margin-left:8px; padding:8px 18px; border:1px solid rgba(255,255,255,.2); border-radius:10px; background:rgba(255,255,255,.06); color:#cbd5e1; font-size:.85rem; cursor:pointer;">直接进入</button>
         </div>
         </div>
         <div id="wvTip" style="display:none; margin:12px auto 0; max-width:420px; padding:12px 14px; border-radius:10px; background:rgba(248,113,113,.12); border:1px solid rgba(248,113,113,.45); color:#fca5a5; font-size:.82rem; line-height:1.7; text-align:left;">
@@ -225,16 +230,49 @@ document.addEventListener('selectstart', e => {
       }
     })();
 
-    function onTurnstileSuccess(token) {
+    function enterSite() {
         sessionStorage.setItem('auth_ok', '1');
-        var tsTip = document.getElementById('tsStatus');
-        if (tsTip) { tsTip.textContent = '验证成功，即将自动进入…'; tsTip.style.color = '#2e9e5b'; }
         var back = new URLSearchParams(location.search).get('back');
-        setTimeout(function () {
-            if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
-            location.replace('boke.html');
-        }, 1500);
+        if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
+        location.replace('boke.html');
     }
+    function onTurnstileSuccess(token) {
+        var tsTip = document.getElementById('tsStatus');
+        if (tsTip) { tsTip.style.display = 'block'; tsTip.textContent = '验证成功，即将自动进入…'; tsTip.style.color = '#2e9e5b'; }
+        var rb = document.getElementById('tsRetryBox');
+        if (rb) rb.style.display = 'none';
+        setTimeout(enterSite, 1500);
+    }
+    function onTurnstileError(code) {
+        var tsTip = document.getElementById('tsStatus');
+        if (tsTip) { tsTip.style.display = 'block'; tsTip.textContent = '验证失败（' + (code||'未知') + '），请重试'; tsTip.style.color = '#fca5a5'; }
+        var rb = document.getElementById('tsRetryBox');
+        if (rb) rb.style.display = 'block';
+    }
+    function onTurnstileTimeout() {
+        var tsTip = document.getElementById('tsStatus');
+        if (tsTip) { tsTip.style.display = 'block'; tsTip.textContent = '验证超时，请点击重试'; tsTip.style.color = '#fca5a5'; }
+        var rb = document.getElementById('tsRetryBox');
+        if (rb) rb.style.display = 'block';
+    }
+    // 重试按钮：重新渲染Turnstile
+    (function() {
+        var btn = document.getElementById('tsRetryBtn');
+        if (btn) btn.addEventListener('click', function() {
+            var wrap = document.querySelector('.turnstile-wrap');
+            if (!wrap || !window.turnstile) return;
+            wrap.innerHTML = '<div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError" data-timeout-callback="onTurnstileTimeout" data-size="normal" data-appearance="always"></div>';
+            var rb = document.getElementById('tsRetryBox');
+            if (rb) rb.style.display = 'none';
+            var tsTip = document.getElementById('tsStatus');
+            if (tsTip) { tsTip.style.display = 'none'; }
+            window.turnstile.render(wrap.querySelector('.cf-turnstile'), { sitekey: '0x4AAAAAAE5EV0SxdrUKYa70', callback: onTurnstileSuccess, 'error-callback': onTurnstileError, 'timeout-callback': onTurnstileTimeout, appearance: 'always' });
+        });
+        var skip = document.getElementById('tsSkipBtn');
+        if (skip) skip.addEventListener('click', function() {
+            enterSite();
+        });
+    })();
     var WHITELIST_IPS = ['222.245.15.167'];
     var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
     var vsIpEl = document.getElementById('vsIp');
