@@ -602,7 +602,7 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
                 </div>
             </div>
             <p>© <span id="yearNow"></span> 庆庆纸博客. 欢迎您的到来.</p>
-            <p class="footer-motto">「 用心记录 · 真诚分享 」</p>
+            <p class="footer-motto">访问网站浏览总数：<b id="totalVisits">--</b> 次</p>
         </div>
     </div>
 </footer>
@@ -734,6 +734,14 @@ window.addEventListener('load', function() {
   if (location.search.indexOf('chat=1') !== -1) {
     setTimeout(function(){ if (window.openChatRoom) window.openChatRoom(); }, 500);
   }
+  // 访问网站浏览总数（后端 QW_TOTAL_VISITS 统计 visit 日志）
+  fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_TOTAL_VISITS' }) })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var el = document.getElementById('totalVisits');
+      if (el && d && typeof d.count === 'number') el.textContent = d.count.toLocaleString();
+    })
+    .catch(function () {});
 });
 </script>
 <script>
