@@ -305,7 +305,7 @@ var adminLogSearch = ''; // 日志搜索关键字
 var ipLocCache = {};
 try {
   var _savedLoc = JSON.parse(localStorage.getItem('qw_ip_loc') || '{}');
-  if (_savedLoc && _savedLoc._v === 4 && _savedLoc.data) ipLocCache = _savedLoc.data;
+  if (_savedLoc && _savedLoc._v === 5 && _savedLoc.data) ipLocCache = _savedLoc.data;
 } catch (e) {}
 var autoRefreshOn = true;
 var autoRefreshTimer = null;
@@ -438,7 +438,7 @@ function getIpLocation(ip, cb) {
       var loc = parts.join(' ');
       if (loc) {
         ipLocCache[ip] = loc;
-        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 5, data: ipLocCache })); } catch (e) {}
       }
       cbDone(loc);
     }).catch(function () { cbDone(''); });
@@ -479,20 +479,20 @@ function getIpLocation(ip, cb) {
           var loc3 = parts3.join(' ');
           if (loc3) {
             ipLocCache[ip] = loc3;
-            try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
+            try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 5, data: ipLocCache })); } catch (e) {}
           }
           cb(loc3);
         }).catch(function () {
           if (loc) {
             ipLocCache[ip] = loc;
-            try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
+            try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 5, data: ipLocCache })); } catch (e) {}
           }
           cb(loc);
         });
       }
       if (loc) {
         ipLocCache[ip] = loc;
-        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 5, data: ipLocCache })); } catch (e) {}
         return cb(loc);
       }
       cb('');
