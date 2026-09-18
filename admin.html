@@ -1625,16 +1625,27 @@ document.addEventListener('visibilitychange', function () {
 
 /* ===== 顶栏按钮 ===== */
 document.getElementById('btnLogout').addEventListener('click', function () {
-  stopAutoRefresh();
-  try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
-  adminToken = '';
-  renderLoginView();
-});
-
-/* ===== 修改管理密码 ===== */
-document.getElementById('btnPwd').addEventListener('click', function () {
+function autoRefreshTick() {
   if (!adminToken) return;
-  var overlay = document.createElement('div');
+  if (adminRefreshing) return;
+  var ae = document.activeElement;
+  if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
+  adminRefreshing = true;
+  adminPost({ event: 'QW_LOG_LIST', accessToken: adminToken, per: 10000 }).then(function (rl) {
+    if (rl && rl.code === 0) {
+      adminLogs = rl.data || [];
+      rebuildLogSection();
+    }
+    return adminPost({ event: 'QW_ONLINE_COUNT' });
+  }).then(function (ro) {
+    if (ro && ro.code === 0) {
+      var n = (ro.data && ro.data.count) || 0;
+      var el = document.querySelector('.online-count');
+      if (el) el.textContent = n;
+    }
+  }).catch(function(e){ console.error('silent refresh error:', e); })
+  .then(function(){ adminRefreshing = false; });
+}
   overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
   overlay.innerHTML =
     '<div style="background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:16px;padding:24px;width:360px;max-width:92vw;box-shadow:0 18px 60px rgba(0,0,0,.35)">' +
