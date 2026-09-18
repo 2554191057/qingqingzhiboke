@@ -1983,7 +1983,9 @@
       if (!links.length) return;
       // 未登录：隐藏全部操作按钮（赞/踩/回复/删除/编辑），防止游客刷赞/踩和误触管理
       if (!loggedIn) {
-        for (var li = 0; li < links.length; li++) links[li].style.display = 'none';
+        for (var li = 0; li < links.length; li++) {
+          try { links[li].style.setProperty('display', 'none', 'important'); } catch (eD) { links[li].style.display = 'none'; }
+        }
         return;
       }
       var likeBtn = links[0];
@@ -2007,7 +2009,11 @@
         var commentMail = cmp && cmp.comment ? (cmp.comment.mail || '').trim().toLowerCase() : '';
         var isMine = myEmail && commentMail === myEmail;
         for (var li = 3; li < links.length; li++) {
-          links[li].style.display = isMine ? '' : 'none';
+          if (isMine) {
+            try { links[li].style.removeProperty('display'); } catch (eR2) { links[li].style.display = ''; }
+          } else {
+            try { links[li].style.setProperty('display', 'none', 'important'); } catch (eD2) { links[li].style.display = 'none'; }
+          }
         }
       } catch (eHide) {}
     });
