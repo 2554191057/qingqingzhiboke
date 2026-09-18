@@ -1846,12 +1846,7 @@
   var br = '浏览器';
   if (/MicroMessenger|wxwork/i.test(s)) br = /wxwork/i.test(s) ? '企业微信' : '微信内置浏览器';
   else if (/AlipayClient/i.test(s)) br = '支付宝内置浏览器';
-  else if (/XiaoMi|MiuiBrowser|MiuiBrower/i.test(s)) br = '小米浏览器';
-  else if (/HuaweiBrowser|HiBrowser/i.test(s)) br = '华为浏览器';
-  else if (/HonorBrowser/i.test(s)) br = '荣耀浏览器';
-  else if (/OPPOBrowser|HeyTapBrowser/i.test(s)) br = 'OPPO浏览器';
-  else if (/VivoBrowser|vivobrowser/i.test(s)) br = 'vivo浏览器';
-  else if (/SamsungBrowser/i.test(s)) br = '三星浏览器';
+  else if (/XiaoMi|MiuiBrowser|MiuiBrower|HuaweiBrowser|HiBrowser|HonorBrowser|OPPOBrowser|HeyTapBrowser|VivoBrowser|vivobrowser|SamsungBrowser|MZBrowser|LenovoBrowser|LBBROWSER|ZTE ?Browser|OnePlusBrowser|realme ?Browser|NubiaBrowser|RedMagic ?Browser|SonyBrowser|LGBrowser|BlackSharkBrowser/i.test(s)) br = '系统浏览器'; // 各品牌手机系统自带浏览器统一显示
   else if (/UCBrowser|UCWEB|UBrowser/i.test(s)) br = 'UC浏览器';
   else if (/QQBrowser|MQQBrowser/i.test(s)) br = 'QQ浏览器';
   else if (/Quark/i.test(s)) br = '夸克浏览器';
