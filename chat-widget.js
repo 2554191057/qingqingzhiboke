@@ -10,8 +10,8 @@
 
   var CSS = [
     '/* ===== 悬浮聊天室（qiguangji 主题色板） ===== */',
-    ':root { --jp-paper:#edf2fa; --jp-surface:rgba(255,255,255,.94); --jp-ink:#182641; --jp-muted:#62728e; --jp-line:#cedaed; --jp-accent:#087fa8; --jp-blue:#4c67eb; --jp-glow:rgba(16,147,195,.14); }',
-    '[data-theme="dark"] { --jp-paper:#080e1c; --jp-surface:rgba(15,24,43,.96); --jp-ink:#e5edff; --jp-muted:#8a9dbd; --jp-line:#23324f; --jp-accent:#50d3f6; --jp-blue:#8291ff; --jp-glow:rgba(63,199,249,.12); }',
+    ':root { --jp-paper:#edf2fa; --jp-surface:rgba(255,255,255,.94); --jp-ink:#182641; --jp-muted:#62728e; --jp-line:#cedaed; --jp-accent:#087fa8; --jp-blue:#4c67eb; --jp-glow:rgba(16,147,195,.14); --qw-danger:#e05b5b; }',
+    '[data-theme="dark"] { --jp-paper:#080e1c; --jp-surface:rgba(15,24,43,.96); --jp-ink:#e5edff; --jp-muted:#8a9dbd; --jp-line:#23324f; --jp-accent:#50d3f6; --jp-blue:#8291ff; --jp-glow:rgba(63,199,249,.12); --qw-danger:#f87171; }',
     '/* 右下角悬浮按钮 */',
     '.qw-launcher:hover{transform:translateY(-3px);box-shadow:0 0 40px var(--jp-glow),0 12px 30px rgba(0,0,0,.22);}',
     '.qw-launcher svg{flex-shrink:0;}',
@@ -1384,8 +1384,8 @@
         html += '<div class="qw-log-item" data-id="' + c._id + '">' + escHtml(ctime) + ' · ' + escHtml(c.nick || '匿名') + ' · ' + escHtml(stripHtml(c.comment)) +
           '<span class="qw-log-sub">IP ' + escHtml(c.ip || '未知') + (c.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(c.ip) + '" title="复制IP">复制</button>' : '') + (c.ua ? ' · ' + parseUa(c.ua) : '') + '</span>' +
           (adminReadOnly ? '' :
-          '<button class="qw-log-del" data-act="blk" data-mail="' + escAttr(c.mail || '') + '" data-ip="' + escAttr(c.ip || '') + '" title="拉黑" style="float:right;margin-left:6px;background:#e05b5b;color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer;">拉黑</button>' +
-          '<button class="qw-log-del" data-act="del" data-id="' + c._id + '" title="删除这条消息" style="float:right;margin-left:6px;background:#e05b5b;color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer;">移除</button>') +
+          '<button class="qw-log-del" data-act="blk" data-mail="' + escAttr(c.mail || '') + '" data-ip="' + escAttr(c.ip || '') + '" title="拉黑" style="float:right;margin-left:6px;background:var(--qw-danger,#e05b5b);color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer;">拉黑</button>' +
+          '<button class="qw-log-del" data-act="del" data-id="' + c._id + '" title="删除这条消息" style="float:right;margin-left:6px;background:var(--qw-danger,#e05b5b);color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer;">移除</button>') +
           '</div>';
       }
     }
@@ -2418,7 +2418,7 @@
       for (var li = 0; li < logList.length; li++) {
         var lg = logList[li];
         var tstr = new Date(lg.time).toLocaleString('zh-CN');
-        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '"><input type="checkbox" class="qw-log-chk" data-id="' + escAttr(lg._id || '') + '" title="选择删除" style="margin-right:5px;accent-color:var(--jp-accent);vertical-align:-1px">' + escHtml(tstr) + ' · ' + escHtml(typeCn(lg.type)) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除日志" style="float:right;margin-left:6px;background:#e05b5b;color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer;">移除</button></div>';
+        h += '<div class="qw-log-item" data-log-id="' + escAttr(lg._id || '') + '"><input type="checkbox" class="qw-log-chk" data-id="' + escAttr(lg._id || '') + '" title="选择删除" style="margin-right:5px;accent-color:var(--jp-accent);vertical-align:-1px">' + escHtml(tstr) + ' · ' + escHtml(typeCn(lg.type)) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') + '<span class="qw-log-sub">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span><button class="qw-log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除日志" style="float:right;margin-left:6px;background:var(--qw-danger,#e05b5b);color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer;">移除</button></div>';
       }
     }
     return h + '</div>';

@@ -527,8 +527,8 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
       h += '<div class="log-item"><div class="log-main">' + escHtml(ctime) + ' · ' + escHtml(c.nick || '匿名') + ' · ' + escHtml(stripHtml(c.comment)) +
         '<span class="log-sub" style="display:block;font-size:10.5px;opacity:.75"><span class="log-loc"></span>IP ' + escHtml(c.ip || '未知') + (cup ? ' · ' + escHtml(cup.br) + ' · ' + escHtml(cup.dev) : '') + (c.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(c.ip) + '" title="复制IP">复制</button>' : '') + '</span>' +
         '</div>' +
-        '<button class="log-del" data-act="blk" data-mail="' + escAttr(c.mail || '') + '" data-ip="' + escAttr(c.ip || '') + '" title="拉黑" style="float:right;margin-left:6px;background:#e05b5b;color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer">拉黑</button>' +
-        '<button class="log-del" data-act="del" data-id="' + escAttr(c._id) + '" title="删除消息" style="float:right;margin-left:6px;background:#e05b5b;color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer">移除</button></div>';
+        '<button class="log-del" data-act="blk" data-mail="' + escAttr(c.mail || '') + '" data-ip="' + escAttr(c.ip || '') + '" title="拉黑" style="float:right;margin-left:6px;background:var(--jp-danger,#e05b5b);color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer">拉黑</button>' +
+        '<button class="log-del" data-act="del" data-id="' + escAttr(c._id) + '" title="删除消息" style="float:right;margin-left:6px;background:var(--jp-danger,#e05b5b);color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer">移除</button></div>';
     }
   }
   h += '</div>';
@@ -802,7 +802,7 @@ function buildLogHtml(logs) {
       h += '<div class="log-item"><input type="checkbox" class="log-chk" data-id="' + escAttr(lg._id || '') + '" title="选择删除">' +
         '<div class="log-main">' + escHtml(tstr) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(typeCn(lg.type)) + (lg.detail ? '（' + escHtml(lg.detail) + '）' : '') +
         '<span class="log-sub" style="display:block;font-size:10.5px;opacity:.75"><span class="log-loc"></span>IP ' + escHtml(lg.ip || '未知') + ' · ' + escHtml(uap.br) + ' · ' + escHtml(uap.dev) + (lg.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + '</span>' +
-        '</div><button class="log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除日志" style="float:right;margin-left:6px;background:#e05b5b;color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer">移除</button></div>';
+        '</div><button class="log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除日志" style="float:right;margin-left:6px;background:var(--jp-danger,#e05b5b);color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer">移除</button></div>';
     }
   }
   return h;
