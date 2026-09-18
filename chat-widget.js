@@ -619,7 +619,14 @@
         var vue = cc.__vue__;
         if (vue && vue.comment) {
           var cMail = (vue.comment.mail || '').trim().toLowerCase();
-          if (myMail && cMail === myMail) isSelf = true;
+          if (myMail && cMail === myMail) {
+            isSelf = true;
+            // 统一昵称：改昵称后旧消息也显示最新昵称，避免一个邮箱两个昵称
+            if (myNick) {
+              var nickTarget = nickEl.querySelector('a') || nickEl.querySelector('strong') || nickEl;
+              if (nickTarget && nickTarget.textContent.trim() !== myNick) nickTarget.textContent = myNick;
+            }
+          }
         }
       } catch (e) {}
       if (!isSelf && myNick && nick === myNick) isSelf = true;
@@ -1264,6 +1271,14 @@
       setBtnRestore(btn, '保存昵称');
       if (r.code === 0) {
         localStorage.setItem(QW_NICK, nick);
+        // 同步已保存账号列表里同邮箱的昵称，否则选择账号登录还显示旧昵称
+        try {
+          var accList = savedAccounts().map(function(a){
+            if (a.email && a.email.toLowerCase() === v.email.toLowerCase()) a.nick = nick;
+            return a;
+          });
+          localStorage.setItem(QW_ACCOUNTS, JSON.stringify(accList));
+        } catch (eAcc) {}
         // 同步 Twikoo 昵称字段，否则发新评论和聊天室显示仍用旧昵称
         applyVisitorToTwikoo();
         // 同步账号设置弹窗里显示的当前昵称
