@@ -299,7 +299,7 @@ var adminLogs = [];
 var adminWlist = []; // IP 白名单列表（验证页自动放行）
 var adminLogFilter = 'all';
 var adminActiveTab = ''; // 顶部卡片 Tab 当前展开的面板（''=全部收起），自动刷新后保持
-var adminChatSearch = '', adminUserSearch = ''; // 聊天信息 / 账号管理 搜索词
+var adminChatSearch = '', adminUserSearch = '', adminBlockSearch = '', adminWlistSearch = ''; // 聊天信息 / 账号管理 / 黑名单 / 白名单 搜索词
 var adminLogSearch = ''; // 日志搜索关键字
 var ipLocCache = {};
 var autoRefreshOn = true;
@@ -671,6 +671,58 @@ function renderManageView(silent) {
   });
 }
 
+function blockToolbarHtml() {
+  return '<div style="display:flex;gap:6px;margin:10px 0 6px;flex-wrap:wrap;align-items:center">' +
+    '<input id="block-search-input" type="text" placeholder="搜索黑名单（邮箱/IP）" value="' + escAttr(adminBlockSearch) + '" style="flex:1;min-width:120px;padding:4px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-text);outline:none">' +
+    '<button data-act="block-search" style="font-size:11px;padding:4px 14px;border:1px solid var(--jp-accent);border-radius:7px;background:var(--jp-accent);color:#fff;cursor:pointer">搜索</button>' +
+    (adminBlockSearch ? '<button data-act="block-search-clear" style="font-size:11px;padding:4px 10px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-muted);cursor:pointer">清除</button>' : '') + '</div>';
+}
+function wlistToolbarHtml() {
+  return '<div style="display:flex;gap:6px;margin:10px 0 6px;flex-wrap:wrap;align-items:center">' +
+    '<input id="wlist-search-input" type="text" placeholder="搜索白名单 IP" value="' + escAttr(adminWlistSearch) + '" style="flex:1;min-width:120px;padding:4px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-text);outline:none">' +
+    '<button data-act="wlist-search" style="font-size:11px;padding:4px 14px;border:1px solid var(--jp-accent);border-radius:7px;background:var(--jp-accent);color:#fff;cursor:pointer">搜索</button>' +
+    (adminWlistSearch ? '<button data-act="wlist-search-clear" style="font-size:11px;padding:4px 10px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-muted);cursor:pointer">清除</button>' : '') + '</div>';
+}
+function applyBlockFilter() {
+  var q = adminBlockSearch.toLowerCase();
+  document.querySelectorAll('#panel-block .mgmt-row').forEach(function (it) {
+    var hay = String(it.getAttribute('data-block-search') || '').toLowerCase();
+    it.style.display = (!q || hay.indexOf(q) >= 0) ? '' : 'none';
+  });
+}
+function applyWlistFilter() {
+  var q = adminWlistSearch.toLowerCase();
+  document.querySelectorAll('#panel-wlist .mgmt-row').forEach(function (it) {
+    var hay = String(it.getAttribute('data-wlist-search') || '').toLowerCase();
+    it.style.display = (!q || hay.indexOf(q) >= 0) ? '' : 'none';
+  });
+}
+function visibleBlockBoxes() {
+  var out = [];
+  document.querySelectorAll('#panel-block .block-chk').forEach(function (b) {
+    var it = b.closest('.mgmt-row');
+    if (!it || it.style.display !== 'none') out.push(b);
+  });
+  return out;
+}
+function visibleWlistBoxes() {
+  var out = [];
+  document.querySelectorAll('#panel-wlist .wlist-chk').forEach(function (b) {
+    var it = b.closest('.mgmt-row');
+    if (!it || it.style.display !== 'none') out.push(b);
+  });
+  return out;
+}
+function updateBlockSelBtn() {
+  var n = document.querySelectorAll('#panel-block .block-chk:checked').length;
+  var b = document.querySelector('#panel-block [data-act="block-del-sel"]');
+  if (b) { b.disabled = n === 0; b.textContent = '确定(' + n + ')'; }
+}
+function updateWlistSelBtn() {
+  var n = document.querySelectorAll('#panel-wlist .wlist-chk:checked').length;
+  var b = document.querySelector('#panel-wlist [data-act="wlist-del-sel"]');
+  if (b) { b.disabled = n === 0; b.textContent = '确定(' + n + ')'; }
+}
 function chatToolbarHtml() {
   return '<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">' +
     '<input id="chat-search-input" type="text" placeholder="搜索聊天（昵称/内容/IP）" value="' + escAttr(adminChatSearch) + '" style="flex:1;min-width:120px;padding:4px 10px;font-size:11px;border:1px solid var(--jp-line);border-radius:7px;background:transparent;color:var(--jp-text);outline:none">' +
@@ -785,19 +837,31 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
     }
   }
   h += '</div>';
-  h += '<div class="panel" id="panel-block" style="display:' + (adminActiveTab === 'block' ? 'block' : 'none') + '"><h3>⛔ 黑名单 <span class="cnt">' + blocks.length + ' 条</span></h3>';
+  h += '<div class="panel" id="panel-block" style="display:' + (adminActiveTab === 'block' ? 'block' : 'none') + '"><h3>⛔ 黑名单 <span class="cnt">共 ' + blocks.length + ' 条</span>' +
+    '<span class="log-toolbar" style="float:right">' +
+    '<button class="t-btn" data-act="block-all">全选</button>' +
+    '<button class="t-btn" data-act="block-invert">反选</button>' +
+    '<button class="t-btn" data-act="block-clear">取消</button>' +
+    '<button class="t-btn danger" data-act="block-del-sel" disabled>确定(0)</button></span></h3>' + blockToolbarHtml();
   if (!blocks.length) {
     h += '<div class="empty" style="padding:12px 0">暂无黑名单</div>';
   } else {
     for (var b = 0; b < blocks.length; b++) {
       var bk = typeof blocks[b] === 'string' ? { mail: blocks[b], ip: '' } : (blocks[b] || {});
-      h += '<div class="mgmt-row"><span>' + (bk.mail ? escHtml(bk.mail) + (bk.ip ? '<small style="color:var(--jp-muted)">（IP ' + escHtml(bk.ip) + '）</small>' : '') : 'IP ' + escHtml(bk.ip || '')) + '</span>' + (bk.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(bk.ip) + '" title="复制IP">复制</button>' : '') +
+      h += '<div class="mgmt-row" data-block-search="' + escAttr((bk.mail || '') + ' ' + (bk.ip || '')) + '">' +
+        '<input type="checkbox" class="log-chk block-chk" data-mail="' + escAttr(bk.mail) + '" data-ip="' + escAttr(bk.ip || '') + '" title="选择">' +
+        '<span>' + (bk.mail ? escHtml(bk.mail) + (bk.ip ? '<small style="color:var(--jp-muted)">（IP ' + escHtml(bk.ip) + '）</small>' : '') : 'IP ' + escHtml(bk.ip || '')) + '</span>' + (bk.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(bk.ip) + '" title="复制IP">复制</button>' : '') +
         '<button data-act="unblk" data-mail="' + escAttr(bk.mail) + '">解除</button></div>';
     }
   }
   h += '<div class="mgmt-add"><input type="text" id="blkInput" placeholder="输入邮箱或昵称进行拉黑"><button data-act="add-blk">拉黑</button></div></div>';
 
-  h += '<div class="panel" id="panel-wlist" style="display:' + (adminActiveTab === 'wlist' ? 'block' : 'none') + '"><h3>✅ IP 白名单 <span class="cnt">' + wlist.length + ' 条</span></h3>';
+  h += '<div class="panel" id="panel-wlist" style="display:' + (adminActiveTab === 'wlist' ? 'block' : 'none') + '"><h3>✅ IP 白名单 <span class="cnt">共 ' + wlist.length + ' 条</span>' +
+    '<span class="log-toolbar" style="float:right">' +
+    '<button class="t-btn" data-act="wlist-all">全选</button>' +
+    '<button class="t-btn" data-act="wlist-invert">反选</button>' +
+    '<button class="t-btn" data-act="wlist-clear">取消</button>' +
+    '<button class="t-btn danger" data-act="wlist-del-sel" disabled>确定(0)</button></span></h3>' + wlistToolbarHtml();
   h += '<p style="margin:0 0 10px;font-size:11px;color:var(--jp-muted)">命中的 IP 访问验证页自动放行（本站 Cloudflare 域名验证入口）</p>';
   if (!wlist.length) {
     h += '<div class="empty" style="padding:12px 0">暂无白名单 IP</div>';
@@ -806,7 +870,9 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
       var wl = typeof wlist[w] === 'string' ? { ip: wlist[w] } : (wlist[w] || {});
       var wlIp = wl.ip || '';
       var wlTime = wl.addedAt ? new Date(wl.addedAt).toLocaleString('zh-CN', { hour12: false }) : '';
-      h += '<div class="mgmt-row"><span>' + escHtml(wlIp) + (wlTime ? '<small style="color:var(--jp-muted)">（' + wlTime + '）</small>' : '') + '</span>' +
+      h += '<div class="mgmt-row" data-wlist-search="' + escAttr(wlIp) + '">' +
+        '<input type="checkbox" class="log-chk wlist-chk" data-ip="' + escAttr(wlIp) + '" title="选择">' +
+        '<span>' + escHtml(wlIp) + (wlTime ? '<small style="color:var(--jp-muted)">（' + wlTime + '）</small>' : '') + '</span>' +
         '<button data-act="unwl" data-ip="' + escAttr(wlIp) + '">移除</button></div>';
     }
   }
@@ -818,6 +884,8 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
   document.getElementById('mainView').innerHTML = h;
   applyChatFilter();
   applyUserFilter();
+  applyBlockFilter();
+  applyWlistFilter();
   enrichIps();
   bindActions();
 }
@@ -1149,6 +1217,114 @@ function bindActions() {
       }
     });
   });
+  // ===== 黑名单：搜索 / 全选 / 反选 / 取消 / 确定（批量解除） =====
+  var blockSearchBtn = document.querySelector('#panel-block [data-act="block-search"]');
+  if (blockSearchBtn) blockSearchBtn.addEventListener('click', function () {
+    var inp = document.getElementById('block-search-input');
+    adminBlockSearch = ((inp && inp.value) || '').trim();
+    applyBlockFilter();
+    var clr = document.querySelector('#panel-block [data-act="block-search-clear"]');
+    if (clr) clr.style.display = adminBlockSearch ? '' : 'none';
+  });
+  var blockSearchInput = document.getElementById('block-search-input');
+  if (blockSearchInput) blockSearchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { adminBlockSearch = (this.value || '').trim(); applyBlockFilter(); }
+  });
+  var blockClear = document.querySelector('#panel-block [data-act="block-search-clear"]');
+  if (blockClear) blockClear.addEventListener('click', function () {
+    adminBlockSearch = '';
+    var inp = document.getElementById('block-search-input');
+    if (inp) inp.value = '';
+    applyBlockFilter();
+    this.style.display = 'none';
+  });
+  var blockAll = document.querySelector('#panel-block [data-act="block-all"]');
+  if (blockAll) blockAll.addEventListener('click', function () {
+    visibleBlockBoxes().forEach(function (b) { b.checked = true; });
+    updateBlockSelBtn();
+  });
+  var blockInvert = document.querySelector('#panel-block [data-act="block-invert"]');
+  if (blockInvert) blockInvert.addEventListener('click', function () {
+    visibleBlockBoxes().forEach(function (b) { b.checked = !b.checked; });
+    updateBlockSelBtn();
+  });
+  var blockClearSel = document.querySelector('#panel-block [data-act="block-clear"]');
+  if (blockClearSel) blockClearSel.addEventListener('click', function () {
+    document.querySelectorAll('#panel-block .block-chk').forEach(function (b) { b.checked = false; });
+    updateBlockSelBtn();
+  });
+  document.querySelectorAll('#panel-block .block-chk').forEach(function (b) {
+    b.addEventListener('change', updateBlockSelBtn);
+  });
+  var blockDel = document.querySelector('#panel-block [data-act="block-del-sel"]');
+  if (blockDel) blockDel.addEventListener('click', function () {
+    var items = [];
+    document.querySelectorAll('#panel-block .block-chk:checked').forEach(function (b) {
+      items.push({ mail: b.getAttribute('data-mail') || '', ip: b.getAttribute('data-ip') || '' });
+    });
+    if (!items.length) return;
+    if (!confirm('确定解除选中的 ' + items.length + ' 条黑名单吗？')) return;
+    showQwLoading('处理中…');
+    var seq = Promise.resolve();
+    items.forEach(function (it) {
+      seq = seq.then(function () { return adminPost({ event: 'QW_BLOCK_DELETE', accessToken: adminToken, mail: it.mail }); });
+    });
+    seq.then(function () { hideQwLoading(); renderManageView(); }).catch(function () { hideQwLoading(); alert('网络异常，操作失败'); });
+  });
+
+  // ===== 白名单：搜索 / 全选 / 反选 / 取消 / 确定（批量移除） =====
+  var wlistSearchBtn = document.querySelector('#panel-wlist [data-act="wlist-search"]');
+  if (wlistSearchBtn) wlistSearchBtn.addEventListener('click', function () {
+    var inp = document.getElementById('wlist-search-input');
+    adminWlistSearch = ((inp && inp.value) || '').trim();
+    applyWlistFilter();
+    var clr = document.querySelector('#panel-wlist [data-act="wlist-search-clear"]');
+    if (clr) clr.style.display = adminWlistSearch ? '' : 'none';
+  });
+  var wlistSearchInput = document.getElementById('wlist-search-input');
+  if (wlistSearchInput) wlistSearchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { adminWlistSearch = (this.value || '').trim(); applyWlistFilter(); }
+  });
+  var wlistClear = document.querySelector('#panel-wlist [data-act="wlist-search-clear"]');
+  if (wlistClear) wlistClear.addEventListener('click', function () {
+    adminWlistSearch = '';
+    var inp = document.getElementById('wlist-search-input');
+    if (inp) inp.value = '';
+    applyWlistFilter();
+    this.style.display = 'none';
+  });
+  var wlistAll = document.querySelector('#panel-wlist [data-act="wlist-all"]');
+  if (wlistAll) wlistAll.addEventListener('click', function () {
+    visibleWlistBoxes().forEach(function (b) { b.checked = true; });
+    updateWlistSelBtn();
+  });
+  var wlistInvert = document.querySelector('#panel-wlist [data-act="wlist-invert"]');
+  if (wlistInvert) wlistInvert.addEventListener('click', function () {
+    visibleWlistBoxes().forEach(function (b) { b.checked = !b.checked; });
+    updateWlistSelBtn();
+  });
+  var wlistClearSel = document.querySelector('#panel-wlist [data-act="wlist-clear"]');
+  if (wlistClearSel) wlistClearSel.addEventListener('click', function () {
+    document.querySelectorAll('#panel-wlist .wlist-chk').forEach(function (b) { b.checked = false; });
+    updateWlistSelBtn();
+  });
+  document.querySelectorAll('#panel-wlist .wlist-chk').forEach(function (b) {
+    b.addEventListener('change', updateWlistSelBtn);
+  });
+  var wlistDel = document.querySelector('#panel-wlist [data-act="wlist-del-sel"]');
+  if (wlistDel) wlistDel.addEventListener('click', function () {
+    var ips = [];
+    document.querySelectorAll('#panel-wlist .wlist-chk:checked').forEach(function (b) { ips.push(b.getAttribute('data-ip')); });
+    if (!ips.length) return;
+    if (!confirm('确定移除选中的 ' + ips.length + ' 个白名单 IP 吗？')) return;
+    showQwLoading('处理中…');
+    var seq = Promise.resolve();
+    ips.forEach(function (ip) {
+      seq = seq.then(function () { return adminPost({ event: 'QW_IP_WHITELIST_DELETE', accessToken: adminToken, ip: ip }); });
+    });
+    seq.then(function () { hideQwLoading(); renderManageView(); }).catch(function () { hideQwLoading(); alert('网络异常，操作失败'); });
+  });
+
   // ===== 聊天信息：搜索 / 全选 / 反选 / 取消 / 确定（批量删除） =====
   var chatSearchBtn = document.querySelector('#panel-chat [data-act="chat-search"]');
   if (chatSearchBtn) chatSearchBtn.addEventListener('click', function () {
