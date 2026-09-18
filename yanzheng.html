@@ -190,7 +190,6 @@ document.addEventListener('selectstart', e => {
     <script>
     function onTurnstileSuccess(token) {
         sessionStorage.setItem('auth_ok', '1');
-        try { localStorage.setItem('qw_auth_ok', '1'); } catch (e) {}
         var tsTip = document.getElementById('tsStatus');
         if (tsTip) { tsTip.textContent = '验证成功，即将自动进入…'; tsTip.style.color = '#2e9e5b'; }
         var back = new URLSearchParams(location.search).get('back');
@@ -287,7 +286,6 @@ document.addEventListener('selectstart', e => {
       isIpWhitelisted(ip, function (hit) {
         if (hit) {
           sessionStorage.setItem('auth_ok', '1');
-        try { localStorage.setItem('qw_auth_ok', '1'); } catch (e) {}
           var tsTip = document.getElementById('tsStatus');
           if (tsTip) { tsTip.textContent = '已自动放行（本机IP命中白名单），即将进入…'; tsTip.style.color = '#2e9e5b'; }
           var back = new URLSearchParams(location.search).get('back');
