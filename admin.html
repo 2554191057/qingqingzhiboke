@@ -937,7 +937,7 @@ function typeCn(t) {
 function parseUaParts(ua) {
   var out = { br: '未知浏览器', dev: '未知设备' };
   if (!ua) return out;
-  var s = ua;
+  var s = ua.replace(/;\s*wv\b/gi, ''); // 去掉 WebView 的 ; wv 标记，避免被误提取为型号
   var isMobile = /Mobile|Android|iPhone/i.test(s);
   var isPad = /iPad|Tablet/i.test(s) || /SM-T[0-9]|TB[0-9]{4}|KF[A-Z]{1,2}|M(?:2105|2106|2206|2208|2217|2304)|2304[0-9]RP|23078KB|Legion[ _-]?Y[0-9]{3}|(?:DBR|DBY|AGS|BAH|BTV|JDN|KOB|JKM|WGR|DBT|AGM|BDT|HEY)-W/i.test(s) || (/Android/.test(s) && !/Mobile/i.test(s));
   var dev = isPad ? '平板' : (isMobile ? '手机' : '电脑');
