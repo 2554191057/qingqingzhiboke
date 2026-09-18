@@ -789,43 +789,8 @@
   window.openChatRoom = openChat;
   window.closeChatRoom = closeChat;
   document.addEventListener('DOMContentLoaded', refreshLoginUI);
-  // 页面访问上报：记录访客访问了网站哪个页面（后端按 page 推导 visit_<页面名>）
-  (function () {
-    try {
-      var pg = (location.pathname || '').split('/').pop() || '';
-      if (!pg || pg === '/' || pg === '') pg = 'index';
-      pg = pg.replace(/\.[a-z0-9]+$/i, '');
-      if (!/^(yanzheng|boke|wenzhang|wangpan|shengri|fklts|chat|index|admin)$/i.test(pg)) return;
-      var key = 'qw_visit_sent_' + pg;
-      try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1'); } catch (e) {}
-      fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer })
-      }).catch(function(){});
-    } catch (e) {}
-  })();
-  // 锚点区块访问上报：点击导航里的"关于/联系"等锚点，记录 visit_about / visit_contact 日志（会话内每个锚点一次）
-  window.qwReportBlockVisit = function (anchor) {
-    try {
-      if (!anchor) return;
-      var key = 'qw_visit_sent_anchor_' + anchor;
-      try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1'); } catch (e) {}
-      fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + '#' + anchor, referrer: document.referrer })
-      }).catch(function(){});
-    } catch (e) {}
-  };
-  document.addEventListener('click', function (e) {
-    try {
-      var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
-      if (!a) return;
-      var h = (a.getAttribute('href') || '').replace('#', '').trim().toLowerCase();
-      if (h === 'about' || h === 'social' || h === 'contact' || h === 'gy' || h === 'lx') {
-        if (window.qwReportBlockVisit) qwReportBlockVisit(h);
-      }
-    } catch (e2) {}
-  });
+  // 页面访问上报已由 js/online-stats.js 统一发送（避免重复日志）；本文件不再上报
+  // 锚点区块访问日志由 js/online-stats.js 的 hashchange 监听统一发送（避免重复），本文件不再上报
   // 打开聊天室后刷新登录态
   var _origOpen = openChat;
   openChat = function () {
@@ -1889,7 +1854,7 @@
       h += '<button data-act="set-logcat" data-cat="'+c.key+'" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:'+(adminLogFilter===c.key?'var(--jp-accent)':'transparent')+';color:'+(adminLogFilter===c.key?'#fff':'var(--jp-accent)')+';cursor:pointer">'+c.label+'</button>';
     }
     h += '</div></h4>';
-    var logList = logs || [];
+    var logList = (logs || []).slice().sort(function (a, b) { return (b.time || 0) - (a.time || 0); }); // 最新在上
     if (adminLogFilter !== 'all') logList = logList.filter(function(x) { var cat = catMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
     h += '<div class="qw-log-toolbar" style="display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap">';
     h += '<button data-act="toggle-all-log" style="font-size:10px;padding:3px 10px;border:1px solid var(--jp-line);border-radius:6px;background:transparent;color:var(--jp-accent);cursor:pointer">全选</button>';
