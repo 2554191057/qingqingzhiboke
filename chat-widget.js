@@ -188,31 +188,22 @@
     '.qw-login-bar .qw-lb-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}',
     '.qw-login-bar .qw-lb-right p{margin:0;font-size:10px;color:var(--jp-muted);}',
     /* ===== 聊天气泡布局：自己右侧、别人左侧 ===== */
-    '.qw-body #twikoo .tk-comment{display:flex!important;align-items:center!important;gap:10px!important;margin-bottom:16px!important;padding:0!important;flex-direction:row!important;}',
+    '.qw-body #twikoo .tk-comment{display:flex!important;align-items:flex-start!important;gap:8px!important;margin-bottom:10px!important;padding:0!important;flex-direction:row!important;flex-wrap:nowrap!important;}',
     '.qw-body #twikoo .tk-comment.tk-self{flex-direction:row-reverse!important;}',
-    '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;border-radius:50%!important;overflow:hidden!important;flex-shrink:0;margin:0!important;background:var(--jp-glow)!important;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--jp-accent)!important;font-weight:600;}.qw-body #twikoo .tk-comment .tk-avatar, .qw-body #twikoo .tk-comment .tk-nick a, .qw-body #twikoo .tk-comment .tk-nick{pointer-events:none!important;cursor:default!important;text-decoration:none!important;}',
+    '.qw-body #twikoo .tk-comment .tk-avatar{width:36px!important;height:36px!important;border-radius:50%!important;overflow:hidden!important;flex-shrink:0;margin:2px 0 0!important;background:var(--jp-glow)!important;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--jp-accent)!important;font-weight:600;pointer-events:none!important;cursor:default!important;}',
     '.qw-body #twikoo .tk-comment .tk-avatar img{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important;}',
-    '.qw-body #twikoo .tk-comment .tk-main{min-width:0!important;max-width:calc(100% - 48px)!important;padding:0!important;display:flex!important;flex-direction:column!important;}',
+    '.qw-body #twikoo .tk-comment .tk-main{min-width:0!important;max-width:calc(100% - 44px)!important;padding:0!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main{align-items:flex-end!important;}',
-    '.qw-body #twikoo .tk-comment .tk-row{display:flex!important;align-items:center!important;gap:8px!important;margin:0 0 4px!important;padding:0 4px!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-row{flex-direction:row-reverse!important;}',
-    '.qw-body #twikoo .tk-meta{display:flex;align-items:baseline;gap:10px;font-size:10px!important;color:var(--jp-muted)!important;}',
-    '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
-    '.qw-body #twikoo .tk-time time{font-size:10px!important;color:var(--jp-muted)!important;}',
-    /* ===== 昵称移到气泡左上方 ===== */
-    '.qw-body #twikoo .tk-comment{flex-wrap:nowrap!important;}',
-    '.qw-body #twikoo .tk-comment .tk-nick{display:block!important;margin:0 0 3px!important;padding:0 4px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-nick{display:block!important;width:fit-content!important;margin:0 0 2px!important;padding:0 2px!important;line-height:1.3!important;pointer-events:none!important;cursor:default!important;}',
+    '.qw-body #twikoo .tk-comment .tk-nick a{color:var(--jp-muted)!important;font-weight:500!important;font-size:11px!important;text-decoration:none!important;pointer-events:none!important;cursor:default!important;}',
+    '.qw-body #twikoo .tk-nick strong{color:var(--jp-muted)!important;font-weight:500!important;font-size:11px!important;}',
     '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-nick{text-align:right!important;}',
-    '.qw-body #twikoo .tk-nick strong{color:var(--jp-accent)!important;font-weight:700!important;font-size:12.5px!important;}',
-    '.qw-body #twikoo .tk-comment .tk-row .tk-nick,.qw-body #twikoo .tk-comment .tk-row-head .tk-nick,.qw-body #twikoo .tk-comment .tk-head .tk-nick{display:none!important;}',
-    '.qw-body #twikoo .tk-comment .tk-row .tk-mail,.qw-body #twikoo .tk-comment .tk-row-head .tk-mail{display:inline!important;}',
-    /* 昵称/操作移走后，头部行只余隐藏时间，直接隐藏 */
     '.qw-body #twikoo .tk-comment .tk-row{display:none!important;}',
+    '.qw-body #twikoo .tk-time{display:none!important;}',
     /* ===== 气泡：自适应宽度 + 小尾巴角标，与头像平齐 ===== */
-    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--jp-surface)!important;border:1px solid var(--jp-line)!important;border-radius:12px 12px 12px 4px!important;padding:7px 12px!important;font-size:12px!important;line-height:1.55!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.06)!important;width:fit-content!important;max-width:100%!important;min-width:0!important;position:relative!important;}',
-    '.qw-body #twikoo .tk-content:before{content:""!important;position:absolute!important;top:12px!important;left:-6px!important;border:6px solid transparent!important;border-left-width:0!important;border-right-color:var(--jp-surface)!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.16),rgba(72,102,219,.14))!important;border-color:rgba(16,147,195,.28)!important;border-radius:12px 12px 4px 12px!important;}',
-    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content:before{left:auto!important;right:-6px!important;border-right-width:0!important;border-left-width:6px!important;border-right-color:transparent!important;border-left-color:rgba(16,147,195,.16)!important;}',
+    '.qw-body #twikoo .tk-content{white-space:pre-wrap;overflow-wrap:anywhere;background:#fff!important;border:1px solid rgba(120,140,170,.14)!important;border-radius:8px!important;padding:6px 10px!important;font-size:12.5px!important;line-height:1.5!important;margin:0!important;box-shadow:0 1px 2px rgba(16,40,80,.05)!important;width:fit-content!important;max-width:100%!important;min-width:0!important;}',
+    '.qw-body #twikoo .tk-comment.tk-self>.tk-main>.tk-content{background:linear-gradient(120deg,rgba(16,147,195,.15),rgba(72,102,219,.13))!important;border-color:rgba(16,147,195,.26)!important;}',
+    '.qw-body #twikoo .tk-content:before,.qw-body #twikoo .tk-content:after{display:none!important;}',
     /* ===== 操作按钮：移到气泡下方横排（常显长条） ===== */
     '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:1!important;}',
     /* 已点赞高亮（本地记录，服务端 liked 状态不可用） */
@@ -234,9 +225,9 @@
     '.qw-body #twikoo .tk-time{display:none!important;}',
     '.qw-body #twikoo .qw-time-sep{text-align:center!important;font-size:10px!important;color:var(--jp-muted)!important;padding:10px 0 6px!important;opacity:.8!important;letter-spacing:.5px!important;}',
     /* 气泡（紧凑） */
-    '.qw-body #twikoo .tk-comment{margin-bottom:7px!important;}',
-    '.qw-body #twikoo .tk-comment .tk-avatar{width:38px!important;height:38px!important;font-size:17px!important;}',
-    '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 48px)!important;}',
+    '.qw-body #twikoo .tk-comment{margin-bottom:8px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-avatar{width:36px!important;height:36px!important;font-size:15px!important;}',
+    '.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 44px)!important;}',
     /* ===== QQ式引用回复：气泡内引用栏（细淡灰条） ===== */
     '.qw-body #twikoo .qw-quote{background:rgba(128,142,168,.1)!important;border-left:3px solid var(--jp-accent)!important;border-radius:4px!important;padding:4px 9px!important;font-size:11px!important;line-height:1.5!important;color:var(--jp-muted)!important;margin:0 0 5px!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;white-space:normal!important;text-align:left!important;opacity:.85;}',
     '.qw-body #twikoo .tk-replies,.qw-body #twikoo .tk-children{display:none!important;}',
@@ -319,7 +310,7 @@
     '.qw-admin-logout:hover{color:#e05b5b;}',
     '.qw-admin-loading{text-align:center;color:var(--jp-muted);font-size:12px;padding:26px 0;}',
     '@media(max-width:640px){.qw-admin-panel{max-height:calc(100dvh - 24px);border-radius:16px;}.qw-admin-body{padding:14px 15px 16px;}}',
-    '@media(max-width:640px){.qw-launcher{right:14px;bottom:16px;padding:11px 14px;}.qw-backdrop{padding:12px;}.qw-panel{max-height:calc(100dvh - 24px);border-radius:16px;}.qw-panel>header{padding:15px 16px;}.qw-body{padding:0 15px 14px;}.qw-notice{padding:10px 16px;font-size:9px;}.qw-body #twikoo .tk-comment .tk-avatar{width:32px!important;height:32px!important;}.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 42px)!important;}.qw-body #twikoo .tk-children{margin-left:42px!important;}}',
+    '@media(max-width:640px){.qw-launcher{right:14px;bottom:16px;padding:11px 14px;}.qw-backdrop{padding:12px;}.qw-panel{max-height:calc(100dvh - 24px);border-radius:16px;}.qw-panel>header{padding:15px 16px;}.qw-body{padding:0 15px 14px;}.qw-notice{padding:10px 16px;font-size:9px;}.qw-body #twikoo .tk-comment .tk-avatar{width:32px!important;height:32px!important;}.qw-body #twikoo .tk-comment .tk-main{max-width:calc(100% - 40px)!important;}.qw-body #twikoo .tk-children{margin-left:40px!important;}}',
     '@media(prefers-reduced-motion:reduce){.qw-launcher,.qw-backdrop,.qw-panel{animation:none!important;transition:none!important}}'
   ].join('\n');
 
@@ -645,6 +636,26 @@
       if (el.children.length === 0 && el.textContent.trim() === '没有评论') el.textContent = '暂无消息';
     }
   }
+  // ===== 清理气泡结尾换行符（<p>x</p>\n 在 pre-wrap 下产生空行，气泡被撑成竖条） =====
+  function trimBubbleText() {
+    var spans = document.querySelectorAll('.qw-body #twikoo .tk-content span');
+    for (var i = 0; i < spans.length; i++) {
+      var sp = spans[i];
+      var kids = sp.childNodes;
+      if (!kids.length) continue;
+      var last = kids[kids.length - 1];
+      if (last && last.nodeType === 3 && /^\s*$/.test(last.nodeValue || '')) {
+        sp.removeChild(last);
+      }
+      var ps = sp.querySelectorAll('p');
+      for (var j = 0; j < ps.length; j++) {
+        var ln = ps[j].lastChild;
+        if (ln && ln.nodeType === 3 && /^\s+$/.test(ln.nodeValue || '')) {
+          ps[j].removeChild(ln);
+        }
+      }
+    }
+  }
   function markSelf() {
     var info = {};
     try { info = JSON.parse(localStorage.getItem('twikoo') || '{}'); } catch (e) {}
@@ -769,7 +780,7 @@
     markTimer = setTimeout(function () {
       // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
       var steps = [removeOwO, removeSubmitExtras, addImgButton, setSubmitPlaceholders, moveNickTop,
-        moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, markSelf];
+        moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, trimBubbleText, markSelf];
       try { refreshLoginUI(); } catch (eR) {}
       try { markLiked(); } catch (e0) {}
       steps.forEach(function (fn) { try { fn(); } catch (err) {} });
