@@ -142,6 +142,9 @@ input, button { font-family: inherit; }
   background: none; border: none; color: var(--jp-muted); font-size: 12px; cursor: pointer;
 }
 .log-item .log-del:hover { color: var(--jp-danger); }
+/* 日志省市区县：异步填充，有值才显示（含后置分隔符） */
+.log-item .log-loc:empty { display: none; }
+.log-item .log-loc:not(:empty)::after { content: ' · '; }
 .log-item .log-copy-ip, .msg-item .log-copy-ip, .mgmt-row .log-copy-ip {
   margin-left: 6px; padding: 0 8px; font-size: 10px; line-height: 1.7;
   border: 1px solid var(--jp-line); border-radius: 6px;
@@ -370,7 +373,9 @@ function enrichIps() {
     it.setAttribute('data-ip-done', '1');
     getIpLocation(m[1], function (loc) {
       if (!loc) return;
-      var sub = it.querySelector('.m-ip') || it.querySelector('.log-sub');
+      var locEl = it.querySelector('.log-loc'); // 日志：省市区县插到 IP 前
+      if (locEl) { locEl.textContent = loc; return; }
+      var sub = it.querySelector('.m-ip'); // 消息：沿用追加到 IP 后
       var target = sub || it;
       if (target && target.textContent.indexOf(loc) < 0) {
         target.appendChild(document.createTextNode(' · ' + loc));
@@ -555,10 +560,13 @@ var logCats = [
 ];
 function typeCn(t) {
   if (!t) return t;
-  var m = String(t).match(/^visit_(.+)$/i);
+  if (/^online$/i.test(t)) return '上线';
+  if (/^offline$/i.test(t)) return '下线';
+  var m = String(t).match(/^visit(?:_(.+))?$/i);
   if (m) {
     var pageMap = { yanzheng:'验证页', boke:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', fklts:'聊天室', chat:'聊天室', index:'首页', admin:'后台' };
-    var k = String(m[1]).toLowerCase();
+    var k = String(m[1] || '').toLowerCase();
+    if (!k) return '访问'; // type=visit 无页面后缀
     return '访问' + (pageMap[k] || m[1]);
   }
   return t;
@@ -567,8 +575,9 @@ function typeCn(t) {
   '发言': 'interact', '点赞': 'interact', '点踩': 'interact',
   '访问聊天室': 'other'
 };
-function parseUa(ua) {
-  if (!ua) return '未知设备';
+function parseUaParts(ua) {
+  var out = { br: '未知浏览器', dev: '未知设备' };
+  if (!ua) return out;
   var s = ua;
   var isMobile = /Mobile|Android|iPhone/i.test(s);
   var isPad = /iPad|Tablet/i.test(s);
@@ -579,7 +588,7 @@ function parseUa(ua) {
   else if (/Mac OS X/.test(s)) os = 'Mac';
   else if (/Android/.test(s)) os = 'Android';
   else if (/Linux/.test(s)) os = 'Linux';
-  var br = '浏览器';
+  var br = '未知浏览器';
   if (/Edg\//.test(s)) br = 'Edge';
   else if (/Chrome\//.test(s) && !/OPR/.test(s)) br = 'Chrome';
   else if (/Firefox\//.test(s)) br = 'Firefox';
@@ -623,7 +632,13 @@ function parseUa(ua) {
   var extra = [];
   if (model) extra.push(model);
   if (brand && extra.indexOf(brand) === -1) extra.unshift(brand);
-  return dev + ' · ' + (os === 'Android' ? '' : os + ' · ') + br + (extra.length ? ' · ' + extra.join(' ') : '');
+  out.br = br;
+  out.dev = dev + (os && os !== 'Android' ? ' · ' + os : '') + (extra.length ? ' · ' + extra.join(' ') : '');
+  return out;
+}
+function parseUa(ua) {
+  var p = parseUaParts(ua);
+  return p.dev + (p.br !== '未知浏览器' ? ' · ' + p.br : '');
 }
 function buildLogHtml(logs) {
   var h = '<div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">';
@@ -644,9 +659,10 @@ function buildLogHtml(logs) {
     for (var li = 0; li < list.length; li++) {
       var lg = list[li];
       var tstr = new Date(lg.time).toLocaleString('zh-CN');
+      var uap = parseUaParts(lg.ua);
       h += '<div class="log-item"><input type="checkbox" class="log-chk" data-id="' + escAttr(lg._id || '') + '" title="选择删除">' +
-        '<div class="log-main">' + escHtml(tstr) + ' · ' + escHtml(typeCn(lg.type)) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(lg.detail || '') +
-        '<span class="log-sub" style="display:block;font-size:10.5px;opacity:.75">IP ' + escHtml(lg.ip || '未知') + (lg.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + ' · ' + parseUa(lg.ua) + '</span>' +
+        '<div class="log-main">' + escHtml(tstr) + ' · ' + escHtml(lg.nick || lg.email || '匿名') + ' · ' + escHtml(typeCn(lg.type)) + (lg.detail ? '（' + escHtml(lg.detail) + '）' : '') +
+        '<span class="log-sub" style="display:block;font-size:10.5px;opacity:.75"><span class="log-loc"></span>IP ' + escHtml(lg.ip || '未知') + ' · ' + escHtml(uap.br) + ' · ' + escHtml(uap.dev) + (lg.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(lg.ip) + '" title="复制IP">复制</button>' : '') + '</span>' +
         '</div><button class="log-del" data-act="del-log" data-id="' + escAttr(lg._id || '') + '" title="删除日志">✕</button></div>';
     }
   }
