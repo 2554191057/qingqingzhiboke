@@ -52,37 +52,73 @@
             text-decoration: none;
         }
         .mirrors a:hover { text-decoration: underline; }
-        .visitor-stats {
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px solid #eee;
-            display: flex;
-            justify-content: center;
-            gap: 18px;
-            font-size: 11px;
-            color: #999;
+        .ip-id-card {
+            margin: 18px auto 0;
+            width: 336px;
+            max-width: 92%;
+            padding: 16px 18px 12px;
+            background: linear-gradient(150deg, #fefdfb, #f4f0e8);
+            border: 1px solid #e0d9c9;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.07), inset 0 0 0 4px rgba(255,255,255,.6);
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
         }
-        .visitor-stats .vs-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+        .ip-id-card::before {
+            content: "IP";
+            position: absolute;
+            right: -14px;
+            bottom: -26px;
+            font-size: 92px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: rgba(8,127,174,.05);
+            line-height: 1;
+            pointer-events: none;
         }
-        .visitor-stats .vs-num {
-            color: #087fae;
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
+        .ip-id-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+        .ip-id-avatar {
+            width: 54px; height: 68px;
+            flex: none;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #087fae, #4866db);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            box-shadow: 0 3px 8px rgba(8,127,174,.35);
         }
+        .ip-id-name { font-size: 15px; font-weight: 700; color: #2b2b2b; }
+        .ip-id-sub { font-size: 10px; color: #a09a8c; margin-top: 2px; letter-spacing: 1px; }
+        .ip-id-rows { border-top: 1px dashed #ddd5c3; padding-top: 10px; }
+        .ip-id-row {
+            display: flex; justify-content: space-between; align-items: baseline;
+            margin: 6px 0; font-size: 11px; color: #8a8477;
+        }
+        .ip-id-row b { color: #3a3a3a; font-weight: 600; }
+        .ip-id-ip {
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 17px; font-weight: 700;
+            color: #087fae; letter-spacing: .5px;
+        }
+        .ip-id-actions { margin-top: 12px; text-align: center; }
+        .ip-id-stats {
+            display: flex; justify-content: center; gap: 18px;
+            margin-top: 10px; padding-top: 10px;
+            border-top: 1px dashed #e5dfd0;
+            font-size: 10px; color: #a09a8c;
+        }
+        .ip-id-stats .vs-num { color: #087fae; font-weight: 600; font-variant-numeric: tabular-nums; }
         .ip-copy-btn {
             margin-left: 8px;
-            padding: 1px 10px;
+            padding: 3px 18px;
             font-size: 11px;
             line-height: 1.7;
             color: #087fae;
             background: rgba(8,127,174,0.08);
             border: 1px solid rgba(8,127,174,0.35);
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
-            vertical-align: 1px;
         }
         .ip-copy-btn:hover:not(:disabled) { background: rgba(8,127,174,0.16); }
         .ip-copy-btn:disabled { opacity: 0.45; cursor: default; }
@@ -128,9 +164,28 @@ document.addEventListener('selectstart', e => {
             <a href="https://qqzttkx.ficp.fun/?from=cf" class="mirror-hsk" target="_blank">花生壳</a>
             <a href="https://qqzttkx.eu.cc/" class="mirror-cf" target="_blank">Cloudflare</a>
         </div>
-        <div class="visitor-stats" id="visitorStats">
-            <span class="vs-item">本机IP：<span class="vs-num" id="vsIp">读取中…</span><button type="button" class="ip-copy-btn" id="ipCopyBtn" disabled>复制</button></span>
-            <span class="vs-item">实时人数：<span class="vs-num" id="vsCount">--</span> 人</span>
+        <div class="ip-id-card" id="ipIdCard">
+            <div class="ip-id-head">
+                <div class="ip-id-avatar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <div>
+                    <div class="ip-id-name">庆庆纸博客</div>
+                    <div class="ip-id-sub">站长 · IP 身份证</div>
+                </div>
+            </div>
+            <div class="ip-id-rows">
+                <div class="ip-id-row"><span>公民身份号码</span><span class="ip-id-ip" id="vsIp">读取中…</span></div>
+                <div class="ip-id-row"><span>签发机关</span><b>Cloudflare · 花生壳</b></div>
+                <div class="ip-id-row"><span>有效期</span><b id="ipIdDate">--</b></div>
+            </div>
+            <div class="ip-id-actions">
+                <button type="button" class="ip-copy-btn" id="ipCopyBtn" disabled>复制 IP</button>
+            </div>
+            <div class="ip-id-stats">
+                <span>实时人数：<span class="vs-num" id="vsCount">--</span> 人</span>
+                <span>自动实时刷新</span>
+            </div>
         </div>
     </div>
     <script src="js/sakura/config.js"></script>
@@ -152,6 +207,11 @@ document.addEventListener('selectstart', e => {
     var vsCountEl = document.getElementById('vsCount');
     var ipCopyBtn = document.getElementById('ipCopyBtn');
     var ipCopyTimer = null;
+    var ipIdDateEl = document.getElementById('ipIdDate');
+    if (ipIdDateEl) {
+        var _d = new Date();
+        ipIdDateEl.textContent = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0') + '-' + String(_d.getDate()).padStart(2, '0');
+    }
     // 本机IP：实时显示（ipwho.is 获取访问者公网 IP，站长访问即站长本机当前 IP，IP 变化自动更新）；自动放行白名单见 WHITELIST_IPS，换 IP 时改它即可
     ipCopyBtn.disabled = true;
     // 复制本机IP
