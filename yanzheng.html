@@ -180,10 +180,17 @@ document.addEventListener('selectstart', e => {
         <h2>欢迎来到庆庆纸博客</h2>
         <p class="tip">完成验证后自动进入</p>
         <div class="turnstile-wrap">
-            <button id="verifyBtn" style="display:flex;align-items:center;gap:12px;padding:14px 28px;border:2px solid #d0d5dd;border-radius:8px;background:#fff;cursor:pointer;font-size:15px;min-width:280px;justify-content:center;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.08)">
-                <span id="verifyCheckbox" style="width:24px;height:24px;border:2px solid #c0c5d0;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"></span>
-                <span>我不是机器人</span>
-            </button>
+            <div id="verifyBtn" style="display:flex;align-items:center;justify-content:space-between;background:#f9f9f9;border:1px solid #e3e3e3;border-radius:4px;padding:0;width:300px;height:65px;cursor:pointer;user-select:none;box-shadow:0 1px 3px rgba(0,0,0,.08)">
+                <div style="display:flex;align-items:center;gap:14px;padding-left:18px">
+                    <span id="verifyCheckbox" style="width:28px;height:28px;border:1.5px solid #c1c1c1;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;transition:all .15s"></span>
+                    <span style="font-size:15px;color:#333;font-family:Arial,sans-serif">我不是机器人</span>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 14px;align-self:stretch;justify-content:center">
+                    <svg width="30" height="20" viewBox="0 0 30 20" style="margin-bottom:2px"><path d="M18 3c-1.5 0-2.8.8-3.5 2A4.5 4.5 0 0 0 11.5 7 5 5 0 0 0 7 12c0 .3 0 .6.1.9C5.3 13.4 4 15 4 17h19c2.8 0 5-2.2 5-5s-2.2-5-5-5h-.5A5 5 0 0 0 18 3z" fill="#F38020"/></svg>
+                    <span style="font-size:7px;color:#666;font-family:Arial,sans-serif;line-height:1">Cloudflare</span>
+                    <span style="font-size:6px;color:#999;font-family:Arial,sans-serif;line-height:1;margin-top:1px">隐私 - 帮助</span>
+                </div>
+            </div>
         </div>
         <div id="wvTip" style="display:none; margin:12px auto 0; max-width:420px; padding:12px 14px; border-radius:10px; background:rgba(248,113,113,.12); border:1px solid rgba(248,113,113,.45); color:#fca5a5; font-size:.82rem; line-height:1.7; text-align:left;">
           <b>检测到微信/QQ 内置浏览器</b>，人机验证可能无法通过。<br>请点右上角 <b>「···」</b> → 选择 <b>「在浏览器打开」</b>（或复制链接到系统浏览器）后访问。
