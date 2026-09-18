@@ -1021,7 +1021,7 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
 <script>
 (function(){
   const items = document.querySelectorAll('.navbar-nav .nav-item');
-  const sections = ['home','about','social'];
+  const sections = ['home','about','social','blog','resources'];
   function onScroll(){
     const pos = window.scrollY + 120;
     let current = 'home';
@@ -1035,17 +1035,6 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
   }
   window.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
-})();
-</script>
-<script>
-(function(){
-  try {
-    var saved = localStorage.getItem('qw_theme');
-    var savedDate = localStorage.getItem('qw_theme_date');
-    var _d = new Date();
-    var today = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0') + '-' + String(_d.getDate()).padStart(2, '0');
-    if (saved && savedDate === today) document.documentElement.setAttribute('data-theme', saved);
-  } catch(e){}
 })();
 </script>
 <script>
