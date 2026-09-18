@@ -716,12 +716,12 @@ function visibleWlistBoxes() {
 function updateBlockSelBtn() {
   var n = document.querySelectorAll('#panel-block .block-chk:checked').length;
   var b = document.querySelector('#panel-block [data-act="block-del-sel"]');
-  if (b) { b.disabled = n === 0; b.textContent = '确定(' + n + ')'; }
+  if (b) { b.disabled = n === 0; b.textContent = '删除(' + n + ')'; }
 }
 function updateWlistSelBtn() {
   var n = document.querySelectorAll('#panel-wlist .wlist-chk:checked').length;
   var b = document.querySelector('#panel-wlist [data-act="wlist-del-sel"]');
-  if (b) { b.disabled = n === 0; b.textContent = '确定(' + n + ')'; }
+  if (b) { b.disabled = n === 0; b.textContent = '删除(' + n + ')'; }
 }
 function chatToolbarHtml() {
   return '<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">' +
@@ -732,7 +732,7 @@ function chatToolbarHtml() {
     '<button class="t-btn" data-act="chat-all">全选</button>' +
     '<button class="t-btn" data-act="chat-invert">反选</button>' +
     '<button class="t-btn" data-act="chat-clear">取消</button>' +
-    '<button class="t-btn danger" data-act="chat-del-sel" disabled>确定(0)</button></span></div>';
+    '<button class="t-btn danger" data-act="chat-del-sel" disabled>删除(0)</button></span></div>';
 }
 function userToolbarHtml() {
   return '<div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">' +
@@ -743,7 +743,7 @@ function userToolbarHtml() {
     '<button class="t-btn" data-act="user-all">全选</button>' +
     '<button class="t-btn" data-act="user-invert">反选</button>' +
     '<button class="t-btn" data-act="user-clear">取消</button>' +
-    '<button class="t-btn danger" data-act="user-del-sel" disabled>确定(0)</button></span></div>';
+    '<button class="t-btn danger" data-act="user-del-sel" disabled>删除(0)</button></span></div>';
 }
 function applyChatFilter() {
   var q = adminChatSearch.toLowerCase();
@@ -778,12 +778,12 @@ function visibleUserBoxes() {
 function updateChatSelBtn() {
   var n = document.querySelectorAll('#panel-chat .chat-chk:checked').length;
   var b = document.querySelector('#panel-chat [data-act="chat-del-sel"]');
-  if (b) { b.disabled = n === 0; b.textContent = '确定(' + n + ')'; }
+  if (b) { b.disabled = n === 0; b.textContent = '删除(' + n + ')'; }
 }
 function updateUserSelBtn() {
   var n = document.querySelectorAll('#panel-users .user-chk:checked').length;
   var b = document.querySelector('#panel-users [data-act="user-del-sel"]');
-  if (b) { b.disabled = n === 0; b.textContent = '确定(' + n + ')'; }
+  if (b) { b.disabled = n === 0; b.textContent = '删除(' + n + ')'; }
 }
 function likeInfoHtml(c, likeMap) {
   var ups = c.ups || c.likes || [];
@@ -842,7 +842,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
     '<button class="t-btn" data-act="block-all">全选</button>' +
     '<button class="t-btn" data-act="block-invert">反选</button>' +
     '<button class="t-btn" data-act="block-clear">取消</button>' +
-    '<button class="t-btn danger" data-act="block-del-sel" disabled>确定(0)</button></span></h3>' + blockToolbarHtml();
+    '<button class="t-btn danger" data-act="block-del-sel" disabled>删除(0)</button></span></h3>' + blockToolbarHtml();
   if (!blocks.length) {
     h += '<div class="empty" style="padding:12px 0">暂无黑名单</div>';
   } else {
@@ -861,7 +861,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
     '<button class="t-btn" data-act="wlist-all">全选</button>' +
     '<button class="t-btn" data-act="wlist-invert">反选</button>' +
     '<button class="t-btn" data-act="wlist-clear">取消</button>' +
-    '<button class="t-btn danger" data-act="wlist-del-sel" disabled>确定(0)</button></span></h3>' + wlistToolbarHtml();
+    '<button class="t-btn danger" data-act="wlist-del-sel" disabled>删除(0)</button></span></h3>' + wlistToolbarHtml();
   h += '<p style="margin:0 0 10px;font-size:11px;color:var(--jp-muted)">命中的 IP 访问验证页自动放行（本站 Cloudflare 域名验证入口）</p>';
   if (!wlist.length) {
     h += '<div class="empty" style="padding:12px 0">暂无白名单 IP</div>';
@@ -1101,7 +1101,7 @@ function currentLogCount() {
   return arr.length;
 }
 function logToolbarHtml() {
-  return '<span class="log-toolbar"><button class="t-btn" data-act="toggle-all-log">全选</button><button class="t-btn" data-act="invert-log">反选</button><button class="t-btn" data-act="clear-log">取消</button><button class="t-btn danger" data-act="del-selected-log" disabled>确定(0)</button></span>';
+  return '<span class="log-toolbar"><button class="t-btn" data-act="toggle-all-log">全选</button><button class="t-btn" data-act="invert-log">反选</button><button class="t-btn" data-act="clear-log">取消</button><button class="t-btn danger" data-act="del-selected-log" disabled>删除(0)</button></span>';
 }
 function buildLogHtml(logs) {
   var h = '<div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">';
@@ -1471,7 +1471,7 @@ function bindActions() {
     var n = 0;
     boxes.forEach(function (b) { if (b.checked) n++; });
     var btn = document.querySelector('#logSection [data-act="del-selected-log"]');
-    if (btn) { btn.disabled = n === 0; btn.textContent = '确定(' + n + ')'; }
+    if (btn) { btn.disabled = n === 0; btn.textContent = '删除(' + n + ')'; }
   }
   document.querySelectorAll('#logSection .log-chk').forEach(function (box) {
     box.addEventListener('change', updateSelLogBtn);
