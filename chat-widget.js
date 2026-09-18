@@ -1077,8 +1077,8 @@
         html += '<div class="qw-log-item" data-id="' + c._id + '">' + escHtml(ctime) + ' · ' + escHtml(c.nick || '匿名') + ' · ' + escHtml(stripHtml(c.comment)) +
           '<span class="qw-log-sub">IP ' + escHtml(c.ip || '未知') + (c.ip ? '<button class="qw-log-copy" data-ip="' + escAttr(c.ip) + '" title="复制IP">复制</button>' : '') + (c.ua ? ' · ' + parseUa(c.ua) : '') + '</span>' +
           (adminReadOnly ? '' :
-          (c.mail ? '<button class="qw-log-del" data-act="blk" data-mail="' + escAttr(c.mail) + '" title="拉黑邮箱" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">🚫</button>' : '') +
-          '<button class="qw-log-del" data-act="del" data-id="' + c._id + '" title="删除这条消息" style="float:right;margin-left:8px;border:none;background:none;color:var(--jp-muted);font-size:11px;cursor:pointer;">✕</button>') +
+          (c.mail ? '<button class="qw-log-del" data-act="blk" data-mail="' + escAttr(c.mail) + '" title="拉黑邮箱" style="float:right;margin-left:6px;background:#e05b5b;color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer;">拉黑</button>' : '') +
+          '<button class="qw-log-del" data-act="del" data-id="' + c._id + '" title="删除这条消息" style="float:right;margin-left:6px;background:#e05b5b;color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer;">移除</button>') +
           '</div>';
       }
     }
