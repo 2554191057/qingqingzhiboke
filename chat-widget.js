@@ -161,6 +161,8 @@
     '.qw-opt input{accent-color:var(--jp-accent);width:14px;height:14px;margin:0;cursor:pointer;}',
     '.qw-account-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;max-height:210px;overflow-y:auto;}',
     '.qw-account-list::-webkit-scrollbar{display:none;}',
+    '.qw-body #twikoo::-webkit-scrollbar,.qw-body #twikoo *::-webkit-scrollbar{display:none!important;}',
+    '.qw-body #twikoo,.qw-body #twikoo *{scrollbar-width:none!important;-ms-overflow-style:none!important;}',
     '.qw-acct{display:flex;align-items:center;gap:10px;padding:8px 26px 8px 10px;border:1px solid var(--jp-line);border-radius:12px;cursor:pointer;background:var(--jp-paper);position:relative;transition:border-color .15s ease,background .15s ease;}',
     '.qw-acct:hover{border-color:var(--jp-accent);}',
     '.qw-acct.qw-sel{border-color:var(--jp-accent);background:rgba(8,127,174,.08);}',
