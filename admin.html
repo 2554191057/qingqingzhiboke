@@ -964,7 +964,7 @@ function currentLogCount() {
   return arr.length;
 }
 function logToolbarHtml() {
-  return '<span class="log-toolbar"><button class="t-btn" data-act="toggle-all-log">全选</button><button class="t-btn danger" data-act="del-selected-log" disabled>删除选中(0)</button></span>';
+  return '<span class="log-toolbar"><button class="t-btn" data-act="toggle-all-log">全选</button><button class="t-btn" data-act="invert-log">反选</button><button class="t-btn" data-act="clear-log">取消</button><button class="t-btn danger" data-act="del-selected-log" disabled>确定(0)</button></span>';
 }
 function buildLogHtml(logs) {
   var h = '<div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">';
@@ -1120,7 +1120,7 @@ function bindActions() {
     var n = 0;
     boxes.forEach(function (b) { if (b.checked) n++; });
     var btn = document.querySelector('#logSection [data-act="del-selected-log"]');
-    if (btn) { btn.disabled = n === 0; btn.textContent = '删除选中(' + n + ')'; }
+    if (btn) { btn.disabled = n === 0; btn.textContent = '确定(' + n + ')'; }
   }
   document.querySelectorAll('#logSection .log-chk').forEach(function (box) {
     box.addEventListener('change', updateSelLogBtn);
@@ -1129,11 +1129,23 @@ function bindActions() {
   var toggleBtn = document.querySelector('#logSection [data-act="toggle-all-log"]');
   if (toggleBtn) {
     toggleBtn.addEventListener('click', function () {
-      var boxes = document.querySelectorAll('#logSection .log-chk');
-      var allOn = true;
-      boxes.forEach(function (b) { if (!b.checked) allOn = false; });
-      boxes.forEach(function (b) { b.checked = !allOn; });
-      this.textContent = allOn ? '全选' : '取消全选';
+      document.querySelectorAll('#logSection .log-chk').forEach(function (b) { b.checked = true; });
+      updateSelLogBtn();
+    });
+  }
+  // 反选：勾选状态反转
+  var invertBtn = document.querySelector('#logSection [data-act="invert-log"]');
+  if (invertBtn) {
+    invertBtn.addEventListener('click', function () {
+      document.querySelectorAll('#logSection .log-chk').forEach(function (b) { b.checked = !b.checked; });
+      updateSelLogBtn();
+    });
+  }
+  // 取消：清空所有勾选
+  var clearBtn = document.querySelector('#logSection [data-act="clear-log"]');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      document.querySelectorAll('#logSection .log-chk').forEach(function (b) { b.checked = false; });
       updateSelLogBtn();
     });
   }
