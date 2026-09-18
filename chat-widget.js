@@ -2093,7 +2093,7 @@
           var email = (getVisitor().email || '').trim().toLowerCase();
           fetch(TWIKOO_API, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ event: 'COMMENT_DELETE', id: d.id, email: email })
+            body: JSON.stringify({ event: 'QW_COMMENT_DELETE_OWN', id: d.id, email: email })
           }).then(function (r) { return r.json(); }).then(function (r) {
             if (r && r.code === 0) {
               removeCommentFromList(d.id);
