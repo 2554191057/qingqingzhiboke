@@ -394,6 +394,7 @@
   var backdrop = document.getElementById('qw-backdrop');
   var panel = backdrop.querySelector('.qw-panel');
   var closeBtn = panel.querySelector('.qw-close');
+  var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
   var assetsLoaded = false;
   var twikooInited = false;
 
