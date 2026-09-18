@@ -552,6 +552,12 @@ document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
 });
 </script>
 <script>
+// ?chat=1 自动打开聊天室（从后台管理返回时恢复聊天室弹窗）
+if (location.search.indexOf('chat=1') !== -1) {
+  setTimeout(function(){ if (window.openChatRoom) window.openChatRoom(); }, 500);
+}
+</script>
+<script>
 // 点击导航栏 logo 图标跳转后台管理页（与聊天室同一后台）
 document.querySelectorAll('.logo-icon').forEach(function(el){
   el.addEventListener('click', function(e){
