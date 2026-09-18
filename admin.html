@@ -303,6 +303,10 @@ var adminActiveTab = ''; // 顶部卡片 Tab 当前展开的面板（''=全部�
 var adminChatSearch = '', adminUserSearch = '', adminBlockSearch = '', adminWlistSearch = ''; // 聊天信息 / 账号管理 / 黑名单 / 白名单 搜索词
 var adminLogSearch = ''; // 日志搜索关键字
 var ipLocCache = {};
+try {
+  var _savedLoc = JSON.parse(localStorage.getItem('qw_ip_loc') || '{}');
+  if (_savedLoc && _savedLoc._v === 4 && _savedLoc.data) ipLocCache = _savedLoc.data;
+} catch (e) {}
 var autoRefreshOn = true;
 var autoRefreshTimer = null;
 var adminRefreshing = false;
@@ -408,75 +412,93 @@ function cnCity(city) {
 function getIpLocation(ip, cb) {
   if (!ip || !/^([0-9a-fA-F:.]*[0-9a-fA-F]|(\d{1,3}\.){3}\d{1,3})$/.test(ip)) return cb('');
   if (ipLocCache[ip]) return cb(ipLocCache[ip]);
-  // 优先 vore.top：免费、无需 key，返回 省/市/区 + 运营商（IPv4 到区县，IPv6 至少省+运营商）
-  fetch('https://api.vore.top/api/IPdata?ip=' + encodeURIComponent(ip)).then(function (r) { return r.json(); }).then(function (d) {
-    var loc = '';
-    var needDist = false; // vore.top 无区县时用 ipwho.is 补充
-    if (d && d.code === 200 && d.ipdata) {
-      var p = String(d.ipdata.info1 || '').replace(/省$/, '');
-      var c = String(d.ipdata.info2 || '').replace(/市$/, '');
-      var dist = String(d.ipdata.info3 || '');
-      if (dist === '基站' || dist === '街道' || dist === '区县') dist = ''; // 基站等占位，无实际区县
-      var isp = String(d.ipdata.isp || '');
-      if (/Amazon|AWS|EC2/i.test(isp)) isp = '亚马逊云';
+
+  // ipwho.is 回退（含 district 区县）
+  function fromIpwho(cbDone) {
+    fetch('https://ipwho.is/' + ip).then(function (r2) { return r2.json(); }).then(function (d2) {
+      if (!d2 || d2.success === false) return cbDone('');
+      var prov = (d2.region || '').toLowerCase().replace(/\s*(sheng|province|auto autonomous|region)\s*/g, '').trim();
+      var provCn = provinceMap[prov] || d2.region || '';
+      var cityCn = cnCity(d2.city || '');
+      var distCn = cnCity(String(d2.district || '').replace(/区$|县$|市$/, ''));
+      var org = (d2.connection && d2.connection.org) || (d2.connection && d2.connection.isp) || '';
+      if (/CHINANET|China Telecom|Chinatelecom/i.test(org)) org = '电信';
+      else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
+      else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
+      else if (/Amazon|AWS|EC2/i.test(org)) org = '亚马逊云';
+      else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
+      else org = org ? org.slice(0, 20) : '';
       var parts = [];
-      if (p) parts.push(p);
-      if (c && c !== p) parts.push(c);
-      if (dist && dist !== c) parts.push(dist); else if (p || c) needDist = true;
-      if (isp) parts.push(isp);
-      loc = parts.join(' ');
-    }
-    if (!loc) {
-      // vore.top 失败或无数据 → 全量回退 ipwho.is（含 district 区县）
-      return fetch('https://ipwho.is/' + ip).then(function (r2) { return r2.json(); }).then(function (d2) {
-        if (!d2 || d2.success === false) return cb('');
-        var prov = (d2.region || '').toLowerCase().replace(/\s*(sheng|province|auto autonomous|region)\s*/g, '').trim();
-        var provCn = provinceMap[prov] || d2.region || '';
-        var cityCn = cnCity(d2.city || '');
-        var distCn = cnCity(String(d2.district || '').replace(/区$|县$|市$/, ''));
-        var org = (d2.connection && d2.connection.org) || (d2.connection && d2.connection.isp) || '';
-        if (/CHINANET|China Telecom|Chinatelecom/i.test(org)) org = '电信';
-        else if (/CHINA UNICOM|China Unicom/i.test(org)) org = '联通';
-        else if (/CHINA MOBILE|China Mobile/i.test(org)) org = '移动';
-        else if (/Amazon|AWS|EC2/i.test(org)) org = '亚马逊云';
-        else if (/Tencent|Alibaba|Huawei|Huaweicloud/i.test(org)) org = '';
-        else org = org ? org.slice(0, 20) : '';
-        var parts2 = [];
-        if (provCn) parts2.push(provCn);
-        if (cityCn && cityCn !== provCn) parts2.push(cityCn);
-        if (distCn && distCn !== cityCn) parts2.push(distCn);
-        if (org) parts2.push(org);
-        var loc2 = parts2.join(' ');
-        if (loc2) {
-          ipLocCache[ip] = loc2;
-          try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
-        }
-        cb(loc2);
-      }).catch(function () { cb(''); });
-    }
-    if (needDist) {
-      // vore.top 只到市，用 ipwho.is 补区县（插到运营商前）
-      return fetch('https://ipwho.is/' + ip).then(function (r3) { return r3.json(); }).then(function (d3) {
-        var parts3 = loc.split(' ');
-        if (d3 && d3.success !== false && d3.district) {
-          var dd = cnCity(String(d3.district).replace(/区$|县$|市$/, ''));
-          if (dd && parts3.indexOf(dd) < 0) parts3.splice(parts3.length - 1, 0, dd);
-        }
-        var loc3 = parts3.join(' ');
-        if (loc3) {
-          ipLocCache[ip] = loc3;
-          try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
-        }
-        cb(loc3);
-      }).catch(function () { if (loc) { ipLocCache[ip] = loc; try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {} } cb(loc); });
-    }
-    if (loc) {
-      ipLocCache[ip] = loc;
-      try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
-      return cb(loc);
-    }
-    cb('');
-  }).catch(function () { cb(''); });
+      if (provCn) parts.push(provCn);
+      if (cityCn && cityCn !== provCn) parts.push(cityCn);
+      if (distCn && distCn !== cityCn) parts.push(distCn);
+      if (org) parts.push(org);
+      var loc = parts.join(' ');
+      if (loc) {
+        ipLocCache[ip] = loc;
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
+      }
+      cbDone(loc);
+    }).catch(function () { cbDone(''); });
+  }
+
+  // 优先 vore.top：免费、无需 key，返回 省/市/区 + 运营商
+  fetch('https://api.vore.top/api/IPdata?ip=' + encodeURIComponent(ip))
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var loc = '';
+      var needDist = false;
+      if (d && d.code === 200 && d.ipdata) {
+        var p = String(d.ipdata.info1 || '').replace(/省$/, '');
+        var c = String(d.ipdata.info2 || '').replace(/市$/, '');
+        var dist = String(d.ipdata.info3 || '');
+        if (dist === '基站' || dist === '街道' || dist === '区县') dist = '';
+        var isp = String(d.ipdata.isp || '');
+        if (/Amazon|AWS|EC2/i.test(isp)) isp = '亚马逊云';
+        var parts = [];
+        if (p) parts.push(p);
+        if (c && c !== p) parts.push(c);
+        if (dist && dist !== c) parts.push(dist); else if (p || c) needDist = true;
+        if (isp) parts.push(isp);
+        loc = parts.join(' ');
+      }
+      if (!loc) {
+        // vore.top 无数据 → 回退 ipwho.is
+        return fromIpwho(cb);
+      }
+      if (needDist) {
+        // vore.top 只到市，用 ipwho.is 补区县
+        return fetch('https://ipwho.is/' + ip).then(function (r3) { return r3.json(); }).then(function (d3) {
+          var parts3 = loc.split(' ');
+          if (d3 && d3.success !== false && d3.district) {
+            var dd = cnCity(String(d3.district).replace(/区$|县$|市$/, ''));
+            if (dd && parts3.indexOf(dd) < 0) parts3.splice(parts3.length - 1, 0, dd);
+          }
+          var loc3 = parts3.join(' ');
+          if (loc3) {
+            ipLocCache[ip] = loc3;
+            try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
+          }
+          cb(loc3);
+        }).catch(function () {
+          if (loc) {
+            ipLocCache[ip] = loc;
+            try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
+          }
+          cb(loc);
+        });
+      }
+      if (loc) {
+        ipLocCache[ip] = loc;
+        try { localStorage.setItem('qw_ip_loc', JSON.stringify({ _v: 4, data: ipLocCache })); } catch (e) {}
+        return cb(loc);
+      }
+      cb('');
+    })
+    .catch(function () {
+      // vore.top fetch/JSON 失败 → 回退 ipwho.is（关键修复：之前直接放弃不回退）
+      fromIpwho(cb);
+    });
 }
 var ipQueue = [], ipBusy = 0, IP_MAX_CONC = 6;
 function pumpIpQueue() {
