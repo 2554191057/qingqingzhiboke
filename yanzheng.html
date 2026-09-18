@@ -196,7 +196,7 @@ document.addEventListener('selectstart', e => {
         var back = new URLSearchParams(location.search).get('back');
         setTimeout(function () {
             if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
-            location.replace('https://qqzttkx.eu.cc/boke.html');
+            location.replace('boke.html');
         }, 1500);
     }
     var WHITELIST_IPS = ['222.245.15.167'];
@@ -293,7 +293,7 @@ document.addEventListener('selectstart', e => {
           var back = new URLSearchParams(location.search).get('back');
           setTimeout(function () {
             if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
-            location.replace('https://qqzttkx.eu.cc/boke.html');
+            location.replace('boke.html');
           }, 1500);
         }
       });
@@ -304,15 +304,8 @@ document.addEventListener('selectstart', e => {
     setInterval(function(){ onlinePing(); onlineCount(); }, 20000);
     (function(){
       var h = location.hostname;
-      var fromCf = new URLSearchParams(location.search).get('from') === 'cf';
       if (h === 'qqzttkx.ficp.fun' || h === 'qqzttkxpd.ficp.fun') {
         document.querySelector('.mirror-hsk').style.display = 'none';
-        if (!fromCf) {
-          var PRIMARY = 'https://qqzttkx.eu.cc/';
-          fetch(PRIMARY, { mode: 'no-cors', cache: 'no-store' })
-            .then(function(){ location.replace(PRIMARY + location.search + location.hash); })
-            .catch(function(){});
-        }
       }
       if (h.indexOf('eu.cc') >= 0 || h.indexOf('pages.dev') >= 0) document.querySelector('.mirror-cf').style.display = 'none';
     })();
