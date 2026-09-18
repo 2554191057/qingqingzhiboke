@@ -126,6 +126,7 @@ input, button { font-family: inherit; }
   word-break: break-all; overflow-wrap: anywhere;
 }
 .log-toolbar { display:flex; align-items:center; gap:8px; margin:0 0 10px; flex-wrap:wrap; }
+.panel h3 .log-toolbar { margin: 0 0 0 auto; }
 .log-toolbar .t-btn {
   font-size:11px; padding:4px 12px; border:1px solid var(--jp-line); border-radius:7px;
   background:transparent; color:var(--jp-accent); cursor:pointer;
@@ -429,14 +430,14 @@ function renderLoginView() {
 }
 
 /* ===== 管理视图 ===== */
-function renderManageView() {
+function renderManageView(silent) {
   document.getElementById('topSub').textContent = '已登录';
   document.getElementById('btnLogout').style.display = '';
   document.getElementById('btnRefresh').style.display = '';
   document.getElementById('btnAuto').style.display = '';
   adminRefreshing = true;
   startAutoRefresh();
-  document.getElementById('mainView').innerHTML = '<div class="loading"><div class="spin"></div><br>加载聊天数据…</div>';
+  if (!silent) document.getElementById('mainView').innerHTML = '<div class="loading"><div class="spin"></div><br>加载聊天数据…</div>';
   var blocks = [], wlist = [], likeMap = {};
   var onlineCount = 0;
   adminPost({ event: 'QW_LIKE_LIST', accessToken: adminToken }).then(function (lr) {
@@ -547,7 +548,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
   }
   h += '<div class="mgmt-add"><input type="text" id="wlInput" placeholder="输入邮箱或昵称加入白名单"><button data-act="add-wl">添加</button></div></div>';
 
-  h += '<div class="panel" id="logSection"><h3>📋 操作日志（最近100条）</h3>' + buildLogHtml(adminLogs) + '</div>';
+  h += '<div class="panel" id="logSection"><h3>📋 操作日志（最近100条）' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs) + '</div>';
 
   document.getElementById('mainView').innerHTML = h;
   enrichIps();
@@ -643,6 +644,9 @@ function parseUa(ua) {
   var p = parseUaParts(ua);
   return p.dev + (p.br !== '未知浏览器' ? ' · ' + p.br : '');
 }
+function logToolbarHtml() {
+  return '<span class="log-toolbar"><button class="t-btn" data-act="toggle-all-log">全选</button><button class="t-btn danger" data-act="del-selected-log" disabled>删除选中(0)</button></span>';
+}
 function buildLogHtml(logs) {
   var h = '<div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">';
   for (var ci = 0; ci < logCats.length; ci++) {
@@ -650,12 +654,8 @@ function buildLogHtml(logs) {
     h += '<button data-act="set-logcat" data-cat="' + c.key + '" style="font-size:10.5px;padding:3px 11px;border:1px solid var(--jp-line);border-radius:7px;background:' + (adminLogFilter === c.key ? 'var(--jp-accent)' : 'transparent') + ';color:' + (adminLogFilter === c.key ? '#fff' : 'var(--jp-accent)') + ';cursor:pointer">' + c.label + '</button>';
   }
   h += '</div>';
-  var list = (logs || []).filter(function (x) { return x.type !== 'online'; }); // 在线快照日志不展示
+  var list = (logs || []).slice().sort(function (a, b) { return (b.time || 0) - (a.time || 0); }).filter(function (x) { return x.type !== 'online'; }); // 最新在上；在线快照日志不展示
   if (adminLogFilter !== 'all') list = list.filter(function (x) { var cat = logCatMap[x.type] || (/^visit_/.test(x.type) ? 'other' : ''); return cat === adminLogFilter; });
-  h += '<div class="log-toolbar">';
-  h += '<button class="t-btn" data-act="toggle-all-log">全选</button>';
-  h += '<button class="t-btn danger" data-act="del-selected-log" disabled>删除选中(0)</button>';
-  h += '</div>';
   if (!list.length) {
     h += '<div class="empty" style="padding:10px 0">暂无日志</div>';
   } else {
@@ -724,7 +724,7 @@ function bindActions() {
       adminLogFilter = b.getAttribute('data-cat') || 'all';
       var sec = document.getElementById('logSection');
       if (sec) {
-        sec.innerHTML = '<h3>📋 操作日志（最近100条）</h3>' + buildLogHtml(adminLogs);
+        sec.innerHTML = '<h3>📋 操作日志（最近100条）' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs);
         bindActions();
         enrichIps();
       }
@@ -738,7 +738,7 @@ function bindActions() {
         if (r && r.code === 0) {
           adminLogs = adminLogs.filter(function (x) { return String(x._id) !== String(id); });
           var sec = document.getElementById('logSection');
-          if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
+          if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
         } else alert((r && r.message) || '删除失败');
       });
     });
@@ -787,7 +787,7 @@ function bindActions() {
           }
           if (done >= remain) {
             var sec = document.getElementById('logSection');
-            if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
+            if (sec) { sec.innerHTML = '<h3>📋 操作日志（最近100条）' + logToolbarHtml() + '</h3>' + buildLogHtml(adminLogs); bindActions(); enrichIps(); }
           }
         }).catch(function () { done++; });
       });
@@ -838,7 +838,7 @@ function autoRefreshTick() {
   if (adminRefreshing) return; // 上一次刷新未完成，跳过本轮
   var ae = document.activeElement;
   if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return; // 正在输入，跳过本轮避免清空输入框
-  renderManageView();
+  renderManageView(true); // 静默刷新：不显示加载提示，直接更新数据
 }
 document.getElementById('btnAuto').addEventListener('click', function () {
   autoRefreshOn = !autoRefreshOn;
