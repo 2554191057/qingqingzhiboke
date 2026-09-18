@@ -651,7 +651,7 @@ canvas:not([class])[style*='position: fixed'], canvas:not([class])[style*='posit
                 </div>
             </div>
             <p>© <span id="yearNow"></span> 庆庆纸博客. 欢迎您的到来.</p>
-            <p class="footer-motto">访问网站浏览总数：<b id="totalVisits">--</b> 次</p>
+            <p class="footer-motto">今日访问人数：<b id="totalVisits">--</b> 人</p>
 <p class="footer-motto">本机 IP：<b id="myIp" title="加载中…">--</b></p>
         </div>
     </div>
@@ -784,8 +784,8 @@ window.addEventListener('load', function() {
   if (location.search.indexOf('chat=1') !== -1) {
     setTimeout(function(){ if (window.openChatRoom) window.openChatRoom(); }, 500);
   }
-  // 访问网站浏览总数（后端 QW_TOTAL_VISITS 统计 visit 日志）
-  fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_TOTAL_VISITS' }) })
+  // 今日访问人数（后端 QW_TODAY_VISITS：今日 0 点后 visit 日志去重 IP）
+  fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_TODAY_VISITS' }) })
     .then(function (r) { return r.json(); })
     .then(function (d) {
       var el = document.getElementById('totalVisits');
