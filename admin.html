@@ -810,7 +810,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
         '<div class="log-main">' + escHtml(ctime) + ' · ' + escHtml(c.nick || '匿名') + ' · ' + escHtml(stripHtml(c.comment)) +
         '<span class="log-sub" style="display:block;font-size:10.5px;opacity:.75"><span class="log-loc"></span>IP ' + escHtml(c.ip || '未知') + (cup ? ' · ' + escHtml(cup.br) + ' · ' + escHtml(cup.dev) : '') + (c.ip ? '<button class="log-copy-ip" data-ip="' + escAttr(c.ip) + '" title="复制IP">复制</button>' : '') + '</span>' +
         '</div>' +
-        '<button class="log-del" data-act="blk" data-mail="' + escAttr(c.mail || '') + '" data-ip="' + escAttr(c.ip || '') + '" title="拉黑" style="float:right;margin-left:6px;background:var(--jp-danger,#e05b5b);color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer">拉黑</button>';
+        '<button class="log-del" data-act="blk" data-mail="' + escAttr(c.mail || '') + '" data-ip="' + escAttr(c.ip || '') + '" title="拉黑" style="float:right;margin-left:6px;background:var(--jp-danger,#e05b5b);color:#fff;border:none;border-radius:6px;font-size:10px;padding:2px 9px;cursor:pointer">拉黑</button></div>';
     }
   }
   h += '</div>';
@@ -831,7 +831,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
       h += '<div class="mgmt-row" style="align-items:flex-start" data-user-search="' + escAttr((ac.nick || '') + ' ' + ac.email) + '">' +
         '<input type="checkbox" class="log-chk user-chk" data-mail="' + escAttr(ac.email) + '" title="选择">' +
         '<span><b>' + escHtml(ac.nick || '未设昵称') + '</b> <small style="color:var(--jp-muted)">' + escHtml(ac.email) + '</small><br><small style="color:var(--jp-muted)">注册 ' + escHtml(acReg) + ' · 最后登录 ' + escHtml(acLast) + ' · 评论 ' + (ac.comments || 0) + ' 条</small></span>' +
-        '<button data-act="blk" data-mail="' + escAttr(ac.email) + '" data-ip="" title="拉黑该账号邮箱">拉黑</button>';
+        '<button data-act="blk" data-mail="' + escAttr(ac.email) + '" data-ip="" title="拉黑该账号邮箱">拉黑</button></div>';
     }
   }
   h += '</div>';
