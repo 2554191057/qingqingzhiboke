@@ -234,6 +234,7 @@ if (sessionStorage.getItem('auth_ok') !== '1') {
     <button class="t-btn" id="btnTheme" title="切换日间/夜间模式" style="font-size:12px;padding:7px 11px">☀️ 日间</button>
     <button class="t-btn" id="btnQuit" onclick="quitAdmin()">退出</button>
     <button class="t-btn" id="btnAuto" style="display:none" title="每10秒自动刷新统计/消息/日志">自动刷新：开</button>
+    <button class="t-btn" id="btnPwd" style="display:none" title="修改管理密码">🔑 修改密码</button>
     <button class="t-btn" id="btnLogout" style="display:none">退出登录</button>
   </div>
 </div>
@@ -453,6 +454,7 @@ function enrichIps() {
 function renderLoginView() {
   document.getElementById('topSub').textContent = '未登录';
   document.getElementById('btnLogout').style.display = 'none';
+  document.getElementById('btnPwd').style.display = 'none';
   document.getElementById('btnAuto').style.display = 'none';
   stopAutoRefresh();
   document.getElementById('mainView').innerHTML =
@@ -494,6 +496,7 @@ function renderLoginView() {
 function renderManageView(silent) {
   document.getElementById('topSub').textContent = '已登录';
   document.getElementById('btnLogout').style.display = '';
+  document.getElementById('btnPwd').style.display = '';
   document.getElementById('btnAuto').style.display = '';
   adminRefreshing = true;
   startAutoRefresh();
@@ -1073,6 +1076,57 @@ document.getElementById('btnLogout').addEventListener('click', function () {
   try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
   adminToken = '';
   renderLoginView();
+});
+
+/* ===== 修改管理密码 ===== */
+document.getElementById('btnPwd').addEventListener('click', function () {
+  if (!adminToken) return;
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)';
+  overlay.innerHTML =
+    '<div style="background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:16px;padding:24px;width:330px;max-width:92vw;box-shadow:0 18px 60px rgba(0,0,0,.35)">' +
+    '<h3 style="margin:0 0 4px;font-size:15px;color:var(--jp-ink)">🔑 修改管理密码</h3>' +
+    '<p style="margin:0 0 14px;font-size:11px;color:var(--jp-muted)">修改后需重新登录（聊天室后台同步生效）</p>' +
+    '<input id="np1" type="password" placeholder="输入新密码" autocomplete="off" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--jp-line);border-radius:9px;background:transparent;color:var(--jp-ink);font-size:13px;outline:none">' +
+    '<div style="height:10px"></div>' +
+    '<input id="np2" type="password" placeholder="再次输入新密码" autocomplete="off" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--jp-line);border-radius:9px;background:transparent;color:var(--jp-ink);font-size:13px;outline:none">' +
+    '<div id="npErr" style="color:var(--jp-danger);font-size:11px;min-height:16px;margin:6px 0 2px"></div>' +
+    '<div style="display:flex;gap:8px;justify-content:flex-end">' +
+    '<button id="npCancel" style="padding:7px 14px;border:1px solid var(--jp-line);border-radius:9px;background:transparent;color:var(--jp-muted);font-size:12px;cursor:pointer">取消</button>' +
+    '<button id="npOk" style="padding:7px 16px;border:1px solid var(--jp-accent);border-radius:9px;background:var(--jp-accent);color:#fff;font-size:12px;cursor:pointer">保存</button>' +
+    '</div></div>';
+  document.body.appendChild(overlay);
+  var np1 = overlay.querySelector('#np1'), np2 = overlay.querySelector('#np2'), npErr = overlay.querySelector('#npErr');
+  function closePwd() { overlay.remove(); }
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closePwd(); });
+  overlay.querySelector('#npCancel').addEventListener('click', closePwd);
+  function doSavePwd() {
+    var p1 = np1.value, p2 = np2.value;
+    if (!p1) { npErr.textContent = '请输入新密码'; return; }
+    if (p1 !== p2) { npErr.textContent = '两次输入的密码不一致'; return; }
+    var okBtn = overlay.querySelector('#npOk');
+    okBtn.disabled = true; okBtn.textContent = '保存中…';
+    adminPost({ event: 'QW_SET_PASSWORD', accessToken: adminToken, newPass: p1 }).then(function (r) {
+      if (r && r.code === 0) {
+        alert('密码已修改，请用新密码重新登录');
+        stopAutoRefresh();
+        try { localStorage.removeItem('qw_admin_token'); } catch (e) {}
+        adminToken = '';
+        closePwd();
+        renderLoginView();
+      } else {
+        npErr.textContent = (r && r.message) || '修改失败';
+        okBtn.disabled = false; okBtn.textContent = '保存';
+      }
+    }).catch(function () {
+      npErr.textContent = '网络异常，请重试';
+      okBtn.disabled = false; okBtn.textContent = '保存';
+    });
+  }
+  overlay.querySelector('#npOk').addEventListener('click', doSavePwd);
+  np1.addEventListener('keydown', function (e) { if (e.key === 'Enter') np2.focus(); });
+  np2.addEventListener('keydown', function (e) { if (e.key === 'Enter') doSavePwd(); });
+  setTimeout(function () { np1.focus(); }, 50);
 });
 
 /* ===== 启动 ===== */
