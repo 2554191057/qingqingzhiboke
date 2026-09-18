@@ -1988,6 +1988,10 @@
         }
         return;
       }
+      // 登录后先清除游客态可能遗留的 display:none!important 内联样式，恢复 CSS 显示
+      for (var li0 = 0; li0 < links.length; li0++) {
+        try { links[li0].style.removeProperty('display'); } catch (eC) { links[li0].style.display = ''; }
+      }
       var likeBtn = links[0];
       var dislikeBtn = links[1] || null;
       if (likedSet[id]) {
