@@ -1289,11 +1289,24 @@
         setTimeout(function(){
           closeSettings();
           refreshLoginUI();
-          // 重新加载聊天室评论列表，实时刷新消息气泡的昵称和头像
-          twikooInited = false;
-          var tc = document.getElementById('tcomment');
-          if (tc) tc.innerHTML = '';
-          initTwikoo();
+          // 直接在 DOM 上把当前用户历史消息的旧昵称替换成新昵称，头像同步更新
+          var oldNick = v.nick;
+          if (oldNick && oldNick !== nick) {
+            document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function(item){
+              var nickEl = item.querySelector('.tk-nick');
+              if (!nickEl) return;
+              var rawNick = nickEl.textContent.trim();
+              // 匹配自己的旧昵称消息（忽略管理badge等附加元素）
+              var baseNick = rawNick.replace(/\s*管理员\s*$/, '').trim();
+              if (baseNick === oldNick) {
+                nickEl.childNodes.forEach(function(n){ if (n.nodeType === 3) n.remove(); });
+                if (nickEl.firstChild) nickEl.firstChild.textContent = nick;
+                else nickEl.textContent = nick;
+                var av = item.querySelector('.tk-avatar');
+                if (av) { av.textContent = nick.charAt(0).toUpperCase(); var img = av.querySelector('img'); if (img) img.remove(); }
+              }
+            });
+          }
         }, 800);
       } else showSetMsg(r.message || '修改失败', false);
     }).catch(function(){ setBtnRestore(btn, '保存昵称'); showSetMsg('网络错误', false); });
