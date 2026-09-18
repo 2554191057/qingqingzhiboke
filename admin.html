@@ -1119,8 +1119,8 @@ function bindActions() {
   }
 }
 
-/* ===== 复制日志IP ===== */
-document.addEventListener('click', function (e) {
+/* ===== 复制日志IP（双击触发） ===== */
+document.addEventListener('dblclick', function (e) {
   var btn = e.target && e.target.closest ? e.target.closest('.log-copy-ip') : null;
   if (!btn) return;
   var ip = btn.getAttribute('data-ip');

@@ -1833,7 +1833,7 @@
     if (idx === 0) logAction('点赞', (nick ? '给 ' + nick + ' 的消息点赞' : '点赞消息') + (content ? '：「' + content + '」' : ''));
     else logAction('点踩', (nick ? '点踩了 ' + nick + ' 的消息' : '点踩消息') + (content ? '：「' + content + '」' : ''));
   });
-  document.addEventListener('click', function (e) {
+  document.addEventListener('dblclick', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('.qw-log-copy') : null;
     if (!btn) return;
     var ip = btn.getAttribute('data-ip');

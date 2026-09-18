@@ -212,8 +212,8 @@ document.addEventListener('selectstart', e => {
     }
     // 本机IP：实时显示（ipwho.is 获取访问者公网 IP，站长访问即站长本机当前 IP，IP 变化自动更新）；自动放行白名单见 WHITELIST_IPS，换 IP 时改它即可
     ipCopyBtn.disabled = true;
-    // 复制本机IP
-    ipCopyBtn.addEventListener('click', function () {
+    // 复制本机IP（双击触发）
+    ipCopyBtn.addEventListener('dblclick', function () {
         var ip = vsIpEl.textContent;
         if (!ip || ip === '读取中…' || ip === '获取失败') return;
         function copied() {
