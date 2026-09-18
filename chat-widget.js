@@ -214,8 +214,6 @@
     /* ===== 操作按钮：移到气泡下方横排（常显长条） ===== */
     '.qw-body #twikoo .tk-action{margin-left:0!important;display:flex!important;gap:16px!important;align-items:center!important;padding:5px 8px 0!important;opacity:1!important;}',
     /* 已点赞高亮（本地记录，服务端 liked 状态不可用） */
-    '.qw-body #twikoo .tk-action-link.qw-owner-del{color:var(--jp-muted)!important;}',
-    '.qw-body #twikoo .tk-action-link.qw-owner-del:hover{color:#e05b5b!important;}',
     '.qw-body #twikoo .tk-action-link.qw-liked{color:var(--jp-accent)!important;font-weight:600!important;}',
     '.qw-body #twikoo .tk-action-link.qw-liked .tk-action-icon{transform:scale(1.08);}',
     '.qw-body #twikoo .tk-action-link.qw-disliked{color:#e74c3c!important;font-weight:600!important;}',
@@ -769,7 +767,7 @@
     markTimer = setTimeout(function () {
       // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
       var steps = [removeOwO, removeSubmitExtras, addImgButton, setSubmitPlaceholders, moveNickTop,
-        moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, markSelf, addOwnerDelete];
+        moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, markSelf];
       try { refreshLoginUI(); } catch (eR) {}
       try { markLiked(); } catch (e0) {}
       steps.forEach(function (fn) { try { fn(); } catch (err) {} });
@@ -2040,7 +2038,6 @@
         var commentMail = cmp && cmp.comment ? (cmp.comment.mail || '').trim().toLowerCase() : '';
         var isMine = myEmail && commentMail === myEmail;
         for (var li = 3; li < links.length; li++) {
-          if (links[li].classList.contains('qw-owner-del')) continue;
           if (isMine) {
             try { links[li].style.removeProperty('display'); } catch (eR2) { links[li].style.display = ''; }
           } else {
@@ -2049,79 +2046,6 @@
         }
       } catch (eHide) {}
     });
-  }
-  // ===== 评论作者本人删除按钮（2026-09-18 新增） =====
-  function sha256Hex(str, cb) {
-    try {
-      if (window.crypto && crypto.subtle && crypto.subtle.digest) {
-        crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function (buf) {
-          var arr = new Uint8Array(buf), hex = '';
-          for (var i = 0; i < arr.length; i++) hex += (arr[i] < 16 ? '0' : '') + arr[i].toString(16);
-          cb(hex);
-        }).catch(function () { cb(''); });
-        return;
-      }
-    } catch (eH) {}
-    cb('');
-  }
-  function addOwnerDelete() {
-    var v = getVisitor();
-    var myEmail = (v.email || '').trim().toLowerCase();
-    if (!myEmail) {
-      document.querySelectorAll('.qw-body #twikoo .tk-comment .qw-owner-del').forEach(function (b) { b.remove(); });
-      return;
-    }
-    sha256Hex(myEmail, function (myHash) {
-      document.querySelectorAll('.qw-body #twikoo .tk-comment').forEach(function (c) {
-        var cmp = c.__vue__;
-        var d = cmp && cmp.comment ? cmp.comment : null;
-        if (!d || !d.id) return;
-        var mine = !!d.isOwner || (!!myHash && !!d.mailMd5 && myHash === d.mailMd5);
-        var action = c.querySelector('.tk-action');
-        if (!action) return;
-        var oldBtn = action.querySelector('.qw-owner-del');
-        if (!mine) { if (oldBtn) oldBtn.remove(); return; }
-        if (oldBtn) return;
-        var btn = document.createElement('a');
-        btn.className = 'tk-action-link qw-owner-del';
-        btn.href = 'javascript:void(0)';
-        btn.textContent = '删除';
-        btn.addEventListener('click', function (ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          if (!window.confirm('确定删除这条消息吗？')) return;
-          var email = (getVisitor().email || '').trim().toLowerCase();
-          fetch(TWIKOO_API, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ event: 'QW_COMMENT_DELETE_OWN', id: d.id, email: email })
-          }).then(function (r) { return r.json(); }).then(function (r) {
-            if (r && r.code === 0) {
-              removeCommentFromList(d.id);
-            } else {
-              window.alert((r && r.message) || '删除失败');
-            }
-          }).catch(function () { window.alert('删除失败，请稍后重试'); });
-        });
-        action.appendChild(btn);
-      });
-    });
-  }
-  function removeCommentFromList(cid) {
-    var tw = document.getElementById('twikoo');
-    var vm = tw && tw.__vue__;
-    if (!vm) return;
-    var queue = [vm], seen = {}, found = null;
-    for (var qi = 0; qi < queue.length && qi < 80; qi++) {
-      var cur = queue[qi];
-      if (!cur || seen[cur._uid]) continue;
-      seen[cur._uid] = 1;
-      var dd = cur.$data || {};
-      if (dd.comments !== undefined && dd.config !== undefined) { found = cur; break; }
-      if (cur.$children) for (var ci = 0; ci < cur.$children.length; ci++) queue.push(cur.$children[ci]);
-    }
-    if (found && Array.isArray(found.comments)) {
-      found.comments = found.comments.filter(function (cm) { return cm.id !== cid; });
-    }
   }
   function openLogin() {
     var bd = document.getElementById('qw-login-backdrop');
