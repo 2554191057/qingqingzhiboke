@@ -1333,6 +1333,14 @@
     .then(function(r){return r.json();}).then(function(r){
       setBtnRestore(btn, '保存密码');
       if (r.code === 0) {
+        localStorage.setItem('qw_user_pwd', p1);
+        try {
+          var accPwdList = savedAccounts().map(function(a){
+            if (a.email && a.email.toLowerCase() === v.email.toLowerCase()) a.pwd = p1;
+            return a;
+          });
+          localStorage.setItem(QW_ACCOUNTS, JSON.stringify(accPwdList));
+        } catch (ePwd) {}
         showSetMsg('密码已修改', true);
         logAction('改密码', '密码已修改');
         setTimeout(closeSettings, 800);
@@ -1354,6 +1362,14 @@
       setBtnRestore(btn, '保存邮箱');
       if (r.code === 0) {
         localStorage.setItem(QW_EMAIL, ne);
+        applyVisitorToTwikoo();
+        try {
+          var accEmailList = savedAccounts().map(function(a){
+            if (a.email && a.email.toLowerCase() === v.email.toLowerCase()) a.email = ne;
+            return a;
+          });
+          localStorage.setItem(QW_ACCOUNTS, JSON.stringify(accEmailList));
+        } catch (eEm) {}
         showSetMsg('邮箱已修改', true);
         logAction('改邮箱', '邮箱改为: ' + ne);
         setTimeout(function(){ closeSettings(); refreshLoginUI(); }, 800);
