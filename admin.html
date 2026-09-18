@@ -95,6 +95,7 @@ input, button { font-family: inherit; }
   animation: panelIn .3s cubic-bezier(.16,1,.3,1);
 }
 @keyframes panelIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.silent-refresh .panel { animation: none !important; }
 .panel h3 { font-size: 14px; font-weight: 650; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 .panel h3 .cnt { font-size: 11px; color: var(--jp-muted); font-weight: 400; margin-left: auto; }
 .panel h4 { font-size: 12.5px; font-weight: 600; margin: 16px 0 10px; color: var(--jp-ink); }
@@ -1599,7 +1600,9 @@ function autoRefreshTick() {
   if (adminRefreshing) return; // 上一次刷新未完成，跳过本轮
   var ae = document.activeElement;
   if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return; // 正在输入，跳过本轮避免清空输入框
+  document.body.classList.add('silent-refresh');
   renderManageView(true); // 静默刷新：不显示加载提示，直接更新数据
+  setTimeout(function(){ document.body.classList.remove('silent-refresh'); }, 500);
 }
 document.getElementById('btnAuto').addEventListener('click', function () {
   autoRefreshOn = !autoRefreshOn;
