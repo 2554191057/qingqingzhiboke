@@ -230,7 +230,7 @@ function adminGoBack() {
   try { fromChat = sessionStorage.getItem('qw_admin_from_chat') || ''; } catch (e) {}
   if (fromChat) {
     try { sessionStorage.removeItem('qw_admin_from_chat'); } catch (e) {}
-    location.href = 'fklts.html?direct=1';
+    location.href = 'lts.html?direct=1';
     return;
   }
   var from = '';
@@ -714,7 +714,7 @@ function typeCn(t) {
   if (/^offline$/i.test(t)) return '下线';
   var m = String(t).match(/^visit(?:_(.+))?$/i);
   if (m) {
-    var pageMap = { yanzheng:'验证页', boke:'首页', index:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', birthdaycard:'生日卡', fklts:'聊天室', chat:'聊天室', admin:'后台', about:'关于页', social:'联系页', contact:'联系页', gy:'关于页', lx:'联系页' };
+    var pageMap = { yanzheng:'验证页', boke:'首页', index:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', birthdaycard:'生日卡', fklts:'聊天室', lts:'聊天室', chat:'聊天室', admin:'后台', about:'关于页', social:'联系页', contact:'联系页', gy:'关于页', lx:'联系页' };
     var k = String(m[1] || '').toLowerCase();
     if (!k) return '访问'; // type=visit 无页面后缀
     return '访问' + (pageMap[k] || m[1]);

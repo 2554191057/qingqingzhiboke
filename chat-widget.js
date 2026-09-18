@@ -2471,7 +2471,7 @@
     if (/^offline$/i.test(t)) return '下线';
     var m = String(t).match(/^visit_(.+)$/i);
     if (m) {
-      var pageMap = { yanzheng:'验证页', boke:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', fklts:'聊天室', chat:'聊天室', index:'首页', admin:'后台', about:'关于页', social:'联系页', contact:'联系页', gy:'关于页', lx:'联系页', birthdaycard:'生日卡' };
+      var pageMap = { yanzheng:'验证页', boke:'首页', wenzhang:'文章', wangpan:'资源', shengri:'生日', fklts:'聊天室', lts:'聊天室', chat:'聊天室', index:'首页', admin:'后台', about:'关于页', social:'联系页', contact:'联系页', gy:'关于页', lx:'联系页', birthdaycard:'生日卡' };
       var k = String(m[1]).toLowerCase();
       return '访问' + (pageMap[k] || m[1]);
     }
