@@ -1031,14 +1031,20 @@
       }
       var resNick = r.data.nick;
       var resEmail = (r.data.email || acc.email || '').trim().toLowerCase();
+      var a2 = document.getElementById('qw-auto-login2');
+      var auto2 = a2 && a2.checked;
       try {
         sessionStorage.setItem(QW_NICK, resNick);
         sessionStorage.setItem(QW_EMAIL, resEmail);
-        localStorage.setItem(QW_NICK, resNick);
-        localStorage.setItem(QW_EMAIL, resEmail);
         saveAccount({ nick: resNick, email: resEmail, pwd: acc.pwd });
-        var a2 = document.getElementById('qw-auto-login2');
-        localStorage.setItem(QW_AUTO, a2 && a2.checked ? '1' : '0');
+        if (auto2) {
+          localStorage.setItem(QW_NICK, resNick);
+          localStorage.setItem(QW_EMAIL, resEmail);
+        } else {
+          localStorage.removeItem(QW_NICK);
+          localStorage.removeItem(QW_EMAIL);
+        }
+        localStorage.setItem(QW_AUTO, auto2 ? '1' : '0');
       } catch (e) {}
       closeLogin();
       refreshLoginUI();
@@ -1911,14 +1917,20 @@
       var resEmail = (r.data.email || '').trim().toLowerCase();
       var remember = !!(document.getElementById('qw-remember') && document.getElementById('qw-remember').checked);
       var auto = !!(document.getElementById('qw-auto-login') && document.getElementById('qw-auto-login').checked);
+      if (auto) remember = true; // 自动登录隐含记住密码
       try {
         sessionStorage.setItem(QW_NICK, resNick);
         sessionStorage.setItem(QW_EMAIL, resEmail);
         if (remember) {
-          localStorage.setItem(QW_NICK, resNick);
-          localStorage.setItem(QW_EMAIL, resEmail);
           localStorage.setItem('qw_user_pwd', pwd);
           saveAccount({ nick: resNick, email: resEmail, pwd: pwd });
+          if (auto) {
+            localStorage.setItem(QW_NICK, resNick);
+            localStorage.setItem(QW_EMAIL, resEmail);
+          } else {
+            localStorage.removeItem(QW_NICK);
+            localStorage.removeItem(QW_EMAIL);
+          }
         } else {
           localStorage.removeItem(QW_NICK);
           localStorage.removeItem(QW_EMAIL);
