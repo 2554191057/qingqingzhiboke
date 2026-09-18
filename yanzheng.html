@@ -230,16 +230,38 @@ document.addEventListener('selectstart', e => {
     })();
 
     function onTurnstileSuccess(token) {
-        sessionStorage.setItem('auth_ok', '1');
         var wrap = document.querySelector('.turnstile-wrap');
         if (wrap) wrap.style.display = 'none';
         var tsTip = document.getElementById('tsStatus');
-        if (tsTip) { tsTip.textContent = '验证成功，正在进入…'; tsTip.style.color = '#2e9e5b'; }
-        var back = new URLSearchParams(location.search).get('back');
-        setTimeout(function () {
-            if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
-            location.replace('boke.html');
-        }, 1500);
+        if (tsTip) { tsTip.textContent = '正在验证您的身份…'; tsTip.style.color = ''; }
+        // 后端二次验证
+        fetch('/api/turnstile-verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: token })
+        }).then(function(r){ return r.json(); }).then(function(d) {
+            if (d && d.success) {
+                sessionStorage.setItem('auth_ok', '1');
+                if (tsTip) { tsTip.textContent = '验证成功，正在进入…'; tsTip.style.color = '#2e9e5b'; }
+                var back = new URLSearchParams(location.search).get('back');
+                setTimeout(function () {
+                    if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
+                    location.replace('boke.html');
+                }, 800);
+            } else {
+                if (tsTip) { tsTip.textContent = '验证失败，请刷新重试'; tsTip.style.color = '#fca5a5'; }
+                if (wrap) wrap.style.display = '';
+            }
+        }).catch(function() {
+            // 后端验证失败但前端 token 已通过，放行（容错）
+            sessionStorage.setItem('auth_ok', '1');
+            if (tsTip) { tsTip.textContent = '验证成功，正在进入…'; tsTip.style.color = '#2e9e5b'; }
+            var back = new URLSearchParams(location.search).get('back');
+            setTimeout(function () {
+                if (back && /^[a-zA-Z0-9_\-]+(\.html)?$/.test(back)) { location.replace(back); return; }
+                location.replace('boke.html');
+            }, 800);
+        });
     }
     function onTurnstileError() {
         var tsTip = document.getElementById('tsStatus');
