@@ -34,10 +34,17 @@
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: page, referrer: document.referrer }) }).catch(function () {});
   }
   reportVisit(location.pathname + location.search + location.hash);
-  // 站内锚点切换（关于/联系/生日卡片等）也记一条访问日志
-  window.addEventListener('hashchange', function () {
-    reportVisit(location.pathname + location.search + location.hash);
-  });
+  // 锚点区块访问日志：script.js 平滑滚动对 # 链接 preventDefault，hashchange 永不触发，改用捕获阶段 click 直接上报
+  var anchorWhitelist = { about: 1, social: 1, contact: 1, gy: 1, lx: 1, birthdaycard: 1, birthdayCard: 1, home: 1, top: 1 };
+  document.addEventListener('click', function (e) {
+    try {
+      var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      var h = String(a.getAttribute('href') || '').replace(/^#/, '').trim().toLowerCase();
+      if (!h || !anchorWhitelist[h]) return;
+      reportVisit(location.pathname + location.search + '#' + h);
+    } catch (err) {}
+  }, true);
   function ping() {
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_ONLINE_PING' }) }).catch(function () {});
   }
