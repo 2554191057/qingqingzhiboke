@@ -528,7 +528,7 @@
         path: 'chat',
         lang: 'zh-CN',
         requiredMeta: ['nick', 'mail'],
-        onCommentLoaded: function () { scheduleMark(); fixAvatars(); }
+        onCommentLoaded: function () { scheduleMark(); fixAvatars(); followScroll(); }
         ,onCommentSubmit: function (e) { try { logAction('发言', '内容:' + String((e && e.comment) || '').slice(0, 50)); } catch (ex) {} }
       });
     } catch (e) { twikooInited = false; }
@@ -790,7 +790,7 @@
     markTimer = setTimeout(function () {
       // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
       var steps = [removeOwO, removeSubmitExtras, addImgButton, setSubmitPlaceholders, moveNickTop,
-        moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, trimBubbleText, markSelf];
+        moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, trimBubbleText, markSelf, hookSendScroll];
       try { refreshLoginUI(); } catch (eR) {}
       try { markLiked(); } catch (e0) {}
       steps.forEach(function (fn) { try { fn(); } catch (err) {} });
@@ -844,15 +844,52 @@
     }).catch(function(){});
   }
   var _refreshTimer = null;
+  var _scrollCtx = null;
+  var _pendingScrollToBottom = false;
   function refreshComments() {
     try {
+      var sc = document.querySelector('.qw-body .tk-comments-container');
+      if (sc) {
+        _scrollCtx = { top: sc.scrollTop, bottom: (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 40) };
+      }
       var vm = document.querySelector('#twikoo').__vue__;
       if (vm && vm.getCommentsList) vm.getCommentsList();
       else if (window.twikoo) window.twikoo.getCommentsList({ reset: true });
     } catch(e) {}
   }
+  // 新消息/发消息后自动滚到底部；向上翻阅历史时保持原位置不跳动
+  function followScroll() {
+    var sc = document.querySelector('.qw-body .tk-comments-container');
+    if (!sc) return;
+    if (_pendingScrollToBottom) {
+      _pendingScrollToBottom = false; _scrollCtx = null;
+      sc.scrollTop = sc.scrollHeight;
+      return;
+    }
+    if (_scrollCtx) {
+      var ctx = _scrollCtx; _scrollCtx = null;
+      if (ctx.bottom) { sc.scrollTop = sc.scrollHeight; return; }
+      var t = ctx.top;
+      setTimeout(function () {
+        var sc2 = document.querySelector('.qw-body .tk-comments-container');
+        if (sc2) sc2.scrollTop = t;
+      }, 40);
+      return;
+    }
+    // 无上下文：不干预（如点赞/删除触发的重渲染）
+  }
+  // 发送按钮点击 → 下次列表加载后滚到底部
+  function hookSendScroll() {
+    var btns = document.querySelectorAll('.qw-body #twikoo .tk-send');
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].getAttribute('data-qw-send-hooked')) continue;
+      btns[i].setAttribute('data-qw-send-hooked', '1');
+      btns[i].addEventListener('click', function () { _pendingScrollToBottom = true; });
+    }
+  }
   function openChat() {
     backdrop.classList.add('qw-open');
+    _pendingScrollToBottom = true;
     logAction('访问聊天室', '打开聊天室');
     document.body.style.overflow = 'hidden';
     loadAssets(function () {
