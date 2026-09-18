@@ -228,7 +228,7 @@ if (!sessionStorage.getItem('auth_ok') && !localStorage.getItem('qw_auth_ok')) {
 function adminGoBack() {
   var from = '';
   try { from = sessionStorage.getItem('qw_admin_from') || ''; } catch (e) {}
-  var m = from.match(/^https?:\/\/[^\/]+\/(boke|wenzhang|wangpan|shengri)\.html/);
+  var m = from.match(/^https?:\/\/[^\/]+\/(boke|wenzhang|wangpan|shengri)(\.html)?/);
   if (m) {
     var base = from.split('#')[0];
     location.href = base + (base.indexOf('?') === -1 ? '?chat=1' : '&chat=1');
