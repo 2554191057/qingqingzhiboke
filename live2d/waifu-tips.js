@@ -222,7 +222,7 @@
           el.style.display = "none";
           el.style.opacity = "1";
           el.style.transform = "";
-          document.getElementById("waifu-toggle").classList.add("waifu-toggle-active");
+          var _t = document.getElementById("waifu-toggle"); if (_t) { _t.classList.add("waifu-toggle-active"); _t.style.display = ""; }
         }, 250);
       }
     }
@@ -531,7 +531,7 @@
 
     const toggle = document.getElementById("waifu-toggle");
     toggle.addEventListener("click", () => {
-      toggle.classList.remove("waifu-toggle-active");
+      toggle.classList.remove("waifu-toggle-active"); toggle.style.display = "none";
       if (toggle.getAttribute("first-time")) {
         init(opts);
         toggle.removeAttribute("first-time");
@@ -565,5 +565,7 @@
     // 进入网站直接显示看板娘，点收起后通过展开按钮恢复
     localStorage.removeItem("waifu-display");
     init(opts);
+    var _toggle = document.getElementById("waifu-toggle");
+    if (_toggle) _toggle.style.display = "none";
   };
 }();
