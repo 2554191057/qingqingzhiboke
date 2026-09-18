@@ -83,6 +83,9 @@ input, button { font-family: inherit; }
 .stat-card b { font-size: 26px; font-weight: 700; display: block; line-height: 1.2; }
 .stat-card span { font-size: 11.5px; color: var(--jp-muted); }
 .stat-card .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+.stat-tab { cursor: pointer; transition: box-shadow .2s ease, transform .2s ease; }
+.stat-tab:hover { transform: translateY(-2px); }
+.stat-tab.on { box-shadow: 0 0 0 2px var(--jp-accent) inset; }
 
 /* 面板 */
 .panel {
@@ -280,6 +283,7 @@ var adminToken = '';
 var adminLogs = [];
 var adminWlist = []; // IP 白名单列表（验证页自动放行）
 var adminLogFilter = 'all';
+var adminActiveTab = ''; // 顶部卡片 Tab 当前展开的面板（''=全部收起），自动刷新后保持
 var adminLogSearch = ''; // 日志搜索关键字
 var ipLocCache = {};
 var autoRefreshOn = true;
@@ -619,12 +623,12 @@ function likeInfoHtml(c, likeMap) {
 function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
   var h = '';
   h += '<div class="stat-grid">' +
-    '<div class="stat-card"><b>' + (comments.length || 0) + '</b><span>全部聊天</span></div>' +
-    '<div class="stat-card"><b>' + (blocks.length || 0) + '</b><span>黑名单</span></div>' +
-    '<div class="stat-card"><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
+    '<div class="stat-card stat-tab' + (adminActiveTab === 'chat' ? ' on' : '') + '" data-act="tab" data-tab="chat"><b>' + (comments.length || 0) + '</b><span>全部聊天</span></div>' +
+    '<div class="stat-card stat-tab' + (adminActiveTab === 'block' ? ' on' : '') + '" data-act="tab" data-tab="block"><b>' + (blocks.length || 0) + '</b><span>黑名单</span></div>' +
+    '<div class="stat-card stat-tab' + (adminActiveTab === 'wlist' ? ' on' : '') + '" data-act="tab" data-tab="wlist"><b>' + (wlist.length || 0) + '</b><span>白名单</span></div>' +
     '</div>';
 
-  h += '<div class="panel"><h3>💬 聊天信息 <span class="cnt">共 ' + comments.length + ' 条</span></h3>';
+  h += '<div class="panel" id="panel-chat" style="display:' + (adminActiveTab === 'chat' ? 'block' : 'none') + '"><h3>💬 聊天信息 <span class="cnt">共 ' + comments.length + ' 条</span></h3>';
   if (!comments.length) {
     h += '<div class="empty">暂无消息</div>';
   } else {
@@ -641,7 +645,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
   }
   h += '</div>';
 
-  h += '<div class="panel"><h3>⛔ 黑名单 <span class="cnt">' + blocks.length + ' 条</span></h3>';
+  h += '<div class="panel" id="panel-block" style="display:' + (adminActiveTab === 'block' ? 'block' : 'none') + '"><h3>⛔ 黑名单 <span class="cnt">' + blocks.length + ' 条</span></h3>';
   if (!blocks.length) {
     h += '<div class="empty" style="padding:12px 0">暂无黑名单</div>';
   } else {
@@ -653,7 +657,7 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount) {
   }
   h += '<div class="mgmt-add"><input type="text" id="blkInput" placeholder="输入邮箱或昵称进行拉黑"><button data-act="add-blk">拉黑</button></div></div>';
 
-  h += '<div class="panel"><h3>✅ IP 白名单 <span class="cnt">' + wlist.length + ' 条</span></h3>';
+  h += '<div class="panel" id="panel-wlist" style="display:' + (adminActiveTab === 'wlist' ? 'block' : 'none') + '"><h3>✅ IP 白名单 <span class="cnt">' + wlist.length + ' 条</span></h3>';
   h += '<p style="margin:0 0 10px;font-size:11px;color:var(--jp-muted)">命中的 IP 访问验证页自动放行（本站 Cloudflare 域名验证入口）</p>';
   if (!wlist.length) {
     h += '<div class="empty" style="padding:12px 0">暂无白名单 IP</div>';
@@ -920,6 +924,21 @@ function buildLogHtml(logs) {
 }
 
 function bindActions() {
+  // 顶部卡片=Tab：点击展开对应面板（互斥切换，再点收起），状态记入 adminActiveTab
+  document.querySelectorAll('.stat-tab[data-act="tab"]').forEach(function (card) {
+    card.addEventListener('click', function () {
+      var tab = card.getAttribute('data-tab');
+      var wantOpen = adminActiveTab !== tab;
+      adminActiveTab = wantOpen ? tab : '';
+      ['chat', 'block', 'wlist'].forEach(function (k) {
+        var p = document.getElementById('panel-' + k);
+        if (p) p.style.display = (k === adminActiveTab) ? 'block' : 'none';
+      });
+      document.querySelectorAll('.stat-tab').forEach(function (c) {
+        c.classList.toggle('on', c === card && wantOpen);
+      });
+    });
+  });
   document.querySelectorAll('#mainView .log-item [data-act="del"], #mainView .log-item [data-act="blk"], .mgmt-row button, .mgmt-add button').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var act = btn.getAttribute('data-act');
