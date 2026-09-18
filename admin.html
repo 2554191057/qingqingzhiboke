@@ -224,17 +224,17 @@ input, button { font-family: inherit; }
 if (!sessionStorage.getItem('auth_ok') && !localStorage.getItem('qw_auth_ok')) {
   location.replace('yanzheng.html?back=admin.html');
 }
-// 返回：从本站页面经聊天室进入后台时，回来源页并自动打开聊天室（?chat=1）；否则回上一页
+// 返回：优先用进入后台时保存的来源页（聊天室锁图标/导航logo），回来源页并自动打开聊天室（?chat=1）；无记录时回上一页
 function adminGoBack() {
-  try {
-    var ref = document.referrer || '';
-    var m = ref.match(/^https?:\/\/[^\/]+\/(boke|wenzhang|wangpan|shengri)\.html/);
-    if (m) {
-      var base = ref.split('#')[0];
-      location.href = base + (base.indexOf('?') === -1 ? '?chat=1' : '&chat=1');
-      return;
-    }
-  } catch (e) {}
+  var from = '';
+  try { from = sessionStorage.getItem('qw_admin_from') || ''; } catch (e) {}
+  var m = from.match(/^https?:\/\/[^\/]+\/(boke|wenzhang|wangpan|shengri)\.html/);
+  if (m) {
+    var base = from.split('#')[0];
+    location.href = base + (base.indexOf('?') === -1 ? '?chat=1' : '&chat=1');
+    try { sessionStorage.removeItem('qw_admin_from'); } catch (e) {}
+    return;
+  }
   if (history.length > 1) history.back();
   else location.href = 'boke.html';
 }
