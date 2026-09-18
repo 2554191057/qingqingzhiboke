@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -146,15 +146,14 @@ document.addEventListener('selectstart', e => {
         if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
         location.href = 'https://qqzttkx.eu.cc/boke.html';
     }
-    var WHITELIST_IPS = ['222.245.15.120'];
+    var WHITELIST_IPS = ['222.245.15.167'];
     var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
     var vsIpEl = document.getElementById('vsIp');
     var vsCountEl = document.getElementById('vsCount');
     var ipCopyBtn = document.getElementById('ipCopyBtn');
     var ipCopyTimer = null;
-    // 本机IP：取白名单第一个 IP（站长本机公网 IP），与自动放行同一处维护，换 IP 时改 WHITELIST_IPS 即可
-    vsIpEl.textContent = WHITELIST_IPS[0] || '未配置';
-    ipCopyBtn.disabled = WHITELIST_IPS.length === 0;
+    // 本机IP：实时显示（ipwho.is 获取访问者公网 IP，站长访问即站长本机当前 IP，IP 变化自动更新）；自动放行白名单见 WHITELIST_IPS，换 IP 时改它即可
+    ipCopyBtn.disabled = true;
     // 复制本机IP
     ipCopyBtn.addEventListener('click', function () {
         var ip = vsIpEl.textContent;
@@ -197,18 +196,34 @@ document.addEventListener('selectstart', e => {
         .then(function(d){ if (d && typeof d.count === 'number') vsCountEl.textContent = d.count; })
         .catch(function(){});
     }
-    // 白名单校验：用 ipwho.is 获取访客公网 IP，命中白名单（站长本机）自动放行；该 IP 仅用于校验，不再用于页面展示
-    fetch('https://ipwho.is/?fields=ip')
-        .then(r => r.json())
-        .then(d => {
-            if (d.ip && WHITELIST_IPS.includes(d.ip)) {
-                sessionStorage.setItem('auth_ok', '1');
-                var back = new URLSearchParams(location.search).get('back');
-                if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
-                location.href = 'https://qqzttkx.eu.cc/boke.html';
-            }
-        })
-        .catch(function(){});
+    // 实时显示 + 白名单校验：优先用 Cloudflare cdn-cgi/trace 获取访问者公网 IP（实时显示，站长访问即本机当前 IP，IP 变化自动更新）
+    // Cloudflare 代理域名（eu.cc 等）下走同源 /cdn-cgi/trace，无 CORS 限制；其他域名跨域被拦时降级 ipwho.is
+    function traceToIp(txt) { var m = /^ip=([0-9a-fA-F.:]+)/m.exec(txt || ''); return m ? m[1] : null; }
+    function fetchCfTraceIp() {
+      var base = /\.eu\.cc$/.test(location.hostname) ? location.origin : 'https://www.cloudflare.com';
+      return fetch(base + '/cdn-cgi/trace', { cache: 'no-store' })
+        .then(function(r){ return r.text(); })
+        .then(traceToIp)
+        .catch(function(){ return null; });
+    }
+    function fetchFallbackIp() {
+      return fetch('https://ipwho.is/?fields=ip')
+        .then(function(r){ return r.json(); })
+        .then(function(d){ return d && d.ip ? d.ip : null; })
+        .catch(function(){ return null; });
+    }
+    fetchCfTraceIp().then(function(ip){
+      return ip || fetchFallbackIp();
+    }).then(function(ip){
+      vsIpEl.textContent = ip || '获取失败';
+      ipCopyBtn.disabled = !ip;
+      if (ip && WHITELIST_IPS.includes(ip)) {
+        sessionStorage.setItem('auth_ok', '1');
+        var back = new URLSearchParams(location.search).get('back');
+        if (back && /^[a-zA-Z0-9_\-]+\.html/.test(back)) { location.href = back; return; }
+        location.href = 'https://qqzttkx.eu.cc/boke.html';
+      }
+    });
     // 访问日志：打开验证页即上报一次
     fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer }) }).catch(function(){});
     onlinePing(); onlineCount();
