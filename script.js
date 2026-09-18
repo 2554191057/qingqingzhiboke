@@ -2244,21 +2244,25 @@
     
     // 初始化：优先用户手动选择，否则按时间自动判断（夜间19-7点 / 其余日间）
     function initDarkMode() {
-      // 优先读取用户保存的选择
+      // 优先读取用户当天保存的选择（手动选择仅当天有效，次日自动回到时间判断）
       let saved = null;
-      try { saved = localStorage.getItem('qw_theme'); } catch(e){}
-      if (saved === 'dark') {
+      let savedDate = null;
+      try { saved = localStorage.getItem('qw_theme'); savedDate = localStorage.getItem('qw_theme_date'); } catch(e){}
+      const _d = new Date();
+      const today = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0') + '-' + String(_d.getDate()).padStart(2, '0');
+      const valid = saved && savedDate === today;
+      if (valid && saved === 'dark') {
         html.setAttribute('data-theme', 'dark');
         themeToggle?.classList.add('dark');
         updateThemeIcon(true);
         return;
       }
-      if (saved === 'light') {
+      if (valid && saved === 'light') {
         html.setAttribute('data-theme', 'light');
         updateThemeIcon(false);
         return;
       }
-      // 无保存记录则按时间判断
+      // 无当天选择则按时间判断
       const h = new Date().getHours();
       const isNight = h >= 19 || h < 7;
       if (isNight) {
@@ -2306,7 +2310,11 @@
           html.setAttribute('data-theme', 'light');
           themeToggle?.classList.remove('dark');
         }
-        try { localStorage.setItem('qw_theme', newIsDark ? 'dark' : 'light'); } catch(e){}
+        try {
+          localStorage.setItem('qw_theme', newIsDark ? 'dark' : 'light');
+          const _d2 = new Date();
+          localStorage.setItem('qw_theme_date', _d2.getFullYear() + '-' + String(_d2.getMonth() + 1).padStart(2, '0') + '-' + String(_d2.getDate()).padStart(2, '0'));
+        } catch(e){}
         updateThemeIcon(newIsDark);
       }
 

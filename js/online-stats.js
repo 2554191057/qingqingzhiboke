@@ -26,7 +26,18 @@
   document.body.appendChild(el);
 
   // 访问日志：页面打开即上报一次（全站统一由本脚本发送；boke.html 原内联已移除避免重复）
-  fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer }) }).catch(function () {});
+  // page 带 hash：锚点（#about 关于 / #social 联系 等）会推导为 visit_about / visit_social，后台显示"访问关于/访问联系"
+  var lastVisitPage = '';
+  function reportVisit(page) {
+    if (page === lastVisitPage) return; // 同页同锚点不重复上报
+    lastVisitPage = page;
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: page, referrer: document.referrer }) }).catch(function () {});
+  }
+  reportVisit(location.pathname + location.search + location.hash);
+  // 站内锚点切换（关于/联系/生日卡片等）也记一条访问日志
+  window.addEventListener('hashchange', function () {
+    reportVisit(location.pathname + location.search + location.hash);
+  });
   function ping() {
     fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_ONLINE_PING' }) }).catch(function () {});
   }

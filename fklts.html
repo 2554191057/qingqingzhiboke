@@ -264,7 +264,13 @@ document.addEventListener('selectstart', e => {
     </script>
 <script>
 (function(){
-  try { var saved = localStorage.getItem('qw_theme'); if (saved) document.documentElement.setAttribute('data-theme', saved); } catch(e){}
+  try {
+    var saved = localStorage.getItem('qw_theme');
+    var savedDate = localStorage.getItem('qw_theme_date');
+    var _d = new Date();
+    var today = _d.getFullYear() + '-' + String(_d.getMonth() + 1).padStart(2, '0') + '-' + String(_d.getDate()).padStart(2, '0');
+    if (saved && savedDate === today) document.documentElement.setAttribute('data-theme', saved);
+  } catch(e){}
 })();
 </script>
 <script>
