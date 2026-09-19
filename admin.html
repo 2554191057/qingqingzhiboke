@@ -101,6 +101,7 @@
       <button class="tab-btn" data-tab="res">☁️ 网盘资源</button>
       <button class="tab-btn" data-tab="hot">💬 随机热评</button>
       <button class="tab-btn" data-tab="birthday">🎂 生日</button>
+      <button class="tab-btn" data-tab="chat">💬 聊天室</button>
     </nav>
     <main class="main">
       <div class="loading" id="loading">加载中…</div>
@@ -159,6 +160,16 @@
             <div class="field"><label>月（1-12）</label><input type="number" id="bdMonth" min="1" max="12" placeholder="8"></div>
             <div class="field"><label>日（1-31）</label><input type="number" id="bdDay" min="1" max="31" placeholder="6"></div>
           </div>
+        </div>
+      </section>
+      <!-- Chat widget -->
+      <section class="panel" id="panel-chat">
+        <div class="card">
+          <h3>全站悬浮聊天室文案</h3>
+          <p class="hint" style="margin-bottom:14px">修改右下角聊天室面板的标题、副标题和频道提示语，全站即时生效。</p>
+          <div class="field"><label>面板标题</label><input type="text" id="cwTitle" placeholder="聊天室"></div>
+          <div class="field"><label>副标题（标题下方小字，前带绿点）</label><input type="text" id="cwSub" placeholder="实时同步"></div>
+          <div class="field"><label>频道提示语</label><textarea id="cwNotice" rows="2" style="width:100%;box-sizing:border-box;border:1px solid #e2e8f0;border-radius:9px;padding:10px 12px;font-size:13px;font-family:inherit"></textarea></div>
         </div>
       </section>
 
@@ -235,6 +246,7 @@ async function boot() {
   renderRes();
   renderHot();
   renderBirthday();
+  renderChatWidget();
 }
 
 // ---------- Hero / About ----------
@@ -389,6 +401,16 @@ function renderBirthday() {
   document.getElementById('bdYear').oninput = e => CFG.birthday.year = +e.target.value;
   document.getElementById('bdMonth').oninput = e => CFG.birthday.month = +e.target.value;
   document.getElementById('bdDay').oninput = e => CFG.birthday.day = +e.target.value;
+}
+// ---------- Chat widget ----------
+function renderChatWidget() {
+  CFG.chatWidget = CFG.chatWidget || { title: '聊天室', subtitle: '实时同步', notice: '庆庆纸博客公共频道 · 可自由浏览，登录后即可发言。' };
+  document.getElementById('cwTitle').value = CFG.chatWidget.title || '';
+  document.getElementById('cwSub').value = CFG.chatWidget.subtitle || '';
+  document.getElementById('cwNotice').value = CFG.chatWidget.notice || '';
+  document.getElementById('cwTitle').oninput = e => CFG.chatWidget.title = e.target.value;
+  document.getElementById('cwSub').oninput = e => CFG.chatWidget.subtitle = e.target.value;
+  document.getElementById('cwNotice').oninput = e => CFG.chatWidget.notice = e.target.value;
 }
 
 // ---------- 保存 ----------
