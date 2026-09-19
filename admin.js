@@ -550,9 +550,9 @@
             // 最近评论
             renderRecentComments();
 
-            // 渲染图表
-            renderVisitChart(visitData);
-            renderSourceChart(visitData);
+            // 渲染图表（如果新数据为空，保留旧图表不覆盖）
+            if (visitData.length > 0) { renderVisitChart(visitData); }
+            if (visitData.length > 0) { renderSourceChart(visitData); }
         } catch (err) {
             if (!silent) toast('Dashboard 数据加载失败: ' + err.message, 'err');
         }
