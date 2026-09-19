@@ -1843,7 +1843,8 @@
       } catch (e) {}
     });
     var input = submit.querySelector('.tk-input');
-    submit.insertBefore(bar, input);
+    if (input) input.parentNode.insertBefore(bar, input);
+    else submit.appendChild(bar);
     input && input.querySelector('textarea') && input.querySelector('textarea').focus();
   }
   function showSetMsg(text, ok) {
