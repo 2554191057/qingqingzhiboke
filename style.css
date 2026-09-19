@@ -33,11 +33,11 @@ html.theme-transition * {
 
 /* View Transition 圆形扩散主题切换（从按钮位置波纹展开） */
 ::view-transition-old(root) {
-    z-index: 1;
+    z-index: 0;
     animation: none;
 }
 ::view-transition-new(root) {
-    z-index: 0;
+    z-index: 1;
     animation: none;
 }
 
