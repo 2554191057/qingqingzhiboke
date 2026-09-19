@@ -1247,6 +1247,9 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 /* ============================
    确认弹窗
    ============================ */
+.modal-mask[hidden] {
+    display: none !important;
+}
 .modal-mask {
     position: fixed;
     inset: 0;
