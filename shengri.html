@@ -1628,16 +1628,8 @@ var __authTime = parseInt(localStorage.getItem('auth_ok_time') || '0', 10); if (
 </div>
 <audio id="bgAudio" preload="auto"></audio>
 <script>
-(async function () {
+(function () {
     'use strict';
-    // 先拉远程生日配置（后台 admin.html 可改生日），拉到后再初始化倒计时
-    try {
-        const _rb = await fetch('/api/cms-config');
-        const _db = await _rb.json();
-        if (_db && _db.code === 0 && _db.data && _db.data.birthday && window.SITE_BIRTH && window.SITE_BIRTH.setBirthday) {
-            window.SITE_BIRTH.setBirthday(+_db.data.birthday.year, +_db.data.birthday.month, +_db.data.birthday.day);
-        }
-    } catch (e) {}
     const SB = window.SITE_BIRTH;
     const $ = (id) => document.getElementById(id);
     if (!SB) {

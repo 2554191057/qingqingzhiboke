@@ -394,20 +394,6 @@
   document.head.appendChild(style);
   document.body.insertAdjacentHTML('beforeend', HTML);
 
-  // CMS 远程配置覆盖聊天室标题/副标题/频道通知
-  (function applyChatCms(){
-    fetch('/api/cms-config').then(function(r){return r.json();}).then(function(d){
-      if(!d||d.code!==0||!d.data||!d.data.chatWidget) return;
-      var cw=d.data.chatWidget;
-      var t=document.getElementById('qw-title');
-      if(t&&cw.title) t.textContent=cw.title;
-      var sub=document.querySelector('#qw-title + p');
-      if(sub&&cw.subtitle) sub.innerHTML='<span class="qw-dot"></span>'+cw.subtitle;
-      var nt=document.querySelector('.qw-notice');
-      if(nt&&cw.notice) nt.textContent=cw.notice;
-    }).catch(function(){});
-  })();
-
   var launcher = document.getElementById('qw-launcher');
   var backdrop = document.getElementById('qw-backdrop');
   var panel = backdrop.querySelector('.qw-panel');
