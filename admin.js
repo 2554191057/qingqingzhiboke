@@ -1365,4 +1365,32 @@
             btn.disabled = false; btn.textContent = '发送验证码';
         }
     };
+
+    window.forgotResetClick = async function () {
+        const code = document.getElementById('forgotCode').value.trim();
+        const pwd = document.getElementById('forgotNewPwd').value;
+        const pwd2 = document.getElementById('forgotNewPwd2').value;
+        const tip = document.getElementById('forgotTip');
+        const btn = document.getElementById('btnForgotReset');
+        if (!code || !pwd || !pwd2) { tip.className = 'forgot-tip err'; tip.textContent = '请填完整'; return; }
+        if (pwd.length < 6) { tip.className = 'forgot-tip err'; tip.textContent = '密码至少 6 位'; return; }
+        if (pwd !== pwd2) { tip.className = 'forgot-tip err'; tip.textContent = '两次密码不一致'; return; }
+        btn.disabled = true; btn.textContent = '重置中...';
+        try {
+            const r = await fetch(TWIKOO_API, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'QW_FORGOT_RESET', code, newPassword: pwd })
+            }).then(r => r.json());
+            if (r.code === 0) {
+                tip.className = 'forgot-tip ok'; tip.textContent = '✅ 密码已重置，请用新密码登录';
+                setTimeout(() => { document.getElementById('forgotModal').hidden = true; btn.disabled = false; btn.textContent = '重置密码'; }, 1500);
+            } else {
+                tip.className = 'forgot-tip err'; tip.textContent = '❌ ' + (r.message || '重置失败');
+                btn.disabled = false; btn.textContent = '重置密码';
+            }
+        } catch (e) {
+            tip.className = 'forgot-tip err'; tip.textContent = '❌ 网络错误';
+            btn.disabled = false; btn.textContent = '重置密码';
+        }
+    };
 })();
