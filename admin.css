@@ -1454,3 +1454,13 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+/* ===== 移动端侧边栏遮罩层 ===== */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(2px);
+}
+.sidebar-backdrop.show { display: block; }

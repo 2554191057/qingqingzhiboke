@@ -401,7 +401,14 @@
         });
 
         document.getElementById('topbarMenuBtn').addEventListener('click', function () {
-            document.getElementById('sidebar').classList.toggle('mobile-open');
+            var sb = document.getElementById('sidebar');
+            sb.classList.toggle('mobile-open');
+            document.getElementById('sidebarBackdrop').classList.toggle('show', sb.classList.contains('mobile-open'));
+        });
+        document.getElementById('sidebarBackdrop').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('sidebarBackdrop').classList.remove('show');
+            this.classList.remove('show');
         });
     }
 
@@ -435,6 +442,7 @@
             if (!item) return;
             e.preventDefault();
             document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('sidebarBackdrop').classList.remove('show');
         });
     }
 
