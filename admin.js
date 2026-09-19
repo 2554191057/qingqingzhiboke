@@ -644,7 +644,7 @@
             const key = d.toISOString().slice(0, 10);
             labels.push(days <= 7 ? `${d.getMonth() + 1}/${d.getDate()}` : key);
             data.push(visitData.filter(v => {
-                const t = Number(v.time);
+                const t = new Date(v.time).getTime();
                 return t >= d.getTime() && t < next.getTime();
             }).length);
         }
@@ -1143,8 +1143,8 @@
         const yest0 = new Date(today0.getTime() - 86400000);
 
         let list = state.visits;
-        if (filter === 'today') list = list.filter(v => Number(v.time) >= today0.getTime());
-        else if (filter === 'yesterday') list = list.filter(v => { const t = Number(v.time); return t >= yest0.getTime() && t < today0.getTime(); });
+        if (filter === 'today') list = list.filter(v => new Date(v.time).getTime() >= today0.getTime());
+        else if (filter === 'yesterday') list = list.filter(v => { const t = new Date(v.time).getTime(); return t >= yest0.getTime() && t < today0.getTime(); });
         if (keyword) list = list.filter(v => {
             const text = [(v.page || ''), (v.ip || ''), (v.referrer || '')].join(' ').toLowerCase();
             return text.includes(keyword.toLowerCase());
