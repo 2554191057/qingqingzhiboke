@@ -877,6 +877,9 @@
         if (pp) pp.textContent = txt;
       });
     }
+    if (c.birthday && window.SITE_BIRTH && typeof window.SITE_BIRTH.setBirthday === 'function') {
+      window.SITE_BIRTH.setBirthday(+c.birthday.year, +c.birthday.month, +c.birthday.day);
+    }
   }
   /* ---------- 通用工具函数 ---------- */
   const $  = (sel, el = document) => el.querySelector(sel);

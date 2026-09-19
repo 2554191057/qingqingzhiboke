@@ -6,8 +6,8 @@
 (function () {
   'use strict';
 
-  // 我的生日（公历）
-  const BIRTHDAY = { year: 2007, month: 8, day: 6 };
+  // 我的生日（公历）。默认值，后台 admin.html 保存后由远程配置覆盖。
+  let BIRTHDAY = { year: 2007, month: 8, day: 6 };
 
   // 十二星座（按公历月日区间）
   const ZODIAC = [
@@ -78,6 +78,9 @@
     nextBirthday: nextBirthday,
     isBirthdayToday: isBirthdayToday,
     formatBirthDate: formatBirthDate,
-    getZodiacInfo: getZodiacInfo
+    getZodiacInfo: getZodiacInfo,
+    setBirthday: function (y, m, d) {
+      BIRTHDAY.year = y; BIRTHDAY.month = m; BIRTHDAY.day = d;
+    }
   };
 })();
