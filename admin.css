@@ -1390,6 +1390,8 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
     }
     .main-area { margin-left: 0; padding-bottom: calc(var(--mobile-nav-h) + 24px); }
     .topbar-menu { display: inline-flex; }
+    .sidebar-collapse { display: none; }
+    .sidebar-close-mobile { display: block !important; }
     .mobile-nav { display: flex; }
     .topbar-label { display: none; }
     .topbar-actions { gap: 4px; }

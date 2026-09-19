@@ -410,6 +410,10 @@
             document.getElementById('sidebarBackdrop').classList.remove('show');
             this.classList.remove('show');
         });
+        document.getElementById('sidebarCloseMobile').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('sidebarBackdrop').classList.remove('show');
+        });
     }
 
     function setupTheme() {
