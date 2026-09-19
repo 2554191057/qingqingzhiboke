@@ -1389,13 +1389,8 @@
       if (v && v.comment) { nick = v.comment.nick || ''; content = String(v.comment.comment || '').replace(/<[^>]+>/g, '').slice(0, 40); }
     } catch (ex) {}
     if (idx === 0) logAction('点赞', (nick ? '给 ' + nick + ' 的消息点赞' : '点赞消息') + (content ? '：「' + content + '」' : ''));
-    else if (idx === 2) {
-      // 用 Twikoo 原生回复功能
-    }
     else if (idx === 1) logAction('点踩', (nick ? '点踩了 ' + nick + ' 的消息' : '点踩消息') + (content ? '：「' + content + '」' : ''));
-    else if (idx === 2) {
-      // 用 Twikoo 原生回复功能
-    }
+    // 回复按钮(idx===2)交给 Twikoo 原生处理
   });
   document.addEventListener('dblclick', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('.qw-log-copy') : null;
