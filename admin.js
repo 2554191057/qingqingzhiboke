@@ -94,6 +94,11 @@
             .then(r => r.json())
             .catch(() => ({ code: 0, data: [] }));
     }
+    function fetchOnlineCount() {
+        return fetch('/api/online', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+            .then(r => r.json())
+            .catch(() => ({ code: 0, count: 0 }));
+    }
 
     function changePassword(oldPwd, newPwd, code) {
         return api('QW_SET_PASSWORD', {
@@ -515,7 +520,7 @@
         try {
             // 并行获取数据
             const [online, whitelist, visits, commentsRes] = await Promise.all([
-                api('QW_ONLINE_COUNT'),
+                fetchOnlineCount(),
                 fetchWhitelist(),
                 fetchVisitLogs().catch(() => ({ code: 0, data: [] })),
                 fetchComments({ page: 1, per: 1 }).catch(() => ({ code: 0, data: [], count: 0 })),
@@ -534,7 +539,7 @@
             const visitData = allLogs.filter(v => !v.type || String(v.type).indexOf('visit') === 0 || v.page);
             const today0 = new Date(); today0.setHours(0,0,0,0);
             const todayTs = today0.getTime();
-            const todayVisits = allLogs.filter(v => Number(v.time) >= todayTs).length;
+            const todayVisits = allLogs.filter(v => new Date(v.time).getTime() >= todayTs).length;
             document.getElementById('statToday').textContent = todayVisits;
             // 总评论数 = 真实评论条数
             const commentTotal = (commentsRes && typeof commentsRes.count === 'number') ? commentsRes.count : 0;
