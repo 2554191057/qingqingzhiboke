@@ -6,7 +6,7 @@
     'use strict';
 
     // ===== 配置 =====
-    const TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
+    const TWIKOO_API = '/api/twikoo';
     const API_BASE = TWIKOO_API; // 统一入口
     const BACKEND_URL = TWIKOO_API;
     const ADMIN_TOKEN_KEY = 'qw_admin_token';

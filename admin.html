@@ -97,7 +97,7 @@
   if(btn.disabled){return;}
   btn.disabled=true; btn.textContent='发送中...';
   tip.className='forgot-tip'; tip.textContent='';
-  fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo',{
+  fetch('/api/twikoo',{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({event:'QW_FORGOT_SEND_CODE',email:'2554191057@qq.com'})
   }).then(function(r){return r.json();}).then(function(r){
@@ -141,7 +141,7 @@ return false;">发送验证码</button>
   if(pwd.length<6){tip.className='forgot-tip err';tip.textContent='密码至少 6 位';return;}
   if(pwd!==pwd2){tip.className='forgot-tip err';tip.textContent='两次密码不一致';return;}
   btn.disabled=true; btn.textContent='重置中...';
-  fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo',{
+  fetch('/api/twikoo',{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({event:'QW_FORGOT_RESET_PASSWORD',email:'2554191057@qq.com',code:code,newPass:pwd})
   }).then(function(r){return r.json();}).then(function(r){
