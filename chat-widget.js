@@ -703,7 +703,7 @@
     markTimer = setTimeout(function () {
       // 每步隔离：点赞/踩后 Twikoo 局部重渲染可能产生不完整 DOM，任一步报错不得阻断高亮恢复
       var steps = [removeOwO, removeSubmitExtras, addImgButton, setSubmitPlaceholders, moveNickTop,
-        moveActionBelow, sortComments, insertTimeSep, renameEmpty, trimBubbleText, markSelf, hookSendScroll];
+        moveActionBelow, restructureReplies, sortComments, insertTimeSep, renameEmpty, trimBubbleText, markSelf, hookSendScroll];
       try { refreshLoginUI(); } catch (eR) {}
       try { markLiked(); } catch (e0) {}
       steps.forEach(function (fn) { try { fn(); } catch (err) {} });
