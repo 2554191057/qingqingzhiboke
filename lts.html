@@ -126,14 +126,6 @@ document.addEventListener('selectstart', e => {
 .navbar .logo, .navbar-brand { margin-left: 0 !important; padding-left: 0 !important; }
 .navbar-nav { position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; }
 .theme-toggle { margin-left: auto !important; }
-.theme-switch { margin-left:auto !important; background:none !important; border:none !important; padding:0 !important; width:auto !important; height:auto !important; box-shadow:none !important; cursor:pointer !important; }
-.ts-track { position:relative; display:flex; align-items:center; width:52px; height:28px; border-radius:14px; background:linear-gradient(135deg,#fbbf24,#f59e0b); transition:background .35s; padding:0 6px; box-sizing:border-box; }
-.theme-switch.dark .ts-track, [data-theme="dark"] #themeToggle .ts-track { background:linear-gradient(135deg,#334155,#0f172a); }
-.ts-sun, .ts-moon { font-size:11px; color:rgba(255,255,255,.9); position:absolute; transition:opacity .3s; z-index:1; width:11px; text-align:center; }
-.ts-sun { left:8px; }
-.ts-moon { right:8px; }
-.ts-knob { position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.25); transition:transform .35s cubic-bezier(.4,0,.2,1); z-index:2; }
-.theme-switch.dark .ts-knob, [data-theme="dark"] #themeToggle .ts-knob { transform:translateX(24px); }
 </style>
 
 
@@ -218,7 +210,7 @@ document.addEventListener('selectstart', e => {
             <a href="lts.html" class="nav-item"><i class="fa-solid fa-comments"></i><span>聊天室</span></a>
         </nav>
 <button class="hamburger-btn" id="hamburgerBtn" aria-label="快速导航" title="快速导航"><span class="hamburger-label">快速导航</span></button>
-        <button id="themeToggle" class="theme-switch" aria-label="切换夜间模式" title="切换夜间模式"><span class="ts-track"><i class="fa-solid fa-sun ts-sun"></i><i class="fa-solid fa-moon ts-moon"></i><span class="ts-knob"></span></span></button>
+        <button id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式"><i class="fa-solid fa-moon icon-moon"></i><i class="fa-solid fa-sun icon-sun"></i></button>
 
         </div>
     </header>

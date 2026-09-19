@@ -557,14 +557,6 @@
         opacity: 0;
         pointer-events: none !important;
     }
-    .theme-switch { background:none !important; border:none !important; padding:0 !important; width:auto !important; height:auto !important; box-shadow:none !important; cursor:pointer !important; }
-    .ts-track { position:relative; display:flex; align-items:center; width:52px; height:28px; border-radius:14px; background:linear-gradient(135deg,#fbbf24,#f59e0b); transition:background .35s; padding:0 6px; box-sizing:border-box; }
-    .theme-switch.dark .ts-track, [data-theme="dark"] #themeToggle .ts-track { background:linear-gradient(135deg,#334155,#0f172a); }
-    .ts-sun, .ts-moon { font-size:11px; color:rgba(255,255,255,.9); position:absolute; transition:opacity .3s; z-index:1; width:11px; text-align:center; }
-    .ts-sun { left:8px; }
-    .ts-moon { right:8px; }
-    .ts-knob { position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.25); transition:transform .35s cubic-bezier(.4,0,.2,1); z-index:2; }
-    .theme-switch.dark .ts-knob, [data-theme="dark"] #themeToggle .ts-knob { transform:translateX(24px); }
     /* 祝福卡片内红包按钮 */
     .wish-card-redpacket {
         position: static;
@@ -1226,7 +1218,10 @@ var __authTime = parseInt(localStorage.getItem('auth_ok_time') || '0', 10); if (
 </div>
 
 <!-- 顶部居中操作按钮 -->
-<button class="theme-switch" id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式"><span class="ts-track"><i class="fa-solid fa-sun ts-sun"></i><i class="fa-solid fa-moon ts-moon"></i><span class="ts-knob"></span></span></button>
+<button class="theme-toggle bday-theme-toggle" id="themeToggle" aria-label="切换夜间模式" title="切换夜间模式">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
 <main class="bday-wrap">
     <div class="bday-cake">🎂</div>
     <h1 class="bday-title" id="bdayTitle">距离庆庆纸的生日还有</h1>
