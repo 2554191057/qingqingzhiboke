@@ -178,7 +178,12 @@
 
     // Turnstile 回调（注意：全局函数）
     let _captchaToken = null;
+    var _tsTimer = setTimeout(function(){
+        var el = document.getElementById('loginTip');
+        if (el && !el.dataset.done) { el.className='login-tip'; el.textContent='请勾选验证小方块继续'; }
+    }, 10000);
     window.onAdminTurnstileSuccess = function (token) {
+        clearTimeout(_tsTimer);
         _captchaToken = token;
         const btn = document.getElementById('btnLogin');
         btn.disabled = false;
