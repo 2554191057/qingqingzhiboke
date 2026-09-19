@@ -431,7 +431,8 @@
         return origOpen.apply(this, arguments);
       };
       XMLHttpRequest.prototype.send = function(body) {
-        if (this._qwUrl && this._qwUrl.indexOf('twikoo') >= 0 && body && body.indexOf('COMMENT_SUBMIT') >= 0) {
+        var isSubmit = this._qwUrl && this._qwUrl.indexOf('twikoo') >= 0 && body && body.indexOf('COMMENT_SUBMIT') >= 0;
+        if (isSubmit) {
           try {
             var data = JSON.parse(body);
             var twikooVm = document.querySelector('#twikoo').__vue__;
@@ -441,6 +442,20 @@
             }
           } catch(e) {}
         }
+        var self = this;
+        this.addEventListener('load', function() {
+          if (isSubmit && self.status === 200) {
+            try {
+              var res = JSON.parse(self.responseText);
+              if (res.code === 0) {
+                var bar = document.querySelector('.qw-reply-bar');
+                if (bar) bar.remove();
+                var vm = document.querySelector('#twikoo').__vue__;
+                if (vm) { vm.parentComment = null; vm.pid = ''; }
+              }
+            } catch(e) {}
+          }
+        });
         return origSend.apply(this, arguments);
       };
     })();
