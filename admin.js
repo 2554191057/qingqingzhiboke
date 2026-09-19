@@ -90,7 +90,9 @@
     }
 
     function fetchVisitLogs() {
-        return api('QW_LOG_LIST', {});
+        return fetch('/api/visits?days=7')
+            .then(r => r.json())
+            .catch(() => ({ code: 0, data: [] }));
     }
 
     function changePassword(oldPwd, newPwd, code) {
