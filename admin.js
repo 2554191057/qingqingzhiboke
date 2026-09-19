@@ -658,6 +658,7 @@
         bgGradient.addColorStop(1, 'rgba(0,0,0,0)');
 
         if (state.charts.visit) state.charts.visit.destroy();
+        var _existing = Chart.getChart(canvas); if (_existing) _existing.destroy();
         state.charts.visit = new Chart(canvas, {
             type: 'line',
             data: {
