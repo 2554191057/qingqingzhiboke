@@ -1389,9 +1389,15 @@
       if (v && v.comment) { nick = v.comment.nick || ''; content = String(v.comment.comment || '').slice(0, 20); }
     } catch (ex) {}
     if (idx === 0) logAction('点赞', (nick ? '给 ' + nick + ' 的消息点赞' : '点赞消息') + (content ? '：「' + content + '」' : ''));
-    else if (idx === 2) showReplyBar(nick, content);
+    else if (idx === 2) {
+      try { cEl.__vue__.onReply(cEl.__vue__.comment.id); } catch(e) {}
+      showReplyBar(nick, content);
+    }
     else if (idx === 1) logAction('点踩', (nick ? '点踩了 ' + nick + ' 的消息' : '点踩消息') + (content ? '：「' + content + '」' : ''));
-    else if (idx === 2) showReplyBar(nick, content);
+    else if (idx === 2) {
+      try { cEl.__vue__.onReply(cEl.__vue__.comment.id); } catch(e) {}
+      showReplyBar(nick, content);
+    }
   });
   document.addEventListener('dblclick', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('.qw-log-copy') : null;
