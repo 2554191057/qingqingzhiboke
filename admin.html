@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="description" content="庆庆纸博客后台管理系统">
+    <title>后台管理 · 庆庆纸博客</title>
+    <link rel="icon" type="image/png" href="images/%E7%BD%91%E9%A1%B5%E6%A0%87%E7%AD%BE/favicon.png">
+    <link rel="apple-touch-icon" href="images/%E7%BD%91%E9%A1%B5%E6%A0%87%E7%AD%BE/favicon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin.css?v=1">
+    <script>
+    // 早期深色模式初始化：防止 FOUC
+    (function() {
+        const h = new Date().getHours();
+        const isNight = h >= 19 || h < 7;
+        if (localStorage.getItem('admin_theme') === 'dark' || isNight) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    })();
+    </script>
+</head>
+<body>
+
+<!-- ============ 登录门 ============ -->
+<div id="loginGate" class="login-gate">
+    <div class="login-bg">
+        <div class="login-blob login-blob-1"></div>
+        <div class="login-blob login-blob-2"></div>
+        <div class="login-blob login-blob-3"></div>
+    </div>
+    <div class="login-box">
+        <div class="login-logo">
+            <div class="login-logo-icon">🛡️</div>
+            <h1>后台管理系统</h1>
+            <p class="login-sub">庆庆纸博客 · Admin Dashboard</p>
+        </div>
+        <form id="loginForm" class="login-form" autocomplete="off">
+            <div class="form-group">
+                <label>管理员密码</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="adminPassword" placeholder="请输入管理密码" autocomplete="new-password" required>
+                    <button type="button" class="toggle-pwd" id="togglePwd" title="显示/隐藏密码">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group" id="turnstileGroup">
+                <label>人机验证</label>
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAAE5EV0SxdrUKYa70" data-callback="onAdminTurnstileSuccess" data-error-callback="onAdminTurnstileError" data-theme="auto"></div>
+            </div>
+            <button type="submit" class="btn-login" id="btnLogin">
+                <span>进入管理</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <div class="login-tip" id="loginTip"></div>
+        </form>
+        <div class="login-footer">
+            <a href="boke.html" class="login-back">
+                <i class="fa-solid fa-arrow-left"></i> 返回博客
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 主应用 ============ -->
+<div id="adminApp" class="admin-app" hidden>
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span class="sidebar-logo-icon">⚡</span>
+                <span class="sidebar-logo-text">Admin</span>
+            </div>
+            <button class="sidebar-collapse" id="sidebarCollapse" title="折叠侧边栏">
+                <i class="fa-solid fa-angles-left"></i>
+            </button>
+        </div>
+        <nav class="sidebar-nav" id="sidebarNav">
+            <a class="nav-item active" data-tab="dashboard">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span class="nav-label">数据概览</span>
+            </a>
+            <a class="nav-item" data-tab="comments">
+                <i class="fa-solid fa-comments"></i>
+                <span class="nav-label">评论管理</span>
+                <span class="nav-badge" id="commentsBadge" hidden>0</span>
+            </a>
+            <a class="nav-item" data-tab="whitelist">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span class="nav-label">IP 白名单</span>
+            </a>
+            <a class="nav-item" data-tab="blocklist">
+                <i class="fa-solid fa-ban"></i>
+                <span class="nav-label">黑名单</span>
+            </a>
+            <a class="nav-item" data-tab="visits">
+                <i class="fa-solid fa-eye"></i>
+                <span class="nav-label">访问日志</span>
+            </a>
+            <a class="nav-item" data-tab="settings">
+                <i class="fa-solid fa-gear"></i>
+                <span class="nav-label">系统设置</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="user-avatar">A</div>
+                <div class="user-info">
+                    <div class="user-name">Admin</div>
+                    <div class="user-role">超级管理员</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-area">
+        <!-- 顶栏 -->
+        <header class="topbar">
+            <button class="topbar-menu" id="topbarMenuBtn" aria-label="菜单">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="topbar-title" id="topbarTitle">数据概览</div>
+            <div class="topbar-actions">
+                <button class="topbar-btn" id="topbarAutoRefresh" title="自动刷新：开" aria-pressed="true">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span>自动刷新</span>
+                </button>
+                <button class="topbar-btn theme-toggle-admin" id="themeToggleAdmin" title="切换主题">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="topbar-btn topbar-danger" id="logoutBtn" title="退出登录">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="topbar-label">退出</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 移动端底部导航 -->
+        <nav class="mobile-nav" id="mobileNav">
+            <a class="mnav-item active" data-tab="dashboard">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>概览</span>
+            </a>
+            <a class="mnav-item" data-tab="comments">
+                <i class="fa-solid fa-comments"></i>
+                <span>评论</span>
+            </a>
+            <a class="mnav-item" data-tab="whitelist">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>白名单</span>
+            </a>
+            <a class="mnav-item" data-tab="visits">
+                <i class="fa-solid fa-eye"></i>
+                <span>日志</span>
+            </a>
+            <a class="mnav-item" data-tab="settings">
+                <i class="fa-solid fa-gear"></i>
+                <span>设置</span>
+            </a>
+        </nav>
+
+        <!-- ====== Tab 内容区 ====== -->
+        <div class="content-area">
+
+            <!-- === Dashboard === -->
+            <section class="tab-panel active" data-tab="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card stat-primary">
+                        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-body">
+                            <div class="stat-value" id="statOnline">--</div>
+                            <div class="stat-label">当前在线</div>
+                        </div>
+                        <div class="stat-trend stat-up"><i class="fa-solid fa-arrow-up"></i> 实时</div>
+                    </div>
+                    <div class="stat-card stat-info">
+                        <div class="stat-icon"><i class="fa-solid fa-eye"></i></div>
+                        <div class="stat-body">
+                            <div class="stat-value" id="statToday">--</div>
+                            <div class="stat-label">今日访问</div>
+                        </div>
+                        <div class="stat-trend stat-up" id="statTodayTrend"><i class="fa-solid fa-chart-line"></i></div>
+                    </div>
+                    <div class="stat-card stat-success">
+                        <div class="stat-icon"><i class="fa-solid fa-comments"></i></div>
+                        <div class="stat-body">
+                            <div class="stat-value" id="statComments">--</div>
+                            <div class="stat-label">总评论数</div>
+                        </div>
+                        <div class="stat-trend"><i class="fa-solid fa-chart-column"></i></div>
+                    </div>
+                    <div class="stat-card stat-warning">
+                        <div class="stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="stat-body">
+                            <div class="stat-value" id="statWhitelist">--</div>
+                            <div class="stat-label">白名单 IP</div>
+                        </div>
+                        <div class="stat-trend"><i class="fa-solid fa-lock"></i></div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-line"></i> 最近访问趋势</h3>
+                            <div class="card-actions">
+                                <button class="chip-btn active" data-range="7">7 天</button>
+                                <button class="chip-btn" data-range="30">30 天</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="visitChart" height="220"></canvas>
+                        </div>
+                    </div>
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-chart-pie"></i> 访问来源分布</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="sourceChart" height="220"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-clock-rotate-left"></i> 最近访问</h3>
+                            <a class="card-link" data-tab-link="visits">查看全部 →</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-wrap" id="recentVisitsList">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-inbox"></i>
+                                    <p>加载中...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-comments"></i> 最新评论</h3>
+                            <a class="card-link" data-tab-link="comments">查看全部 →</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-wrap" id="recentCommentsList">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-inbox"></i>
+                                    <p>加载中...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === 评论管理 === -->
+            <section class="tab-panel" data-tab="comments">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-comments"></i> 评论列表</h3>
+                        <div class="card-actions">
+                            <div class="search-wrap">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="commentSearch" placeholder="搜索内容、昵称、邮箱...">
+                            </div>
+                            <select id="commentSort" class="select-inline">
+                                <option value="newest">最新优先</option>
+                                <option value="oldest">最早优先</option>
+                            </select>
+                            <button class="btn-danger-outline" id="batchDeleteComments" disabled>
+                                <i class="fa-solid fa-trash-can"></i> 批量删除
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body no-pad">
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th width="40"><input type="checkbox" id="selectAllComments"></th>
+                                        <th>评论</th>
+                                        <th width="120">昵称</th>
+                                        <th width="160">邮箱</th>
+                                        <th width="140">IP</th>
+                                        <th width="160">时间</th>
+                                        <th width="160">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="commentsTableBody">
+                                    <tr><td colspan="7" class="empty-row">
+                                        <div class="empty-state"><i class="fa-solid fa-inbox"></i><p>加载中...</p></div>
+                                    </td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="commentsPagination"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === IP 白名单 === -->
+            <section class="tab-panel" data-tab="whitelist">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-shield-halved"></i> IP 白名单管理</h3>
+                        <div class="card-actions">
+                            <div class="search-wrap">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="wlSearch" placeholder="搜索 IP...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="add-row">
+                            <div class="add-input">
+                                <i class="fa-solid fa-plus"></i>
+                                <input type="text" id="newWlIp" placeholder="输入 IP 地址（如 222.245.15.167）">
+                                <input type="text" id="newWlNote" placeholder="备注（可选）">
+                            </div>
+                            <button class="btn-primary-solid" id="addWlBtn">
+                                <i class="fa-solid fa-plus"></i> 添加到白名单
+                            </button>
+                        </div>
+                        <div class="ip-grid" id="whitelistGrid">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <p>加载中...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === 黑名单 === -->
+            <section class="tab-panel" data-tab="blocklist">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-ban"></i> 邮箱黑名单</h3>
+                        <div class="card-actions">
+                            <div class="search-wrap">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="blSearch" placeholder="搜索邮箱...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="add-row">
+                            <div class="add-input">
+                                <i class="fa-solid fa-ban"></i>
+                                <input type="email" id="newBlEmail" placeholder="输入要拉黑的邮箱">
+                                <input type="text" id="newBlReason" placeholder="拉黑原因（可选）">
+                            </div>
+                            <button class="btn-danger-solid" id="addBlBtn">
+                                <i class="fa-solid fa-ban"></i> 加入黑名单
+                            </button>
+                        </div>
+                        <div class="list-wrap" id="blocklistWrap">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-inbox"></i>
+                                <p>加载中...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === 访问日志 === -->
+            <section class="tab-panel" data-tab="visits">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-eye"></i> 访问日志</h3>
+                        <div class="card-actions">
+                            <div class="search-wrap">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="visitSearch" placeholder="搜索路径、IP...">
+                            </div>
+                            <select id="visitFilter" class="select-inline">
+                                <option value="all">全部时间</option>
+                                <option value="today">今日</option>
+                                <option value="yesterday">昨日</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body no-pad">
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th width="200">时间</th>
+                                        <th>访问路径</th>
+                                        <th width="200">来源</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visitsTableBody">
+                                    <tr><td colspan="3" class="empty-row">
+                                        <div class="empty-state"><i class="fa-solid fa-inbox"></i><p>加载中...</p></div>
+                                    </td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- === 系统设置 === -->
+            <section class="tab-panel" data-tab="settings">
+                <div class="settings-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-key"></i> 修改管理员密码</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>当前密码</label>
+                                <div class="input-wrap">
+                                    <i class="fa-solid fa-lock"></i>
+                                    <input type="password" id="settingOldPwd" placeholder="请输入当前密码">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>新密码</label>
+                                <div class="input-wrap">
+                                    <i class="fa-solid fa-key"></i>
+                                    <input type="password" id="settingNewPwd" placeholder="新密码（至少 6 位）">
+                                </div>
+                                <div class="pwd-strength" id="pwdStrength" hidden></div>
+                            </div>
+                            <div class="form-group">
+                                <label>确认新密码</label>
+                                <div class="input-wrap">
+                                    <i class="fa-solid fa-key"></i>
+                                    <input type="password" id="settingNewPwd2" placeholder="再次输入新密码">
+                                </div>
+                            </div>
+                            <button class="btn-primary-solid" id="changePwdBtn">
+                                <i class="fa-solid fa-check"></i> 确认修改
+                            </button>
+                            <div class="msg-area" id="changePwdMsg"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-info-circle"></i> 系统信息</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-list">
+                                <div class="info-row">
+                                    <span class="info-label">站点</span>
+                                    <span class="info-value">庆庆纸博客</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">后端服务</span>
+                                    <span class="info-value">Twikoo · Netlify · MongoDB Atlas</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">后端地址</span>
+                                    <span class="info-value info-mono" id="backendUrl">加载中...</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">管理员接口</span>
+                                    <span class="info-value">QW_BLOCK_* / QW_IP_WHITELIST_* / QW_ADMIN_*</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">登录方式</span>
+                                    <span class="info-value">密码验证 + Cloudflare Turnstile</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">当前时间</span>
+                                    <span class="info-value info-mono" id="currentTime">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-palette"></i> 外观偏好</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="setting-row">
+                                <div class="setting-label">
+                                    <h4>主题模式</h4>
+                                    <p>跟随系统或手动选择</p>
+                                </div>
+                                <div class="theme-options">
+                                    <button class="theme-opt" data-theme-opt="auto">
+                                        <i class="fa-solid fa-circle-half-stroke"></i> 自动
+                                    </button>
+                                    <button class="theme-opt" data-theme-opt="light">
+                                        <i class="fa-solid fa-sun"></i> 浅色
+                                    </button>
+                                    <button class="theme-opt" data-theme-opt="dark">
+                                        <i class="fa-solid fa-moon"></i> 深色
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-label">
+                                    <h4>自动刷新</h4>
+                                    <p>Dashboard 每 10 秒自动刷新数据</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="autoRefreshToggle" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<!-- ============ Toast ============ -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- ============ 确认弹窗 ============ -->
+<div id="confirmModal" class="modal-mask" hidden>
+    <div class="modal-panel">
+        <div class="modal-icon" id="confirmIcon"><i class="fa-solid fa-question"></i></div>
+        <h3 class="modal-title" id="confirmTitle">确认操作</h3>
+        <p class="modal-text" id="confirmText">确定要执行此操作吗？</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="confirmCancel">取消</button>
+            <button class="btn-primary-solid" id="confirmOk">确定</button>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- Turnstile 仅登录时需要 -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<!-- admin 逻辑 -->
+<script src="admin.js?v=1"></script>
+</body>
+</html>
