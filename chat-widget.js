@@ -20,7 +20,7 @@
     '/* 遮罩 + 面板 */',
     '.qw-backdrop{position:fixed;inset:0;z-index:100;background:rgba(1,6,17,.65);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px;}',
     '.qw-backdrop.qw-open{display:flex;animation:qwFade .25s ease;}',
-    '.qw-panel{position:relative;width:620px;max-width:95vw;max-height:calc(100dvh - 40px);min-width:380px;min-height:500px;height:720px;display:flex;flex-direction:column;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;box-shadow:0 28px 100px rgba(0,0,0,.4),0 0 40px var(--jp-glow);overflow:hidden;color:var(--jp-ink);animation:qwPop .3s cubic-bezier(.16,1,.3,1);resize:none;}',
+    '.qw-panel{position:relative;width:520px;max-width:95vw;height:82dvh;max-height:calc(100dvh - 40px);min-width:360px;min-height:480px;display:flex;flex-direction:column;background:var(--jp-surface);border:1px solid var(--jp-line);border-radius:18px;box-shadow:0 28px 100px rgba(0,0,0,.4),0 0 40px var(--jp-glow);overflow:hidden;color:var(--jp-ink);animation:qwPop .3s cubic-bezier(.16,1,.3,1);resize:none;}',
 '.qw-resize-handle{position:absolute;right:0;bottom:0;width:20px;height:20px;cursor:nwse-resize;z-index:50;background:linear-gradient(135deg,transparent 50%,rgba(128,128,128,.4) 50%,rgba(128,128,128,.4) 60%,transparent 60%,transparent 70%,rgba(128,128,128,.4) 70%,rgba(128,128,128,.4) 80%,transparent 80%,transparent 90%,rgba(128,128,128,.4) 90%,rgba(128,128,128,.4) 100%);border-bottom-right-radius:18px;pointer-events:auto;}',
     '@keyframes qwFade{from{opacity:0}to{opacity:1}}',
     '@keyframes qwPop{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}',
