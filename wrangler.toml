@@ -1,0 +1,8 @@
+name = "qingqingzhiboke"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "."
+
+# 后台 CMS 配置存储（文章/网盘资源/Hero 文案等）
+[[kv_namespaces]]
+binding = "SITE_CMS"
+id = "3b4e41a8d53e4607a54ba00eb2c950f2"
