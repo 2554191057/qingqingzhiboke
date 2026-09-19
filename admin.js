@@ -1335,4 +1335,34 @@
         });
     }
 
+    // ===== 全局暴露给 onclick =====
+    window.forgotSendCodeClick = async function () {
+        const btn = document.getElementById('btnForgotSend');
+        const tip = document.getElementById('forgotTip');
+        if (!btn || !tip) return;
+        if (btn.disabled && btn.textContent !== '发送验证码') return;
+        btn.disabled = true; btn.textContent = '发送中...';
+        tip.className = 'forgot-tip'; tip.textContent = '';
+        try {
+            const r = await fetch(TWIKOO_API, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'QW_FORGOT_SEND_CODE' })
+            }).then(r => r.json());
+            if (r.code === 0) {
+                tip.className = 'forgot-tip ok'; tip.textContent = '✅ 验证码已发，请查收邮箱';
+                let cd = 60;
+                const t = setInterval(() => {
+                    cd--;
+                    if (cd <= 0) { clearInterval(t); btn.disabled = false; btn.textContent = '发送验证码'; }
+                    else { btn.textContent = cd + 's'; }
+                }, 1000);
+            } else {
+                tip.className = 'forgot-tip err'; tip.textContent = '❌ ' + (r.message || '发送失败');
+                btn.disabled = false; btn.textContent = '发送验证码';
+            }
+        } catch (e) {
+            tip.className = 'forgot-tip err'; tip.textContent = '❌ 网络错误';
+            btn.disabled = false; btn.textContent = '发送验证码';
+        }
+    };
 })();
