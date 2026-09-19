@@ -892,6 +892,9 @@ function renderManageList(comments, blocks, wlist, likeMap, onlineCount, account
 
   h += '<div class="panel" id="logSection" style="display:' + (adminActiveTab === 'logs' ? 'block' : 'none') + '">' +
     '<div class="panel-head"><h3>📋 操作日志 <span class="cnt">共 ' + currentLogCount() + ' 条</span></h3><div class="toolbar">' + logToolbarHtml() + '</div></div><div class="panel-body">' + buildLogHtml(adminLogs) + '</div></div>';
+
+  var _mv = document.getElementById('mainView');
+  _mv.innerHTML = h;
   applyBlockFilter();
   applyWlistFilter();
   enrichIps();
