@@ -362,7 +362,7 @@
             if (state.currentTab === 'dashboard' || state.currentTab === 'visits') {
                 loadTabContent(state.currentTab, true);
             }
-        }, 10000);
+        }, 60000);
     }
 
     // ========== Tab 切换 ==========
