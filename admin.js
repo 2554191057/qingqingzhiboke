@@ -534,7 +534,7 @@
             const visitData = allLogs.filter(v => !v.type || String(v.type).indexOf('visit') === 0 || v.page);
             const today0 = new Date(); today0.setHours(0,0,0,0);
             const todayTs = today0.getTime();
-            const todayVisits = visitData.filter(v => Number(v.time) >= todayTs).length;
+            const todayVisits = allLogs.filter(v => Number(v.time) >= todayTs).length;
             document.getElementById('statToday').textContent = todayVisits;
             // 总评论数 = 真实评论条数
             const commentTotal = (commentsRes && typeof commentsRes.count === 'number') ? commentsRes.count : 0;
