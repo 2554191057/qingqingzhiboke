@@ -1357,16 +1357,9 @@
         if (!t) return '--';
         const d = new Date(t);
         if (isNaN(d.getTime())) return String(t);
-        const now = new Date();
-        const diff = (now - d) / 1000;
-        if (diff < 60) return '刚刚';
-        if (diff < 3600) return Math.floor(diff / 60) + ' 分钟前';
-        if (diff < 86400) return Math.floor(diff / 3600) + ' 小时前';
-        return d.toLocaleString('zh-CN', {
-            year: 'numeric', month: '2-digit', day: '2-digit',
-            hour: '2-digit', minute: '2-digit',
-            hour12: false,
-        });
+        const pad = n => String(n).padStart(2, '0');
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+            + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
     }
 
     function debounce(fn, ms) {
