@@ -2286,7 +2286,7 @@
       }
     }
     
-    // 切换主题（带防抖锁，防止移动端快速连点卡死；移动端禁用 View Transition 整页快照）
+    // 切换主题（圆形波纹扩散动画）
     let isThemeSwitching = false;
     function toggleDarkMode(e) {
       if (isThemeSwitching) return;
@@ -2294,14 +2294,11 @@
 
       const isDark = html.getAttribute('data-theme') === 'dark';
       const newIsDark = !isDark;
+      const rect = (themeToggle || e?.currentTarget)?.getBoundingClientRect();
+      const x = e?.clientX || (rect ? rect.left + rect.width/2 : window.innerWidth);
+      const y = e?.clientY || (rect ? rect.top + rect.height/2 : 0);
+      const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
 
-      // 清理旧的方向 class，防止快速切换时泄漏
-      html.classList.remove('vt-from-top', 'vt-from-bottom');
-
-      // 方向：切到日间→从上往下(vt-from-top)，切到夜间→从下往上(vt-from-bottom)
-      const dirClass = newIsDark ? 'vt-from-bottom' : 'vt-from-top';
-
-      // 执行主题切换
       function doSwitch() {
         if (newIsDark) {
           html.setAttribute('data-theme', 'dark');
@@ -2310,48 +2307,32 @@
           html.setAttribute('data-theme', 'light');
           themeToggle?.classList.remove('dark');
         }
-        // 手动切换仅当前访问生效，不持久化（下次进入按智能时间判断）
         updateThemeIcon(newIsDark);
       }
 
-      const unlock = () => { isThemeSwitching = false; };
-
-      // 移动端（触屏/小屏）禁用 View Transition 整页快照动画，只用简单颜色过渡，防止 GPU 过载卡死
-      const isMobile = window.matchMedia('(hover: none), (pointer: coarse)').matches || window.innerWidth < 768;
-      const useVT = document.startViewTransition && !isMobile;
-
-      if (useVT) {
-        // 圆形扩散动画：从点击位置开始
-        const rect = (themeToggle || e?.currentTarget)?.getBoundingClientRect();
-        const x = e?.clientX || (rect ? rect.left + rect.width/2 : window.innerWidth);
-        const y = e?.clientY || (rect ? rect.top + rect.height/2 : 0);
-        const endRadius = Math.hypot(
-          Math.max(x, window.innerWidth - x),
-          Math.max(y, window.innerHeight - y)
-        );
-        const transition = document.startViewTransition(doSwitch);
-        transition.ready.then(() => {
-          const clipPath = [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`
-          ];
-          document.documentElement.animate(
-            { clipPath: clipPath },
-            { duration: 800, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' }
-          );
-        });
-        Promise.race([transition.finished, new Promise(r => setTimeout(r, 900))]).finally(() => {
-          unlock();
-        });
-      } else {
-        html.classList.add('theme-transition');
+      // 圆形波纹：用 canvas 截取当前页面作为覆盖层，切主题后圆形擦除
+      try {
+        // 截取当前视口
+        const canvas = document.createElement('canvas');
+        canvas.width = innerWidth * devicePixelRatio;
+        canvas.height = innerHeight * devicePixelRatio;
+        const ctx = canvas.getContext('2d');
+        // 用 html2canvas 替代方案：直接用 CSS 背景色+渐变色遮罩
+        const oldBg = isDark ? '#1b1f22' : '#eef2f7';
         doSwitch();
-        // 移动端只过渡根元素背景(0.2s)，桌面端全元素过渡(0.45s)
-        const transDur = isMobile ? 250 : 550;
-        setTimeout(() => {
-          html.classList.remove('theme-transition');
-          unlock();
-        }, transDur);
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;background:' + oldBg + ';';
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => {
+          const anim = overlay.animate(
+            { clipPath: ['circle('+endRadius+'px at '+x+'px '+y+'px)', 'circle(0px at '+x+'px '+y+'px)'] },
+            { duration: 700, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', fill: 'forwards' }
+          );
+          anim.onfinish = () => { overlay.remove(); isThemeSwitching = false; };
+        });
+      } catch(e) {
+        doSwitch();
+        isThemeSwitching = false;
       }
 
       showToast(newIsDark ? '🌙 已切换到夜间模式' : '☀️ 已切换到日间模式');
