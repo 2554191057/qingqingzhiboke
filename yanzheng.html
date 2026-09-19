@@ -273,7 +273,7 @@ document.addEventListener('selectstart', e => {
         var tsTip = document.getElementById('tsStatus');
         if (tsTip) { tsTip.textContent = '验证加载失败，请刷新页面重试'; tsTip.style.color = '#fca5a5'; }
     }
-    var WHITELIST_IPS = ['222.245.15.167'];
+    var WHITELIST_IPS = ['222.245.15.167','222.245.12.223','222.241.228.54','223.153.71.215'];
     var TWIKOO_API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
     var vsIpEl = document.getElementById('vsIp');
     var vsCountEl = document.getElementById('vsCount');
@@ -374,7 +374,7 @@ document.addEventListener('selectstart', e => {
     // 访问日志：打开验证页即上报一次
     fetch('/api/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: location.pathname + location.search, referrer: document.referrer }) }).catch(function(){});
     onlineRefresh();
-    setInterval(function(){ onlineRefresh(); }, 1000);
+    setInterval(onlineRefresh, 20000);
     (function(){
       var h = location.hostname;
       if (h === 'qqzttkx.ficp.fun' || h === 'qqzttkxpd.ficp.fun') {
