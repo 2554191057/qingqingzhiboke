@@ -82,7 +82,29 @@
                 <div class="input-wrap code-input">
                     <i class="fa-solid fa-shield-halved"></i>
                     <input type="text" id="forgotCode" placeholder="6 位验证码" maxlength="6" inputmode="numeric">
-                    <button type="button" class="btn-send-code" id="btnForgotSend" onclick="forgotSendCodeClick();return false;">发送验证码</button>
+                    <button type="button" class="btn-send-code" id="btnForgotSend" onclick="
+(function(btn){
+  var tip=document.getElementById('forgotTip');
+  if(btn.disabled){return;}
+  btn.disabled=true; btn.textContent='发送中...';
+  tip.className='forgot-tip'; tip.textContent='';
+  fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({event:'QW_FORGOT_SEND_CODE'})
+  }).then(function(r){return r.json();}).then(function(r){
+    if(r.code===0){
+      tip.className='forgot-tip ok'; tip.textContent='✅ 验证码已发，请查收邮箱';
+      var cd=60,t=setInterval(function(){cd--;if(cd<=0){clearInterval(t);btn.disabled=false;btn.textContent='发送验证码';}else{btn.textContent=cd+'s';}},1000);
+    }else{
+      tip.className='forgot-tip err'; tip.textContent='❌ '+(r.message||'发送失败');
+      btn.disabled=false; btn.textContent='发送验证码';
+    }
+  }).catch(function(e){
+    tip.className='forgot-tip err'; tip.textContent='❌ 网络错误';
+    btn.disabled=false; btn.textContent='发送验证码';
+  });
+})(this);
+return false;">发送验证码</button>
                 </div>
             </div>
             <div class="form-group">
@@ -100,7 +122,33 @@
                 </div>
             </div>
             <div class="forgot-tip" id="forgotTip"></div>
-            <button class="btn-login btn-reset" id="btnForgotReset" onclick="forgotResetClick();return false;">重置密码</button>
+            <button class="btn-login btn-reset" id="btnForgotReset" onclick="
+(function(btn){
+  var code=document.getElementById('forgotCode').value.trim();
+  var pwd=document.getElementById('forgotNewPwd').value;
+  var pwd2=document.getElementById('forgotNewPwd2').value;
+  var tip=document.getElementById('forgotTip');
+  if(!code||!pwd||!pwd2){tip.className='forgot-tip err';tip.textContent='请填完整';return;}
+  if(pwd.length<6){tip.className='forgot-tip err';tip.textContent='密码至少 6 位';return;}
+  if(pwd!==pwd2){tip.className='forgot-tip err';tip.textContent='两次密码不一致';return;}
+  btn.disabled=true; btn.textContent='重置中...';
+  fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({event:'QW_FORGOT_RESET',code:code,newPassword:pwd})
+  }).then(function(r){return r.json();}).then(function(r){
+    if(r.code===0){
+      tip.className='forgot-tip ok'; tip.textContent='✅ 密码已重置，请用新密码登录';
+      setTimeout(function(){document.getElementById('forgotModal').hidden=true;btn.disabled=false;btn.textContent='重置密码';},1500);
+    }else{
+      tip.className='forgot-tip err'; tip.textContent='❌ '+(r.message||'重置失败');
+      btn.disabled=false; btn.textContent='重置密码';
+    }
+  }).catch(function(e){
+    tip.className='forgot-tip err'; tip.textContent='❌ 网络错误';
+    btn.disabled=false; btn.textContent='重置密码';
+  });
+})(this);
+return false;">重置密码</button>
         </div>
     </div>
 </div>
