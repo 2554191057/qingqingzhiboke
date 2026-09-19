@@ -570,12 +570,23 @@
                     <i class="fa-solid fa-eye"></i>
                 </div>
                 <div style="flex:1;min-width:0;">
-                    <div style="font-size:12px;font-weight:600;color:var(--jp-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:Consolas,monospace;">${escapeHtml(v.page || '/')}</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--jp-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(pageName(v.page, v.type))}</div>
                     <div style="font-size:11px;color:var(--jp-muted);">${formatTime(v.time)}</div>
                 </div>
                 <div style="font-size:11px;font-family:Consolas,monospace;color:var(--jp-muted);">${escapeHtml(v.ip || '--')}</div>
             </div>
         `).join('');
+    }
+
+    function pageName(page, type) {
+        var p = String(page || '').split('?')[0];
+        if (type === '访问聊天室' || type === '登录') return type;
+        if (p === '/boke' || p === '/boke#home') return '博客首页';
+        if (p === '/yanzheng') return '验证页';
+        if (p === '/shengri') return '生日页';
+        if (p === '/lts') return '聊天室页';
+        if (p === '/admin.html' || p === '/admin') return '后台管理';
+        return p || '/';
     }
 
     async function renderRecentComments() {
