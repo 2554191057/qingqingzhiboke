@@ -419,6 +419,29 @@
     document.head.appendChild(s);
   }
 
+  // 拦截 XHR，给 COMMENT_SUBMIT 加上 pid
+  (function() {
+    var origOpen = XMLHttpRequest.prototype.open;
+    var origSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function(method, url) {
+      this._qwUrl = url;
+      return origOpen.apply(this, arguments);
+    };
+    XMLHttpRequest.prototype.send = function(body) {
+      if (this._qwUrl && this._qwUrl.indexOf('twikoo') >= 0 && body && body.indexOf('COMMENT_SUBMIT') >= 0) {
+        try {
+          var data = JSON.parse(body);
+          var twikooVm = document.querySelector('#twikoo').__vue__;
+          if (twikooVm && twikooVm.parentComment) {
+            data.pid = twikooVm.parentComment.id;
+            body = JSON.stringify(data);
+          }
+        } catch(e) {}
+      }
+      return origSend.apply(this, arguments);
+    };
+  })();
+
   function initTwikoo() {
     if (twikooInited || !window.twikoo) return;
     twikooInited = true;
