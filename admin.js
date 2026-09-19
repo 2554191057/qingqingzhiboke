@@ -400,7 +400,8 @@
             else if (state.autoRefreshTimer) clearInterval(state.autoRefreshTimer);
         });
 
-        document.getElementById('topbarMenuBtn').addEventListener('click', function () {
+        document.getElementById('topbarMenuBtn').addEventListener('click', function (e) {
+            e.stopPropagation();
             var sb = document.getElementById('sidebar');
             sb.classList.toggle('mobile-open');
             document.getElementById('sidebarBackdrop').classList.toggle('show', sb.classList.contains('mobile-open'));
@@ -410,7 +411,8 @@
             document.getElementById('sidebarBackdrop').classList.remove('show');
             this.classList.remove('show');
         });
-        document.getElementById('sidebarCloseMobile').addEventListener('click', function () {
+        document.getElementById('sidebarCloseMobile').addEventListener('click', function (e) {
+            e.stopPropagation();
             document.getElementById('sidebar').classList.remove('mobile-open');
             document.getElementById('sidebarBackdrop').classList.remove('show');
         });
