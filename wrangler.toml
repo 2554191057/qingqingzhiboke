@@ -5,3 +5,8 @@ pages_build_output_dir = "."
 [[kv_namespaces]]
 binding = "QW_VISITS"
 id = "4cd65a88772b48178643c13b3f9b9574"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "qw_visits"
+database_id = "312ced19-36a8-4258-8aad-0297f2574ce4"

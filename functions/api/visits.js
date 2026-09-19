@@ -1,4 +1,4 @@
-// Cloudflare Pages Function: 管理端查询访问日志
+// Cloudflare Pages Function: 管理端查询访问日志 (D1)
 // GET /api/visits?days=7  -> 返回最近N天的访问日志
 export async function onRequestGet(context) {
   const headers = {
@@ -8,16 +8,15 @@ export async function onRequestGet(context) {
   try {
     const url = new URL(context.request.url);
     const days = Math.min(parseInt(url.searchParams.get('days') || '7', 10), 30);
-    const all = [];
-    for (let i = 0; i < days; i++) {
-      const d = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
-      const key = `visits_${d}`;
-      const dayData = await context.env.QW_VISITS.get(key, 'json');
-      if (Array.isArray(dayData)) all.push(...dayData);
-    }
-    // 按时间倒序
-    all.reverse();
-    return new Response(JSON.stringify({ code: 0, data: all, total: all.length }), { headers });
+    const since = Date.now() - days * 86400000;
+
+    const { results } = await context.env.DB.prepare(
+      'SELECT ip, page, referrer, ua, ua_hash as uaHash, time FROM visits WHERE time >= ? ORDER BY time DESC LIMIT 500'
+    ).bind(since).all();
+
+    // 转换 time 为 ISO 字符串（前端 formatTime 兼容）
+    const data = (results || []).map(r => ({ ...r, time: new Date(r.time).toISOString() }));
+    return new Response(JSON.stringify({ code: 0, data, total: data.length }), { headers });
   } catch (e) {
     return new Response(JSON.stringify({ code: -1, data: [], error: e.message }), { headers });
   }

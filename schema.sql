@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS online (
+  ip TEXT PRIMARY KEY,
+  last_seen INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS visits (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ip TEXT NOT NULL,
+  page TEXT NOT NULL,
+  referrer TEXT DEFAULT '',
+  ua TEXT DEFAULT '',
+  ua_hash TEXT DEFAULT '',
+  time INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_visits_time ON visits(time);
+CREATE INDEX IF NOT EXISTS idx_visits_page ON visits(page);
