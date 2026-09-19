@@ -110,7 +110,7 @@
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
     /* Twikoo 原生回复提示条隐藏（用自绘 .qw-reply-bar 替代） */
-    '.qw-body #twikoo [class*=comment-parent]{display:none!important;}',
+    '.qw-body #twikoo [class*=comment-parent]{display:flex!important;align-items:center!important;gap:6px!important;background:var(--jp-paper)!important;border:1px solid var(--jp-line)!important;border-radius:8px!important;padding:6px 10px!important;margin:0 0 8px!important;font-size:11px!important;color:var(--jp-muted)!important;}',
     /* 微信风：发送按钮与输入框同行右侧 */
     '.qw-body #twikoo .tk-row-actions-start{display:flex!important;justify-content:flex-end!important;margin-top:6px!important;}',
     /* 自绘微信风回复预览条 */
@@ -1390,25 +1390,11 @@
     } catch (ex) {}
     if (idx === 0) logAction('点赞', (nick ? '给 ' + nick + ' 的消息点赞' : '点赞消息') + (content ? '：「' + content + '」' : ''));
     else if (idx === 2) {
-      try {
-        var twikooVm = document.querySelector('#twikoo').__vue__;
-        if (twikooVm) {
-          twikooVm.pid = cEl.__vue__.comment.id;
-          twikooVm.parentComment = cEl.__vue__.comment;
-        }
-      } catch(e) {}
-      showReplyBar(nick, content);
+      // 用 Twikoo 原生回复功能
     }
     else if (idx === 1) logAction('点踩', (nick ? '点踩了 ' + nick + ' 的消息' : '点踩消息') + (content ? '：「' + content + '」' : ''));
     else if (idx === 2) {
-      try {
-        var twikooVm = document.querySelector('#twikoo').__vue__;
-        if (twikooVm) {
-          twikooVm.pid = cEl.__vue__.comment.id;
-          twikooVm.parentComment = cEl.__vue__.comment;
-        }
-      } catch(e) {}
-      showReplyBar(nick, content);
+      // 用 Twikoo 原生回复功能
     }
   });
   document.addEventListener('dblclick', function (e) {
