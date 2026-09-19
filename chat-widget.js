@@ -1431,6 +1431,17 @@
     if (idx === 0) logAction('点赞', (nick ? '给 ' + nick + ' 的消息点赞' : '点赞消息') + (content ? '：「' + content + '」' : ''));
     else if (idx === 1) logAction('点踩', (nick ? '点踩了 ' + nick + ' 的消息' : '点踩消息') + (content ? '：「' + content + '」' : ''));
     // 回复按钮(idx===2)交给 Twikoo 原生处理
+  // 监听发送按钮点击，发送后清除预览条
+  document.addEventListener('click', function(e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.qw-body .tk-submit .tk-send') : null;
+    if (!btn) return;
+    setTimeout(function() {
+      var bar = document.querySelector('.qw-reply-bar');
+      if (bar) bar.remove();
+      var vm = document.querySelector('#twikoo').__vue__;
+      if (vm) { vm.parentComment = null; vm.pid = ''; }
+    }, 1500);
+  });
   });
   document.addEventListener('dblclick', function (e) {
     var btn = e.target && e.target.closest ? e.target.closest('.qw-log-copy') : null;
