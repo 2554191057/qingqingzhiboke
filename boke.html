@@ -1242,7 +1242,7 @@ document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
   item.addEventListener('click', function(e) {
     document.getElementById('navbarNav').classList.remove('open');
     var href = item.getAttribute('href');
-    if(href && (href.indexOf('lts.html') !== -1 || href.indexOf('fklts.html') !== -1 || href.indexOf('chat.html') !== -1)) { e.preventDefault(); if(typeof openChatRoom === 'function') openChatRoom(); else setTimeout(function(){var b=document.getElementById('qw-launcher');if(b)b.click();},100); return false; }
+    // 聊天室正常跳转 lts.html（页面内已有悬浮聊天室）
   });
 });
 // 点击页面空白处关闭快速导航

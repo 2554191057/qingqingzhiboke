@@ -67,5 +67,57 @@
       requestAnimationFrame(function () { el.style.opacity = '1'; });
       setTimeout(function () { el.style.opacity = '0'; setTimeout(function () { el.remove(); }, 200); }, 800);
     }
-  })();
+  
+  // ==================== 滚动区块访问记录 ====================
+  // 当用户滚动到 #blog / #resources 等区块时，记录对应访问
+  var trackedSections = {};
+  var sections = [
+    { id: 'blog', path: '/boke#blog' },
+    { id: 'resources', path: '/boke#resources' }
+  ];
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+        var id = entry.target.id;
+        if (!trackedSections[id]) {
+          trackedSections[id] = true;
+          var section = sections.find(function(s) { return s.id === id; });
+          if (section) {
+            postVisit({ page: section.path, referrer: referrer, uaHash: hash });
+          }
+        }
+      }
+    });
+  }, { threshold: [0.3] });
+  sections.forEach(function(s) {
+    var el = document.getElementById(s.id);
+    if (el) observer.observe(el);
+  });
+})();
+
+  // ==================== 滚动区块访问记录 ====================
+  // 当用户滚动到 #blog / #resources 等区块时，记录对应访问
+  var trackedSections = {};
+  var sections = [
+    { id: 'blog', path: '/boke#blog' },
+    { id: 'resources', path: '/boke#resources' }
+  ];
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+        var id = entry.target.id;
+        if (!trackedSections[id]) {
+          trackedSections[id] = true;
+          var section = sections.find(function(s) { return s.id === id; });
+          if (section) {
+            postVisit({ page: section.path, referrer: referrer, uaHash: hash });
+          }
+        }
+      }
+    });
+  }, { threshold: [0.3] });
+  sections.forEach(function(s) {
+    var el = document.getElementById(s.id);
+    if (el) observer.observe(el);
+  });
 })();
