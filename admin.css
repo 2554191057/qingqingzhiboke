@@ -1462,7 +1462,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
     position: fixed;
     inset: 0;
     z-index: 90;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.3);
 
 }
 .sidebar-backdrop.show { display: block; }
