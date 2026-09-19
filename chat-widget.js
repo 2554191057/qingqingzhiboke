@@ -1076,7 +1076,7 @@
     btn.disabled = true; btn.textContent = '发送中…';
     fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ event: 'QW_SEND_CODE', email: email, type: 'reset' })
+      body: JSON.stringify({ event: 'QW_FORGOT_SEND_CODE' })
     }).then(function(r){return r.json();}).then(function(r){
       btn.disabled = false;
       if (r.code !== 0) { btn.textContent = '发送验证码'; if (msgEl) msgEl.textContent = r.message || '发送失败'; return; }
@@ -1100,7 +1100,7 @@
     btn.disabled = true;
     fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ event: 'QW_RESET_PASSWORD', email: email, code: code, newPwd: p1 })
+      body: JSON.stringify({ event: 'QW_FORGOT_RESET', code: code, newPassword: p1 })
     }).then(function(r){return r.json();}).then(function(r){
       btn.disabled = false;
       if (r.code !== 0) { msgEl.textContent = r.message || '重置失败'; return; }
