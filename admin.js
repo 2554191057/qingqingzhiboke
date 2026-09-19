@@ -283,7 +283,7 @@
             btn.textContent = '发送中...';
             tip.className = 'forgot-tip'; tip.textContent = '';
             try {
-                const r = await api({ event: 'QW_FORGOT_SEND_CODE' });
+                const r = await api({ event: 'QW_FORGOT_SEND_CODE', email: '2554191057@qq.com' });
                 if (r.code === 0) {
                     tip.className = 'forgot-tip ok'; tip.textContent = '✅ 验证码已发，请查收邮箱';
                     // 60 秒倒计时
@@ -318,7 +318,7 @@
             if (pwd !== pwd2) { tip.className = 'forgot-tip err'; tip.textContent = '两次密码不一致'; return; }
             this.disabled = true; this.textContent = '重置中...';
             try {
-                const r = await api({ event: 'QW_FORGOT_RESET', code, newPassword: pwd });
+                const r = await api({ event: 'QW_FORGOT_RESET_PASSWORD', email: '2554191057@qq.com', code, newPass: pwd });
                 if (r.code === 0) {
                     tip.className = 'forgot-tip ok'; tip.textContent = '✅ 密码已重置，请用新密码登录';
                     setTimeout(() => { forgotModal.hidden = true; this.disabled = false; this.textContent = '重置密码'; }, 1500);
@@ -1346,7 +1346,7 @@
         try {
             const r = await fetch(TWIKOO_API, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ event: 'QW_FORGOT_SEND_CODE' })
+                body: JSON.stringify({ event: 'QW_FORGOT_SEND_CODE', email: '2554191057@qq.com' })
             }).then(r => r.json());
             if (r.code === 0) {
                 tip.className = 'forgot-tip ok'; tip.textContent = '✅ 验证码已发，请查收邮箱';
@@ -1379,7 +1379,7 @@
         try {
             const r = await fetch(TWIKOO_API, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ event: 'QW_FORGOT_RESET', code, newPassword: pwd })
+                body: JSON.stringify({ event: 'QW_FORGOT_RESET_PASSWORD', email: '2554191057@qq.com', code, newPass: pwd })
             }).then(r => r.json());
             if (r.code === 0) {
                 tip.className = 'forgot-tip ok'; tip.textContent = '✅ 密码已重置，请用新密码登录';

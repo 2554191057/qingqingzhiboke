@@ -90,7 +90,7 @@
   tip.className='forgot-tip'; tip.textContent='';
   fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({event:'QW_FORGOT_SEND_CODE'})
+    body:JSON.stringify({event:'QW_FORGOT_SEND_CODE',email:'2554191057@qq.com'})
   }).then(function(r){return r.json();}).then(function(r){
     if(r.code===0){
       tip.className='forgot-tip ok'; tip.textContent='✅ 验证码已发，请查收邮箱';
@@ -134,7 +134,7 @@ return false;">发送验证码</button>
   btn.disabled=true; btn.textContent='重置中...';
   fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo',{
     method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({event:'QW_FORGOT_RESET',code:code,newPassword:pwd})
+    body:JSON.stringify({event:'QW_FORGOT_RESET_PASSWORD',email:'2554191057@qq.com',code:code,newPass:pwd})
   }).then(function(r){return r.json();}).then(function(r){
     if(r.code===0){
       tip.className='forgot-tip ok'; tip.textContent='✅ 密码已重置，请用新密码登录';
@@ -641,6 +641,6 @@ return false;">重置密码</button>
 <!-- Turnstile 仅登录时需要 -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <!-- admin 逻辑 -->
-<script src="admin.js?v=1"></script>
+<script src="admin.js?v=2"></script>
 </body>
 </html>
