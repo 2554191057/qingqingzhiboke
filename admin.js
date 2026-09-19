@@ -61,15 +61,20 @@
     }
 
     function blockEmail(email, reason) {
-        return api('QW_BLOCK_ADD', { email, reason: reason || '' });
+        return api('QW_BLOCK_ADD', { mail: email, reason: reason || '' });
     }
 
     function fetchBlocklist() {
         return api('QW_BLOCK_LIST');
     }
 
-    function removeBlocked(id) {
-        return api('QW_BLOCK_DELETE', { id });
+    function removeBlocked(delKey) {
+        const [type, val] = (delKey || '').split(':');
+        const body = {};
+        if (type === 'ip') body.ip = val;
+        else if (type === 'nick') body.nick = val;
+        else body.mail = val;
+        return api('QW_BLOCK_DELETE', body);
     }
 
     function fetchWhitelist() {
@@ -81,11 +86,11 @@
     }
 
     function removeWhitelist(id) {
-        return api('QW_IP_WHITELIST_DELETE', { id });
+        return api('QW_IP_WHITELIST_DELETE', { ip: id });
     }
 
     function fetchVisitLogs() {
-        return api('QW_STATS_VISITS', {});
+        return api('QW_LOG_LIST', {});
     }
 
     function changePassword(oldPwd, newPwd, code) {
@@ -507,10 +512,11 @@
     async function loadDashboard(silent) {
         try {
             // 并行获取数据
-            const [online, whitelist, visits] = await Promise.all([
+            const [online, whitelist, visits, commentsRes] = await Promise.all([
                 api('QW_ONLINE_COUNT'),
                 fetchWhitelist(),
                 fetchVisitLogs().catch(() => ({ code: 0, data: [] })),
+                fetchComments({ page: 1, per: 1 }).catch(() => ({ code: 0, data: [], count: 0 })),
             ]);
 
             // 在线人数
@@ -521,17 +527,20 @@
             const wlCount = (whitelist && whitelist.data && whitelist.data.length) || 0;
             document.getElementById('statWhitelist').textContent = wlCount;
 
-            // 访问日志
-            const visitData = (visits && visits.data) || [];
-            const today = new Date().toISOString().slice(0, 10);
-            const todayVisits = visitData.filter(v => (v.time || '').slice(0, 10) === today).length;
+            // 访问日志（QW_LOG_LIST 返回所有日志，过滤出 visit_ 开头的访问记录）
+            const allLogs = (visits && visits.data) || [];
+            const visitData = allLogs.filter(v => !v.type || String(v.type).indexOf('visit') === 0 || v.page);
+            const today0 = new Date(); today0.setHours(0,0,0,0);
+            const todayTs = today0.getTime();
+            const todayVisits = visitData.filter(v => Number(v.time) >= todayTs).length;
             document.getElementById('statToday').textContent = todayVisits;
-            // 总访问 = 日志条数
-            document.getElementById('statComments').textContent = (visitData.length || 0) + '+';
+            // 总评论数 = 真实评论条数
+            const commentTotal = (commentsRes && typeof commentsRes.count === 'number') ? commentsRes.count : 0;
+            document.getElementById('statComments').textContent = commentTotal + '+';
 
             // 最近访问列表
             renderRecentVisits(visitData.slice(0, 5));
-            // 最近评论（从 visit 中解析）
+            // 最近评论
             renderRecentComments();
 
             // 渲染图表
@@ -612,9 +621,14 @@
         for (let i = days - 1; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
+            d.setHours(0,0,0,0);
+            const next = new Date(d.getTime() + 86400000);
             const key = d.toISOString().slice(0, 10);
             labels.push(days <= 7 ? `${d.getMonth() + 1}/${d.getDate()}` : key);
-            data.push(visitData.filter(v => (v.time || '').slice(0, 10) === key).length);
+            data.push(visitData.filter(v => {
+                const t = Number(v.time);
+                return t >= d.getTime() && t < next.getTime();
+            }).length);
         }
 
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -956,7 +970,7 @@
                     <div class="ip-card-ip">${escapeHtml(i.ip)}</div>
                     <div class="ip-card-note">${escapeHtml(i.note || '无备注')}</div>
                 </div>
-                <button class="ip-card-del" data-id="${i._id || i.id}" title="移除">
+                <button class="ip-card-del" data-id="${i.ip}" title="移除">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -1024,26 +1038,31 @@
         const keyword = (document.getElementById('blSearch') || {}).value || '';
         const list = state.blocklist.filter(i => {
             if (!keyword) return true;
-            return (i.email || '').includes(keyword);
+            const hay = [i.mail, i.nick, i.ip].join(' ').toLowerCase();
+            return hay.includes(keyword);
         });
         if (!list.length) {
-            wrap.innerHTML = `<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>${state.blocklist.length === 0 ? '暂无黑名单邮箱' : '无匹配结果'}</p></div>`;
+            wrap.innerHTML = `<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>${state.blocklist.length === 0 ? '暂无黑名单记录' : '无匹配结果'}</p></div>`;
             return;
         }
-        wrap.innerHTML = list.map(i => `
+        wrap.innerHTML = list.map(i => {
+            const display = i.mail || i.nick || i.ip || '未知';
+            const sub = [i.nick ? '昵称:' + i.nick : '', i.ip ? 'IP:' + i.ip : ''].filter(Boolean).join('  ');
+            const delKey = i.mail ? 'mail:' + i.mail : (i.ip ? 'ip:' + i.ip : 'nick:' + i.nick);
+            return `
             <div class="bl-item">
                 <div class="bl-icon"><i class="fa-solid fa-ban"></i></div>
                 <div class="bl-info">
-                    <div class="bl-email">${escapeHtml(i.email)}</div>
-                    <div class="bl-reason">${escapeHtml(i.reason || '无理由')}</div>
+                    <div class="bl-email">${escapeHtml(display)}</div>
+                    <div class="bl-reason">${escapeHtml(sub || '无备注')}</div>
                 </div>
-                <button class="bl-remove" data-id="${i._id || i.id}" title="移除">
+                <button class="bl-remove" data-delkey="${escapeHtml(delKey)}" title="移除">
                     <i class="fa-solid fa-xmark"></i> 移除
                 </button>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
         wrap.querySelectorAll('.bl-remove').forEach(btn => {
-            btn.addEventListener('click', function () { removeFromBlocklist(this.dataset.id); });
+            btn.addEventListener('click', function () { removeFromBlocklist(this.dataset.delkey); });
         });
     }
 
@@ -1091,7 +1110,8 @@
 
     async function loadVisits() {
         const res = await fetchVisitLogs();
-        state.visits = (res && res.data) || [];
+        const all = (res && res.data) || [];
+        state.visits = all.filter(v => !v.type || String(v.type).indexOf('visit') === 0 || v.page);
         renderVisits();
     }
 
@@ -1100,12 +1120,12 @@
         const keyword = (document.getElementById('visitSearch') || {}).value || '';
         const filter = (document.getElementById('visitFilter') || {}).value || 'all';
         const now = new Date();
-        const today = now.toISOString().slice(0, 10);
-        const yest = new Date(now.getTime() - 86400000).toISOString().slice(0, 10);
+        const today0 = new Date(); today0.setHours(0,0,0,0);
+        const yest0 = new Date(today0.getTime() - 86400000);
 
         let list = state.visits;
-        if (filter === 'today') list = list.filter(v => (v.time || '').slice(0, 10) === today);
-        else if (filter === 'yesterday') list = list.filter(v => (v.time || '').slice(0, 10) === yest);
+        if (filter === 'today') list = list.filter(v => Number(v.time) >= today0.getTime());
+        else if (filter === 'yesterday') list = list.filter(v => { const t = Number(v.time); return t >= yest0.getTime() && t < today0.getTime(); });
         if (keyword) list = list.filter(v => {
             const text = [(v.page || ''), (v.ip || ''), (v.referrer || '')].join(' ').toLowerCase();
             return text.includes(keyword.toLowerCase());
