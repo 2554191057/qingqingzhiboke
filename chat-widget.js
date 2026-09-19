@@ -444,6 +444,9 @@
         }
         var self = this;
         this.addEventListener('load', function() {
+          if (isSubmit) {
+            console.log('[qw-debug] submit response status:', self.status, 'body:', self.responseText.substring(0, 200));
+          }
           if (isSubmit && self.status === 200) {
             try {
               var res = JSON.parse(self.responseText);
