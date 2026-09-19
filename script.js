@@ -24,7 +24,7 @@
   /* ---------- 可配置数据 · 用户在这里修改！ ---------- */
 
   // 社交账号信息
-  const SOCIAL_CONFIG = {
+  let SOCIAL_CONFIG = {
     qq: {
       number: '2554191057', // QQ号
       // 加好友协议链接，把 uin=后面换成你的QQ
@@ -83,7 +83,7 @@
 
   // 网易云热评 · 每次打开随机展示一条
   // c = 评论内容，a = 歌曲名（可选）
-  const HOT_COMMENTS = [
+  let HOT_COMMENTS = [
     { c: '我希望你过得好，不然对不起我不打扰你。', a: '《不将就》' },
     { c: '后来再听到你的名字，我也能笑着和别人说起你。', a: '《后来》' },
     { c: '如果有一天你走了，我不送你；你来，无论多大风多大雨，我要去接你。', a: '《柠檬树》' },
@@ -191,7 +191,7 @@
   // 音乐播放列表已迁移到 ./music/playlist.json
 
   // 博客文章数据 · 可自由增减
-  const BLOG_POSTS = [
+  let BLOG_POSTS = [
     {
       title: 'Neat Download Manager · 免费轻量的多线程下载管理器',
       tag: '工具',
@@ -353,7 +353,7 @@
   ];
 
   // 更多文章（点击"加载更多"显示）
-  const BLOG_POSTS_MORE = [
+  let BLOG_POSTS_MORE = [
     {
       title: '每日60秒读懂世界',
       tag: '知识',
@@ -713,7 +713,7 @@
     '生活': 9,
     '随笔': 10
   };
-  const ALL_BLOG_POSTS = [...BLOG_POSTS, ...BLOG_POSTS_MORE].sort((a, b) => {
+  let ALL_BLOG_POSTS = [...BLOG_POSTS, ...BLOG_POSTS_MORE].sort((a, b) => {
     const orderA = TAG_ORDER[a.tag] || 99;
     const orderB = TAG_ORDER[b.tag] || 99;
     if (orderA !== orderB) return orderA - orderB;
@@ -730,7 +730,7 @@
   let blogExpandScrollY = 0; // 最近一次"加载更多"前的滚动位置，供收纳回滚
 
   // 资源分享数据 · 可自由增减
-  const RESOURCES = [
+  let RESOURCES = [
     {
       title: '【光鸭网盘】2026最新资源',
       desc: '包含网盘解析、免费影视。',
@@ -830,6 +830,54 @@
     }
   ];
 
+  /* ---------- 远程 CMS 配置覆盖（后台 admin.html 实时修改） ---------- */
+  let REMOTE_CMS = null;
+  const CMS_API = '/api/cms-config';
+
+  async function fetchRemoteCMS() {
+    try {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 4000);
+      const resp = await fetch(CMS_API, { headers: { 'Accept': 'application/json' }, signal: ctl.signal });
+      clearTimeout(timer);
+      if (!resp.ok) return;
+      const data = await resp.json();
+      if (data && data.code === 0 && data.data && typeof data.data === 'object') {
+        REMOTE_CMS = data.data;
+      }
+    } catch (e) { /* 静默失败，回退本地默认数据 */ }
+  }
+
+  function recomputeAllBlogPosts() {
+    ALL_BLOG_POSTS = [...BLOG_POSTS, ...BLOG_POSTS_MORE].sort((a, b) => {
+      const orderA = (typeof a.tag === 'string' && TAG_ORDER[a.tag]) || 99;
+      const orderB = (typeof b.tag === 'string' && TAG_ORDER[b.tag]) || 99;
+      if (orderA !== orderB) return orderA - orderB;
+      return new Date(b.date) - new Date(a.date);
+    });
+  }
+
+  function applyCMSOverrides() {
+    if (!REMOTE_CMS) return;
+    const c = REMOTE_CMS;
+    if (Array.isArray(c.blogPosts)) BLOG_POSTS = c.blogPosts;
+    if (Array.isArray(c.blogPostsMore)) BLOG_POSTS_MORE = c.blogPostsMore;
+    if (Array.isArray(c.resources)) RESOURCES = c.resources;
+    if (Array.isArray(c.hotComments) && c.hotComments.length) HOT_COMMENTS = c.hotComments;
+    recomputeAllBlogPosts();
+    if (c.hero) {
+      if (typeof c.hero.title === 'string') { const acc = document.getElementById('heroAccent'); if (acc) acc.textContent = c.hero.title; }
+      if (typeof c.hero.desc === 'string') { const d = document.querySelector('.hero-desc'); if (d) d.textContent = c.hero.desc; }
+    }
+    if (Array.isArray(c.aboutCards)) {
+      const cards = document.querySelectorAll('.about-grid .about-card');
+      c.aboutCards.forEach((txt, i) => {
+        if (typeof txt !== 'string' || !cards[i]) return;
+        const pp = cards[i].querySelector('p');
+        if (pp) pp.textContent = txt;
+      });
+    }
+  }
   /* ---------- 通用工具函数 ---------- */
   const $  = (sel, el = document) => el.querySelector(sel);
   const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
@@ -2255,7 +2303,9 @@
   }
 
   /* ---------- 启动 ---------- */
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    await fetchRemoteCMS();
+    applyCMSOverrides();
     // 深色模式切换逻辑
     const themeToggle = $('#themeToggle');
     const html = document.documentElement;
