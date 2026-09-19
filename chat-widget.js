@@ -1170,7 +1170,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeChat(); });
   // 仅 X 按钮和 Esc 关闭，不响应遮罩点击
 
-  // ===== 管理员入口：锁图标跳转独立后台管理页（admin.html 与聊天室共用 qw_admin_token，登录态自动带入） =====
+  // ===== 管理员入口：锁图标跳转独立部署的 Cloudflare Pages 后台（admin-4my.pages.dev） =====
   var adminBtn = document.getElementById('qw-admin-trigger');
   function escHtml(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -1211,10 +1211,10 @@
 
   adminBtn.addEventListener('click', function () {
     closeChat();
-    // 聊天室锁图标 → 跳转独立后台管理页（admin.html 与聊天室共用 qw_admin_token，登录态自动带入）；先记来源页供后台返回按钮使用
+    // 聊天室锁图标 → 跳转独立部署的 Cloudflare Pages 后台（admin-4my.pages.dev）
     try { sessionStorage.setItem('qw_admin_from', location.href); } catch (e) {}
     try { sessionStorage.setItem('qw_admin_from_chat', '1'); } catch (e) {}
-    location.href = 'admin.html';
+    location.href = 'https://admin-4my.pages.dev/login';
   });
   document.getElementById('qw-logout-btn').addEventListener('click', function () {
     logout();

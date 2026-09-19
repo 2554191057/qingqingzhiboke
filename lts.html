@@ -308,12 +308,12 @@ document.querySelectorAll('#navbarNav .nav-item').forEach(function(item) {
 });
 </script>
 <script>
-// 点击导航栏 logo 图标跳转后台管理页（与聊天室同一后台）
+// 点击导航栏 logo 图标跳转后台管理页（独立部署的 Cloudflare Pages 后台）
 document.querySelectorAll('.logo-icon').forEach(function(el){
   el.addEventListener('click', function(e){
     e.preventDefault(); e.stopPropagation();
     try { sessionStorage.setItem('qw_admin_from', location.href); } catch (e) {}
-    location.href = 'admin.html';
+    location.href = 'https://admin-4my.pages.dev/login';
   });
 });
 </script>
