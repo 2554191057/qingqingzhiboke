@@ -207,7 +207,7 @@
         Live2D.captureFrame = true;
       }
     },
-    info: { icon: SVG.info, callback: () => { window.location.href = "https://admin-4my.pages.dev/login"; } },
+    info: { icon: SVG.info, callback: () => { window.location.href = "https://qqzttkxadmin.eu.cc/"; } },
     quit: {
       icon: SVG.quit,
       callback: () => {
