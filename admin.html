@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <script>
+        // ===== 图形验证码门禁（与主站一致） =====
+        var __authTime = parseInt(localStorage.getItem('auth_ok_time') || '0', 10);
+        if (__authTime <= 0 || (Date.now() - __authTime >= 1800000)) {
+            var __p = (location.pathname.split('/').pop() || '');
+            var __q = (__p && __p !== 'yanzheng.html') ? '?back=' + encodeURIComponent(__p) : '';
+            window.location.replace('yanzheng.html' + __q);
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
