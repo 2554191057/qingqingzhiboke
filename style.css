@@ -31,38 +31,14 @@ html.theme-transition * {
     }
 }
 
-/* View Transition 方向性主题切换：日间从上往下，夜间从下往上 */
-::view-transition-old(root),
-::view-transition-new(root) {
+/* View Transition 圆形扩散主题切换（从按钮位置波纹展开） */
+::view-transition-old(root) {
+    z-index: 1;
     animation: none;
 }
-/* 切到日间：新主题从顶部向下展开 */
-html.vt-from-top::view-transition-new(root) {
-    clip-path: inset(0 0 100% 0);
-    animation: vt-reveal-top 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-html.vt-from-top::view-transition-old(root) {
-    animation: vt-old-fade 0.55s ease forwards;
-}
-/* 切到夜间：新主题从底部向上展开 */
-html.vt-from-bottom::view-transition-new(root) {
-    clip-path: inset(100% 0 0 0);
-    animation: vt-reveal-bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-html.vt-from-bottom::view-transition-old(root) {
-    animation: vt-old-fade 0.55s ease forwards;
-}
-@keyframes vt-reveal-top {
-    from { clip-path: inset(0 0 100% 0); }
-    to   { clip-path: inset(0 0 0 0); }
-}
-@keyframes vt-reveal-bottom {
-    from { clip-path: inset(100% 0 0 0); }
-    to   { clip-path: inset(0 0 0 0); }
-}
-@keyframes vt-old-fade {
-    from { opacity: 1; }
-    to   { opacity: 0.4; }
+::view-transition-new(root) {
+    z-index: 0;
+    animation: none;
 }
 
 :root {

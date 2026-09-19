@@ -2321,11 +2321,25 @@
       const useVT = document.startViewTransition && !isMobile;
 
       if (useVT) {
-        html.classList.add(dirClass);
+        // 圆形扩散动画：从点击位置开始
+        const x = (window.event?.clientX ?? (themeToggle ? themeToggle.getBoundingClientRect().left + themeToggle.offsetWidth/2 : window.innerWidth));
+        const y = (window.event?.clientY ?? (themeToggle ? themeToggle.getBoundingClientRect().top + themeToggle.offsetHeight/2 : 0));
+        const endRadius = Math.hypot(
+          Math.max(x, window.innerWidth - x),
+          Math.max(y, window.innerHeight - y)
+        );
         const transition = document.startViewTransition(doSwitch);
-        // 超时兜底：800ms 后强制释放锁，防止 transition 永远不 finished
-        Promise.race([transition.finished, new Promise(r => setTimeout(r, 800))]).finally(() => {
-          html.classList.remove(dirClass);
+        transition.ready.then(() => {
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`
+          ];
+          document.documentElement.animate(
+            { clipPath: clipPath },
+            { duration: 600, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' }
+          );
+        });
+        Promise.race([transition.finished, new Promise(r => setTimeout(r, 900))]).finally(() => {
           unlock();
         });
       } else {
