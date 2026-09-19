@@ -7,7 +7,8 @@
   if (window.__qwAnalyticsLoaded) return;
   window.__qwAnalyticsLoaded = true;
 
-  var API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
+  var VISIT_API = '/api/visit';
+  var ONLINE_API = '/api/online';
 
   // 简短 UA hash（防止隐私泄露，只用于去重）
   function uaHash() {
@@ -19,15 +20,11 @@
     return (h >>> 0).toString(36);
   }
 
-  function post(eventName, extra) {
-    var body = Object.assign({ event: eventName }, extra || {});
-    // 忽略错误（后台埋点不能影响主站体验）
-    fetch(API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      keepalive: true,
-    }).catch(function () {});
+  function postVisit(extra) {
+    fetch(VISIT_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(extra || {}), keepalive: true }).catch(function () {});
+  }
+  function postOnline(extra) {
+    fetch(ONLINE_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(extra || {}), keepalive: true }).catch(function () {});
   }
 
   var hash = uaHash();

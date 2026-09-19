@@ -7,7 +7,8 @@
  * ========================================================= */
 (function () {
   if (window.__qwOnlineStats) return; window.__qwOnlineStats = true;
-  var API = 'https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo';
+  var VISIT_API = '/api/visit';
+  var ONLINE_API = '/api/online';
 
   var style = document.createElement('style');
   style.textContent =
@@ -31,7 +32,7 @@
   function reportVisit(page) {
     if (page === lastVisitPage) return; // 同页同锚点不重复上报
     lastVisitPage = page;
-    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: page, referrer: document.referrer }) }).catch(function () {});
+    fetch(VISIT_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: page, referrer: document.referrer }) }).catch(function () {});
   }
   reportVisit(location.pathname + location.search + location.hash);
   // 锚点区块访问日志：script.js 平滑滚动对 # 链接 preventDefault，hashchange 永不触发，改用捕获阶段 click 直接上报
@@ -45,11 +46,8 @@
       reportVisit(location.pathname + location.search + '#' + h);
     } catch (err) {}
   }, true);
-  function ping() {
-    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_ONLINE_PING' }) }).catch(function () {});
-  }
-  function count() {
-    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_ONLINE_COUNT' }) })
+  function refreshOnline() {
+    fetch(ONLINE_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (d && typeof d.count === 'number') {
@@ -59,7 +57,6 @@
       })
       .catch(function () {});
   }
-  ping();
-  count();
-  setInterval(function () { ping(); count(); }, 1000);
+  refreshOnline();
+  setInterval(refreshOnline, 20000);
 })();
