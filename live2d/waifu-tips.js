@@ -207,7 +207,7 @@
         Live2D.captureFrame = true;
       }
     },
-    info: { icon: SVG.info, callback: () => { window.location.href = "https://qqzttkxadmin.eu.cc/"; } },
+    info: { icon: SVG.info, callback: () => { window.location.href = "admin.html"; } },
     quit: {
       icon: SVG.quit,
       callback: () => {

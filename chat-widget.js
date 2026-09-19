@@ -1214,7 +1214,7 @@
     // 聊天室锁图标 → 跳转独立部署的 Cloudflare Pages 后台（admin-4my.pages.dev）
     try { sessionStorage.setItem('qw_admin_from', location.href); } catch (e) {}
     try { sessionStorage.setItem('qw_admin_from_chat', '1'); } catch (e) {}
-    location.href = 'https://qqzttkxadmin.eu.cc/';
+    location.href = 'admin.html';
   });
   document.getElementById('qw-logout-btn').addEventListener('click', function () {
     logout();
