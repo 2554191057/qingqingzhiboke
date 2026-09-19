@@ -1386,7 +1386,7 @@
     var nick = '', content = '';
     try {
       var v = cEl.__vue__;
-      if (v && v.comment) { nick = v.comment.nick || ''; content = String(v.comment.comment || '').slice(0, 20); }
+      if (v && v.comment) { nick = v.comment.nick || ''; content = String(v.comment.comment || '').replace(/<[^>]+>/g, '').slice(0, 40); }
     } catch (ex) {}
     if (idx === 0) logAction('点赞', (nick ? '给 ' + nick + ' 的消息点赞' : '点赞消息') + (content ? '：「' + content + '」' : ''));
     else if (idx === 2) {
