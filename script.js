@@ -2288,7 +2288,7 @@
     
     // 切换主题（带防抖锁，防止移动端快速连点卡死；移动端禁用 View Transition 整页快照）
     let isThemeSwitching = false;
-    function toggleDarkMode() {
+    function toggleDarkMode(e) {
       if (isThemeSwitching) return;
       isThemeSwitching = true;
 
@@ -2322,8 +2322,9 @@
 
       if (useVT) {
         // 圆形扩散动画：从点击位置开始
-        const x = (window.event?.clientX ?? (themeToggle ? themeToggle.getBoundingClientRect().left + themeToggle.offsetWidth/2 : window.innerWidth));
-        const y = (window.event?.clientY ?? (themeToggle ? themeToggle.getBoundingClientRect().top + themeToggle.offsetHeight/2 : 0));
+        const rect = (themeToggle || e?.currentTarget)?.getBoundingClientRect();
+        const x = e?.clientX || (rect ? rect.left + rect.width/2 : window.innerWidth);
+        const y = e?.clientY || (rect ? rect.top + rect.height/2 : 0);
         const endRadius = Math.hypot(
           Math.max(x, window.innerWidth - x),
           Math.max(y, window.innerHeight - y)
@@ -2336,7 +2337,7 @@
           ];
           document.documentElement.animate(
             { clipPath: clipPath },
-            { duration: 600, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' }
+            { duration: 800, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' }
           );
         });
         Promise.race([transition.finished, new Promise(r => setTimeout(r, 900))]).finally(() => {
