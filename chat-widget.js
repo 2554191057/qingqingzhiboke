@@ -1390,12 +1390,24 @@
     } catch (ex) {}
     if (idx === 0) logAction('点赞', (nick ? '给 ' + nick + ' 的消息点赞' : '点赞消息') + (content ? '：「' + content + '」' : ''));
     else if (idx === 2) {
-      try { cEl.__vue__.onReply(cEl.__vue__.comment.id); } catch(e) {}
+      try {
+        var twikooVm = document.querySelector('#twikoo').__vue__;
+        if (twikooVm) {
+          twikooVm.pid = cEl.__vue__.comment.id;
+          twikooVm.parentComment = cEl.__vue__.comment;
+        }
+      } catch(e) {}
       showReplyBar(nick, content);
     }
     else if (idx === 1) logAction('点踩', (nick ? '点踩了 ' + nick + ' 的消息' : '点踩消息') + (content ? '：「' + content + '」' : ''));
     else if (idx === 2) {
-      try { cEl.__vue__.onReply(cEl.__vue__.comment.id); } catch(e) {}
+      try {
+        var twikooVm = document.querySelector('#twikoo').__vue__;
+        if (twikooVm) {
+          twikooVm.pid = cEl.__vue__.comment.id;
+          twikooVm.parentComment = cEl.__vue__.comment;
+        }
+      } catch(e) {}
       showReplyBar(nick, content);
     }
   });
