@@ -414,6 +414,10 @@
             document.getElementById('sidebar').classList.remove('mobile-open');
             document.getElementById('sidebarBackdrop').classList.remove('show');
         });
+        document.querySelector('.main-area').addEventListener('click', function () {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('sidebarBackdrop').classList.remove('show');
+        });
     }
 
     function setupTheme() {
