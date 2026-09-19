@@ -82,6 +82,20 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 /* ============================
    登录门
    ============================ */
+/* ========== 全局 hidden 修复 ==========
+   所有 .display 为 flex/grid 的容器，hidden 属性必须能真正隐藏
+   优先级: 属性+类选择器 > 单独类选择器
+*/
+[hidden] {
+    display: none !important;
+}
+.login-gate[hidden],
+.admin-app[hidden],
+.modal-mask[hidden] {
+    display: none !important;
+}
+
+/* ========== 登录门 ========== */
 .login-gate {
     position: fixed;
     inset: 0;
@@ -1247,9 +1261,6 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
 /* ============================
    确认弹窗
    ============================ */
-.modal-mask[hidden] {
-    display: none !important;
-}
 .modal-mask {
     position: fixed;
     inset: 0;
