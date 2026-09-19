@@ -32,18 +32,11 @@
   var referrer = document.referrer || '';
 
   // 1) 记录访问日志
-  post('QW_STATS_VISIT_RECORD', {
-    page: path,
-    referrer: referrer,
-    uaHash: hash,
-  });
+  postVisit({ page: path, referrer: referrer, uaHash: hash });
 
   // 2) 心跳保活（在线人数统计）
   var beat = function () {
-    post('QW_ONLINE_PING', {
-      page: path,
-      uaHash: hash,
-    });
+    postOnline({ page: path, uaHash: hash });
   };
   beat(); // 立即发一次
   setInterval(beat, 30000); // 每 30 秒
