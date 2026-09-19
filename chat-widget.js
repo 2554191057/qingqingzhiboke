@@ -444,17 +444,17 @@
         }
         var self = this;
         this.addEventListener('load', function() {
-          if (isSubmit) {
-            console.log('[qw-debug] submit response status:', self.status, 'body:', self.responseText.substring(0, 200));
-          }
           if (isSubmit && self.status === 200) {
             try {
               var res = JSON.parse(self.responseText);
               if (res.code === 0) {
-                var bar = document.querySelector('.qw-reply-bar');
-                if (bar) bar.remove();
-                var vm = document.querySelector('#twikoo').__vue__;
-                if (vm) { vm.parentComment = null; vm.pid = ''; }
+                // 延迟一点等评论刷新完再清除
+                setTimeout(function() {
+                  var bar = document.querySelector('.qw-reply-bar');
+                  if (bar) bar.remove();
+                  var vm = document.querySelector('#twikoo').__vue__;
+                  if (vm) { vm.parentComment = null; vm.pid = ''; }
+                }, 500);
               }
             } catch(e) {}
           }
