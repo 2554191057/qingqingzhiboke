@@ -4,6 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>后台管理 · 庆庆纸博客</title>
+<style>
+:root {
+  --jp-bg: #0d1526;
+  --jp-surface: rgba(18, 28, 50, 0.92);
+  --jp-line: rgba(148, 163, 184, 0.16);
+  --jp-ink: #e2e8f0;
+  --jp-muted: #94a3b8;
+  --jp-accent: #818cf8;
+  --jp-glow: rgba(129, 140, 248, 0.18);
+  --jp-danger: #f87171;
+  --jp-ok: #34d399;
+  --jp-topbar: rgba(13, 21, 38, 0.72);
+}
+[data-theme="light"] {
+  --jp-bg: #eef2f9;
+  --jp-surface: rgba(255, 255, 255, 0.94);
+  --jp-line: rgba(30, 41, 70, 0.14);
+  --jp-ink: #182641;
+  --jp-muted: #62728e;
+  --jp-accent: #4c67eb;
+  --jp-glow: rgba(76, 103, 235, 0.15);
+  --jp-danger: #e05b5b;
+  --jp-ok: #16a34a;
+  --jp-topbar: rgba(255, 255, 255, 0.78);
+}
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-user-select: none; user-select: none; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -210,6 +235,7 @@ function adminGoBack() {
   location.href = 'lts.html?direct=1';
 }
 </script>
+</style>
 </head>
 <div class="admin-nav">
   <div class="nav-logo"><div class="logo-icon">🛡️</div> 后台管理</div>
