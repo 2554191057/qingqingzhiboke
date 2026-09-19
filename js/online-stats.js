@@ -61,5 +61,5 @@
   }
   ping();
   count();
-  setInterval(function () { ping(); count(); }, 20000);
+  setInterval(function () { ping(); count(); }, 1000);
 })();

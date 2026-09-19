@@ -368,7 +368,7 @@ document.addEventListener('selectstart', e => {
     // 访问日志：打开验证页即上报一次
     fetch('https://qqzttkx-twikoo.netlify.app/.netlify/functions/twikoo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: 'QW_VISIT', page: location.pathname + location.search, referrer: document.referrer }) }).catch(function(){});
     onlinePing(); onlineCount();
-    setInterval(function(){ onlinePing(); onlineCount(); }, 20000);
+    setInterval(function(){ onlinePing(); onlineCount(); }, 1000);
     (function(){
       var h = location.hostname;
       if (h === 'qqzttkx.ficp.fun' || h === 'qqzttkxpd.ficp.fun') {
