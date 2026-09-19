@@ -437,6 +437,19 @@
                                     <input type="password" id="settingNewPwd2" placeholder="再次输入新密码">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label>邮箱验证码</label>
+                                <div class="input-wrap" style="display:flex;gap:8px;">
+                                    <div style="position:relative;flex:1;">
+                                        <i class="fa-solid fa-envelope" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--jp-muted);font-size:14px;"></i>
+                                        <input type="text" id="settingCode" placeholder="输入 6 位验证码" style="width:100%;padding-left:40px;">
+                                    </div>
+                                    <button type="button" id="sendCodeBtn" class="btn-primary-solid" style="white-space:nowrap;" disabled>
+                                        <i class="fa-solid fa-paper-plane"></i> 发送验证码
+                                    </button>
+                                </div>
+                                <div class="pwd-strength" id="sendCodeTip" style="font-size:11px;color:var(--jp-muted);margin-top:4px;"></div>
+                            </div>
                             <button class="btn-primary-solid" id="changePwdBtn">
                                 <i class="fa-solid fa-check"></i> 确认修改
                             </button>

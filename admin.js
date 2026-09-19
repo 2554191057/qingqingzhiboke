@@ -88,15 +88,16 @@
         return api('QW_STATS_VISITS', {});
     }
 
-    function changePassword(oldPwd, newPwd) {
-        return api('QW_ADMIN_SEND_CODE', { useCache: true }).then(() => {
-            // 后端 QW_ADMIN_SEND_CODE 在开发模式可能自动生成验证码
-            return api('QW_SET_PASSWORD', {
-                oldPassword: oldPwd,
-                newPassword: newPwd,
-                code: 'dev-skip', // 开发模式下后端可能跳过验证码校验
-            });
+    function changePassword(oldPwd, newPwd, code) {
+        return api('QW_SET_PASSWORD', {
+            oldPassword: oldPwd,
+            newPassword: newPwd,
+            code: code || '',
         });
+    }
+
+    function sendAdminCode() {
+        return api('QW_ADMIN_SEND_CODE', {});
     }
 
     // ========== Toast ==========
@@ -176,8 +177,9 @@
     }
 
     // Turnstile 回调（注意：全局函数）
+    let _captchaToken = null;
     window.onAdminTurnstileSuccess = function (token) {
-        document.getElementById('adminPassword').dataset.captcha = token;
+        _captchaToken = token;
         const btn = document.getElementById('btnLogin');
         btn.disabled = false;
         btn.querySelector('span').textContent = '进入管理';
@@ -187,6 +189,23 @@
         tip.className = 'login-tip err';
         tip.textContent = '人机验证加载失败，请刷新页面重试';
     };
+
+    // 登录 API —— 直接用密码明文作为 accessToken，调用需要管理员鉴权的事件来验证
+    async function verifyAdminLogin(password, captcha) {
+        // 后端自定义 QW_ 事件鉴权逻辑：md5(accessToken) === ADMIN_PASS
+        // 所以直接把密码作为 accessToken 发送，后端会校验
+        const body = {
+            event: 'QW_BLOCK_LIST',
+            accessToken: password,
+        };
+        if (captcha) body.captcha = captcha;
+        const res = await fetch(API_BASE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+        }).then(r => r.json()).catch(err => ({ code: -1, message: '网络错误' }));
+        return res;
+    }
 
     document.addEventListener('DOMContentLoaded', function () {
         // 登录表单
@@ -220,16 +239,11 @@
             tip.textContent = '';
 
             try {
-                // Twikoo LOGIN 事件验证密码（ADMIN_PASS == md5(password)）
-                // 后端返回匿名 accessToken 或管理员 token
-                const res = await api('LOGIN', {
-                    password: pwd,
-                });
-                // Twikoo 的 LOGIN 成功后，我们用密码明文作为管理员 token
-                // （已在 AGENTS.md 中记录：管理员 accessToken = 密码明文）
-                const testRes = await api('QW_BLOCK_LIST');
-                if (testRes && testRes.code === 0) {
-                    // 鉴权通过，说明密码正确
+                // 用密码作为 accessToken 调用 QW_BLOCK_LIST 验证身份
+                // 后端鉴权：md5(accessToken) === ADMIN_PASS
+                const res = await verifyAdminLogin(pwd, _captchaToken);
+                if (res && res.code === 0) {
+                    // 鉴权通过
                     state.token = pwd;
                     localStorage.setItem(ADMIN_TOKEN_KEY, pwd);
                     localStorage.setItem(ADMIN_AUTH_KEY, Date.now().toString());
@@ -238,7 +252,7 @@
                     setTimeout(enterApp, 400);
                 } else {
                     tip.className = 'login-tip err';
-                    tip.textContent = (testRes && testRes.message) || '密码错误或鉴权失败';
+                    tip.textContent = (res && res.message) || '密码错误或鉴权失败';
                     btn.disabled = false;
                     btn.querySelector('span').textContent = '进入管理';
                 }
@@ -1046,6 +1060,59 @@
         const newPwd = document.getElementById('settingNewPwd');
         if (newPwd) newPwd.addEventListener('input', updatePwdStrength);
 
+        // 发送验证码按钮
+        const sendCodeBtn = document.getElementById('sendCodeBtn');
+        const sendCodeTip = document.getElementById('sendCodeTip');
+        let codeCooldown = 0;
+        const oldPwdInput = document.getElementById('settingOldPwd');
+        const newPwdInput = document.getElementById('settingNewPwd');
+        const newPwd2Input = document.getElementById('settingNewPwd2');
+
+        // 检查是否所有必要输入都已填写，启用发送验证码按钮
+        function checkSendCodeReady() {
+            if (!sendCodeBtn) return;
+            const ready = oldPwdInput.value && newPwdInput.value && newPwd2Input.value && codeCooldown === 0;
+            sendCodeBtn.disabled = !ready;
+        }
+        if (oldPwdInput) oldPwdInput.addEventListener('input', checkSendCodeReady);
+        if (newPwdInput) newPwdInput.addEventListener('input', checkSendCodeReady);
+        if (newPwd2Input) newPwd2Input.addEventListener('input', checkSendCodeReady);
+
+        if (sendCodeBtn) {
+            sendCodeBtn.addEventListener('click', async function () {
+                sendCodeBtn.disabled = true;
+                const origText = sendCodeBtn.innerHTML;
+                sendCodeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 发送中...';
+                try {
+                    const res = await sendAdminCode();
+                    if (res && res.code === 0) {
+                        toast('验证码已发送到管理员邮箱', 'ok');
+                        sendCodeTip.textContent = '验证码有效期 10 分钟，请到邮箱查看';
+                        // 60 秒防重发
+                        codeCooldown = 60;
+                        const cdTimer = setInterval(() => {
+                            codeCooldown--;
+                            if (codeCooldown <= 0) {
+                                clearInterval(cdTimer);
+                                sendCodeBtn.innerHTML = origText;
+                                checkSendCodeReady();
+                            } else {
+                                sendCodeBtn.innerHTML = `<i class="fa-solid fa-clock"></i> ${codeCooldown}s`;
+                            }
+                        }, 1000);
+                    } else {
+                        toast((res && res.message) || '验证码发送失败', 'err');
+                        sendCodeBtn.innerHTML = origText;
+                        sendCodeBtn.disabled = false;
+                    }
+                } catch (err) {
+                    toast('网络错误，验证码发送失败', 'err');
+                    sendCodeBtn.innerHTML = origText;
+                    sendCodeBtn.disabled = false;
+                }
+            });
+        }
+
         document.querySelectorAll('.theme-opt').forEach(btn => {
             btn.addEventListener('click', function () {
                 document.querySelectorAll('.theme-opt').forEach(b => b.classList.remove('active'));
@@ -1117,6 +1184,7 @@
         const oldPwd = document.getElementById('settingOldPwd').value;
         const newPwd = document.getElementById('settingNewPwd').value;
         const newPwd2 = document.getElementById('settingNewPwd2').value;
+        const code = document.getElementById('settingCode').value.trim();
         const msg = document.getElementById('changePwdMsg');
         msg.className = 'msg-area'; msg.textContent = '';
 
@@ -1124,9 +1192,11 @@
         if (newPwd.length < 6) { msg.className = 'msg-area err'; msg.textContent = '新密码至少 6 位'; return; }
         if (newPwd !== newPwd2) { msg.className = 'msg-area err'; msg.textContent = '两次输入的新密码不一致'; return; }
         if (oldPwd === newPwd) { msg.className = 'msg-area err'; msg.textContent = '新密码不能与旧密码相同'; return; }
+        if (!code) { msg.className = 'msg-area err'; msg.textContent = '请输入邮箱验证码（先点发送验证码按钮）'; return; }
+        if (!/^\d{4,6}$/.test(code)) { msg.className = 'msg-area err'; msg.textContent = '验证码格式不正确'; return; }
 
         msg.textContent = '修改中...';
-        const res = await changePassword(oldPwd, newPwd);
+        const res = await changePassword(oldPwd, newPwd, code);
         if (res && res.code === 0) {
             msg.className = 'msg-area ok';
             msg.textContent = '密码修改成功！请使用新密码重新登录。';
@@ -1134,7 +1204,7 @@
             setTimeout(logout, 1500);
         } else {
             msg.className = 'msg-area err';
-            msg.textContent = (res && res.message) || '修改失败';
+            msg.textContent = (res && res.message) || '修改失败（可能是密码或验证码不正确）';
             toast((res && res.message) || '修改失败', 'err');
         }
     }
