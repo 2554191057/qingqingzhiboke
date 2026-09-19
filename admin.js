@@ -263,6 +263,75 @@
             }
         });
 
+        // ===== 忘记密码 =====
+        const forgotModal = document.getElementById('forgotModal');
+        const forgotSendBtn = document.getElementById('btnForgotSend');
+        let forgotCountdown = 0;
+
+        document.getElementById('btnForgotPwd').addEventListener('click', () => {
+            forgotModal.hidden = false;
+            document.getElementById('forgotCode').focus();
+        });
+        document.getElementById('forgotClose').addEventListener('click', () => { forgotModal.hidden = true; });
+        forgotModal.addEventListener('click', (e) => { if (e.target === forgotModal) forgotModal.hidden = true; });
+
+        forgotSendBtn.addEventListener('click', async function () {
+            const tip = document.getElementById('forgotTip');
+            const btn = this;
+            if (forgotCountdown > 0) return;
+            btn.disabled = true;
+            btn.textContent = '发送中...';
+            tip.className = 'forgot-tip'; tip.textContent = '';
+            try {
+                const r = await api({ event: 'QW_FORGOT_SEND_CODE' });
+                if (r.code === 0) {
+                    tip.className = 'forgot-tip ok'; tip.textContent = '✅ 验证码已发，请查收邮箱';
+                    // 60 秒倒计时
+                    forgotCountdown = 60;
+                    const timer = setInterval(() => {
+                        forgotCountdown--;
+                        if (forgotCountdown <= 0) {
+                            clearInterval(timer);
+                            btn.disabled = false;
+                            btn.textContent = '发送验证码';
+                        } else {
+                            btn.textContent = `${forgotCountdown}s`;
+                        }
+                    }, 1000);
+                } else {
+                    tip.className = 'forgot-tip err'; tip.textContent = '❌ ' + (r.message || '发送失败');
+                    btn.disabled = false; btn.textContent = '发送验证码';
+                }
+            } catch (e) {
+                tip.className = 'forgot-tip err'; tip.textContent = '❌ 网络错误';
+                btn.disabled = false; btn.textContent = '发送验证码';
+            }
+        });
+
+        document.getElementById('btnForgotReset').addEventListener('click', async function () {
+            const code = document.getElementById('forgotCode').value.trim();
+            const pwd = document.getElementById('forgotNewPwd').value;
+            const pwd2 = document.getElementById('forgotNewPwd2').value;
+            const tip = document.getElementById('forgotTip');
+            if (!code || !pwd || !pwd2) { tip.className = 'forgot-tip err'; tip.textContent = '请填完整'; return; }
+            if (pwd.length < 6) { tip.className = 'forgot-tip err'; tip.textContent = '密码至少 6 位'; return; }
+            if (pwd !== pwd2) { tip.className = 'forgot-tip err'; tip.textContent = '两次密码不一致'; return; }
+            this.disabled = true; this.textContent = '重置中...';
+            try {
+                const r = await api({ event: 'QW_FORGOT_RESET', code, newPassword: pwd });
+                if (r.code === 0) {
+                    tip.className = 'forgot-tip ok'; tip.textContent = '✅ 密码已重置，请用新密码登录';
+                    setTimeout(() => { forgotModal.hidden = true; this.disabled = false; this.textContent = '重置密码'; }, 1500);
+                } else {
+                    tip.className = 'forgot-tip err'; tip.textContent = '❌ ' + (r.message || '重置失败');
+                    this.disabled = false; this.textContent = '重置密码';
+                }
+            } catch (e) {
+                tip.className = 'forgot-tip err'; tip.textContent = '❌ 网络错误';
+                this.disabled = false; this.textContent = '重置密码';
+            }
+        });
+
         // 先尝试自动登录
         checkLogin();
     });

@@ -281,6 +281,28 @@ input, select, textarea { font-family: inherit; font-size: inherit; color: inher
     transition: color 0.2s;
 }
 .login-back:hover { color: var(--jp-accent); }
+.login-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; }
+.login-forgot {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--jp-muted); transition: color 0.2s;
+}
+.login-forgot:hover { color: var(--jp-accent); }
+.forgot-box { width: 420px; max-width: 92vw; }
+.forgot-desc { font-size: 12px; color: var(--jp-muted); margin-bottom: 16px; line-height: 1.6; }
+.forgot-desc b { color: var(--jp-accent); }
+.code-input { position: relative; }
+.btn-send-code {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    padding: 6px 12px; font-size: 12px; border-radius: 6px;
+    background: var(--jp-accent); color: #fff; border: none;
+    cursor: pointer; white-space: nowrap; transition: opacity 0.2s;
+}
+.btn-send-code:hover:not(:disabled) { opacity: 0.85; }
+.btn-send-code:disabled { opacity: 0.5; cursor: not-allowed; }
+.forgot-tip { font-size: 12px; margin: 8px 0; min-height: 18px; }
+.forgot-tip.err { color: var(--jp-danger); }
+.forgot-tip.ok { color: var(--jp-success); }
+.btn-reset { margin-top: 4px; }
 
 /* Turnstile */
 .cf-turnstile { display: flex; justify-content: center; }

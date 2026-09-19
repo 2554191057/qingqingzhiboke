@@ -61,6 +61,46 @@
             <a href="boke.html" class="login-back">
                 <i class="fa-solid fa-arrow-left"></i> 返回博客
             </a>
+            <a href="javascript:;" class="login-forgot" id="btnForgotPwd">
+                <i class="fa-solid fa-key"></i> 忘记密码？
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ============ 忘记密码弹窗 ============ -->
+<div id="forgotModal" class="modal-mask" hidden>
+    <div class="modal-box forgot-box">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-key"></i> 找回密码</h3>
+            <button class="modal-close" id="forgotClose"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <p class="forgot-desc">验证码会发送到管理员邮箱 <b>2554191057@qq.com</b>（10 分钟有效）</p>
+            <div class="form-group">
+                <label>邮箱验证码</label>
+                <div class="input-wrap code-input">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <input type="text" id="forgotCode" placeholder="6 位验证码" maxlength="6" inputmode="numeric">
+                    <button type="button" class="btn-send-code" id="btnForgotSend">发送验证码</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>新密码</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="forgotNewPwd" placeholder="至少 6 位" autocomplete="new-password">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>确认新密码</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="forgotNewPwd2" placeholder="再输一遍" autocomplete="new-password">
+                </div>
+            </div>
+            <div class="forgot-tip" id="forgotTip"></div>
+            <button class="btn-login btn-reset" id="btnForgotReset">重置密码</button>
         </div>
     </div>
 </div>
