@@ -57,37 +57,18 @@
   });
 
   // ==================== 隐藏后台入口 ====================
-  // Ctrl+Shift+A → 跳转 admin.html
-  // 三击页面底部空白处 → 显示入口
+  // Ctrl+Alt+Q (Mac: Cmd+Alt+Q) → 跳转 admin.html
   (function () {
     var ADMIN_URL = 'admin.html';
-    var konamiBuffer = [];
-    var KONAMI_CODE = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','a','d','m','i','n'];
 
     document.addEventListener('keydown', function (e) {
-      // 快捷键 1：Ctrl+Shift+A (Cmd+Shift+A on Mac)
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'a' || e.key === 'A')) {
+      if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key === 'q' || e.key === 'Q')) {
         e.preventDefault();
-        location.href = ADMIN_URL;
-        return;
-      }
-      // 快捷键 2：Konami "admin" 输入序列
-      konamiBuffer.push(e.key);
-      if (konamiBuffer.length > KONAMI_CODE.length) konamiBuffer.shift();
-      if (konamiBuffer.length === KONAMI_CODE.length) {
-        var match = true;
-        for (var i = 0; i < KONAMI_CODE.length; i++) {
-          if (konamiBuffer[i] !== KONAMI_CODE[i]) { match = false; break; }
-        }
-        if (match) {
-          // 输入正确后延迟一点跳转，给用户看到反馈
-          flashHint('🔓 Admin 入口已激活');
-          setTimeout(function () { location.href = ADMIN_URL; }, 400);
-        }
+        flashHint('🔓 Admin 入口已激活');
+        setTimeout(function () { location.href = ADMIN_URL; }, 250);
       }
     });
 
-    // 提示闪烁（极短暂的视觉反馈）
     function flashHint(text) {
       var el = document.createElement('div');
       el.textContent = text;
