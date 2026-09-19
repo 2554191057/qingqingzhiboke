@@ -38,15 +38,15 @@
         }).then(r => r.json()).catch(err => ({ code: -1, message: '网络错误: ' + err.message }));
     }
 
-    // Twikoo 评论列表（标准事件）
+    // Twikoo 评论列表（用原生 COMMENT_GET_FOR_ADMIN）
     function fetchComments(options) {
         const opts = options || {};
         const body = {
-            event: 'COMMENT_LIST',
-            envId: BACKEND_URL,
-            path: opts.path || 'chat',
+            event: 'COMMENT_GET_FOR_ADMIN',
+            per: opts.per || 20,
             page: opts.page || 1,
-            sort: opts.sort === 'oldest' ? 'asc' : 'desc',
+            keyword: opts.keyword || '',
+            type: opts.type || '',
             accessToken: state.token,
         };
         return fetch(API_BASE, {
@@ -190,21 +190,21 @@
         tip.textContent = '人机验证加载失败，请刷新页面重试';
     };
 
-    // 登录 API —— 直接用密码明文作为 accessToken，调用需要管理员鉴权的事件来验证
-    async function verifyAdminLogin(password, captcha) {
-        // 后端自定义 QW_ 事件鉴权逻辑：md5(accessToken) === ADMIN_PASS
-        // 所以直接把密码作为 accessToken 发送，后端会校验
-        const body = {
-            event: 'QW_BLOCK_LIST',
-            accessToken: password,
-        };
-        if (captcha) body.captcha = captcha;
-        const res = await fetch(API_BASE, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
-        }).then(r => r.json()).catch(err => ({ code: -1, message: '网络错误' }));
-        return res;
+    // 登录 API —— 原生 LOGIN + QW_BLOCK_LIST 二次验证
+    async function verifyAdminLogin(password) {
+        // Step 1: 原生 LOGIN 验证密码
+        const loginRes = await api('LOGIN', { password });
+        if (loginRes && loginRes.code === 0) {
+            return { ok: true };
+        }
+        // Step 2: 如果数据库还没设密码（PASS_NOT_EXIST / CREDENTIALS_NOT_EXIST），
+        // 自动设置第一个密码（首次安装场景）
+        if (loginRes && (loginRes.code === 1021 || loginRes.code === 1022)) {
+            const setRes = await api('QW_SET_PASSWORD', { newPassword: password });
+            if (setRes && setRes.code === 0) return { ok: true };
+            return { ok: false, msg: (setRes && setRes.message) || '首次设置密码失败' };
+        }
+        return { ok: false, msg: (loginRes && loginRes.message) || '密码错误' };
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -239,11 +239,10 @@
             tip.textContent = '';
 
             try {
-                // 用密码作为 accessToken 调用 QW_BLOCK_LIST 验证身份
-                // 后端鉴权：md5(accessToken) === ADMIN_PASS
-                const res = await verifyAdminLogin(pwd, _captchaToken);
-                if (res && res.code === 0) {
-                    // 鉴权通过
+                // Step 1: 用原生 LOGIN 验证密码
+                const result = await verifyAdminLogin(pwd);
+                if (result.ok) {
+                    // Step 2: 把密码明文存为管理员 token
                     state.token = pwd;
                     localStorage.setItem(ADMIN_TOKEN_KEY, pwd);
                     localStorage.setItem(ADMIN_AUTH_KEY, Date.now().toString());
@@ -252,7 +251,7 @@
                     setTimeout(enterApp, 400);
                 } else {
                     tip.className = 'login-tip err';
-                    tip.textContent = (res && res.message) || '密码错误或鉴权失败';
+                    tip.textContent = result.msg || '密码错误或鉴权失败';
                     btn.disabled = false;
                     btn.querySelector('span').textContent = '进入管理';
                 }
@@ -492,7 +491,7 @@
     async function renderRecentComments() {
         const wrap = document.getElementById('recentCommentsList');
         try {
-            const res = await fetchComments({ page: 1 });
+            const res = await fetchComments({ page: 1, per: 5 });
             const list = (res && res.data && res.data.slice) ? res.data.slice(0, 5) : [];
             state.comments.total = (res && res.count) || 0;
             if (!list.length) {
@@ -500,8 +499,8 @@
                 return;
             }
             wrap.innerHTML = list.map(c => {
-                const nickname = (c.nickname || c.nick || '匿名').replace(/[<>]/g, '');
-                const content = stripHtml(c.content || c.comment || '').slice(0, 80);
+                const nickname = (c.nick || '匿名').replace(/[<>]/g, '');
+                const content = stripHtml(c.comment || '').slice(0, 80);
                 return `
                     <div style="padding:12px 16px;border-bottom:1px solid var(--jp-line);display:flex;gap:12px;align-items:flex-start;">
                         <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--jp-accent-light);color:var(--jp-accent);border-radius:50%;font-size:13px;font-weight:700;flex-shrink:0;">
@@ -510,7 +509,7 @@
                         <div style="flex:1;min-width:0;">
                             <div style="font-size:12px;font-weight:600;color:var(--jp-ink);margin-bottom:2px;">${escapeHtml(nickname)}</div>
                             <div style="font-size:12px;color:var(--jp-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(content)}</div>
-                            <div style="font-size:11px;color:var(--jp-muted);margin-top:2px;">${formatTime(c.createdAt || c.time)}</div>
+                            <div style="font-size:11px;color:var(--jp-muted);margin-top:2px;">${formatTime(c.created)}</div>
                         </div>
                     </div>
                 `;
@@ -710,7 +709,7 @@
             let filtered = list;
             if (keyword) {
                 filtered = list.filter(c => {
-                    const text = [c.nickname, c.mail, c.content].join(' ').toLowerCase();
+                    const text = [c.nick, c.mail, c.comment].join(' ').toLowerCase();
                     return text.includes(keyword);
                 });
             }
@@ -735,13 +734,13 @@
             return;
         }
         tbody.innerHTML = list.map(c => {
-            const id = c.id || c._id;
-            const nickname = escapeHtml(c.nickname || '匿名');
-            const email = escapeHtml((c.mail || c.email || '').replace(/@.*/, '@***'));
-            const fullEmail = escapeHtml(c.mail || c.email || '');
+            const id = c._id;
+            const nickname = escapeHtml(c.nick || '匿名');
+            const email = escapeHtml((c.mail || '').replace(/@.*/, '@***'));
+            const fullEmail = escapeHtml(c.mail || '');
             const ip = escapeHtml(c.ip || '--');
-            const time = formatTime(c.createdAt || c.time);
-            const rawContent = stripHtml(c.content || '');
+            const time = formatTime(c.created);
+            const rawContent = stripHtml(c.comment || '');
             const isLong = rawContent.length > 100;
             return `
                 <tr>
