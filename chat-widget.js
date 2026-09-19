@@ -1,7 +1,7 @@
 /* =============================================
    庆庆纸博客 · 全站悬浮聊天室（qiguangji ChatRoom 风格 · Twikoo 后端）
    右下角悬浮按钮 → 点击弹出 460px 居中面板；关闭后回到原页面，不跳转。
-   引用方式：<script src="chat-widget.js?v=1"></script>（放在 script.js 之后）
+   引用方式：<script src="chat-widget.js?v=2"></script>（放在 script.js 之后）
    ============================================= */
 (function () {
   'use strict';
@@ -106,7 +106,9 @@
     '.qw-body #twikoo .tk-none{display:none!important;}',
     '.qw-body #twikoo .tk-comments-container:empty{display:none!important;}',
     '.qw-body #twikoo .tk-comments-container:only-child{display:none!important;}',
-    '.qw-body #twikoo .tk-pagination{display:none!important;}',
+    '.qw-body #twikoo .tk-pagination{display:block!important;text-align:center;padding:10px 0;}',
+    '.qw-body #twikoo .tk-pagination .tk-page-btn{display:none!important;}',
+    '.qw-body #twikoo .tk-pagination .tk-current{display:none!important;}',
     '.qw-body #twikoo .tk-send{background:linear-gradient(120deg,#087fae,#4866db)!important;color:#fff!important;border-radius:7px!important;font-size:11px!important;padding:10px 14px!important;display:flex;align-items:center;gap:7px;border:none!important;}',
     '.qw-body #twikoo .tk-send:disabled{opacity:.45!important;cursor:not-allowed!important;}',
     /* Twikoo 原生回复提示条隐藏（用自绘 .qw-reply-bar 替代） */
