@@ -252,6 +252,7 @@
             }
             btn.disabled = true;
             btn.querySelector('span').textContent = '验证中...';
+            btn.insertAdjacentHTML('afterbegin', '<span class="spinner"></span>');
             tip.className = 'login-tip';
             tip.textContent = '';
 
@@ -492,7 +493,7 @@
             const panel = document.querySelector(`.tab-panel[data-tab="${tab}"]`);
             if (panel) {
                 const placeholders = panel.querySelectorAll('.empty-state p');
-                placeholders.forEach(p => p.textContent = '加载中...');
+                placeholders.forEach(p => p.innerHTML = '<span class="spinner spinner-sm"></span> 加载中...');
             }
         }
         switch (tab) {
